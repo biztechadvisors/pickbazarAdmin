@@ -12,14 +12,62 @@ import { mapPaginatorData } from '@/utils/data-mappers';
 import axios from "axios";
 import { setEmailVerified } from "@/utils/auth-utils";
 
+// Get cookie value
+function getCookie(name: string) {
+  if (typeof window === 'undefined') {
+    // We are on the server, return null
+    return null;
+  }
+
+  let cookieArr = document.cookie.split(";");
+
+  for (let i = 0; i < cookieArr.length; i++) {
+    let cookiePair = cookieArr[i].split("=");
+
+    if (name == cookiePair[0].trim()) {
+      return decodeURIComponent(cookiePair[1]);
+    }
+  }
+
+  return null;
+}
+
+// Service to get user details
+export class UserService {
+  static getUserDetails() {
+    // Extract token
+    let authToken = getCookie('AUTH_CRED');
+    let username: any, sub: any;
+
+    if (authToken) {
+      // Parse the JWT token
+      let base64Url = authToken.split('.')[1];
+      let base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+      let jsonPayload = decodeURIComponent(atob(base64).split('').map(function (c) {
+        return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+      }).join(''));
+
+      let data = JSON.parse(jsonPayload);
+
+      // Extract username and sub
+      username = data.username;
+      sub = data.sub;
+    }
+
+    return { username, sub };
+  }
+}
 
 export const useMeQuery = () => {
   const queryClient = useQueryClient();
   const router = useRouter();
 
-  return useQuery<User, Error>([API_ENDPOINTS.ME], userClient.me, {
-    retry: false,
+  // Get user details from UserService
+  const { username, sub } = UserService.getUserDetails();
 
+  console.log("username-sub", username, sub)
+  return useQuery<User, Error>([API_ENDPOINTS.ME, { username, sub }], () => userClient.me({ username, sub }), {
+    retry: false,
     onSuccess: () => {
       if (router.pathname === Routes.verifyEmail) {
         setEmailVerified(true);

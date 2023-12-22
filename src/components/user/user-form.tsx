@@ -1,7 +1,7 @@
 import Button from '@/components/ui/button';
 import Input from '@/components/ui/input';
 import PasswordInput from '@/components/ui/password-input';
-import { useForm } from 'react-hook-form';
+import { Controller, useForm } from 'react-hook-form';
 import Card from '@/components/common/card';
 import Description from '@/components/ui/description';
 import { useRegisterMutation } from '@/data/user';
@@ -9,11 +9,14 @@ import { useTranslation } from 'next-i18next';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { customerValidationSchema } from './user-validation-schema';
 import { Permission } from '@/types';
+import Select from '../ui/select/select';
+import Label from '../ui/label';
 
 type FormValues = {
   name: string;
   email: string;
   password: string;
+  type: { value: string };
   permission: Permission;
 };
 
@@ -30,19 +33,29 @@ const CustomerCreateForm = () => {
     register,
     handleSubmit,
     setError,
-
     formState: { errors },
+    control
   } = useForm<FormValues>({
     defaultValues,
     resolver: yupResolver(customerValidationSchema),
   });
 
-  async function onSubmit({ name, email, password }: FormValues) {
+  enum UserType {
+    'Admin',
+    'Dealer',
+    'Vendor',
+    'Customer',
+  }
+
+  const userTypes = Object.values(UserType).map((value) => ({ value }));
+
+  async function onSubmit({ name, email, password, type }: FormValues) {
     registerUser(
       {
         name,
         email,
         password,
+        type: type.value, // This line has been modified
         permission: Permission.StoreOwner,
       },
       {
@@ -57,6 +70,7 @@ const CustomerCreateForm = () => {
       }
     );
   }
+
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} noValidate>
@@ -91,15 +105,33 @@ const CustomerCreateForm = () => {
             variant="outline"
             className="mb-4"
           />
-        </Card>
-      </div>
+          <Controller
+            name="type"
+            control={control}
+            render={({ field }) => (
+              <>
+                <Label>{t('form:input-label-type')}</Label>
+                <Select
+                  {...field}
+                  getOptionLabel={(option: any) => option.value}
+                  getOptionValue={(option: any) => option.value}
+                  options={userTypes}
+                  isClearable={true}
+                  isLoading={loading}
+                  className="mb-4"
+                />
+              </>
+            )}
+          />
+        </Card >
+      </div >
 
       <div className="text-end mb-4">
         <Button loading={loading} disabled={loading}>
           {t('form:button-label-create-customer')}
         </Button>
       </div>
-    </form>
+    </form >
   );
 };
 

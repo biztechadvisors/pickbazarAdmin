@@ -19,10 +19,11 @@ import { API_ENDPOINTS } from './api-endpoints';
 import { HttpClient } from './http-client';
 
 export const userClient = {
-  me: () => {
-    return HttpClient.get<User>(API_ENDPOINTS.ME);
+  me: (params: { username: any; sub: any; }) => {
+    return HttpClient.get<User>(`${API_ENDPOINTS.ME}?username=${params.username}&sub=${params.sub}`);
   },
   login: (variables: LoginInput) => {
+    console.log("variables**", variables)
     return HttpClient.post<AuthResponse>(API_ENDPOINTS.TOKEN, variables);
   },
   logout: () => {
