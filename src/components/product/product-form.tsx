@@ -17,7 +17,7 @@ import ProductCategoryInput from './product-category-input';
 import ProductTypeInput from './product-type-input';
 import { ProductType, Product, ProductStatus } from '@/types';
 import { useTranslation } from 'next-i18next';
-// import { useShopQuery } from '@/data/shop';
+import { useShopQuery } from '@/data/shop';
 import ProductTagInput from './product-tag-input';
 import { Config } from '@/config';
 import Alert from '@/components/ui/alert';
@@ -123,13 +123,13 @@ export default function CreateOrUpdateProductForm({
     },
   ];
 
-  // const { data: shopData } = useShopQuery(
-  //   { slug: router.query.shop as string },
-  //   {
-  //     enabled: !!router.query.shop,
-  //   }
-  // );
-  // const shopId = shopData?.id!;
+  const { data: shopData } = useShopQuery(
+    { slug: router.query.shop as string },
+    {
+      enabled: !!router.query.shop,
+    }
+  );
+  const shopId = shopData?.id!;
   const isNewTranslation = router?.query?.action === 'translate';
   const isSlugEditable =
     router?.query?.action === 'edit' &&
@@ -166,25 +166,21 @@ export default function CreateOrUpdateProductForm({
     try {
       if (
         !initialValues ||
-        initialValues.translated_languages &&
         !initialValues.translated_languages.includes(router.locale!)
       ) {
         //@ts-ignore
         createProduct({
           ...inputValues,
           ...(initialValues?.slug && { slug: initialValues.slug }),
-          // shop_id: shopId || initialValues?.shop_id,
+          shop_id: shopId || initialValues?.shop_id,
         });
-        console.log("Create-Product", inputValues)
       } else {
         //@ts-ignore
         updateProduct({
           ...inputValues,
           id: initialValues.id!,
-          // shop_id: initialValues.shop_id!,
+          shop_id: initialValues.shop_id!,
         });
-        console.log("Update-Product", inputValues)
-
       }
     } catch (error) {
       const serverErrors = getErrorMessage(error);
@@ -425,10 +421,11 @@ export default function CreateOrUpdateProductForm({
           <div className="my-5 flex flex-wrap sm:my-8">
             <Description
               title={t('form:item-description')}
-              details={`${initialValues
-                ? t('form:item-description-edit')
-                : t('form:item-description-add')
-                } ${t('form:product-description-help-text')}`}
+              details={`${
+                initialValues
+                  ? t('form:item-description-edit')
+                  : t('form:item-description-add')
+              } ${t('form:product-description-help-text')}`}
               className="w-full px-0 pb-5 sm:w-4/12 sm:py-8 sm:pe-4 md:w-1/3 md:pe-5"
             />
 
@@ -496,21 +493,21 @@ export default function CreateOrUpdateProductForm({
                 <Label>{t('form:input-label-status')}</Label>
                 {!isEmpty(statusList)
                   ? statusList?.map((status: any, index: number) => (
-                    <Radio
-                      key={index}
-                      {...register('status')}
-                      label={t(status?.label)}
-                      id={status?.id}
-                      value={status?.value}
-                      className="mb-2"
-                      disabled={
-                        permission &&
+                      <Radio
+                        key={index}
+                        {...register('status')}
+                        label={t(status?.label)}
+                        id={status?.id}
+                        value={status?.value}
+                        className="mb-2"
+                        disabled={
+                          permission &&
                           initialValues?.status === ProductStatus?.Draft
-                          ? true
-                          : false
-                      }
-                    />
-                  ))
+                            ? true
+                            : false
+                        }
+                      />
+                    ))
                   : ''}
                 {errors.status?.message && (
                   <p className="my-2 text-xs text-red-500">
@@ -539,7 +536,7 @@ export default function CreateOrUpdateProductForm({
           {/* Variation Type */}
           {product_type?.value === ProductType.Variable && (
             <ProductVariableForm
-              // shopId={shopId}
+              shopId={shopId}
               initialValues={initialValues}
               settings={options}
             />

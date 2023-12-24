@@ -255,6 +255,19 @@ export const useUserQuery = ({ id }: { id: string }) => {
   );
 };
 
+export const useVendorQuery = () => {
+  const type: string = API_ENDPOINTS.VENDOR_LIST;
+  return useQuery<User, Error>(
+    [API_ENDPOINTS.USERS, type],
+    () => userClient.fetchVendor({ type }),
+    {
+      enabled: Boolean(type),
+      keepPreviousData: true,
+    }
+  );
+};
+
+
 export const useUsersQuery = (params: Partial<QueryOptionsType>) => {
   const { data, isLoading, error } = useQuery<UserPaginator, Error>(
     [API_ENDPOINTS.USERS, params],

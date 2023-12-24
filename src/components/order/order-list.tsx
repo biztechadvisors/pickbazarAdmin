@@ -44,7 +44,8 @@ const OrderList = ({
   const rowExpandable = (record: any) => record.children?.length;
   const { alignLeft } = useIsRTL();
   const { permissions } = getAuthCredentials();
-  const { mutate: createConversations, isLoading: creating } = useCreateConversations();
+  const { mutate: createConversations, isLoading: creating } =
+    useCreateConversations();
   const [loading, setLoading] = useState<boolean | string | undefined>(false);
   const [sortingObj, setSortingObj] = useState<{
     sort: SortOrder;

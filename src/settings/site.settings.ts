@@ -67,9 +67,24 @@ export const siteSettings = {
         icon: 'CategoriesIcon',
       },
       {
+        href: Routes.productsheet.list,
+        label: 'Product Sheet',
+        icon: 'UploadIcon',
+      },
+      {
         href: Routes.tag.list,
         label: 'sidebar-nav-item-tags',
         icon: 'TagIcon',
+      },
+      {
+        href: Routes.dealerlist.list,
+        label: 'sidebar-nav-item-dealerlist',
+        icon: 'DealerListIcon',
+      },
+      {
+        href: Routes.totalsale.list,
+        label: 'sidebar-nav-item-total-sale',
+        icon: 'TotalSaleIcon',
       },
       {
         href: Routes.manufacturer.list,

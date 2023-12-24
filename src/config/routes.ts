@@ -32,6 +32,15 @@ export const Routes = {
   tag: {
     ...routesFactory('/tags'),
   },
+  dealerlist: {
+    ...routesFactory('/dealerlist'),
+  },
+  totalsale: {
+    ...routesFactory('/total-sale'),
+  },
+  productsheet: {
+    ...routesFactory('/product-upload-excel'),
+  },
   reviews: {
     ...routesFactory('/reviews'),
   },

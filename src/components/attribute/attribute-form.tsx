@@ -58,8 +58,7 @@ export default function CreateOrUpdateAttributeForm({ initialValues }: IProps) {
   const onSubmit = (values: FormValues) => {
     if (
       !initialValues ||
-      initialValues.translated_languages &&
-      !initialValues.translated_languages.includes(router.locale!)
+      !initialValues.translated_languages?.includes(router.locale!)
     ) {
       createAttribute(
         {
@@ -109,10 +108,11 @@ export default function CreateOrUpdateAttributeForm({ initialValues }: IProps) {
         <div className="my-5 flex flex-wrap border-b border-dashed border-border-base pb-8 sm:my-8">
           <Description
             title={t('common:attribute')}
-            details={`${initialValues
+            details={`${
+              initialValues
                 ? t('form:item-description-update')
                 : t('form:item-description-add')
-              } ${t('form:form-description-attribute-name')}`}
+            } ${t('form:form-description-attribute-name')}`}
             className="sm:pe-4 md:pe-5 w-full px-0 pb-5 sm:w-4/12 sm:py-8 md:w-1/3"
           />
 
@@ -130,10 +130,11 @@ export default function CreateOrUpdateAttributeForm({ initialValues }: IProps) {
         <div className="my-5 flex flex-wrap sm:my-8">
           <Description
             title={t('common:attribute-values')}
-            details={`${initialValues
+            details={`${
+              initialValues
                 ? t('form:item-description-update')
                 : t('form:item-description-add')
-              } ${t('form:form-description-attribute-value')}`}
+            } ${t('form:form-description-attribute-value')}`}
             className="sm:pe-4 md:pe-5 w-full px-0 pb-5 sm:w-4/12 sm:py-8 md:w-1/3"
           />
 

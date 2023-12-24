@@ -112,7 +112,7 @@ export default function OrderDetailsPage() {
     amount: order?.wallet_point?.amount!,
   });
 
-  const totalItem = order?.products.reduce(
+  const totalItem = order?.products?.reduce(
     // @ts-ignore
     (initial = 0, p) => initial + parseInt(p?.pivot?.order_quantity!),
     0
