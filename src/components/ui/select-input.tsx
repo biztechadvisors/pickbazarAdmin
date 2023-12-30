@@ -15,6 +15,7 @@ interface SelectInputProps {
   isLoading?: boolean;
   [key: string]: unknown;
   placeholder?: string;
+  defaultValue?:string;
 }
 
 const SelectInput = ({
@@ -29,6 +30,7 @@ const SelectInput = ({
   isClearable,
   isLoading,
   placeholder,
+  defaultValue,
   ...rest
 }: SelectInputProps) => {
   return (
@@ -45,6 +47,7 @@ const SelectInput = ({
           placeholder={placeholder}
           isMulti={isMulti}
           isClearable={isClearable}
+          defaultValue={defaultValue}
           isLoading={isLoading}
           options={options}
           isDisabled={disabled as boolean}

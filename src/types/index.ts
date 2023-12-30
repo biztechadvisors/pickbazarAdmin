@@ -78,6 +78,7 @@ export enum AddressType {
 
 export type QueryOptionsType = {
   page?: number;
+  type?:string;
   name?: string;
   shop_id?: number;
   limit?: number;
@@ -1255,6 +1256,16 @@ export declare type AddStaffInput = {
   shop_id: number;
 };
 
+export declare type AddDealerInput = {
+  user: AddDealerInput | null | undefined;
+  dealerProductMargins: AddDealerInput | null | undefined;
+  dealerCategoryMargins: AddDealerInput | null | undefined;
+  // product:AddDealerInput | null | undefined;
+  id: string;
+  translated_languages: any;
+  name: string;
+};
+
 export declare type ApproveShopInput = {
   id: string;
   admin_commission_rate: number;
@@ -1442,6 +1453,10 @@ export interface StaffQueryOptions extends Omit<QueryOptions, 'language'> {
   shop_id: string;
 }
 
+export interface DealerQueryOptions extends Omit<QueryOptions, 'language'> {
+  shop_id: string;
+}
+
 export interface WithdrawQueryOptions extends Omit<QueryOptions, 'language'> {
   name: string;
   shop_id: string;
@@ -1523,6 +1538,8 @@ export interface UserPaginator extends PaginatorInfo<User> {}
 export interface QuestionPaginator extends PaginatorInfo<Question> {}
 
 export interface StaffPaginator extends PaginatorInfo<User> {}
+
+export interface DealerPaginator extends PaginatorInfo<AddDealerInput> {}
 
 export interface OrderPaginator extends PaginatorInfo<Order> {}
 

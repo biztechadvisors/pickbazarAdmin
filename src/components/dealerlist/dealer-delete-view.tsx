@@ -3,10 +3,10 @@ import {
   useModalAction,
   useModalState,
 } from '@/components/ui/modal/modal.context';
-import { useDeleteTypeMutation } from '@/data/type';
+import { useDeleteDealerMutation } from '@/data/dealer';
 
-const TypeDeleteView = () => {
-  const { mutate: deleteType, isLoading: loading } = useDeleteTypeMutation();
+const DealerDeleteView = () => {
+  const { mutate: deleteType, isLoading: loading } = useDeleteDealerMutation();
 
   const { data } = useModalState();
   const { closeModal } = useModalAction();
@@ -27,4 +27,4 @@ const TypeDeleteView = () => {
   );
 };
 
-export default TypeDeleteView;
+export default DealerDeleteView ;

@@ -140,7 +140,7 @@ function SelectUser({
   console.log("myVendor",options.data)
 
   return (
-    <div className="mb-5">
+  <div className="mb-5">
   <Label>{t('form:input-label-search')}</Label>
   <SelectInput
     name="user"

@@ -9,25 +9,33 @@ import { useState } from 'react';
 import { useTranslation } from 'next-i18next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import { GetStaticProps } from 'next';
-import { useTypesQuery } from '@/data/type';
 import { Routes } from '@/config/routes';
 import { useRouter } from 'next/router';
 import { adminOnly } from '@/utils/auth-utils';
 import { Config } from '@/config';
 import DealerTypeList from '@/components/dealerlist/dealer-list';
+import { useUsersQuery } from '@/data/user';
+import { useDealerQuery, useDealerQueryGet } from '@/data/dealer';
 
-export default function TypesPage() {
+export default function DealerPage() {
   const { locale } = useRouter();
   const { t } = useTranslation();
   const [orderBy, setOrder] = useState('created_at');
   const [sortedBy, setColumn] = useState<SortOrder>(SortOrder.Desc);
   const [searchTerm, setSearchTerm] = useState('');
-  const { types, loading, error } = useTypesQuery({
+  const { users, loading, error } = useUsersQuery({
+    type: 'Dealer',
     name: searchTerm,
-    language: locale,
+    // language: locale,
     orderBy,
     sortedBy,
   });
+
+  // const {
+  //   data,
+  //   isLoading,
+  // } = useDealerQueryAllGet();
+  // console.log("moye moye a dealer ", data)
 
   if (loading) return <Loader text={t('common:text-loading')} />;
   if (error) return <ErrorMessage message={error.message} />;
@@ -50,7 +58,7 @@ export default function TypesPage() {
 
           {locale === Config.defaultLanguage && (
             <LinkButton
-              href={Routes.dealerlist.create}
+              href={Routes.user.create}
               className="h-12 w-full md:w-auto md:ms-6"
             >
               <span className="block md:hidden xl:block">
@@ -63,16 +71,16 @@ export default function TypesPage() {
           )}
         </div>
       </Card>
-      <DealerTypeList types={types} onOrder={setOrder} onSort={setColumn} />
+      <DealerTypeList users={users} onOrder={setOrder} onSort={setColumn} />
     </>
   );
 }
 
-TypesPage.authenticate = {
+DealerPage.authenticate = {
   permissions: adminOnly,
 };
 
-TypesPage.Layout = Layout;
+DealerPage.Layout = Layout;
 
 export const getStaticProps: GetStaticProps = async ({ locale }) => ({
   props: {

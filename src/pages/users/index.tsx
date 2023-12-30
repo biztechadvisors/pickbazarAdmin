@@ -46,7 +46,7 @@ export default function Customers() {
       <Card className="mb-8 flex flex-col items-center md:flex-row">
         <div className="mb-4 md:mb-0 md:w-1/4">
           <h1 className="text-lg font-semibold text-heading">
-            {t('form:input-label-customers')}
+            {t('common:sidebar-nav-item-users')}
           </h1>
         </div>
 
@@ -56,7 +56,7 @@ export default function Customers() {
             href={`${Routes.user.create}`}
             className="ms-4 md:ms-6 h-12"
           >
-            <span>+ {t('form:button-label-add-customer')}</span>
+            <span>+ {t('form:button-label-add-user')}</span>
           </LinkButton>
         </div>
       </Card>

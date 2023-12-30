@@ -7,17 +7,18 @@ import { useIsRTL } from '@/utils/locals';
 import { useState } from 'react';
 import TitleWithSort from '@/components/ui/title-with-sort';
 import { Routes } from '@/config/routes';
-import { Config } from '@/config';
-import Link from '@/components/ui/link';
 import LanguageSwitcher from '@/components/ui/lang-action/action';
+import Button from '../ui/button';
 
 export type IProps = {
-  types: Type[] | undefined;
+  users: any[] | undefined;
+  // allDealer : any[] | undefined;
   onSort: (current: any) => void;
   onOrder: (current: string) => void;
 };
 
-const DealerTypeList = ({ types, onSort, onOrder }: IProps) => {
+const DealerList = ({ users, onSort, onOrder }: IProps) => {
+
   const { t } = useTranslation();
   const { alignLeft, alignRight } = useIsRTL();
 
@@ -44,7 +45,10 @@ const DealerTypeList = ({ types, onSort, onOrder }: IProps) => {
     },
   });
 
+  
+
   const columns = [
+
     {
       title: t('table:table-item-id'),
       dataIndex: 'id',
@@ -52,6 +56,26 @@ const DealerTypeList = ({ types, onSort, onOrder }: IProps) => {
       align: 'center',
       width: 60,
     },
+
+    {
+      title: t('table:table-item-icon'),
+      dataIndex: 'icon',
+      key: 'profile',
+      align: 'center',
+      render: (icon: string) => {
+        if (!icon) return null;
+        return (
+          <span className="flex items-center justify-center">
+            {getIcon({
+              iconList: typeIcons,
+              iconName: icon,
+              className: 'w-5 h-5 max-h-full max-w-full',
+            })}
+          </span>
+        );
+      },
+    },
+
     {
       title: (
         <TitleWithSort
@@ -59,7 +83,7 @@ const DealerTypeList = ({ types, onSort, onOrder }: IProps) => {
           ascending={
             sortingObj.sort === SortOrder.Asc && sortingObj.column === 'name'
           }
-          isActive={sortingObj.column === 'name'}
+          isActive={sortingObj.column === 'id'}
         />
       ),
       className: 'cursor-pointer',
@@ -70,78 +94,46 @@ const DealerTypeList = ({ types, onSort, onOrder }: IProps) => {
       render: (name: any) => <span className="whitespace-nowrap">{name}</span>,
     },
 
-   
     {
       title: (
         <TitleWithSort
           title={t('table:table-item-email')}
           ascending={
-            sortingObj.sort === SortOrder.Asc && sortingObj.column === 'name'
+            sortingObj.sort === SortOrder.Asc && sortingObj.column === 'email'
           }
-          isActive={sortingObj.column === 'name'}
+          isActive={sortingObj.column === 'email'}
         />
       ),
       className: 'cursor-pointer',
-      dataIndex: 'name',
-      key: 'name',
+      dataIndex: 'email',
+      key: 'email',
       align: alignLeft,
-      onHeaderCell: () => onHeaderClick('name'),
-      render: (name: any) => <span className="whitespace-nowrap">{name}</span>,
+      onHeaderCell: () => onHeaderClick('email'),
+      render: (email: any) => <span className="whitespace-nowrap">{email}</span>,
     },
 
-    {
-      title: (
-        <TitleWithSort
-          title={t('table:table-item-walletpoint')}
-          ascending={
-            sortingObj.sort === SortOrder.Asc && sortingObj.column === 'name'
-          }
-          isActive={sortingObj.column === 'name'}
-        />
-      ),
-      className: 'cursor-pointer',
-      dataIndex: 'name',
-      key: 'name',
-      align: alignLeft,
-      onHeaderCell: () => onHeaderClick('name'),
-      render: (name: any) => <span className="whitespace-nowrap">{name}</span>,
-    },
+   
 
-    {
-      title: (
-        <TitleWithSort
-          title={t('table:table-item-usersbase')}
-          ascending={
-            sortingObj.sort === SortOrder.Asc && sortingObj.column === 'name'
-          }
-          isActive={sortingObj.column === 'name'}
-        />
-      ),
-      className: 'cursor-pointer',
-      dataIndex: 'name',
-      key: 'name',
-      align: alignLeft,
-      onHeaderCell: () => onHeaderClick('name'),
-      render: (name: any) => <span className="whitespace-nowrap">{name}</span>,
-    },
     // {
-    //   title: t('table:table-item-icon'),
-    //   dataIndex: 'icon',
-    //   key: 'slug',
-    //   align: 'center',
-    //   render: (icon: string) => {
-    //     if (!icon) return null;
-    //     return (
-    //       <span className="flex items-center justify-center">
-    //         {getIcon({
-    //           iconList: typeIcons,
-    //           iconName: icon,
-    //           className: 'w-5 h-5 max-h-full max-w-full',
-    //         })}
-    //       </span>
-    //     );
-    //   },
+    //   title: (
+    //     <TitleWithSort
+    //       title={t('table:table-item-usersbase')}
+    //       ascending={
+    //         sortingObj.sort === SortOrder.Asc && sortingObj.column === 'name'
+    //       }
+    //       isActive={sortingObj.column === 'name'}
+    //     />
+    //   ),
+    //   className: 'cursor-pointer',
+    //   dataIndex: 'name',
+    //   key: 'name',
+    //   align: alignLeft,
+    //   onHeaderCell: () => onHeaderClick('name'),
+    //   render: (name: any) => <span className="whitespace-nowrap">{name}</span>,
     // },
+
+    
+
     {
       title: t('table:table-item-actions'),
       dataIndex: 'slug',
@@ -149,10 +141,10 @@ const DealerTypeList = ({ types, onSort, onOrder }: IProps) => {
       align: alignRight,
       render: (slug: string, record: Type) => (
         <LanguageSwitcher
-          slug={slug}
+          slug={record.id}
           record={record}
-          deleteModalView="DELETE_TYPE"
-          routes={Routes?.type}
+          deleteModalView="DELETE_DEALER"
+          routes={Routes?.dealerlist}
         />
       ),
     },
@@ -164,7 +156,7 @@ const DealerTypeList = ({ types, onSort, onOrder }: IProps) => {
         //@ts-ignore
         columns={columns}
         emptyText={t('table:empty-table-data')}
-        data={types}
+        data={users}
         rowKey="id"
         scroll={{ x: 380 }}
       />
@@ -172,4 +164,4 @@ const DealerTypeList = ({ types, onSort, onOrder }: IProps) => {
   );
 };
 
-export default DealerTypeList;
+export default DealerList;
