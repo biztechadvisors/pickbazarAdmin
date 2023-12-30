@@ -60,16 +60,18 @@ type IProps = {
 };
 
 function SelectCategory({
+  defaultValue,
   control,
   errors,
 }: {
   control: Control<FormValues>;
+  defaultValue: any;
   errors: FieldErrors;
 }) {
   const { t } = useTranslation();
   const { categories, loading, error } = useCategoriesQuery({});
-
-  const options: any = categories || []
+  const options: any = categories || [];
+  const dbValue: any = defaultValue.map((item: any) => item.category);
 
   return (
     <div className="mt-5">
@@ -77,23 +79,27 @@ function SelectCategory({
       <SelectInput
         name="category"
         control={control}
+        defaultValue={dbValue.map((item:any)=>item.name)} 
         getOptionLabel={(option: any) => `${option.name}`}
-        getOptionValue={(option: any) => option}
+        getOptionValue={(option: any) => option.value} 
         options={options}
         isLoading={loading}
         isSearchable={true}
         isMulti={true}
       />
-      <ValidationError message={t(errors.categories?.message)} />
+      <ValidationError message={t(errors.category?.message)} />
     </div>
   );
 }
 
+
 function SelectProduct({
+  defaultValue,
   control,
   errors,
 }: {
   control: Control<FormValues>;
+  defaultValue:any,
   errors: FieldErrors;
 }) {
   const { t } = useTranslation();
@@ -101,13 +107,13 @@ function SelectProduct({
   });
 
   const options: any = products || [] 
-
   return (
     <div className="mt-5">
       <Label>{t('form:input-label-products')}</Label>
       <SelectInput
         name="product"
         control={control}
+        // defaultValue={defaultValue.map((item:any)=>item.product.name)}
         getOptionLabel={(option: any) => `${option.name}`}
         getOptionValue={(option: any) => option}
         options={options}
@@ -136,7 +142,7 @@ function SelectSubType({
       <Label>{t('form:input-label-dealer-type')}</Label>
       <SelectInput
         name="subscriptionType"
-        // defaultValue={defaultValue.subscriptionType}
+        defaultValue={defaultValue.subscriptionType}
         control={control}
         getOptionLabel={(option: any) => `${option.name}`}
         getOptionValue={(option: any) => option}
@@ -149,10 +155,12 @@ function SelectSubType({
 }
 
 function SelectStatus({
+  defaultValue,
   control,
   errors,
 }: {
   control: Control<FormValues>;
+  defaultValue:any,
   errors: FieldErrors;
 }) {
   const { t } = useTranslation();
@@ -166,6 +174,7 @@ function SelectStatus({
       <SelectInput
         name="isActive"
         control={control}
+        defaultValue={defaultValue.isActive ? "Active":"Inactive"}
         getOptionLabel={(option: any) => `${option.label}`}
         getOptionValue={(option: any) => option.value}
         options={options}
@@ -228,8 +237,6 @@ export default function CreateOrUpdateDealerForm({ initialValues, id }: IProps) 
         product: product,
       })),
     };
-
-    console.log("moye moye input", input)
 
     if (!initialValues) {
       createDealer({
@@ -327,8 +334,8 @@ export default function CreateOrUpdateDealerForm({ initialValues, id }: IProps) 
           />
         </Card>
         <Card className="w-full sm:w-8/12 md:w-1/2">
-          <SelectStatus control={control} errors={errors} />
-          <SelectCategory control={control} errors={errors} />
+          <SelectStatus control={control} errors={errors} defaultValue={initialValues} />
+          <SelectCategory control={control} errors={errors} defaultValue={marcategory}/>
           <Input
             // label={t('form:input-label-password')}
             {...register('marginPerCat')}
@@ -340,7 +347,7 @@ export default function CreateOrUpdateDealerForm({ initialValues, id }: IProps) 
           // disabled={[].includes(Config.defaultLanguage)}
           />
 
-          <SelectProduct control={control} errors={errors} />
+          <SelectProduct control={control} errors={errors} defaultValue={marproduct}/>
           <Input
             // label={t('form:input-label-password')}
             placeholder='Margin %'

@@ -1,11 +1,11 @@
 import Layout from '@/components/layouts/admin';
 import { useRouter } from 'next/router';
 import ErrorMessage from '@/components/ui/error-message';
-import Loader from '@/components/ui/loader/loader';
 import { useTranslation } from 'next-i18next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import CreateOrUpdateDealerForm from '@/components/dealerlist/add-dealer-form';
 import { useDealerQueryGet } from '@/data/dealer';
+import Loader from '@/components/ui/loader/loader';
 
 export default function UpdateDealerPage() {
   const { query, locale } = useRouter();
