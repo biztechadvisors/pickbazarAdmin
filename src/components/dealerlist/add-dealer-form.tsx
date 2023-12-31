@@ -17,7 +17,6 @@ import { useAddDealerMutation, useUpdateDealerMutation } from '@/data/dealer';
 import { useUserQuery } from '@/data/user';
 import Loader from '../ui/loader/loader';
 import ErrorMessage from '../ui/error-message';
-import { useEffect } from 'react';
 
 type FormValues = {
   category: any;
@@ -71,17 +70,16 @@ function SelectCategory({
   const { t } = useTranslation();
   const { categories, loading, error } = useCategoriesQuery({});
   const options: any = categories || [];
-  const dbValue: any = defaultValue.map((item: any) => item.category);
-
+  const dbValue: any = defaultValue?.map((item: any) => item.category);
   return (
     <div className="mt-5">
       <Label>{t('form:input-label-categories')}</Label>
       <SelectInput
         name="category"
         control={control}
-        defaultValue={dbValue.map((item:any)=>item.name)} 
+        defaultValue={dbValue} 
         getOptionLabel={(option: any) => `${option.name}`}
-        getOptionValue={(option: any) => option.value} 
+        getOptionValue={(option: any) => option.name} 
         options={options}
         isLoading={loading}
         isSearchable={true}
@@ -107,17 +105,19 @@ function SelectProduct({
   });
 
   const options: any = products || [] 
+  const dbValue: any = defaultValue?.map((item: any) => item.product);
   return (
     <div className="mt-5">
       <Label>{t('form:input-label-products')}</Label>
       <SelectInput
         name="product"
         control={control}
-        // defaultValue={defaultValue.map((item:any)=>item.product.name)}
+        defaultValue={dbValue}
         getOptionLabel={(option: any) => `${option.name}`}
-        getOptionValue={(option: any) => option}
+        getOptionValue={(option: any) => option.name}
         options={options}
         isLoading={loading}
+        isClearable={true}
         isSearchable={true}
         isMulti={true}
       />
@@ -142,13 +142,14 @@ function SelectSubType({
       <Label>{t('form:input-label-dealer-type')}</Label>
       <SelectInput
         name="subscriptionType"
-        defaultValue={defaultValue.subscriptionType}
+        defValue={defaultValue.subscriptionType}
         control={control}
         getOptionLabel={(option: any) => `${option.name}`}
         getOptionValue={(option: any) => option}
         options={options}
-        isSearchable={true}
-      />
+        isSearchable={false} 
+        defaultValue={[]}     
+        />
       <ValidationError message={t(errors.subscriptionType?.message)} />
     </div>
   );
@@ -174,12 +175,13 @@ function SelectStatus({
       <SelectInput
         name="isActive"
         control={control}
-        defaultValue={defaultValue.isActive ? "Active":"Inactive"}
+        defValue={defaultValue.isActive ? "Active" : "Inactive"}
         getOptionLabel={(option: any) => `${option.label}`}
         getOptionValue={(option: any) => option.value}
         options={options}
-        isSearchable={true}
-      />
+        isSearchable={false} 
+        defaultValue={[]}      
+        />
       <ValidationError message={t(errors.isActive?.message)} />
     </div>
   );
@@ -215,6 +217,7 @@ export default function CreateOrUpdateDealerForm({ initialValues, id }: IProps) 
   const { mutate: createDealer, isLoading: creating } = useAddDealerMutation();
   const { mutate: updateDealer, isLoading: updating } = useUpdateDealerMutation();
   const onSubmit = (values: FormValues) => {
+    console.log("moye moye value", values)
     const isActiveVal: any = values.isActive
     const input = {
       language: router.locale!,
