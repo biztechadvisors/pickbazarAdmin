@@ -71,6 +71,9 @@ export const userClient = {
       search: HttpClient.formatSearchParams({ name }),
     });
   },
+  fetchVendor: ({ type }: { type: string }) => {
+    return HttpClient.get<User>(`${API_ENDPOINTS.USERS}?type=${type}`);
+  },
   fetchAdmins: ({ ...params }: Partial<UserQueryOptions>) => {
     return HttpClient.get<UserPaginator>(API_ENDPOINTS.ADMIN_LIST, {
       searchJoin: 'and',

@@ -136,31 +136,30 @@ function SelectUser({
   const { t } = useTranslation();
   const { data: users, isLoading } = useVendorQuery();
 
-  const options:any = users || []
-  console.log("myVendor",options.data)
+  const options: any = users || []
+  console.log("myVendor", options.data)
 
   return (
-  <div className="mb-5">
-  <Label>{t('form:input-label-search')}</Label>
-  <SelectInput
-    name="user"
-    control={control}
-    getOptionLabel={(option: any) => `${option.name} - ${option.email}`}
-    getOptionValue={(option: any) => option}
-    options={options.data}
-    isLoading={isLoading}
-    isSearchable={true}
-    filterOption={(option:any, inputValue:any) => {
-      // Customize the filter logic as needed
-      const searchValue = inputValue.toLowerCase();
-      return (
-        option.name.toLowerCase().includes(searchValue) ||
-        option.email.toLowerCase().includes(searchValue)
-      );
-    }}
-  />
-  <ValidationError message={t(errors.user?.message)} />
-</div>
+    <div className="mb-5">
+      <Label>{t('form:input-label-search')}</Label>
+      <SelectInput
+        name="user"
+        control={control}
+        getOptionLabel={(option: any) => `${option.name} - ${option.email}`}
+        getOptionValue={(option: any) => option}
+        options={options.data}
+        isLoading={isLoading}
+        isSearchable={true}
+        filterOption={(option: any, inputValue: any) => {
+          // Customize the filter logic as needed
+          const searchValue = inputValue.toLowerCase();
+          return (
+            option.name.toLowerCase().includes(searchValue) ||
+            option.email.toLowerCase().includes(searchValue)
+          );
+        } } defaultValue={[]}      />
+      <ValidationError message={t(errors.user?.message)} />
+    </div>
 
   );
 }
@@ -235,7 +234,7 @@ const ShopForm = ({ initialValues }: { initialValues?: any }) => {
     name: 'settings.socials',
   });
   function onSubmit(values: FormValues) {
-    console.log("FormValues",values)
+    console.log("FormValues", values)
     const settings = {
       ...values?.settings,
       location: { ...omit(values?.settings?.location, '__typename') },

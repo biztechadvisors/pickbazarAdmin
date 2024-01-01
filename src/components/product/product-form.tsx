@@ -541,7 +541,6 @@ export default function CreateOrUpdateProductForm({
               settings={options}
             />
           )}
-
           <div className="mb-4 text-end">
             {initialValues && (
               <Button
