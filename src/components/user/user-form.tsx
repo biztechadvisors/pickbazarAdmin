@@ -40,14 +40,16 @@ const CustomerCreateForm = () => {
     resolver: yupResolver(customerValidationSchema),
   });
 
-  enum UserType {
-    'Admin',
-    'Dealer',
-    'Vendor',
-    'Customer',
-  }
+  // enum UserType {
+  //   'Admin',
+  //   'Dealer',
+  //   'Vendor',
+  //   'Customer',
+  // }
 
-  const userTypes = Object.values(UserType).map((value) => ({ value }));
+  const UserType = ['Admin', 'Dealer', 'Vendor', 'Customer']
+
+  const userTypes = UserType.map((value) => ({ value }));
 
   async function onSubmit({ name, email, password, type }: FormValues) {
     registerUser(

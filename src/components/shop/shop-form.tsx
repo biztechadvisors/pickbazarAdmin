@@ -1,6 +1,6 @@
 import Button from '@/components/ui/button';
 import Input from '@/components/ui/input';
-import { Controller, useFieldArray, useForm } from 'react-hook-form';
+import { Control, Controller, FieldErrors, useFieldArray, useForm } from 'react-hook-form';
 import { useTranslation } from 'next-i18next';
 import { yupResolver } from '@hookform/resolvers/yup';
 import Description from '@/components/ui/description';
@@ -31,6 +31,9 @@ import { useModalAction } from '../ui/modal/modal.context';
 import OpenAIButton from '../openAI/openAI.button';
 import { useCallback, useMemo } from 'react';
 import { useSettingsQuery } from '@/data/settings';
+import Select from '../ui/select/select';
+import { useUserQuery, useVendorQuery } from '@/data/user';
+import ValidationError from '../ui/form-validation-error';
 
 export const chatbotAutoSuggestion = ({ name }: { name: string }) => {
   return [
@@ -114,6 +117,7 @@ export const updatedIcons = socialIcon.map((item: any) => {
 
 type FormValues = {
   name: string;
+  selectSearch: String;
   description: string;
   cover_image: any;
   logo: any;
@@ -121,6 +125,46 @@ type FormValues = {
   address: UserAddressInput;
   settings: ShopSettings;
 };
+
+function SelectUser({
+  control,
+  errors,
+}: {
+  control: Control<FormValues>;
+  errors: FieldErrors;
+}) {
+  const { t } = useTranslation();
+  const { data: users, isLoading } = useVendorQuery();
+
+  const options: any = users || []
+  console.log("myVendor", options.data)
+
+  return (
+    <div className="mb-5">
+      <Label>{t('form:input-label-search')}</Label>
+      <SelectInput
+        name="user"
+        control={control}
+        getOptionLabel={(option: any) => `${option.name} - ${option.email}`}
+        getOptionValue={(option: any) => option}
+        options={options.data}
+        isLoading={isLoading}
+        isSearchable={true}
+        filterOption={(option: any, inputValue: any) => {
+          // Customize the filter logic as needed
+          const searchValue = inputValue.toLowerCase();
+          return (
+            option.name.toLowerCase().includes(searchValue) ||
+            option.email.toLowerCase().includes(searchValue)
+          );
+        }}
+      />
+      <ValidationError message={t(errors.user?.message)} />
+    </div>
+
+  );
+}
+
 
 const ShopForm = ({ initialValues }: { initialValues?: any }) => {
   const { mutate: createShop, isLoading: creating } = useCreateShopMutation();
@@ -191,6 +235,7 @@ const ShopForm = ({ initialValues }: { initialValues?: any }) => {
     name: 'settings.socials',
   });
   function onSubmit(values: FormValues) {
+    console.log("FormValues", values)
     const settings = {
       ...values?.settings,
       location: { ...omit(values?.settings?.location, '__typename') },
@@ -273,13 +318,7 @@ const ShopForm = ({ initialValues }: { initialValues?: any }) => {
               error={t(errors.name?.message!)}
             />
 
-            <Input
-              label={t('form:input-label-search')}
-              {...register('name')}
-              variant="outline"
-              className="mb-5"
-              error={t(errors.name?.message!)}
-            />
+            <SelectUser control={control} errors={errors} />
 
             <div className="relative">
               {options?.useAi && (

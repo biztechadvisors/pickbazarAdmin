@@ -65,7 +65,6 @@ export const useMeQuery = () => {
   // Get user details from UserService
   const { username, sub } = UserService.getUserDetails();
 
-  console.log("username-sub", username, sub)
   return useQuery<User, Error>([API_ENDPOINTS.ME, { username, sub }], () => userClient.me({ username, sub }), {
     retry: false,
     onSuccess: () => {
@@ -251,6 +250,17 @@ export const useUserQuery = ({ id }: { id: string }) => {
     () => userClient.fetchUser({ id }),
     {
       enabled: Boolean(id),
+    }
+  );
+};
+
+export const useVendorQuery = () => {
+  const type: string = API_ENDPOINTS.VENDOR_LIST;
+  return useQuery<User, Error>(
+    [API_ENDPOINTS.USERS, type],
+    () => userClient.fetchVendor({ type }),
+    {
+      enabled: Boolean(type),
     }
   );
 };

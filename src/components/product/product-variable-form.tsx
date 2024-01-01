@@ -20,12 +20,12 @@ import { useSettingsQuery } from '@/data/settings';
 
 type IProps = {
   initialValues?: Product | null;
-  // shopId: string | undefined;
+  shopId: string | undefined;
   settings: Settings | undefined;
 };
 
 export default function ProductVariableForm({
-  // shopId,
+  shopId,
   initialValues,
   settings,
 }: IProps) {
@@ -40,7 +40,7 @@ export default function ProductVariableForm({
   const upload_max_filesize = options?.server_info?.upload_max_filesize / 1024;
 
   const { attributes, loading } = useAttributesQuery({
-    // shop_id: initialValues ? initialValues.shop_id : shopId,
+    shop_id: initialValues ? initialValues.shop_id : shopId,
     language: locale,
   });
   const {
