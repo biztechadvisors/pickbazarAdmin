@@ -63,7 +63,6 @@ export const API_ENDPOINTS = {
   MESSAGE_SEEN: '/messages/seen',
   ADMIN_LIST: '/admin/list',
   DEALER:'/dealers',
-  VENDOR_LIST: 'Vendor',
   STORE_NOTICES: 'store-notices',
   STORE_NOTICES_IS_READ: 'store-notices/read',
   STORE_NOTICE_GET_STORE_NOTICE_TYPE: 'store-notices/getStoreNoticeType',

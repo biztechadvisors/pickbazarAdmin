@@ -1,5 +1,5 @@
 import Input from '@/components/ui/input';
-import { Control, Controller, FieldErrors, useForm } from 'react-hook-form';
+import { Control, Controller, FieldErrors, UseFormRegister, useFieldArray, useForm } from 'react-hook-form';
 import Button from '@/components/ui/button';
 import Card from '@/components/common/card';
 import { useRouter } from 'next/router';
@@ -27,13 +27,19 @@ type FormValues = {
   email?: string | null;
   discount?: number | null;
   phone?: number | null;
-  subscriptionStart?: Date | null;
   walletBalance?: number | null;
-  subscriptionEnd?: Date | null;
   username?: string | null;
   password?: string | null;
   marginPerCat?: String | null;
   marginPerPro?: String | null;
+  dealerCategoryMargins: {
+    category: any; 
+    margin: string; 
+  }[];
+  dealerProductMargins: {
+    product: any; 
+    margin: string; 
+  }[];
 };
 
 enum SubscriptionType {
@@ -59,10 +65,12 @@ type IProps = {
 };
 
 function SelectCategory({
+  register,
   defaultValue,
   control,
   errors,
 }: {
+  register: UseFormRegister<FormValues>;
   control: Control<FormValues>;
   defaultValue: any;
   errors: FieldErrors;
@@ -70,57 +78,123 @@ function SelectCategory({
   const { t } = useTranslation();
   const { categories, loading, error } = useCategoriesQuery({});
   const options: any = categories || [];
-  const dbValue: any = defaultValue?.map((item: any) => item.category);
+  const dbValues: any = defaultValue || [];
+
+  const { fields, append, remove } = useFieldArray({
+    control,
+    name: 'dealerCategoryMargins',
+  });
+
   return (
     <div className="mt-5">
       <Label>{t('form:input-label-categories')}</Label>
-      <SelectInput
-        name="category"
-        control={control}
-        defaultValue={dbValue} 
-        getOptionLabel={(option: any) => `${option.name}`}
-        getOptionValue={(option: any) => option.name} 
-        options={options}
-        isLoading={loading}
-        isSearchable={true}
-        isMulti={true}
-      />
+
+      {fields.map((item, index) => (
+        <div key={item.id} className="flex items-center">
+          <SelectInput
+            name={`dealerCategoryMargins[${index}].category`}
+            control={control}
+            defaultValue={dbValues[index]?.category || null}
+            getOptionLabel={(option: any) => `${option.name}`}
+            getOptionValue={(option: any) => option.name}
+            options={options}
+            isLoading={loading}
+            isSearchable={true}
+          />
+
+          <Input
+            {...register(`dealerCategoryMargins.${index}.margin` as const)}
+            defaultValue={dbValues[index]?.margin || ''}
+            variant="outline"
+            className="ml-5 mb-3"
+            placeholder={t('margin %')}
+          />
+        
+          <button
+            onClick={() => {
+              remove(index);
+            }}
+            type="button"
+            className="text-sm text-red-500 transition-colors duration-200 hover:text-red-700 focus:outline-none sm:col-span-1 sm:mt-4 ml-3"
+          >
+            {t('form:button-label-remove')}
+          </button>
+        </div>
+      ))}
+
+      <Button className='mt-4' type="button" onClick={() => append({ category: null, margin: '' })}>
+        {t('form:button-label-add-category')}
+      </Button>
+
       <ValidationError message={t(errors.category?.message)} />
     </div>
   );
 }
 
 
+
 function SelectProduct({
+  register,
   defaultValue,
   control,
   errors,
 }: {
+  register: UseFormRegister<FormValues>;
   control: Control<FormValues>;
-  defaultValue:any,
+  defaultValue: any;
   errors: FieldErrors;
 }) {
   const { t } = useTranslation();
-  const { products, loading } = useProductsQuery({
+  const { products, loading, error } = useProductsQuery({});
+  const options: any = products || [];
+  const dbValues: any = defaultValue || [];
+
+  const { fields, append, remove } = useFieldArray({
+    control,
+    name: 'dealerProductMargins',
   });
 
-  const options: any = products || [] 
-  const dbValue: any = defaultValue?.map((item: any) => item.product);
   return (
     <div className="mt-5">
       <Label>{t('form:input-label-products')}</Label>
-      <SelectInput
-        name="product"
-        control={control}
-        defaultValue={dbValue}
-        getOptionLabel={(option: any) => `${option.name}`}
-        getOptionValue={(option: any) => option.name}
-        options={options}
-        isLoading={loading}
-        isClearable={true}
-        isSearchable={true}
-        isMulti={true}
-      />
+
+      {fields.map((item, index) => (
+        <div key={item.id} className="flex items-center">
+          <SelectInput
+            name={`dealerProductMargins[${index}].product`}
+            control={control}
+            defaultValue={dbValues[index]?.product || null}
+            getOptionLabel={(option: any) => `${option.name}`}
+            getOptionValue={(option: any) => option.name}
+            options={options}
+            isLoading={loading}
+            isSearchable={true}
+          />
+
+          <Input
+            {...register(`dealerProductMargins.${index}.margin` as const)}
+            defaultValue={dbValues[index]?.margin || ''}
+            variant="outline"
+            className="ml-5 mb-3"
+            placeholder={t('margin %')}
+          />
+        
+          <button
+            onClick={() => {
+              remove(index);
+            }}
+            type="button"
+            className="text-sm text-red-500 transition-colors duration-200 hover:text-red-700 focus:outline-none sm:col-span-1 sm:mt-4 ml-3"
+          >
+            {t('form:button-label-remove')}
+          </button>
+        </div>
+      ))}
+
+      <Button className='mt-4' type="button" onClick={() => append({ product: null, margin: '' })}>
+        {t('form:button-label-add-product')}
+      </Button>
+
       <ValidationError message={t(errors.product?.message)} />
     </div>
   );
@@ -132,7 +206,7 @@ function SelectSubType({
   errors,
 }: {
   control: Control<FormValues>;
-  defaultValue:any,
+  defaultValue: any,
   errors: FieldErrors;
 }) {
   const { t } = useTranslation();
@@ -147,13 +221,14 @@ function SelectSubType({
         getOptionLabel={(option: any) => `${option.name}`}
         getOptionValue={(option: any) => option}
         options={options}
-        isSearchable={false} 
-        defaultValue={[]}     
-        />
+        isSearchable={false}
+        defaultValue={[]}
+      />
       <ValidationError message={t(errors.subscriptionType?.message)} />
     </div>
   );
 }
+
 
 function SelectStatus({
   defaultValue,
@@ -161,7 +236,7 @@ function SelectStatus({
   errors,
 }: {
   control: Control<FormValues>;
-  defaultValue:any,
+  defaultValue: any,
   errors: FieldErrors;
 }) {
   const { t } = useTranslation();
@@ -179,9 +254,9 @@ function SelectStatus({
         getOptionLabel={(option: any) => `${option.label}`}
         getOptionValue={(option: any) => option.value}
         options={options}
-        isSearchable={false} 
-        defaultValue={[]}      
-        />
+        isSearchable={false}
+        defaultValue={[]}
+      />
       <ValidationError message={t(errors.isActive?.message)} />
     </div>
   );
@@ -190,14 +265,15 @@ function SelectStatus({
 export default function CreateOrUpdateDealerForm({ initialValues, id }: IProps) {
   const router = useRouter();
   const { t } = useTranslation();
+
   const { data, isLoading, error } = useUserQuery({ id });
   const user: any = data;
 
   { isLoading && <Loader text={t('common:text-loading')} /> }
   { error && <ErrorMessage message={error.message} /> }
 
-  const marproduct:any=initialValues?.dealerProductMargins
-  const marcategory:any=initialValues?.dealerCategoryMargins
+  const marproduct: any = `{initialValues?.dealerProductMargins}`
+  const marcategory: any = `initialValues?.dealerCategoryMargins`
 
   const {
     register,
@@ -213,7 +289,6 @@ export default function CreateOrUpdateDealerForm({ initialValues, id }: IProps) 
     },
   });
 
-
   const { mutate: createDealer, isLoading: creating } = useAddDealerMutation();
   const { mutate: updateDealer, isLoading: updating } = useUpdateDealerMutation();
   const onSubmit = (values: FormValues) => {
@@ -226,20 +301,15 @@ export default function CreateOrUpdateDealerForm({ initialValues, id }: IProps) 
       phone: values.phone!,
       isActive: isActiveVal.value!,
       subscriptionType: values.subscriptionType.name!,
-      subscriptionStart: values.subscriptionStart!,
-      subscriptionEnd: values.subscriptionEnd!,
       discount: values.discount!,
       walletBalance: values.walletBalance!,
       user: user!,
-      dealerCategoryMargins: values.category.map((category: any) => ({
-        margin: values.marginPerCat,
-        category: category,
-      })),
-      dealerProductMargins: values.product.map((product: any) => ({
-        margin: values.marginPerPro,
-        product: product,
-      })),
+      dealerCategoryMargins: values.dealerCategoryMargins,
+      dealerProductMargins: values.dealerProductMargins,
     };
+
+    // console.log("moye moye value", input)
+
 
     if (!initialValues) {
       createDealer({
@@ -290,42 +360,10 @@ export default function CreateOrUpdateDealerForm({ initialValues, id }: IProps) 
           // disabled={[].includes(Config.defaultLanguage)}
           />
 
-          <SelectSubType control={control} errors={errors} defaultValue={initialValues}/>
+          <SelectSubType control={control} errors={errors} defaultValue={initialValues} />
 
-          <Label className="mt-5">{t('Subscription Start')}</Label>
-
-          <Controller
-            control={control}
-            name="subscriptionStart"
-            render={({ field: { onChange, onBlur, value } }) => (
-              <DatePicker
-                dateFormat="dd/MM/yyyy"
-                onChange={onChange}
-                onBlur={onBlur}
-                selected={value && !isNaN(new Date(value).getTime()) ? new Date(value) : null}
-                selectsStart
-                startDate={new Date()}
-                className="border border-border-base"
-              />
-            )}
-          />
-          <Label className="mt-5">{t('Subscription End')}</Label>
-
-          <Controller
-            control={control}
-            name="subscriptionEnd"
-            render={({ field: { onChange, onBlur, value } }) => (
-              <DatePicker
-                dateFormat="dd/MM/yyyy"
-                onChange={onChange}
-                onBlur={onBlur}
-                selected={value && !isNaN(new Date(value).getTime()) ? new Date(value) : null}
-                selectsStart
-                startDate={new Date()}
-                className="border border-border-base"
-              />
-            )}
-          />
+          
+          
 
           <Input
             label={t('Wallet Balance')}
@@ -338,39 +376,8 @@ export default function CreateOrUpdateDealerForm({ initialValues, id }: IProps) 
         </Card>
         <Card className="w-full sm:w-8/12 md:w-1/2">
           <SelectStatus control={control} errors={errors} defaultValue={initialValues} />
-          <SelectCategory control={control} errors={errors} defaultValue={marcategory}/>
-          <Input
-            // label={t('form:input-label-password')}
-            {...register('marginPerCat')}
-            defaultValue={marcategory?.map((item:any)=>item.margin)}
-            error={t(errors.marginPerCat?.message!)}
-            variant="outline"
-            className="mt-5"
-            placeholder='Margin %'
-          // disabled={[].includes(Config.defaultLanguage)}
-          />
-
-          <SelectProduct control={control} errors={errors} defaultValue={marproduct}/>
-          <Input
-            // label={t('form:input-label-password')}
-            placeholder='Margin %'
-            defaultValue={marproduct?.map((item:any)=>item.margin)}
-            {...register('marginPerPro')}
-            error={t(errors.marginPerPro?.message!)}
-            variant="outline"
-            className="mt-5"
-          // disabled={[].includes(Config.defaultLanguage)}
-          />
-          <Input
-            label={t('Discount')}
-            placeholder='discount %'
-            {...register('discount')}
-            error={t(errors.discount?.message!)}
-            variant="outline"
-            className="mt-5"
-          // disabled={[].includes(Config.defaultLanguage)}
-          />
-
+          <SelectCategory register={register} control={control} errors={errors} defaultValue={marcategory} />
+          <SelectProduct register={register} control={control} errors={errors} defaultValue={marproduct} />
 
         </Card>
       </div>

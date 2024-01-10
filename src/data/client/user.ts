@@ -83,9 +83,6 @@ export const userClient = {
   fetchUser: ({ id }: { id: string }) => {
     return HttpClient.get<User>(`${API_ENDPOINTS.USERS}/${id}`);
   },
-  fetchVendor: ({ type }: { type: string }) => {
-    return HttpClient.get<User>(`${API_ENDPOINTS.USERS}?type=${type}`);
-  },
   resendVerificationEmail: () => {
     return HttpClient.post<any>(API_ENDPOINTS.SEND_VERIFICATION_EMAIL, {});
   },

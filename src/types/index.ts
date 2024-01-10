@@ -1258,8 +1258,8 @@ export declare type AddStaffInput = {
 
 export declare type AddDealerInput = {
   user: AddDealerInput | null | undefined;
-  dealerProductMargins: AddDealerInput | null | undefined;
-  dealerCategoryMargins: AddDealerInput | null | undefined;
+  // dealerProductMargins: AddDealerInput | null | undefined;
+  // dealerCategoryMargins: AddDealerInput | null | undefined;
   // product:AddDealerInput | null | undefined;
   id: string;
   translated_languages: any;
