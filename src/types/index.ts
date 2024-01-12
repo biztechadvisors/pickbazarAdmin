@@ -155,10 +155,24 @@ export interface LoginInput {
   password: string;
 }
 
+// export interface AuthResponse {
+//   token: string;
+//   permissions: string[];
+// }
+
 export interface AuthResponse {
+  id: number;
   token: string;
-  permissions: string[];
+  type_name: string[];
+  permissions: PermissionItem[];
 }
+
+export interface PermissionItem {
+  type: string;
+  read: boolean;
+  write: boolean;
+}
+
 
 export interface Type {
   id: string;

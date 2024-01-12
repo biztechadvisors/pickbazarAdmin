@@ -70,6 +70,8 @@ export class HttpClient {
 
   static async post<T>(url: string, data: unknown, options?: any) {
     const response = await Axios.post<T>(url, data, options);
+    console.log('response')
+    console.log(response)
     return response.data;
   }
 
