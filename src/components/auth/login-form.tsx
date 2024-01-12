@@ -66,6 +66,7 @@ const LoginForm = () => {
             if (hasAccess(allowedRoles, data?.type_name)) {
               console.log('permissions')
               console.log(data?.permissions)
+              console.log("first")
               setAuthCredentials(data?.token,data?.permissions, data?.type_name);
               Router.push(Routes.dashboard);
               return;
