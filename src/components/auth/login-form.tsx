@@ -8,7 +8,7 @@ import Form from '@/components/ui/forms/form';
 import { Routes } from '@/config/routes';
 import { useLogin } from '@/data/user';
 import type { LoginInput } from '@/types';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Alert from '@/components/ui/alert';
 import Router from 'next/router';
 import {
@@ -29,6 +29,28 @@ const LoginForm = () => {
   const { t } = useTranslation();
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const { mutate: login, isLoading, error } = useLogin();
+  console.log('login')
+  console.log(isLoading)
+
+  // useEffect(() => {
+  //   const apiUrl = 'http://localhost:5000/api/permission/';
+
+  //   const fetchData = async () => {
+  //     try {
+  //       const response = await fetch(apiUrl);
+  //       if (response.ok) {
+  //         const data = await response.json();
+  //         console.log(data[0]); // or do something with the data
+  //       } else {
+  //         console.error('Failed to fetch data');
+  //       }
+  //     } catch (error) {
+  //       console.error('Error fetching data:', error);
+  //     }
+  //   };
+
+  //   fetchData();
+  // }, []);
 
   function onSubmit({ email, password }: LoginInput) {
     login(
@@ -38,9 +60,13 @@ const LoginForm = () => {
       },
       {
         onSuccess: (data) => {
+          console.log('data')
+          console.log(data?.permissions)
           if (data?.token) {
-            if (hasAccess(allowedRoles, data?.permissions)) {
-              setAuthCredentials(data?.token, data?.permissions);
+            if (hasAccess(allowedRoles, data?.type_name)) {
+              console.log('permissions')
+              console.log(data?.permissions)
+              setAuthCredentials(data?.token,data?.permissions, data?.type_name);
               Router.push(Routes.dashboard);
               return;
             }

@@ -1,5 +1,54 @@
-import { adminAndOwnerOnly, adminOwnerAndStaffOnly } from '@/utils/auth-utils';
+import { adminAndOwnerOnly, adminOwnerAndStaffOnly, type_names} from '@/utils/auth-utils';
 import { Routes } from '@/config/routes';
+import { useEffect } from 'react';
+
+// export const fetchPermissions = async () => {
+//   const apiUrl = 'http://localhost:5000/api/permission/';
+//   try {
+//     const response = await fetch(apiUrl);
+//     if (response.ok) {
+//       const data = await response.json();
+//       permissions = data[0];
+//       console.log(data[0]);
+//       return data[0];
+//     } else {
+//       console.error('Failed to fetch data');
+//       return [];
+//     }
+//   } catch (error) {
+//     console.error('Error fetching data:', error);
+//     return [];
+//   }
+// };
+
+// Usage outside the function
+// const fetchData = async () => {
+//   await fetchPermissions();
+//   // permissions.forEach(permission => {
+//   //   console.log('Permission ID:', permission.type_name);
+//     // permissions[0].
+//     // console.log('Permission Type:', permission.type);
+//     // console.log('Read:', permission.read);
+//     // console.log('Write:', permission.write);
+//     // console.log('---');
+//   // });
+//   console.log(permissions[0]?.type_name); // Access the first element of the array and log type_name
+// };
+
+// fetchData();
+
+
+// console.log('Permissions- check-chekc')
+// console.log(Permissions)
+const Type = {
+Dealer : "dealer", 
+Admin : "admin",
+Customer : "customer",
+Staff : "staff"
+}
+
+console.log('type_names')
+console.log(type_names)
 
 export const siteSettings = {
   name: 'PickBazar',
@@ -32,7 +81,7 @@ export const siteSettings = {
   sidebarLinks: {
     admin: [
       {
-        href: Routes.dashboard,
+        href:  Routes.dashboard,
         label: 'sidebar-nav-item-dashboard',
         icon: 'DashboardIcon',
       },
@@ -149,7 +198,7 @@ export const siteSettings = {
     ],
     shop: [
       {
-        href: (shop: string) => `${Routes.dashboard}${shop}`,
+        // href: (shop: string) => `${Routes.dashboard}${shop}`,
         label: 'sidebar-nav-item-dashboard',
         icon: 'DashboardIcon',
         permissions: adminOwnerAndStaffOnly,
