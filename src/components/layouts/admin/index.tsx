@@ -1,7 +1,7 @@
 import Navbar from '@/components/layouts/navigation/top-navbar';
 import { Fragment } from 'react';
 import MobileNavigation from '@/components/layouts/navigation/mobile-navigation';
-import { siteSettings } from '@/settings/site.settings';
+import { siteSettings,  matchedLinks } from '@/settings/site.settings';
 import { useTranslation } from 'next-i18next';
 import SidebarItem from '@/components/layouts/navigation/sidebar-item';
 import { useRouter } from 'next/router';
@@ -13,9 +13,10 @@ const AdminLayout: React.FC<{ children?: React.ReactNode }> = ({
   const { locale } = useRouter();
   const dir = locale === 'ar' || locale === 'he' ? 'rtl' : 'ltr';
 
+console.log('matchedLinks:', matchedLinks);
   const SidebarItemMap = () => (
     <Fragment>
-      {siteSettings.sidebarLinks.admin.map(({ href, label, icon }) => (
+      {matchedLinks.map(({ href, label, icon }) => (
         <SidebarItem href={href} label={t(label)} icon={icon} key={href} />
       ))}
     </Fragment>
