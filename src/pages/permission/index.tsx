@@ -10,8 +10,9 @@ import Search from '@/components/common/search';
 import { adminOnly } from '@/utils/auth-utils';
 import { useShopsQuery } from '@/data/shop';
 import { SortOrder } from '@/types';
+import PermissionView from '@/components/permission/permission-view';
 
-export default function AllShopPage() {
+export default function permission() {
   const { t } = useTranslation();
   const [searchTerm, setSearchTerm] = useState('');
   const [page, setPage] = useState(1);
@@ -40,7 +41,8 @@ export default function AllShopPage() {
       <Card className="mb-8 flex flex-col items-center justify-between md:flex-row">
         <div className="mb-4 md:mb-0 md:w-1/4">
           <h1 className="text-lg font-semibold text-heading">
-            {t('common:sidebar-nav-item-shops')}
+            Permissions
+            {/* {t('common:sidebar-nav-item-shops')} */}
           </h1>
         </div>
 
@@ -48,7 +50,7 @@ export default function AllShopPage() {
           <Search onSearch={handleSearch} />
         </div>
       </Card>
-      <ShopList
+      <PermissionView
         shops={shops}
         paginatorInfo={paginatorInfo}
         onPagination={handlePagination}
@@ -58,10 +60,10 @@ export default function AllShopPage() {
     </>
   );
 }
-AllShopPage.authenticate = {
+permission.authenticate = {
   permissions: adminOnly,
 };
-AllShopPage.Layout = Layout;
+permission.Layout = Layout;
 
 export const getStaticProps = async ({ locale }: any) => ({
   props: {
