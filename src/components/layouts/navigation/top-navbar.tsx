@@ -19,6 +19,8 @@ const Navbar = () => {
   const { toggleSidebar } = useUI();
 
   const { permissions } = getAuthCredentials();
+  console.log('Permissions:', permissions);
+console.log('Has Access:', hasAccess(adminAndOwnerOnly, permissions));
 
   const { enableMultiLang } = Config;
 

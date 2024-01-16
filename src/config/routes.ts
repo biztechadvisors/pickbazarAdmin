@@ -59,6 +59,9 @@ export const Routes = {
   orderCreate: {
     ...routesFactory('/orders/create'),
   },
+  permissions: {
+    ...routesFactory('/#'),
+  },
   product: {
     ...routesFactory('/products'),
   },
