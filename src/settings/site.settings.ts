@@ -1,7 +1,20 @@
 import { adminAndOwnerOnly, adminOwnerAndStaffOnly } from '@/utils/auth-utils';
 import { Routes } from '@/config/routes';
 
+
+let permissionsValue = null;
+console.log('permissionsValue')
+console.log(permissionsValue)
+export const setPermissionsValue = (newValue: any[]) => {
+  console.log('newValue')
+  console.log(newValue)
+  permissionsValue = newValue;
+ 
+};
+
 export const siteSettings = {
+
+
   name: 'PickBazar',
   description: '',
   logo: {

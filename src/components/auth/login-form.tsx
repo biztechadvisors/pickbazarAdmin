@@ -16,6 +16,7 @@ import {
   hasAccess,
   setAuthCredentials,
 } from '@/utils/auth-utils';
+import { setPermissionsValue } from '@/settings/site.settings';
 
 const loginFormSchema = yup.object().shape({
   email: yup
@@ -38,9 +39,14 @@ const LoginForm = () => {
       },
       {
         onSuccess: (data) => {
+          console.log('data')
+          console.log(data?.permissions)
           if (data?.token) {
-            if (hasAccess(allowedRoles, data?.permissions)) {
-              setAuthCredentials(data?.token, data?.permissions);
+            if (hasAccess(allowedRoles, data?.type_name)) {
+              console.log('permissions')
+              console.log(data?.permissions)
+              setPermissionsValue(data?.permissions);
+              setAuthCredentials(data?.token,data?.permissions, data?.type_name);
               Router.push(Routes.dashboard);
               return;
             }

@@ -16,8 +16,11 @@ export const adminOnly = [SUPER_ADMIN];
 export const ownerOnly = [STORE_OWNER];
 export const ownerAndStaffOnly = [STORE_OWNER, STAFF];
 
-export function setAuthCredentials(token: string, permissions: any) {
-  Cookie.set(AUTH_CRED, JSON.stringify({ token, permissions }));
+export function setAuthCredentials(token: string, type_name:string,permissions: any) {
+  console.log('setAuth')
+  console.log(token + permissions,type_name)
+  // Permissions = permissions
+  Cookie.set(AUTH_CRED, JSON.stringify({ token, permissions, type_name }));
 }
 export function setEmailVerified(emailVerified: boolean) {
   Cookie.set(EMAIL_VERIFIED, JSON.stringify({ emailVerified }));
@@ -29,20 +32,32 @@ export function getEmailVerified(): {
   return emailVerified ? JSON.parse(emailVerified) : false;
 }
 
+
+let
+type_names
+
 export function getAuthCredentials(context?: any): {
   token: string | null;
-  permissions: string[] | null;
+  permissions: Permissions[] | null;
+  type_name: string[] | null;
 } {
   let authCred;
   if (context) {
     authCred = parseSSRCookie(context)[AUTH_CRED];
   } else {
+    console.log('chcek'+Cookie.get(AUTH_CRED))
     authCred = Cookie.get(AUTH_CRED);
   }
   if (authCred) {
+    const parsedData = JSON.parse(authCred);
+    type_names = parsedData.type_name
+    console.log('parsedData.permissions')
+    console.log(parsedData.type_name)
+    console.log(parsedData.permissions)
+    console.log(parsedData.token)
     return JSON.parse(authCred);
   }
-  return { token: null, permissions: null };
+  return { token: null, permissions: null, type_name:null };
 }
 
 export function parseSSRCookie(context: any) {
