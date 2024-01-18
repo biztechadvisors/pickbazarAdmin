@@ -31,6 +31,12 @@ const CategoryList = ({
   const { t } = useTranslation();
   const rowExpandable = (record: any) => record.children?.length;
   const { alignLeft, alignRight } = useIsRTL();
+  const [matchedData, setMatchedLinks] = useState<any[]>(
+    JSON.parse(localStorage.getItem('matchedData') || '[]')
+  );
+   const canWrite = matchedData?.find(
+    (permission) => permission.type === 'sidebar-nav-item-categories'
+  )?.write;
 
   const [sortingObj, setSortingObj] = useState<{
     sort: SortOrder;
@@ -168,14 +174,16 @@ const CategoryList = ({
       key: 'actions',
       align: alignRight,
       width: 290,
-      render: (slug: string, record: Category) => (
+      render: (slug: string, record: Category) => {
+        return canWrite ? (
         <LanguageSwitcher
           slug={slug}
           record={record}
           deleteModalView="DELETE_CATEGORY"
           routes={Routes?.category}
         />
-      ),
+        ) : null;
+      },
     },
   ];
 

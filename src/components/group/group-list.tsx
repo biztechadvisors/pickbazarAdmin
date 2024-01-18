@@ -20,6 +20,13 @@ export type IProps = {
 const TypeList = ({ types, onSort, onOrder }: IProps) => {
   const { t } = useTranslation();
   const { alignLeft, alignRight } = useIsRTL();
+  const [matchedData, setMatchedLinks] = useState<any[]>(
+    JSON.parse(localStorage.getItem('matchedData') || '[]')
+  );
+   const canWrite = matchedData?.find(
+    (permission) => permission.type === 'sidebar-nav-item-groups'
+  )?.write;
+  console.log("canWrite", canWrite)
 
   const [sortingObj, setSortingObj] = useState<{
     sort: SortOrder;
@@ -92,14 +99,16 @@ const TypeList = ({ types, onSort, onOrder }: IProps) => {
       dataIndex: 'slug',
       key: 'actions',
       align: alignRight,
-      render: (slug: string, record: Type) => (
+      render: (slug: string, record: Type) => {
+         return canWrite ? (
         <LanguageSwitcher
           slug={slug}
           record={record}
           deleteModalView="DELETE_TYPE"
           routes={Routes?.type}
         />
-      ),
+        ) : null;
+      },
     },
   ];
 

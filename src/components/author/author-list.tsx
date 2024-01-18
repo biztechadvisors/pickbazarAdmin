@@ -31,6 +31,13 @@ const AuthorList = ({
   const { t } = useTranslation();
   const router = useRouter();
 
+  const [matchedData, setMatchedLinks] = useState<any[]>(
+    JSON.parse(localStorage.getItem('matchedData') || '[]')
+  );
+   const canWrite = matchedData?.find(
+    (permission) => permission.type === 'sidebar-nav-item-authors'
+  )?.write;
+
   const [sortingObj, setSortingObj] = useState<{
     sort: SortOrder;
     column: string | null;
@@ -116,6 +123,7 @@ const AuthorList = ({
         }
 
         return (
+           canWrite ? (
           <>
             <Switch
               checked={is_approved}
@@ -133,6 +141,7 @@ const AuthorList = ({
               />
             </Switch>
           </>
+           ) : null
         );
       },
     },
@@ -141,14 +150,17 @@ const AuthorList = ({
       dataIndex: 'slug',
       key: 'actions',
       align: 'right' as AlignType,
-      render: (slug: string, record: Author) => (
+      render: (slug: string, record: Author) => {
+        // Check if 'write' permission is true before rendering the column
+        return canWrite ? (
         <LanguageSwitcher
           slug={slug}
           record={record}
           deleteModalView="DELETE_AUTHOR"
           routes={Routes?.author}
         />
-      ),
+        ) : null;
+      },
     },
   ];
 

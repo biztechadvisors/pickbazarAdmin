@@ -26,7 +26,8 @@ export const TypeName = type_names
 
 export function setAuthCredentials(token: string, type_name:string,permissions: any) {
   console.log('setAuth')
-  console.log(token + permissions,type_name)
+  console.log("setAuth", token + permissions,type_name)
+  console.log("permissions====",permissions)
   // Permissions = permissions
   Cookie.set(AUTH_CRED, JSON.stringify({ token, permissions, type_name }));
 }
@@ -58,7 +59,7 @@ export function getAuthCredentials(context?: any): {
     console.log('parsedData.permissions')
     console.log(parsedData.type_name)
     console.log(parsedData.permissions)
-    console.log(parsedData.token)
+    // console.log(parsedData.token)
     return JSON.parse(authCred);
   }
   return { token: null, permissions: null, type_name:null };

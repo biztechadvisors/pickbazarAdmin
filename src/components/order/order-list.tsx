@@ -54,6 +54,13 @@ const OrderList = ({
     column: null,
   });
 
+  const [matchedData, setMatchedLinks] = useState<any[]>(
+    JSON.parse(localStorage.getItem('matchedData') || '[]')
+  );
+   const canWrite = matchedData?.find(
+    (permission) => permission.type === 'sidebar-nav-item-tags'
+  )?.write;
+
   const onSubmit = async (shop_id: string | undefined) => {
     setLoading(shop_id);
     createConversations({
@@ -175,7 +182,7 @@ const OrderList = ({
       width: 220,
       render: (id: string, order: Order) => {
         const currentButtonLoading = !!loading && loading === order?.shop_id;
-        return (
+        return (  canWrite ? (
           <>
             {/* @ts-ignore */}
             {order?.children?.length ? (
@@ -201,6 +208,7 @@ const OrderList = ({
               customLocale={order.language}
             />
           </>
+        ) : null
         );
       },
     },

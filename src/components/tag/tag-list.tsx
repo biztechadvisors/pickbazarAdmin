@@ -28,6 +28,13 @@ const TagList = ({
 }: IProps) => {
   const { t } = useTranslation();
   const rowExpandable = (record: any) => record.children?.length;
+  
+  const [matchedData, setMatchedLinks] = useState<any[]>(
+    JSON.parse(localStorage.getItem('matchedData') || '[]')
+  );
+   const canWrite = matchedData?.find(
+    (permission) => permission.type === 'sidebar-nav-item-tags'
+  )?.write;
 
   const { alignLeft, alignRight } = useIsRTL();
 
@@ -104,14 +111,17 @@ const TagList = ({
       dataIndex: 'slug',
       key: 'actions',
       align: alignRight,
-      render: (slug: string, record: Tag) => (
+      render: (slug: string, record: Tag) => {
+        // Check if 'write' permission is true before rendering the column
+        return canWrite ? (
         <LanguageSwitcher
           slug={slug}
           record={record}
           deleteModalView="DELETE_TAG"
           routes={Routes?.tag}
         />
-      ),
+        ) : null;
+      },
     },
   ];
 
