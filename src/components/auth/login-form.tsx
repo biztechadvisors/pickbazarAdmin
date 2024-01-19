@@ -17,6 +17,7 @@ import {
   setAuthCredentials,
 } from '@/utils/auth-utils';
 import { setPermissionsValue } from '@/settings/site.settings';
+import { setPermissionsData } from '@/settings/site.settings';
 
 const loginFormSchema = yup.object().shape({
   email: yup
@@ -33,26 +34,6 @@ const LoginForm = () => {
   console.log('login')
   console.log(isLoading)
 
-  // useEffect(() => {
-  //   const apiUrl = 'http://localhost:5000/api/permission/';
-
-  //   const fetchData = async () => {
-  //     try {
-  //       const response = await fetch(apiUrl);
-  //       if (response.ok) {
-  //         const data = await response.json();
-  //         console.log(data[0]); // or do something with the data
-  //       } else {
-  //         console.error('Failed to fetch data');
-  //       }
-  //     } catch (error) {
-  //       console.error('Error fetching data:', error);
-  //     }
-  //   };
-
-  //   fetchData();
-  // }, []);
-
   function onSubmit({ email, password }: LoginInput) {
     login(
       {
@@ -62,13 +43,14 @@ const LoginForm = () => {
       {
         onSuccess: (data) => {
           console.log('data')
-          console.log(data?.permissions)
+          console.log("data",data?.permissions)
           if (data?.token) {
             if (hasAccess(allowedRoles, data?.type_name)) {
               console.log('permissions')
               console.log(data?.permissions)
               console.log("first")
               setPermissionsValue(data?.permissions);
+              setPermissionsData(data?.permissions);
               setAuthCredentials(data?.token,data?.permissions, data?.type_name);
               Router.push(Routes.dashboard);
               return;

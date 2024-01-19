@@ -38,11 +38,19 @@ const ProductList = ({
   onPagination,
   onSort,
   onOrder,
-}: IProps) => {
-  // const { data, paginatorInfo } = products! ?? {};
+}: IProps) => {  
+  console.log("products",products)
   const router = useRouter();
   const { t } = useTranslation();
   const { alignLeft, alignRight } = useIsRTL();
+
+  const [matchedData, setMatchedLinks] = useState<any[]>(
+    JSON.parse(localStorage.getItem('matchedData') || '[]')
+  );
+   const canWrite = matchedData?.find(
+    (permission) => permission.type === 'sidebar-nav-item-products'
+  )?.write;
+  console.log("canWrite", canWrite)
 
   const [sortingObj, setSortingObj] = useState<SortingObjType>({
     sort: SortOrder.Desc,
@@ -233,20 +241,39 @@ const ProductList = ({
         </div>
       ),
     },
-    {
+    // {
+    //   title: t('table:table-item-actions'),
+    //   dataIndex: 'slug',
+    //   key: 'actions',
+    //   align: 'right',
+    //   width: 120,
+    //   render: (slug: string, record: Product) => (
+    //     <LanguageSwitcher
+    //       slug={slug}
+    //       record={record}
+    //       deleteModalView="DELETE_PRODUCT"
+    //       routes={Routes?.product}
+    //     />
+    //   ),
+    // },
+    
+     {
       title: t('table:table-item-actions'),
       dataIndex: 'slug',
       key: 'actions',
       align: 'right',
       width: 120,
-      render: (slug: string, record: Product) => (
-        <LanguageSwitcher
-          slug={slug}
-          record={record}
-          deleteModalView="DELETE_PRODUCT"
-          routes={Routes?.product}
-        />
-      ),
+      render: (slug: string, record: Product) => {
+        // Check if 'write' permission is true before rendering the column
+        return canWrite ? (
+          <LanguageSwitcher
+            slug={slug}
+            record={record}
+            deleteModalView="DELETE_PRODUCT"
+            routes={Routes?.product}
+          />
+        ) : null;
+      },
     },
   ];
 

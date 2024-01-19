@@ -35,6 +35,12 @@ const ManufacturerList = ({
 }: IProps) => {
   const { t } = useTranslation();
   const router = useRouter();
+  const [matchedData, setMatchedLinks] = useState<any[]>(
+    JSON.parse(localStorage.getItem('matchedData') || '[]')
+  );
+   const canWrite = matchedData?.find(
+    (permission) => permission.type === 'sidebar-nav-item-manufacturers'
+  )?.write;
 
   const { alignRight } = useIsRTL();
 
@@ -125,7 +131,7 @@ const ManufacturerList = ({
           });
         }
 
-        return (
+        return ( canWrite ? (
           <>
             <Switch
               checked={is_approved}
@@ -143,6 +149,7 @@ const ManufacturerList = ({
               />
             </Switch>
           </>
+          ) : null
         );
       },
     },
@@ -151,14 +158,17 @@ const ManufacturerList = ({
       dataIndex: 'slug',
       key: 'actions',
       align: 'right' as AlignType,
-      render: (slug: string, record: Manufacturer) => (
+      render: (slug: string, record: Manufacturer) => {
+        // Check if 'write' permission is true before rendering the column
+        return canWrite ? (
         <LanguageSwitcher
           slug={slug}
           record={record}
           deleteModalView="DELETE_MANUFACTURER"
           routes={Routes?.manufacturer}
         />
-      ),
+        ) : null;
+      },
     },
   ];
 

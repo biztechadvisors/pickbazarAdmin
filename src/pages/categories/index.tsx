@@ -35,6 +35,13 @@ export default function Categories() {
     language: locale,
   });
 
+  const [matchedData, setMatchedLinks] = useState<any[]>(
+    JSON.parse(localStorage.getItem('matchedData') || '[]')
+  );
+   const canWrite = matchedData?.find(
+    (permission) => permission.type === 'sidebar-nav-item-categories'
+  )?.write;
+
   if (loading) return <Loader text={t('common:text-loading')} />;
   if (error) return <ErrorMessage message={error.message} />;
 
@@ -68,7 +75,7 @@ export default function Categories() {
               }}
             />
 
-            {locale === Config.defaultLanguage && (
+            {canWrite && locale === Config.defaultLanguage && (
               <LinkButton
                 href={`${Routes.category.create}`}
                 className="md:ms-6 h-12 w-full md:w-auto"

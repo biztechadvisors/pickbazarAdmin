@@ -29,6 +29,13 @@ export default function Customers() {
     sortedBy,
   });
 
+  const [matchedData, setMatchedLinks] = useState<any[]>(
+    JSON.parse(localStorage.getItem('matchedData') || '[]')
+  );
+   const canWrite = matchedData?.find(
+    (permission) => permission.type === 'sidebar-nav-item-tags'
+  )?.write;
+
   if (loading) return <Loader text={t('common:text-loading')} />;
   if (error) return <ErrorMessage message={error.message} />;
 
@@ -52,12 +59,17 @@ export default function Customers() {
 
         <div className="ms-auto flex w-full items-center md:w-3/4">
           <Search onSearch={handleSearch} />
-          <LinkButton
-            href={`${Routes.user.create}`}
-            className="ms-4 md:ms-6 h-12"
-          >
-            <span>+ {t('form:button-label-add-customer')}</span>
-          </LinkButton>
+          
+          {canWrite ? (
+            <LinkButton
+              href={`${Routes.user.create}`}
+              className="ms-4 md:ms-6 h-12"
+            >
+              <span>+ {t('form:button-label-add-customer')}</span>
+            </LinkButton>
+          ) : null}
+
+          
         </div>
       </Card>
 

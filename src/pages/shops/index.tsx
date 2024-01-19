@@ -10,6 +10,7 @@ import Search from '@/components/common/search';
 import { adminOnly } from '@/utils/auth-utils';
 import { useShopsQuery } from '@/data/shop';
 import { SortOrder } from '@/types';
+import permission from '../permission';
 
 export default function AllShopPage() {
   const { t } = useTranslation();
@@ -24,6 +25,7 @@ export default function AllShopPage() {
     orderBy,
     sortedBy,
   });
+  console.log("permission==",permission)
 
   if (loading) return <Loader text={t('common:text-loading')} />;
   if (error) return <ErrorMessage message={error.message} />;

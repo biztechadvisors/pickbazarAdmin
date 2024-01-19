@@ -33,6 +33,13 @@ const CustomerList = ({
   const { t } = useTranslation();
   const { alignLeft } = useIsRTL();
 
+  const [matchedData, setMatchedLinks] = useState<any[]>(
+    JSON.parse(localStorage.getItem('matchedData') || '[]')
+  );
+   const canWrite = matchedData?.find(
+    (permission) => permission.type === 'sidebar-nav-item-tags'
+  )?.write;
+
   const [sortingObj, setSortingObj] = useState<{
     sort: SortOrder;
     column: any | null;
@@ -130,7 +137,7 @@ const CustomerList = ({
       align: 'right',
       render: function Render(id: string, { is_active }: any) {
         const { data } = useMeQuery();
-        return (
+        return ( canWrite ? (
           <>
             {data?.id != id && (
               <ActionButtons
@@ -142,6 +149,7 @@ const CustomerList = ({
               />
             )}
           </>
+          ) : null
         );
       },
     },
