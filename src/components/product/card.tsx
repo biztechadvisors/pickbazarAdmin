@@ -6,6 +6,8 @@ import { AddToCart } from '@/components/cart/add-to-cart/add-to-cart';
 import { useTranslation } from 'next-i18next';
 import { PlusIcon } from '@/components/icons/plus-icon';
 import { Product, ProductType } from '@/types';
+import React, { useState } from 'react';
+
 
 interface Props {
   item: Product;
@@ -40,6 +42,13 @@ const ProductCard = ({ item }: Props) => {
   });
 
   const { openModal } = useModalAction();
+
+  const [matchedData, setMatchedLinks] = useState<any[]>(
+    JSON.parse(localStorage.getItem('matchedData') || '[]')
+  );
+   const canWrite = matchedData?.find(
+    (permission) => permission.type === 'sidebar-nav-item-tags'
+  )?.write;
 
   function handleVariableProduct() {
     return openModal('SELECT_PRODUCT_VARIATION', slug);
@@ -106,9 +115,12 @@ const ProductCard = ({ item }: Props) => {
             )}
           </>
         ) : (
-          <>
-            {Number(quantity) > 0 && <AddToCart variant="neon" data={item} />}
-          </>
+          canWrite && (
+            <>
+              {Number(quantity) > 0 && <AddToCart variant="neon" data={item} />}
+            </>
+          )
+          
         )}
 
         {Number(quantity) <= 0 && (

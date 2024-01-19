@@ -56,6 +56,14 @@ export default function AttributePage() {
       enabled: Boolean(shopId),
     }
   );
+
+  const [matchedData, setMatchedLinks] = useState<any[]>(
+    JSON.parse(localStorage.getItem('matchedData') || '[]')
+  );
+   const canWrite = matchedData?.find(
+    (permission) => permission.type === 'sidebar-nav-item-attributes'
+  )?.write;
+
   if (loading || fetchingShop)
     return <Loader text={t('common:text-loading')} />;
   if (error) return <ErrorMessage message={error.message} />;
@@ -78,7 +86,7 @@ export default function AttributePage() {
         </div>
 
         <div className="flex w-full flex-col items-center ms-auto md:w-3/4 md:flex-row xl:w-2/4">
-          {locale === Config.defaultLanguage && (
+          {canWrite && locale === Config.defaultLanguage && (
             <LinkButton
               href={`/${shop}/attributes/create`}
               className="mt-5 h-12 w-full md:mt-0 md:w-auto md:ms-auto"
@@ -92,11 +100,14 @@ export default function AttributePage() {
           <Button onClick={handleImportModal} className="mt-5 w-full md:hidden">
             {t('common:text-export-import')}
           </Button>
+          
           <button
             onClick={handleImportModal}
             className="hidden h-8 w-8 flex-shrink-0 items-center justify-center rounded-full bg-gray-50 transition duration-300 ms-6 hover:bg-gray-100 md:flex"
           >
+            {canWrite && (
             <MoreIcon className="w-3.5 text-body" />
+            )}
           </button>
         </div>
       </Card>

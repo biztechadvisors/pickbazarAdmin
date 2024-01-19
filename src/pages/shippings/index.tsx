@@ -24,6 +24,14 @@ export default function ShippingsPage() {
     orderBy,
     sortedBy,
   });
+
+  const [matchedData, setMatchedLinks] = useState<any[]>(
+    JSON.parse(localStorage.getItem('matchedData') || '[]')
+  );
+   const canWrite = matchedData?.find(
+    (permission) => permission.type === 'sidebar-nav-item-shippings'
+  )?.write;
+
   if (loading) return <Loader text={t('common:text-loading')} />;
   if (error) return <ErrorMessage message={error.message} />;
 
@@ -42,7 +50,7 @@ export default function ShippingsPage() {
 
         <div className="flex w-full flex-col items-center space-y-4 ms-auto md:flex-row md:space-y-0 xl:w-1/2">
           <Search onSearch={handleSearch} />
-
+          {canWrite ? (
           <LinkButton
             href={`${Routes.shipping.create}`}
             className="h-12 w-full md:w-auto md:ms-6"
@@ -51,6 +59,7 @@ export default function ShippingsPage() {
               + {t('form:button-label-add')} {t('form:button-label-shipping')}
             </span>
           </LinkButton>
+          ) : null}
         </div>
       </Card>
       <ShippingList

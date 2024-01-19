@@ -313,7 +313,6 @@ export const setPermissionsData = (newValue: any[]) => {
  
 };
 
-
 export { matchedLinksState as matchedLinks };
 export { matchedDataState as matchedData };
 
@@ -472,7 +471,7 @@ export const siteSettings = {
     ],
     shop: [
       {
-        // href: (shop: string) => `${Routes.dashboard}${shop}`,
+        href: (shop: string) => `${Routes.dashboard}${shop}`,
         label: 'sidebar-nav-item-dashboard',
         icon: 'DashboardIcon',
         permissions: adminOwnerAndStaffOnly,

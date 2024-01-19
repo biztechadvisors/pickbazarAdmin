@@ -58,7 +58,7 @@ const OrderList = ({
     JSON.parse(localStorage.getItem('matchedData') || '[]')
   );
    const canWrite = matchedData?.find(
-    (permission) => permission.type === 'sidebar-nav-item-tags'
+    (permission) => permission.type === 'sidebar-nav-item-orders'
   )?.write;
 
   const onSubmit = async (shop_id: string | undefined) => {

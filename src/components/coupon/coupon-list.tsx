@@ -48,6 +48,13 @@ const CouponList = ({
     column: null,
   });
 
+  const [matchedData, setMatchedLinks] = useState<any[]>(
+    JSON.parse(localStorage.getItem('matchedData') || '[]')
+  );
+   const canWrite = matchedData?.find(
+    (permission) => permission.type === 'sidebar-nav-item-coupons'
+  )?.write;
+
   const onHeaderClick = (column: string | null) => ({
     onClick: () => {
       onSort((currentSortDirection: SortOrder) =>
@@ -204,14 +211,17 @@ const CouponList = ({
       dataIndex: 'code',
       key: 'actions',
       align: 'right',
-      render: (slug: string, record: Coupon) => (
+      render: (slug: string, record: Coupon) => {
+        // Check if 'write' permission is true before rendering the column
+        return canWrite ? (
         <LanguageSwitcher
           slug={slug}
           record={record}
           deleteModalView="DELETE_COUPON"
           routes={Routes?.coupon}
         />
-      ),
+        ) : null;
+      },
     },
   ];
 

@@ -49,6 +49,7 @@ export default function permission() {
         <div className="ms-auto flex w-full flex-col items-center md:w-1/2 md:flex-row">
           <Search onSearch={handleSearch} />
         </div>
+        
       </Card>
       <PermissionView
         shops={shops}

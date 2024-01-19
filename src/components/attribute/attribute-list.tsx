@@ -31,6 +31,13 @@ const AttributeList = ({ attributes, onSort, onOrder }: IProps) => {
     column: null,
   });
 
+  const [matchedData, setMatchedLinks] = useState<any[]>(
+    JSON.parse(localStorage.getItem('matchedData') || '[]')
+  );
+   const canWrite = matchedData?.find(
+    (permission) => permission.type === 'sidebar-nav-item-attributes'
+  )?.write;
+
   const onHeaderClick = (column: string | null) => ({
     onClick: () => {
       onSort((currentSortDirection: SortOrder) =>
@@ -105,14 +112,17 @@ const AttributeList = ({ attributes, onSort, onOrder }: IProps) => {
       dataIndex: 'slug',
       key: 'actions',
       align: alignRight,
-      render: (slug: string, record: Attribute) => (
+      render: (slug: string, record: Attribute) => {
+        // Check if 'write' permission is true before rendering the column
+        return canWrite ? (
         <LanguageSwitcher
           slug={slug}
           record={record}
           deleteModalView="DELETE_ATTRIBUTE"
           routes={Routes?.attribute}
         />
-      ),
+        ) : null;
+      },
     },
   ];
 

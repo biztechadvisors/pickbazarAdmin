@@ -15,6 +15,12 @@ export type IProps = {
 const TaxList = ({ taxes, onSort, onOrder }: IProps) => {
   const { t } = useTranslation();
   const { alignLeft } = useIsRTL();
+  const [matchedData, setMatchedLinks] = useState<any[]>(
+    JSON.parse(localStorage.getItem('matchedData') || '[]')
+  );
+   const canWrite = matchedData?.find(
+    (permission) => permission.type === 'sidebar-nav-item-taxes'
+  )?.write;
 
   const [sortingObj, setSortingObj] = useState<{
     sort: SortOrder;
@@ -119,13 +125,16 @@ const TaxList = ({ taxes, onSort, onOrder }: IProps) => {
       dataIndex: 'id',
       key: 'actions',
       align: 'right' as AlignType,
-      render: (id: string) => (
+      render: (id: string) => {
+        // Check if 'write' permission is true before rendering the column
+        return canWrite ? (
         <ActionButtons
           id={id}
           editUrl={`${Routes.tax.list}/edit/${id}`}
           deleteModalView="DELETE_TAX"
         />
-      ),
+        ) : null;
+      },
       width: 200,
     },
   ];

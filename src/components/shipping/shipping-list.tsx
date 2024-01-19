@@ -15,6 +15,12 @@ export type IProps = {
 const ShippingList = ({ shippings, onSort, onOrder }: IProps) => {
   const { t } = useTranslation();
   const { alignLeft } = useIsRTL();
+  const [matchedData, setMatchedLinks] = useState<any[]>(
+    JSON.parse(localStorage.getItem('matchedData') || '[]')
+  );
+   const canWrite = matchedData?.find(
+    (permission) => permission.type === 'sidebar-nav-item-shippings'
+  )?.write;
 
   const [sortingObj, setSortingObj] = useState<{
     sort: SortOrder;
@@ -110,13 +116,16 @@ const ShippingList = ({ shippings, onSort, onOrder }: IProps) => {
       dataIndex: 'id',
       key: 'actions',
       align: 'right',
-      render: (id: string) => (
+      render: (id: string) => {
+        // Check if 'write' permission is true before rendering the column
+        return canWrite ? (
         <ActionButtons
           id={id}
           editUrl={`${Routes.shipping.list}/edit/${id}`}
           deleteModalView="DELETE_SHIPPING"
         />
-      ),
+        ) : null;
+      },
       width: 200,
     },
   ];

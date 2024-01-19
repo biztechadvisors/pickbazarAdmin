@@ -51,6 +51,13 @@ export default function ProductsPage() {
   const { openModal } = useModalAction();
   const { locale } = useRouter();
 
+  const [matchedData, setMatchedLinks] = useState<any[]>(
+    JSON.parse(localStorage.getItem('matchedData') || '[]')
+  );
+   const canWrite = matchedData?.find(
+    (permission) => permission.type === 'sidebar-nav-item-products'
+  )?.write;
+
   const toggleVisible = () => {
     setVisible((v) => !v);
   };
@@ -110,7 +117,7 @@ export default function ProductsPage() {
             <div className="flex w-full items-center">
               <Search onSearch={handleSearch} />
 
-              {locale === Config.defaultLanguage && (
+              {canWrite && locale === Config.defaultLanguage && (
                 <LinkButton
                   href={`/${shop}/products/create`}
                   className="h-12 ms-4 md:ms-6"
@@ -148,7 +155,9 @@ export default function ProductsPage() {
               onClick={handleImportModal}
               className="hidden h-8 w-8 flex-shrink-0 items-center justify-center rounded-full bg-gray-50 transition duration-300 ms-5 hover:bg-gray-100 md:flex"
             >
+               {canWrite && (
               <MoreIcon className="w-3.5 text-body" />
+              )}
             </button>
           </div>
         </div>

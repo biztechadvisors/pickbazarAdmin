@@ -49,6 +49,13 @@ export default function Authors() {
   });
   const { id: shop_id } = shopData ?? {};
 
+  const [matchedData, setMatchedLinks] = useState<any[]>(
+    JSON.parse(localStorage.getItem('matchedData') || '[]')
+  );
+   const canWrite = matchedData?.find(
+    (permission) => permission.type === 'sidebar-nav-item-authors'
+  )?.write;
+
   if (loading) return <Loader text={t('common:text-loading')} />;
   if (error) return <ErrorMessage message={error.message} />;
 
@@ -80,7 +87,7 @@ export default function Authors() {
         <div className="flex w-full flex-col items-center space-y-4 ms-auto md:flex-row md:space-y-0 xl:w-1/2">
           <Search onSearch={handleSearch} />
 
-          {locale === Config.defaultLanguage && (
+          { canWrite && locale === Config.defaultLanguage && (
             <LinkButton
               href={`/${shop}${Routes.author.create}`}
               className="h-12 w-full md:w-auto md:ms-6"

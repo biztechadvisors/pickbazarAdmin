@@ -46,6 +46,13 @@ export default function ProductsPage() {
     categories: category,
   });
 
+  const [matchedData, setMatchedLinks] = useState<any[]>(
+    JSON.parse(localStorage.getItem('matchedData') || '[]')
+  );
+   const canWrite = matchedData?.find(
+    (permission) => permission.type === 'sidebar-nav-item-create-order'
+  )?.write;
+
   if (loading) return <Loader text={t('common:text-loading')} />;
   if (error) return <ErrorMessage message={error.message} />;
 
@@ -130,14 +137,10 @@ export default function ProductsPage() {
             />
           </div>
         )}
-      </div>
-      {/* <div className="w-[440px] flex-shrink-0 bg-white">
-          <Cart />
-        </div> */}
-      {/* </div> */}
-
-      {/* Mobile cart Drawer */}
+      </div> 
+      {canWrite ? (     
       <CartCounterButton />
+      ) : null}
       <Drawer
         open={displayCartSidebar}
         onClose={closeCartSidebar}

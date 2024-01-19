@@ -1,7 +1,9 @@
 import Cookie from 'js-cookie';
 import SSRCookie from 'cookie';
 import {
+  ADMIN,
   AUTH_CRED, 
+  DEALER, 
   EMAIL_VERIFIED,
   PERMISSIONS,
   STAFF,
@@ -12,14 +14,22 @@ import {
 import { useEffect } from 'react';
 import { string } from 'yup';
 
+
 let type_names
-export const allowedRoles = [SUPER_ADMIN, STORE_OWNER, STAFF];
-export const adminAndOwnerOnly = [SUPER_ADMIN, STORE_OWNER];
+// export const allowedRoles = [SUPER_ADMIN, STORE_OWNER, STAFF];
+// export const adminAndOwnerOnly = [SUPER_ADMIN, STORE_OWNER];
+// export const adminOwnerAndStaffOnly = [SUPER_ADMIN, STORE_OWNER, STAFF];
+// export const adminOnly = [SUPER_ADMIN];
+// export const ownerOnly = [STORE_OWNER];
+// export const ownerAndStaffOnly = [STORE_OWNER, STAFF];
+// export const TypeName = type_names
+export const allowedRoles = [SUPER_ADMIN, STORE_OWNER, STAFF, DEALER, ADMIN];
+export const adminAndOwnerOnly = [SUPER_ADMIN, STORE_OWNER, ADMIN, DEALER];
 export const adminOwnerAndStaffOnly = [SUPER_ADMIN, STORE_OWNER, STAFF];
-export const adminOnly = [SUPER_ADMIN];
+export const superAdminOnly = [SUPER_ADMIN];
+export const adminOnly = [SUPER_ADMIN,ADMIN, DEALER];
 export const ownerOnly = [STORE_OWNER];
 export const ownerAndStaffOnly = [STORE_OWNER, STAFF];
-export const TypeName = type_names
 
 
 
@@ -77,7 +87,7 @@ export function hasAccess(
   _userPermissions: string[] | undefined | null
 ) {
   console.log(' _allowedRoles +  + _userPermissions' )
-  console.log(_allowedRoles + ' ' + _userPermissions)
+  console.log("====",_allowedRoles + '=== ' + _userPermissions)
   if (_userPermissions) {
     console.log('Check-auth = '+_allowedRoles?.find((aRole) => _userPermissions.includes(aRole)))
     _allowedRoles?.find((aRole) => _userPermissions.includes(aRole))
