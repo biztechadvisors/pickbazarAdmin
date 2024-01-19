@@ -1,16 +1,48 @@
-import { adminAndOwnerOnly, adminOwnerAndStaffOnly } from '@/utils/auth-utils';
+import { adminAndOwnerOnly, adminOwnerAndStaffOnly, type_names} from '@/utils/auth-utils';
 import { Routes } from '@/config/routes';
+import { useEffect, useState  } from 'react';
+
+const Type = {
+Dealer : "dealer", 
+Admin : "admin",
+Customer : "customer",
+Staff : "staff"
+}
+
+// let permissionsValue = null;
+
+let matchedLinksState: any[] = [];
+const setMatchedLinks = (value: any[]) => {
+  matchedLinksState = value; 
+  localStorage.setItem('matchedLinks', JSON.stringify(value));
+};
+
+export const setPermissionsValue = (newValue: any[]) => {
+  const matchedLinks = siteSettings.sidebarLinks.admin.filter(link => {   
+    return newValue.some(newItem => newItem.type === link.label);
+   
+  });
+  console.log("newValue::",newValue)
+
+  setMatchedLinks(matchedLinks);
+
+  permissionsValue = newValue;
+};
+
+export { matchedLinksState as matchedLinks };
+
+
 
 
 let permissionsValue = null;
 console.log('permissionsValue')
 console.log(permissionsValue)
-export const setPermissionsValue = (newValue: any[]) => {
-  console.log('newValue')
-  console.log(newValue)
-  permissionsValue = newValue;
+// export const setPermissionsValue = (newValue: any[]) => {
+//   console.log('newValue')
+//   console.log(newValue)
+//   permissionsValue = newValue;
  
-};
+// };
 
 export const siteSettings = {
 
@@ -45,7 +77,7 @@ export const siteSettings = {
   sidebarLinks: {
     admin: [
       {
-        href: Routes.dashboard,
+        href:  Routes.dashboard,
         label: 'sidebar-nav-item-dashboard',
         icon: 'DashboardIcon',
       },
@@ -102,6 +134,11 @@ export const siteSettings = {
       {
         href: Routes.order.create,
         label: 'sidebar-nav-item-create-order',
+        icon: 'CalendarScheduleIcon',
+      },
+      {
+        href: Routes.permissions,
+        label: 'sidebar-nav-item-permission',
         icon: 'CalendarScheduleIcon',
       },
       {
@@ -162,7 +199,7 @@ export const siteSettings = {
     ],
     shop: [
       {
-        href: (shop: string) => `${Routes.dashboard}${shop}`,
+        // href: (shop: string) => `${Routes.dashboard}${shop}`,
         label: 'sidebar-nav-item-dashboard',
         icon: 'DashboardIcon',
         permissions: adminOwnerAndStaffOnly,

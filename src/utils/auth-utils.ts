@@ -1,20 +1,28 @@
 import Cookie from 'js-cookie';
 import SSRCookie from 'cookie';
 import {
-  AUTH_CRED, EMAIL_VERIFIED,
+  AUTH_CRED, 
+  EMAIL_VERIFIED,
   PERMISSIONS,
   STAFF,
   STORE_OWNER,
   SUPER_ADMIN,
   TOKEN,
 } from './constants';
+import { useEffect } from 'react';
+import { string } from 'yup';
 
+let type_names
 export const allowedRoles = [SUPER_ADMIN, STORE_OWNER, STAFF];
 export const adminAndOwnerOnly = [SUPER_ADMIN, STORE_OWNER];
 export const adminOwnerAndStaffOnly = [SUPER_ADMIN, STORE_OWNER, STAFF];
 export const adminOnly = [SUPER_ADMIN];
 export const ownerOnly = [STORE_OWNER];
 export const ownerAndStaffOnly = [STORE_OWNER, STAFF];
+export const TypeName = type_names
+
+
+
 
 export function setAuthCredentials(token: string, type_name:string,permissions: any) {
   console.log('setAuth')
@@ -33,8 +41,8 @@ export function getEmailVerified(): {
 }
 
 
-let
-type_names
+// let
+// type_names
 
 export function getAuthCredentials(context?: any): {
   token: string | null;
@@ -60,7 +68,10 @@ export function getAuthCredentials(context?: any): {
   return { token: null, permissions: null, type_name:null };
 }
 
-export function parseSSRCookie(context: any) {
+export function parseSSRCookie(context: any) 
+{
+  console.log("context"+ context)
+  console.log(context.req.headers.cookie)
   return SSRCookie.parse(context.req.headers.cookie ?? '');
 }
 
@@ -68,7 +79,11 @@ export function hasAccess(
   _allowedRoles: string[],
   _userPermissions: string[] | undefined | null
 ) {
+  console.log(' _allowedRoles +  + _userPermissions' )
+  console.log(_allowedRoles + ' ' + _userPermissions)
   if (_userPermissions) {
+    console.log('Check-auth = '+_allowedRoles?.find((aRole) => _userPermissions.includes(aRole)))
+    _allowedRoles?.find((aRole) => _userPermissions.includes(aRole))
     return Boolean(
       _allowedRoles?.find((aRole) => _userPermissions.includes(aRole))
     );
