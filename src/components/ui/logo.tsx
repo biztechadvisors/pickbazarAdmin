@@ -22,14 +22,15 @@ const Logo: React.FC<React.AnchorHTMLAttributes<{}>> = ({
           height: siteSettings.logo.height,
         }}
       >
-        <Image
-          src={logo?.original ?? siteSettings.logo.url}
-          alt={siteTitle ?? siteSettings.logo.alt}
-          fill
-          sizes="(max-width: 768px) 100vw"
-          className="object-contain"
-          loading="eager"
-        />
+       <Image
+                
+                src={`${process?.env?.NEXT_PUBLIC_REST_API_ENDPOINT}/${logo?.original }`}  
+                alt={siteTitle ?? siteSettings.logo.alt}
+                fill
+                sizes="(max-width: 768px) 100vw"
+                className="object-contain"
+                loading="eager"
+              />
       </span>
     </Link>
   );

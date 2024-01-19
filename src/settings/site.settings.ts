@@ -198,7 +198,7 @@ export const siteSettings = {
     ],
     shop: [
       {
-        // href: (shop: string) => `${Routes.dashboard}${shop}`,
+        href: (shop: string) => `${Routes.dashboard}${shop}`,
         label: 'sidebar-nav-item-dashboard',
         icon: 'DashboardIcon',
         permissions: adminOwnerAndStaffOnly,
