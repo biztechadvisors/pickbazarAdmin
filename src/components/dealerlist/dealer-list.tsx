@@ -115,7 +115,7 @@ const DealerList = ({ users, onSort, onOrder }: IProps) => {
     {
       title: (
         <TitleWithSort
-          title={t('table:table-item-walletpoint')}
+          title={t('table:table-item-walletbalance')}
           ascending={sortingObj.sort === SortOrder.Asc && sortingObj.column === 'walletPoints'}
           isActive={sortingObj.column === 'walletPoints'}
         />
