@@ -25,6 +25,7 @@
     "i18next": "22.4.11",
     "jotai": "2.0.3",
     "js-cookie": "3.0.1",
+    "json-server": "^1.0.0-alpha.21",
     "lodash": "4.17.21",
     "next": "^13.2.3",
     "next-i18next": "13.2.1",

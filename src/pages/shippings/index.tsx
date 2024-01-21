@@ -16,7 +16,7 @@ import { adminOnly } from '@/utils/auth-utils';
 
 export default function ShippingsPage() {
   const { t } = useTranslation();
-  const [searchTerm, setSearch] = useState('');
+const [searchTerm, setSearch] = useState('');
   const [orderBy, setOrder] = useState('created_at');
   const [sortedBy, setColumn] = useState<SortOrder>(SortOrder.Desc);
   const { shippingClasses, loading, error } = useShippingClassesQuery({
@@ -35,7 +35,7 @@ export default function ShippingsPage() {
     <>
       <Card className="mb-8 flex flex-col items-center xl:flex-row">
         <div className="mb-4 md:mb-0 md:w-1/4">
-          <h1 className="text-xl font-semibold text-heading">
+        <h1 className="text-xl font-semibold text-heading">
             {t('form:input-label-shippings')}
           </h1>
         </div>

@@ -11,6 +11,7 @@ import { adminOnly } from '@/utils/auth-utils';
 import { useShopsQuery } from '@/data/shop';
 import { SortOrder } from '@/types';
 import PermissionView from '@/components/permission/permission-view';
+import LinkButton from '@/components/ui/link-button';
 
 export default function permission() {
   const { t } = useTranslation();
@@ -47,7 +48,8 @@ export default function permission() {
         </div>
 
         <div className="ms-auto flex w-full flex-col items-center md:w-1/2 md:flex-row">
-          <Search onSearch={handleSearch} />
+          {/* <Search onSearch={handleSearch} /> */}
+          <LinkButton href="/permission/create">Create Permission</LinkButton>
         </div>
       </Card>
       <PermissionView
