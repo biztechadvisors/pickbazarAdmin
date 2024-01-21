@@ -23,6 +23,8 @@ import { useProductsQuery } from '@/data/product';
 import NotFound from '@/components/ui/not-found';
 import { useRouter } from 'next/router';
 import {useSettings} from "@/contexts/settings.context";
+import { newPermission } from '@/contexts/permission/storepermission';
+import { useAtom } from 'jotai';
 
 export default function ProductsPage() {
   const { locale } = useRouter();
@@ -46,10 +48,8 @@ export default function ProductsPage() {
     categories: category,
   });
 
-  const [matchedData, setMatchedLinks] = useState<any[]>(
-    JSON.parse(localStorage.getItem('matchedData') || '[]')
-  );
-   const canWrite = matchedData?.find(
+  const [getPermission,_]=useAtom(newPermission) 
+   const canWrite = getPermission?.find(
     (permission) => permission.type === 'sidebar-nav-item-create-order'
   )?.write;
 

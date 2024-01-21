@@ -10,6 +10,8 @@ import { Routes } from '@/config/routes';
 import { Config } from '@/config';
 import Link from '@/components/ui/link';
 import LanguageSwitcher from '@/components/ui/lang-action/action';
+import { useAtom } from 'jotai';
+import { newPermission } from '@/contexts/permission/storepermission';
 
 export type IProps = {
   types: Type[] | undefined;
@@ -20,13 +22,11 @@ export type IProps = {
 const TypeList = ({ types, onSort, onOrder }: IProps) => {
   const { t } = useTranslation();
   const { alignLeft, alignRight } = useIsRTL();
-  const [matchedData, setMatchedLinks] = useState<any[]>(
-    JSON.parse(localStorage.getItem('matchedData') || '[]')
-  );
-   const canWrite = matchedData?.find(
+  const [getPermission,_]=useAtom(newPermission) 
+  const canWrite = getPermission?.find(
     (permission) => permission.type === 'sidebar-nav-item-groups'
   )?.write;
-  console.log("canWrite", canWrite)
+ 
 
   const [sortingObj, setSortingObj] = useState<{
     sort: SortOrder;
@@ -94,22 +94,26 @@ const TypeList = ({ types, onSort, onOrder }: IProps) => {
         );
       },
     },
-    {
-      title: t('table:table-item-actions'),
-      dataIndex: 'slug',
-      key: 'actions',
-      align: alignRight,
-      render: (slug: string, record: Type) => {
-         return canWrite ? (
-        <LanguageSwitcher
-          slug={slug}
-          record={record}
-          deleteModalView="DELETE_TYPE"
-          routes={Routes?.type}
-        />
-        ) : null;
-      },
-    },
+    {      
+      ...(canWrite
+        ? {
+          title: t('table:table-item-actions'),
+          dataIndex: 'slug',
+          key: 'actions',
+          align: alignRight,
+          render: (slug: string, record: Type) =>  (
+            <LanguageSwitcher
+              slug={slug}
+              record={record}
+              deleteModalView="DELETE_TYPE"
+              routes={Routes?.type}
+            />
+            ),
+        }
+        
+        : null),
+    },  
+    
   ];
 
   return (

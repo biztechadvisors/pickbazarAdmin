@@ -34,6 +34,8 @@ import { useMeQuery } from '@/data/user';
 import { Routes } from '@/config/routes';
 import AccessDeniedPage from '@/components/common/access-denied';
 import React, { useState } from 'react';
+import { useAtom } from 'jotai';
+import { newPermission } from '@/contexts/permission/storepermission';
 
 
 
@@ -64,10 +66,8 @@ export default function ShopPage() {
     }
   );
 
-  const [matchedData, setMatchedLinks] = useState<any[]>(
-    JSON.parse(localStorage.getItem('matchedData') || '[]')
-  );
-   const canWrite = matchedData?.find(
+  const [getPermission,_]=useAtom(newPermission)
+   const canWrite = getPermission?.find(
     (permission) => permission.type === 'sidebar-nav-item-my-shops'
     // (permission) => permission.type === 'sidebar-nav-item-dashboard'
   )?.write;

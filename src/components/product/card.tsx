@@ -7,6 +7,8 @@ import { useTranslation } from 'next-i18next';
 import { PlusIcon } from '@/components/icons/plus-icon';
 import { Product, ProductType } from '@/types';
 import React, { useState } from 'react';
+import { useAtom } from 'jotai';
+import { newPermission } from '@/contexts/permission/storepermission';
 
 
 interface Props {
@@ -43,10 +45,8 @@ const ProductCard = ({ item }: Props) => {
 
   const { openModal } = useModalAction();
 
-  const [matchedData, setMatchedLinks] = useState<any[]>(
-    JSON.parse(localStorage.getItem('matchedData') || '[]')
-  );
-   const canWrite = matchedData?.find(
+  const [getPermission,_]=useAtom(newPermission)
+   const canWrite = getPermission?.find(
     (permission) => permission.type === 'sidebar-nav-item-tags'
   )?.write;
 

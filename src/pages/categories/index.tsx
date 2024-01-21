@@ -15,6 +15,8 @@ import { adminOnly } from '@/utils/auth-utils';
 import { useCategoriesQuery } from '@/data/category';
 import { useRouter } from 'next/router';
 import { Config } from '@/config';
+import { newPermission } from '@/contexts/permission/storepermission';
+import { useAtom } from 'jotai';
 
 export default function Categories() {
   const { locale } = useRouter();
@@ -35,10 +37,8 @@ export default function Categories() {
     language: locale,
   });
 
-  const [matchedData, setMatchedLinks] = useState<any[]>(
-    JSON.parse(localStorage.getItem('matchedData') || '[]')
-  );
-   const canWrite = matchedData?.find(
+  const [getPermission,_]=useAtom(newPermission)
+  const canWrite = getPermission?.find(
     (permission) => permission.type === 'sidebar-nav-item-categories'
   )?.write;
 

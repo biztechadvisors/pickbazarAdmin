@@ -18,6 +18,8 @@ import { useState } from 'react';
 import TitleWithSort from '@/components/ui/title-with-sort';
 import { Routes } from '@/config/routes';
 import LanguageSwitcher from '@/components/ui/lang-action/action';
+import { newPermission, permissionAtom } from '@/contexts/permission/storepermission';
+import { useAtom } from 'jotai';
 
 export type IProps = {
   products: Product[] | undefined;
@@ -44,13 +46,10 @@ const ProductList = ({
   const { t } = useTranslation();
   const { alignLeft, alignRight } = useIsRTL();
 
-  const [matchedData, setMatchedLinks] = useState<any[]>(
-    JSON.parse(localStorage.getItem('matchedData') || '[]')
-  );
-   const canWrite = matchedData?.find(
-    (permission) => permission.type === 'sidebar-nav-item-products'
+  const [getPermission,_]=useAtom(newPermission)  
+  const canWrite = getPermission?.find(
+    (permission : any) => permission.type === 'sidebar-nav-item-products'
   )?.write;
-  console.log("canWrite", canWrite)
 
   const [sortingObj, setSortingObj] = useState<SortingObjType>({
     sort: SortOrder.Desc,
@@ -241,39 +240,28 @@ const ProductList = ({
         </div>
       ),
     },
-    // {
-    //   title: t('table:table-item-actions'),
-    //   dataIndex: 'slug',
-    //   key: 'actions',
-    //   align: 'right',
-    //   width: 120,
-    //   render: (slug: string, record: Product) => (
-    //     <LanguageSwitcher
-    //       slug={slug}
-    //       record={record}
-    //       deleteModalView="DELETE_PRODUCT"
-    //       routes={Routes?.product}
-    //     />
-    //   ),
-    // },
-    
-     {
-      title: t('table:table-item-actions'),
-      dataIndex: 'slug',
-      key: 'actions',
-      align: 'right',
-      width: 120,
-      render: (slug: string, record: Product) => {
-        // Check if 'write' permission is true before rendering the column
-        return canWrite ? (
-          <LanguageSwitcher
-            slug={slug}
-            record={record}
-            deleteModalView="DELETE_PRODUCT"
-            routes={Routes?.product}
-          />
-        ) : null;
-      },
+    {      
+      ...(canWrite
+        &&
+        {
+            title: t('table:table-item-actions'),
+          
+            dataIndex: 'slug',
+            key: 'actions',
+            align: 'right',
+            width: 120,
+            render: (slug: string, record: Product) => {
+              return (
+                <LanguageSwitcher
+                  slug={slug}
+                  record={record}
+                  deleteModalView="DELETE_PRODUCT"
+                  routes={Routes?.product}
+                />
+              );
+            },
+          }
+        ),
     },
   ];
 

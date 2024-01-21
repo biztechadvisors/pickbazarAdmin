@@ -16,6 +16,8 @@ import AuthorList from '@/components/author/author-list';
 import { useAuthorsQuery } from '@/data/author';
 import { SortOrder } from '@/types';
 import { Config } from '@/config';
+import { newPermission } from '@/contexts/permission/storepermission';
+import { useAtom } from 'jotai';
 
 export default function Authors() {
   const { t } = useTranslation();
@@ -33,10 +35,8 @@ export default function Authors() {
     sortedBy,
     language: locale,
   });
-  const [matchedData, setMatchedLinks] = useState<any[]>(
-    JSON.parse(localStorage.getItem('matchedData') || '[]')
-  );
-   const canWrite = matchedData?.find(
+  const [getPermission,_]=useAtom(newPermission)
+   const canWrite = getPermission?.find(
     (permission) => permission.type === 'sidebar-nav-item-authors'
   )?.write;
 

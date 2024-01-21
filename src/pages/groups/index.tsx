@@ -15,6 +15,8 @@ import { Routes } from '@/config/routes';
 import { useRouter } from 'next/router';
 import { adminOnly } from '@/utils/auth-utils';
 import { Config } from '@/config';
+import { useAtom } from 'jotai';
+import { newPermission } from '@/contexts/permission/storepermission';
 
 export default function TypesPage() {
   const { locale } = useRouter();
@@ -28,13 +30,11 @@ export default function TypesPage() {
     orderBy,
     sortedBy,
   });
-  const [matchedData, setMatchedLinks] = useState<any[]>(
-    JSON.parse(localStorage.getItem('matchedData') || '[]')
-  );
-   const canWrite = matchedData?.find(
+  const [getPermission,_]=useAtom(newPermission) 
+  const canWrite = getPermission?.find(
     (permission) => permission.type === 'sidebar-nav-item-groups'
   )?.write;
-  console.log("canWrite", canWrite)
+  
 
   if (loading) return <Loader text={t('common:text-loading')} />;
   if (error) return <ErrorMessage message={error.message} />;

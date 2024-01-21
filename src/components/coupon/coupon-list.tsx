@@ -18,6 +18,8 @@ import { Config } from '@/config';
 import { Routes } from '@/config/routes';
 import { useRouter } from 'next/router';
 import LanguageSwitcher from '@/components/ui/lang-action/action';
+import { newPermission } from '@/contexts/permission/storepermission';
+import { useAtom } from 'jotai';
 
 dayjs.extend(relativeTime);
 dayjs.extend(utc);
@@ -48,10 +50,8 @@ const CouponList = ({
     column: null,
   });
 
-  const [matchedData, setMatchedLinks] = useState<any[]>(
-    JSON.parse(localStorage.getItem('matchedData') || '[]')
-  );
-   const canWrite = matchedData?.find(
+  const [getPermission,_]=useAtom(newPermission)
+   const canWrite = getPermission?.find(
     (permission) => permission.type === 'sidebar-nav-item-coupons'
   )?.write;
 
@@ -206,23 +206,26 @@ const CouponList = ({
         </span>
       ),
     },
+    
     {
-      title: t('table:table-item-actions'),
-      dataIndex: 'code',
-      key: 'actions',
-      align: 'right',
-      render: (slug: string, record: Coupon) => {
-        // Check if 'write' permission is true before rendering the column
-        return canWrite ? (
-        <LanguageSwitcher
-          slug={slug}
-          record={record}
-          deleteModalView="DELETE_COUPON"
-          routes={Routes?.coupon}
-        />
-        ) : null;
+      ...(canWrite
+      ?
+      {
+        title: t('table:table-item-actions'),
+        dataIndex: 'code',
+        key: 'actions',
+        align: 'right',
+        render: (slug: string, record: Coupon) =>  (
+          <LanguageSwitcher
+            slug={slug}
+            record={record}
+            deleteModalView="DELETE_COUPON"
+            routes={Routes?.coupon}
+          />
+          ) 
+      }
+      : null),
       },
-    },
   ];
 
   return (

@@ -12,6 +12,8 @@ import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import { Routes } from '@/config/routes';
 import { SortOrder } from '@/types';
 import { adminOnly } from '@/utils/auth-utils';
+import { newPermission } from '@/contexts/permission/storepermission';
+import { useAtom } from 'jotai';
 
 export default function Customers() {
   const [searchTerm, setSearchTerm] = useState('');
@@ -29,11 +31,9 @@ export default function Customers() {
     sortedBy,
   });
 
-  const [matchedData, setMatchedLinks] = useState<any[]>(
-    JSON.parse(localStorage.getItem('matchedData') || '[]')
-  );
-   const canWrite = matchedData?.find(
-    (permission) => permission.type === 'sidebar-nav-item-tags'
+  const [getPermission,_]=useAtom(newPermission)
+   const canWrite = getPermission?.find(
+    (permission) => permission.type === 'sidebar-nav-item-users'
   )?.write;
 
   if (loading) return <Loader text={t('common:text-loading')} />;

@@ -6,6 +6,8 @@ import { useTranslation } from 'next-i18next';
 import SidebarItem from '@/components/layouts/navigation/sidebar-item';
 import { useRouter } from 'next/router';
 import { useEffect,   } from 'react';
+import { filterPermission, newPermission, permissionAtom } from '@/contexts/permission/storepermission';
+import { useAtom } from 'jotai';
 
 const AdminLayout: React.FC<{ children?: React.ReactNode }> = ({
   children,
@@ -13,11 +15,13 @@ const AdminLayout: React.FC<{ children?: React.ReactNode }> = ({
   const { t } = useTranslation();
   const { locale } = useRouter();
   const dir = locale === 'ar' || locale === 'he' ? 'rtl' : 'ltr';
-
-  const [matchedLinks, setMatchedLinks] = useState<any[]>(
-    JSON.parse(localStorage.getItem('matchedLinks') || '[]')
-  );
-
+  
+  
+  const [matched,_]=useAtom(newPermission)
+  const matchedLinks =  siteSettings.sidebarLinks.admin.filter(link => {   
+    return matched.some(newItem => newItem.type === link.label);
+   
+  });
   console.log('matchedLinks:', matchedLinks);
 
   const SidebarItemMap = () => (

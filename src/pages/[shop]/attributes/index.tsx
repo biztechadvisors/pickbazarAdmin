@@ -23,6 +23,8 @@ import { useAttributesQuery } from '@/data/attributes';
 import { Config } from '@/config';
 import { useMeQuery } from '@/data/user';
 import { Routes } from '@/config/routes';
+import { useAtom } from 'jotai';
+import { newPermission } from '@/contexts/permission/storepermission';
 
 export default function AttributePage() {
   const router = useRouter();
@@ -57,10 +59,8 @@ export default function AttributePage() {
     }
   );
 
-  const [matchedData, setMatchedLinks] = useState<any[]>(
-    JSON.parse(localStorage.getItem('matchedData') || '[]')
-  );
-   const canWrite = matchedData?.find(
+  const [getPermission,_]=useAtom(newPermission)
+   const canWrite = getPermission?.find(
     (permission) => permission.type === 'sidebar-nav-item-attributes'
   )?.write;
 

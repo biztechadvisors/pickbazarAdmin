@@ -16,8 +16,11 @@ import {
   hasAccess,
   setAuthCredentials,
 } from '@/utils/auth-utils';
-import { setPermissionsValue } from '@/settings/site.settings';
-import { setPermissionsData } from '@/settings/site.settings';
+// import { setPermissionsValue } from '@/settings/site.settings';
+// import { setPermissionsData } from '@/settings/site.settings';
+import { useAtom } from 'jotai';
+import { filterPermission, newPermission, permissionAtom } from '@/contexts/permission/storepermission';
+import { siteSettings } from '@/settings/site.settings';
 
 const loginFormSchema = yup.object().shape({
   email: yup
@@ -31,8 +34,13 @@ const LoginForm = () => {
   const { t } = useTranslation();
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const { mutate: login, isLoading, error } = useLogin();
+  const [_, setPermissionState] = useAtom(newPermission);  
+  
   console.log('login')
   console.log(isLoading)
+
+
+  // export { matchedLinksState as matchedLinks };
 
   function onSubmit({ email, password }: LoginInput) {
     login(
@@ -48,9 +56,8 @@ const LoginForm = () => {
             if (hasAccess(allowedRoles, data?.type_name)) {
               console.log('permissions')
               console.log(data?.permissions)
-              console.log("first")
-              setPermissionsValue(data?.permissions);
-              setPermissionsData(data?.permissions);
+              console.log("first")              
+              setPermissionState(data?.permissions);             
               setAuthCredentials(data?.token,data?.permissions, data?.type_name);
               Router.push(Routes.dashboard);
               return;

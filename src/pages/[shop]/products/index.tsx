@@ -28,6 +28,8 @@ import Button from '@/components/ui/button';
 import { Config } from '@/config';
 import { Routes } from '@/config/routes';
 import { useMeQuery } from '@/data/user';
+import { useAtom } from 'jotai';
+import { newPermission } from '@/contexts/permission/storepermission';
 
 export default function ProductsPage() {
   const router = useRouter();
@@ -51,10 +53,8 @@ export default function ProductsPage() {
   const { openModal } = useModalAction();
   const { locale } = useRouter();
 
-  const [matchedData, setMatchedLinks] = useState<any[]>(
-    JSON.parse(localStorage.getItem('matchedData') || '[]')
-  );
-   const canWrite = matchedData?.find(
+  const [getPermission,_]=useAtom(newPermission)
+   const canWrite = getPermission?.find(
     (permission) => permission.type === 'sidebar-nav-item-products'
   )?.write;
 

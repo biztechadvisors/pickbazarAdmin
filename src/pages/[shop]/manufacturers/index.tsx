@@ -23,6 +23,8 @@ import { useManufacturersQuery } from '@/data/manufacturer';
 import { Config } from '@/config';
 import { useMeQuery } from '@/data/user';
 import { useShopQuery } from '@/data/shop';
+import { useAtom } from 'jotai';
+import { newPermission } from '@/contexts/permission/storepermission';
 
 export default function Manufacturers() {
   const router = useRouter();
@@ -52,11 +54,9 @@ export default function Manufacturers() {
   });
   const { id: shop_id } = shopData ?? {};
 
-  const [matchedData, setMatchedLinks] = useState<any[]>(
-    JSON.parse(localStorage.getItem('matchedData') || '[]')
-  );
-   const canWrite = matchedData?.find(
-    (permission) => permission.type === 'sidebar-nav-item-attributes'
+  const [getPermission,_]=useAtom(newPermission)
+   const canWrite = getPermission?.find(
+    (permission) => permission.type === 'sidebar-nav-item-manufacturers'
   )?.write;
 
   if (loading) return <Loader text={t('common:text-loading')} />;

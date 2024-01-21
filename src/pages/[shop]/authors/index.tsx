@@ -22,6 +22,8 @@ import { SortOrder } from '@/types';
 import { Config } from '@/config';
 import { useShopQuery } from '@/data/shop';
 import { useMeQuery } from '@/data/user';
+import { newPermission } from '@/contexts/permission/storepermission';
+import { useAtom } from 'jotai';
 export default function Authors() {
   const router = useRouter();
   const { permissions } = getAuthCredentials();
@@ -49,10 +51,8 @@ export default function Authors() {
   });
   const { id: shop_id } = shopData ?? {};
 
-  const [matchedData, setMatchedLinks] = useState<any[]>(
-    JSON.parse(localStorage.getItem('matchedData') || '[]')
-  );
-   const canWrite = matchedData?.find(
+  const [getPermission,_]=useAtom(newPermission)
+   const canWrite = getPermission?.find(
     (permission) => permission.type === 'sidebar-nav-item-authors'
   )?.write;
 

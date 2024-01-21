@@ -13,6 +13,8 @@ import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import { Routes } from '@/config/routes';
 import { SortOrder } from '@/types';
 import { adminOnly } from '@/utils/auth-utils';
+import { useAtom } from 'jotai';
+import { newPermission, permissionAtom } from '@/contexts/permission/storepermission';
 
 export default function ShippingsPage() {
   const { t } = useTranslation();
@@ -25,12 +27,11 @@ export default function ShippingsPage() {
     sortedBy,
   });
 
-  const [matchedData, setMatchedLinks] = useState<any[]>(
-    JSON.parse(localStorage.getItem('matchedData') || '[]')
-  );
-   const canWrite = matchedData?.find(
+  const [getPermission,_]=useAtom(newPermission)
+  const canWrite = getPermission?.find(
     (permission) => permission.type === 'sidebar-nav-item-shippings'
   )?.write;
+  
 
   if (loading) return <Loader text={t('common:text-loading')} />;
   if (error) return <ErrorMessage message={error.message} />;

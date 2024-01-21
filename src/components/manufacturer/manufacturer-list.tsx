@@ -17,6 +17,8 @@ import { Routes } from '@/config/routes';
 import { useIsRTL } from '@/utils/locals';
 import { useUpdateManufacturerMutation } from '@/data/manufacturer';
 import LanguageSwitcher from '@/components/ui/lang-action/action';
+import { newPermission } from '@/contexts/permission/storepermission';
+import { useAtom } from 'jotai';
 
 type IProps = {
   manufacturers: Manufacturer[] | null | undefined;
@@ -35,10 +37,8 @@ const ManufacturerList = ({
 }: IProps) => {
   const { t } = useTranslation();
   const router = useRouter();
-  const [matchedData, setMatchedLinks] = useState<any[]>(
-    JSON.parse(localStorage.getItem('matchedData') || '[]')
-  );
-   const canWrite = matchedData?.find(
+  const [getPermission,_]=useAtom(newPermission)
+   const canWrite = getPermission?.find(
     (permission) => permission.type === 'sidebar-nav-item-manufacturers'
   )?.write;
 
@@ -111,65 +111,74 @@ const ManufacturerList = ({
       key: 'products_count',
       align: 'center' as AlignType,
     },
+    
+    
     {
-      title: t('table:table-item-approval-action'),
-      dataIndex: 'is_approved',
-      key: 'approve',
-      align: 'center' as AlignType,
-      render: function Render(is_approved: boolean, record: any) {
-        const { locale } = useRouter();
-        const { mutate: updateManufacturer, isLoading: updating } =
-          useUpdateManufacturerMutation();
-
-        function handleOnClick() {
-          updateManufacturer({
-            id: record?.id,
-            name: record?.name,
-            is_approved: !is_approved,
-            type_id: record?.type.id,
-            language: locale,
-          });
-        }
-
-        return ( canWrite ? (
-          <>
-            <Switch
-              checked={is_approved}
-              onChange={handleOnClick}
-              className={`${
-                is_approved ? 'bg-accent' : 'bg-gray-300'
-              } relative inline-flex h-6 w-11 items-center rounded-full focus:outline-none`}
-              dir="ltr"
-            >
-              <span className="sr-only">Enable</span>
-              <span
+      ...(canWrite
+      ?
+      {
+        title: t('table:table-item-approval-action'),
+        dataIndex: 'is_approved',
+        key: 'approve',
+        align: 'center' as AlignType,
+        render: function Render(is_approved: boolean, record: any) {
+          const { locale } = useRouter();
+          const { mutate: updateManufacturer, isLoading: updating } =
+            useUpdateManufacturerMutation();
+  
+          function handleOnClick() {
+            updateManufacturer({
+              id: record?.id,
+              name: record?.name,
+              is_approved: !is_approved,
+              type_id: record?.type.id,
+              language: locale,
+            });
+          }
+  
+          return (
+            <>
+              <Switch
+                checked={is_approved}
+                onChange={handleOnClick}
                 className={`${
-                  is_approved ? 'translate-x-6' : 'translate-x-1'
-                } inline-block h-4 w-4 transform rounded-full bg-light`}
-              />
-            </Switch>
-          </>
-          ) : null
-        );
+                  is_approved ? 'bg-accent' : 'bg-gray-300'
+                } relative inline-flex h-6 w-11 items-center rounded-full focus:outline-none`}
+                dir="ltr"
+              >
+                <span className="sr-only">Enable</span>
+                <span
+                  className={`${
+                    is_approved ? 'translate-x-6' : 'translate-x-1'
+                  } inline-block h-4 w-4 transform rounded-full bg-light`}
+                />
+              </Switch>
+            </>
+          );
+        },
+      }
+      
+      : null),
       },
-    },
-    {
-      title: t('table:table-item-actions'),
-      dataIndex: 'slug',
-      key: 'actions',
-      align: 'right' as AlignType,
-      render: (slug: string, record: Manufacturer) => {
-        // Check if 'write' permission is true before rendering the column
-        return canWrite ? (
-        <LanguageSwitcher
-          slug={slug}
-          record={record}
-          deleteModalView="DELETE_MANUFACTURER"
-          routes={Routes?.manufacturer}
-        />
-        ) : null;
-      },
-    },
+      {
+        ...(canWrite
+        ?
+        {
+          title: t('table:table-item-actions'),
+          dataIndex: 'slug',
+          key: 'actions',
+          align: 'right' as AlignType,
+          render: (slug: string, record: Manufacturer) => (
+            <LanguageSwitcher
+              slug={slug}
+              record={record}
+              deleteModalView="DELETE_MANUFACTURER"
+              routes={Routes?.manufacturer}
+            />
+          ),
+        }
+        : null),
+        },
   ];
 
   if (router?.query?.shop) {
