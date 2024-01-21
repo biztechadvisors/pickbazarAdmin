@@ -20,6 +20,7 @@ import type { NextPageWithLayout } from '@/types';
 import { useRouter } from 'next/router';
 import PrivateRoute from '@/utils/private-route';
 import { Config } from '@/config';
+import 'react-toastify/dist/ReactToastify.css';
 
 const Noop: React.FC<{ children?: React.ReactNode }> = ({ children }) => (
   <>{children}</>

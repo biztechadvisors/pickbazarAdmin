@@ -4,6 +4,9 @@ import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import Card from '@/components/common/card';
 import { useTranslation } from 'react-i18next';
 import axios from 'axios';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
 
 const CreatePermission = () => {
   const [typeName, setTypeName] = useState([]);
@@ -83,7 +86,13 @@ const CreatePermission = () => {
 
     try {
       const response = await axios.post('http://localhost:5000/api/permission', dataToSend);
+      console.log('res', response)
       console.log('Permission saved:', response.data);
+      if(response.status==201){
+        toast.success('UPDATED');
+        setPermissionName('');
+        setSelectedPermissions([]);
+      }
     } catch (error) {
       console.error('Error saving permission:', error);
     }
