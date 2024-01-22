@@ -12,6 +12,8 @@ Staff : "staff"
 }
 
 export const siteSettings = {
+
+
   name: 'PickBazar',
   description: '',
   logo: {

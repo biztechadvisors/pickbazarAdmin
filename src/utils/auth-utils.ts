@@ -28,7 +28,7 @@ export const adminAndOwnerOnly = [SUPER_ADMIN, STORE_OWNER, ADMIN, DEALER];
 export const adminOwnerAndStaffOnly = [SUPER_ADMIN, STORE_OWNER, STAFF];
 export const superAdminOnly = [SUPER_ADMIN];
 export const adminOnly = [SUPER_ADMIN,ADMIN, DEALER];
-export const ownerOnly = [STORE_OWNER, STAFF];
+export const ownerOnly = [STORE_OWNER];
 export const ownerAndStaffOnly = [STORE_OWNER, STAFF];
 
 
@@ -50,6 +50,10 @@ export function getEmailVerified(): {
   const emailVerified = Cookie.get(EMAIL_VERIFIED);
   return emailVerified ? JSON.parse(emailVerified) : false;
 }
+
+
+// let
+// type_names
 
 export function getAuthCredentials(context?: any): {
   token: string | null;
