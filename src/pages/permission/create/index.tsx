@@ -7,7 +7,6 @@ import axios from 'axios';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
-
 const CreatePermission = () => {
   const [typeName, setTypeName] = useState([]);
   const [selectedType, setSelectedType] = useState('');
@@ -41,38 +40,30 @@ const CreatePermission = () => {
     setPermissionError('');
   };
 
-  const handleCheckboxChange = (menuItem, read, write) => {
+  const handleCheckboxChange = (menuItem, type, isChecked) => {
     const permission = {
       type: menuItem,
-      read,
-      write,
+      read: type === 'read' ? isChecked : selectedPermissions.find(p => p.type === menuItem)?.read || false,
+      write: type === 'write' ? isChecked : selectedPermissions.find(p => p.type === menuItem)?.write || false,
     };
 
-    const updatedPermissions = [...selectedPermissions];
-    const existingIndex = updatedPermissions.findIndex((p) => p.type === menuItem);
-
-    if (existingIndex !== -1) {
-      updatedPermissions[existingIndex] = permission;
-    } else {
-      updatedPermissions.push(permission);
-    }
+    const updatedPermissions = selectedPermissions.filter(p => p.type !== menuItem);
+    updatedPermissions.push(permission);
 
     setSelectedPermissions(updatedPermissions);
   };
 
   const handleSavePermission = async () => {
-
     if (!permissionName) {
       setPermissionError('Please enter a permission name.');
+      return;
     }
+
     let typeToSend = selectedType;
     if (!selectedType) {
       const firstType = Object.values(typeName)[0];
       typeToSend = firstType;
       setSelectedType(firstType);
-    }
-    if (!permissionName) {
-      return;
     }
 
     const dataToSend = {
@@ -81,20 +72,18 @@ const CreatePermission = () => {
       permission: selectedPermissions,
     };
 
-
-    console.log("dataToSend", dataToSend)
-
     try {
       const response = await axios.post('http://localhost:5000/api/permission', dataToSend);
       console.log('res', response)
       console.log('Permission saved:', response.data);
-      if(response.status==201){
+      if (response.status === 201) {
         toast.success('UPDATED');
         setPermissionName('');
         setSelectedPermissions([]);
       }
     } catch (error) {
       console.error('Error saving permission:', error);
+      toast.error('Error')
     }
   };
 
@@ -168,7 +157,8 @@ const CreatePermission = () => {
                       className="items-center justify-center"
                       type="checkbox"
                       id={`readCheckbox${index}`}
-                      onChange={(e) => handleCheckboxChange(entityName, e.target.checked, false)}
+                      onChange={(e) => handleCheckboxChange(entityName, 'read', e.target.checked)}
+                      checked={selectedPermissions.find(p => p.type === entityName)?.read || false}
                     />
                   </td>
                   <td className="border p-2 items-center justify-center">
@@ -176,20 +166,23 @@ const CreatePermission = () => {
                       className="items-center justify-center"
                       type="checkbox"
                       id={`writeCheckbox${index}`}
-                      onChange={(e) => handleCheckboxChange(entityName, false, e.target.checked)}
+                      onChange={(e) => handleCheckboxChange(entityName, 'write', e.target.checked)}
+                      checked={selectedPermissions.find(p => p.type === entityName)?.write || false}
                     />
                   </td>
                 </tr>
               ))}
             </tbody>
           </table>
-          <button
-            onClick={handleSavePermission}
-            className="mt-4 px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 cursor-pointer"
-          >
-            Save Permission
-          </button>
         </div>
+      </div>
+      <div className="flex justify-end">
+        <button
+          onClick={handleSavePermission}
+          className="mt-4 px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-400 cursor-pointer text-left"
+        >
+          Update Permission
+        </button>
       </div>
     </>
   );
@@ -204,3 +197,4 @@ export const getStaticProps = async ({ locale }: any) => ({
 });
 
 export default CreatePermission;
+
