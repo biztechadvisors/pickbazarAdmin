@@ -16,8 +16,6 @@ import {
   hasAccess,
   setAuthCredentials,
 } from '@/utils/auth-utils';
-// import { setPermissionsValue } from '@/settings/site.settings';
-// import { setPermissionsData } from '@/settings/site.settings';
 import { useAtom } from 'jotai';
 import { filterPermission, newPermission, permissionAtom } from '@/contexts/permission/storepermission';
 import { siteSettings } from '@/settings/site.settings';
@@ -54,7 +52,7 @@ const LoginForm = () => {
           console.log("data",data?.permissions)
           if (data?.token) {
             if (hasAccess(allowedRoles, data?.type_name)) {
-              console.log('permissions')
+              console.log('permissions-data', data)
               console.log(data?.permissions)
               console.log("first")              
               setPermissionState(data?.permissions);             

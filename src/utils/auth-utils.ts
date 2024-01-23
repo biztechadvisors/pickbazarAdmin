@@ -16,13 +16,6 @@ import { string } from 'yup';
 
 
 let type_names
-// export const allowedRoles = [SUPER_ADMIN, STORE_OWNER, STAFF];
-// export const adminAndOwnerOnly = [SUPER_ADMIN, STORE_OWNER];
-// export const adminOwnerAndStaffOnly = [SUPER_ADMIN, STORE_OWNER, STAFF];
-// export const adminOnly = [SUPER_ADMIN];
-// export const ownerOnly = [STORE_OWNER];
-// export const ownerAndStaffOnly = [STORE_OWNER, STAFF];
-// export const TypeName = type_names
 export const allowedRoles = [SUPER_ADMIN, STORE_OWNER, STAFF, DEALER, ADMIN];
 export const adminAndOwnerOnly = [SUPER_ADMIN, STORE_OWNER, ADMIN, DEALER];
 export const adminOwnerAndStaffOnly = [SUPER_ADMIN, STORE_OWNER, STAFF];
@@ -90,14 +83,27 @@ export function hasAccess(
   _allowedRoles: string[],
   _userPermissions: string[] | undefined | null
 ) {
-  console.log(' _allowedRoles +  + _userPermissions' )
-  console.log("====",_allowedRoles + '=== ' + _userPermissions)
+  console.log('_allowedRoles:', _allowedRoles);
+  console.log('_userPermissions:', _userPermissions);
+  // if (_userPermissions) {
+  //   console.log('Check-auth = '+_allowedRoles?.find((aRole) => _userPermissions.includes(aRole)))
+  //   _allowedRoles?.find((aRole) => _userPermissions.includes(aRole))
+  //   return Boolean(
+  //     _allowedRoles?.find((aRole) => _userPermissions.includes(aRole))
+  //   );
+  // }
   if (_userPermissions) {
-    console.log('Check-auth = '+_allowedRoles?.find((aRole) => _userPermissions.includes(aRole)))
-    _allowedRoles?.find((aRole) => _userPermissions.includes(aRole))
-    return Boolean(
-      _allowedRoles?.find((aRole) => _userPermissions.includes(aRole))
+    const lowerCaseUserPermissions = _userPermissions.map(aRole =>
+      aRole.toLowerCase()
     );
+    console.log('lowerCaseUserPermissions:', lowerCaseUserPermissions);
+
+    const hasAccess = _allowedRoles.some(aRole =>
+      lowerCaseUserPermissions.includes(aRole.toLowerCase())
+    );
+    console.log('hasAccess:', hasAccess);
+
+    return hasAccess;
   }
   return false;
 }

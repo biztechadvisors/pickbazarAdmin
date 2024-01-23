@@ -18,6 +18,7 @@ const AdminLayout: React.FC<{ children?: React.ReactNode }> = ({
   
   
   const [matched,_]=useAtom(newPermission)
+  console.log("matched",matched)
   const matchedLinks =  siteSettings.sidebarLinks.admin.filter(link => {   
     return matched.some(newItem => newItem.type === link.label);
    
