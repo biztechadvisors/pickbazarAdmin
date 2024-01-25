@@ -292,7 +292,6 @@ export default function CreateOrUpdateDealerForm({ initialValues, id }: IProps) 
   const { mutate: createDealer, isLoading: creating } = useAddDealerMutation();
   const { mutate: updateDealer, isLoading: updating } = useUpdateDealerMutation();
   const onSubmit = (values: FormValues) => {
-    console.log("moye moye value", values)
     const isActiveVal: any = values.isActive
     const input = {
       language: router.locale!,
@@ -307,8 +306,6 @@ export default function CreateOrUpdateDealerForm({ initialValues, id }: IProps) 
       dealerCategoryMargins: values.dealerCategoryMargins,
       dealerProductMargins: values.dealerProductMargins,
     };
-
-    // console.log("moye moye value", input)
 
 
     if (!initialValues) {
