@@ -98,6 +98,9 @@ export const Routes = {
   storeNoticeRead: {
     ...routesFactory('/store-notices/read'),
   },
+  dealerlist: {
+    ...routesFactory('/dealerlist'),
+  },
 };
 
 function routesFactory(endpoint: string) {

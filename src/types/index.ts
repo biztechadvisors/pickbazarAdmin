@@ -83,6 +83,7 @@ export type QueryOptionsType = {
   limit?: number;
   orderBy?: string;
   sortedBy?: SortOrder;
+  type?: string
 };
 
 export enum OrderStatus {
@@ -1514,6 +1515,19 @@ export interface ItemProps {
   title: string;
 }
 
+export declare type AddDealerInput = {
+  user: AddDealerInput | null | undefined;
+  dealerProductMargins: AddDealerInput | null | undefined;
+  dealerCategoryMargins: AddDealerInput | null | undefined;
+  // product:AddDealerInput | null | undefined;
+  id: string;
+  translated_languages: any;
+  name: string;
+};
+
+export interface DealerQueryOptions extends Omit<QueryOptions, 'language'> {
+  shop_id: string;
+}
 
 export interface ShopPaginator extends PaginatorInfo<Shop> { }
 
@@ -1557,3 +1571,5 @@ export interface OrderStatusPaginator extends PaginatorInfo<OrderStatus> { }
 export interface ConversionPaginator extends PaginatorInfo<Conversations> { }
 
 export interface MessagePaginator extends PaginatorInfo<Message> { }
+
+export interface DealerPaginator extends PaginatorInfo<AddDealerInput> { }

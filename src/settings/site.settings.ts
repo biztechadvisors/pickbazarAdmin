@@ -97,6 +97,11 @@ export const siteSettings = {
         icon: 'UsersIcon',
       },
       {
+        href: Routes.dealerlist.list,
+        label: 'sidebar-nav-item-dealerlist',
+        icon: 'DealerListIcon',
+      },
+      {
         href: Routes.coupon.list,
         label: 'sidebar-nav-item-coupons',
         icon: 'CouponsIcon',
