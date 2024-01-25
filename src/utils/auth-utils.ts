@@ -64,8 +64,8 @@ export function getAuthCredentials(context?: any): {
     const parsedData = JSON.parse(authCred);
     type_names = parsedData.type_name
     console.log('parsedData.permissions')
-    console.log(parsedData.type_name)
-    console.log(parsedData.permissions)
+    console.log("parsedData.type_name",parsedData.type_name)
+    console.log("parsedData.permissions",parsedData.permissions)
     // console.log(parsedData.token)
     return JSON.parse(authCred);
   }
@@ -75,7 +75,7 @@ export function getAuthCredentials(context?: any): {
 export function parseSSRCookie(context: any) 
 {
   console.log("context"+ context)
-  console.log(context.req.headers.cookie)
+  console.log("context.req.headers.cookie",context.req.headers.cookie)
   return SSRCookie.parse(context.req.headers.cookie ?? '');
 }
 
@@ -85,28 +85,18 @@ export function hasAccess(
 ) {
   console.log('_allowedRoles:', _allowedRoles);
   console.log('_userPermissions:', _userPermissions);
-  // if (_userPermissions) {
-  //   console.log('Check-auth = '+_allowedRoles?.find((aRole) => _userPermissions.includes(aRole)))
-  //   _allowedRoles?.find((aRole) => _userPermissions.includes(aRole))
-  //   return Boolean(
-  //     _allowedRoles?.find((aRole) => _userPermissions.includes(aRole))
-  //   );
-  // }
   if (_userPermissions) {
-    const lowerCaseUserPermissions = _userPermissions.map(aRole =>
-      aRole.toLowerCase()
+    console.log('Check-auth = '+_allowedRoles?.find((aRole) => _userPermissions.includes(aRole)))
+    _allowedRoles?.find((aRole) => _userPermissions.includes(aRole))
+    return Boolean(
+      _allowedRoles?.find((aRole) => _userPermissions.includes(aRole))
     );
-    console.log('lowerCaseUserPermissions:', lowerCaseUserPermissions);
-
-    const hasAccess = _allowedRoles.some(aRole =>
-      lowerCaseUserPermissions.includes(aRole.toLowerCase())
-    );
-    console.log('hasAccess:', hasAccess);
-
-    return hasAccess;
   }
+  
   return false;
 }
+
+
 export function isAuthenticated(_cookies: any) {
   return (
     !!_cookies[TOKEN] &&

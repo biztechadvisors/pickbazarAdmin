@@ -83,6 +83,13 @@ export const siteSettings = {
         label: 'sidebar-nav-item-tags',
         icon: 'TagIcon',
       },
+
+      {
+        href: Routes.dealerlist.list,
+        label: 'sidebar-nav-item-dealerlist',
+        icon: 'DealerListIcon',
+      },
+      
       {
         href: Routes.manufacturer.list,
         label: 'sidebar-nav-item-manufacturers',
@@ -243,6 +250,27 @@ export const siteSettings = {
         permissions: adminAndOwnerOnly,
       },
     ],
+    // dealer: [
+    //   {
+    //     href: (dealer: string) => `${Routes.dashboard}${dealer}`,
+    //     label: 'sidebar-nav-item-dashboard',
+    //     icon: 'DashboardIcon',
+    //     permissions: adminOwnerAndStaffOnly,
+    //   },      
+    //   {
+    //     href: (dealer: string) => `/${dealer}${Routes.product.list}`,
+    //     label: 'sidebar-nav-item-products',
+    //     icon: 'ProductsIcon',
+    //     permissions: adminOwnerAndStaffOnly,
+    //   },      
+    //   {
+    //     href: (dealer: string) => `/${dealer}${Routes.order.list}`,
+    //     label: 'sidebar-nav-item-orders',
+    //     icon: 'OrdersIcon',
+    //     permissions: adminOwnerAndStaffOnly,
+    //   },
+      
+    // ],
   },
   product: {
     placeholder: '/product-placeholder.svg',

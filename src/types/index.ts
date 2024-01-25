@@ -196,6 +196,16 @@ export interface CreateTypeInput {
   banner_text?: string;
 }
 
+export declare type AddDealerInput = {
+  user: AddDealerInput | null | undefined;
+  // dealerProductMargins: AddDealerInput | null | undefined;
+  // dealerCategoryMargins: AddDealerInput | null | undefined;
+  // product:AddDealerInput | null | undefined;
+  id: string;
+  translated_languages: any;
+  name: string;
+};
+
 export interface Category {
   id: string;
   name: string;
@@ -1528,6 +1538,10 @@ export interface ItemProps {
   title: string;
 }
 
+export interface DealerQueryOptions extends Omit<QueryOptions, 'language'> {
+  shop_id: string;
+}
+
 
 export interface ShopPaginator extends PaginatorInfo<Shop> { }
 
@@ -1536,6 +1550,8 @@ export interface WithdrawPaginator extends PaginatorInfo<Withdraw> { }
 export interface UserPaginator extends PaginatorInfo<User> { }
 
 export interface QuestionPaginator extends PaginatorInfo<Question> { }
+
+export interface DealerPaginator extends PaginatorInfo<AddDealerInput> {}
 
 export interface StaffPaginator extends PaginatorInfo<User> { }
 
