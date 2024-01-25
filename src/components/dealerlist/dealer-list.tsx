@@ -19,6 +19,8 @@ export type IProps = {
 
 const DealerList = ({ users, onSort, onOrder }: IProps) => {
 
+  console.log("listdealer",users)
+
   const { t } = useTranslation();
   const { alignLeft, alignRight } = useIsRTL();
 
@@ -45,10 +47,8 @@ const DealerList = ({ users, onSort, onOrder }: IProps) => {
     },
   });
 
-  
 
   const columns = [
-
     {
       title: t('table:table-item-id'),
       dataIndex: 'id',
@@ -112,27 +112,21 @@ const DealerList = ({ users, onSort, onOrder }: IProps) => {
       render: (email: any) => <span className="whitespace-nowrap">{email}</span>,
     },
 
-   
-
-    // {
-    //   title: (
-    //     <TitleWithSort
-    //       title={t('table:table-item-usersbase')}
-    //       ascending={
-    //         sortingObj.sort === SortOrder.Asc && sortingObj.column === 'name'
-    //       }
-    //       isActive={sortingObj.column === 'name'}
-    //     />
-    //   ),
-    //   className: 'cursor-pointer',
-    //   dataIndex: 'name',
-    //   key: 'name',
-    //   align: alignLeft,
-    //   onHeaderCell: () => onHeaderClick('name'),
-    //   render: (name: any) => <span className="whitespace-nowrap">{name}</span>,
-    // },
-
-    
+    {
+      title: (
+        <TitleWithSort
+          title={t('table:table-item-walletbalance')}
+          ascending={sortingObj.sort === SortOrder.Asc && sortingObj.column === 'walletPoints'}
+          isActive={sortingObj.column === 'walletPoints'}
+        />
+      ),
+      className: 'cursor-pointer',
+      dataIndex: 'dealer',
+      key: 'dealer',
+      align: alignLeft,
+      onHeaderCell: () => onHeaderClick('walletPoints'),
+      render: (dealer: any) => <span className="whitespace-nowrap">{dealer ? dealer.walletBalance : 0}</span>,
+    },    
 
     {
       title: t('table:table-item-actions'),
