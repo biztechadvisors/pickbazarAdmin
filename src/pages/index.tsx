@@ -15,11 +15,7 @@ import { Config } from '@/config';
 const AdminDashboard = dynamic(() => import('@/components/dashboard/admin'));
 const OwnerDashboard = dynamic(() => import('@/components/dashboard/owner'));
 
-export default function Dashboard({
-  userPermissions,
-}: {
-  userPermissions: string[];
-}) {
+export default function Dashboard({userPermissions}: {userPermissions: string[];}) {
   if (userPermissions?.includes(SUPER_ADMIN)) {
     return <AdminDashboard />;
   }
