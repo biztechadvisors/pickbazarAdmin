@@ -20,8 +20,8 @@ const ShopLayout: React.FC<{ children?: React.ReactNode }> = ({ children }) => {
     <Fragment>
       {siteSettings.sidebarLinks.shop.map(
         ({ href, label, icon, permissions }) => {
-          console.log('permissions-profile',permissions)
-          console.log("href",href)
+          // console.log('permissions-profile',permissions)
+          // console.log("href",href)
           if (!hasAccess(permissions, currentUserPermissions)) return null;
           return (
             <SidebarItem

@@ -9,7 +9,7 @@ import { useMeQuery } from '@/data/user';
 
 export default function AuthorizedMenu() {
   const { data } = useMeQuery();
-  console.log("first-data", data)
+  // console.log("first-data", data)
   const { t } = useTranslation('common');
 
   // Again, we're using framer-motion for the transition effect

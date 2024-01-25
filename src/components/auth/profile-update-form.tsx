@@ -36,8 +36,8 @@ export default function ProfileUpdate({ me }: any) {
   const { permissions } = getAuthCredentials();
 
   let permission = hasAccess(adminOnly, permissions);
-  console.log('permissions')
-  console.log(permission)
+  // console.log('permissions')
+  // console.log(permission)
   const {
     register,
     handleSubmit,

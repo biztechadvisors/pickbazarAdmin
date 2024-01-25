@@ -48,13 +48,11 @@ const LoginForm = () => {
       },
       {
         onSuccess: (data) => {
-          console.log('data')
-          console.log("data",data?.permissions)
+          // console.log('data',data?.type_name)
+          // console.log("data?.permissions",data?.permissions)
           if (data?.token) {
             if (hasAccess(allowedRoles, data?.type_name)) {
-              console.log('permissions-data', data)
-              console.log(data?.permissions)
-              console.log("first")              
+              // console.log(allowedRoles, data?.type_name,"allowedRoles, data?.type_name")          
               setPermissionState(data?.permissions);             
               setAuthCredentials(data?.token,data?.permissions, data?.type_name);
               Router.push(Routes.dashboard);
