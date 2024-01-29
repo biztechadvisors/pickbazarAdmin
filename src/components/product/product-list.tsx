@@ -41,7 +41,7 @@ const ProductList = ({
   onSort,
   onOrder,
 }: IProps) => {  
-  console.log("products",products)
+  // console.log("products",products)
   const router = useRouter();
   const { t } = useTranslation();
   const { alignLeft, alignRight } = useIsRTL();

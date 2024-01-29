@@ -298,41 +298,92 @@ const CreatePermission = () => {
     setSelectedPermissions(updatedPermissions);
   };
 
+
+
+
+
+
+
+  // const handleSavePermission = async () => {
+  //       if (!permissionName) {
+  //         setPermissionError('Please enter a permission name.');
+  //         return;
+  //       }
+    
+  //       let typeToSend = selectedType;
+  //       if (!selectedType) {
+  //         const firstType = Object.values(typeName)[0];
+  //         typeToSend = firstType;
+  //         setSelectedType(firstType);
+  //       }
+    
+  //       const dataToSend = {
+  //         type_name: typeToSend,
+  //         permission_name: permissionName,
+  //         permission: selectedPermissions,
+  //       };
+    
+  //       try {
+  //         const response = await axios.post('http://localhost:5000/api/permission', dataToSend);
+  //         console.log('res', response)
+  //         console.log('Permission saved:', response.data);
+  //         if (response.status === 201) {
+  //           toast.success('UPDATED');
+  //           setPermissionName('');
+  //           setSelectedPermissions([]);
+  //         }
+  //       } catch (error) {
+  //         console.error('Error saving permission:', error);
+  //         toast.error('Error')
+  //       }
+  //     };
+
+
   const handleSavePermission = async () => {
-        if (!permissionName) {
-          setPermissionError('Please enter a permission name.');
-          return;
+    if (!permissionName) {
+      setPermissionError('Please enter a permission name.');
+      return;
+    }
+  
+    let typeToSend = selectedType;
+    if (!selectedType) {
+      const firstType = Object.values(typeName)[0];
+      typeToSend = firstType;
+      setSelectedType(firstType);
+    }
+  
+    const dataToSend = {
+      type_name: typeToSend,
+      permission_name: permissionName,
+      permission: selectedPermissions,
+    };
+  
+    try {
+      if (router.query.id) {
+        const permissionId = router.query.id;
+        const response = await axios.put(`http://localhost:5000/api/permission/${permissionId}`, dataToSend);
+        console.log('response', response)
+        console.log('Permission updated:', response.data);
+        if (response.status === 200) {
+          toast.success('UPDATED');
+          setPermissionName('');
+          setSelectedPermissions([]);
         }
-    
-        let typeToSend = selectedType;
-        if (!selectedType) {
-          const firstType = Object.values(typeName)[0];
-          typeToSend = firstType;
-          setSelectedType(firstType);
+      } else {
+        const response = await axios.post('http://localhost:5000/api/permission', dataToSend);
+        console.log('Permission saved:', response.data);
+        if (response.status === 201) {
+          toast.success('SAVED');
+          setPermissionName('');
+          setSelectedPermissions([]);
         }
-    
-        const dataToSend = {
-          type_name: typeToSend,
-          permission_name: permissionName,
-          permission: selectedPermissions,
-        };
-    
-        try {
-          const response = await axios.post('http://localhost:5000/api/permission', dataToSend);
-          console.log('res', response)
-          console.log('Permission saved:', response.data);
-          if (response.status === 201) {
-            toast.success('UPDATED');
-            setPermissionName('');
-            setSelectedPermissions([]);
-          }
-        } catch (error) {
-          console.error('Error saving permission:', error);
-          toast.error('Error')
-        }
-      };
-
-
+      }
+    } catch (error) {
+      console.error('Error saving/updating permission:', error);
+      toast.error('Error');
+    }
+  };
+  
   console.log('selectedType', selectedType)
 
   return (

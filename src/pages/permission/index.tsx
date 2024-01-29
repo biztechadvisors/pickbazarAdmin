@@ -87,6 +87,8 @@ import Search from '@/components/common/search';
 import LinkButton from '@/components/ui/link-button';
 import { adminOnly } from '@/utils/auth-utils';
 import Link from 'next/link';
+import { newPermission } from '@/contexts/permission/storepermission';
+import { useAtom } from 'jotai';
 
 export default function Permission() {
   const { t } = useTranslation();
@@ -96,6 +98,11 @@ export default function Permission() {
   const [data, setData] = useState([]); 
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+
+  const [getPermission,_]=useAtom(newPermission)
+  const canWrite = getPermission?.find(
+   (permission) => permission.type === 'sidebar-nav-item-permission'
+ )?.write;
 
   useEffect(() => {
     const fetchData = async () => {
@@ -136,7 +143,9 @@ export default function Permission() {
 
         <div className="ms-auto flex w-full flex-col items-center md:w-1/2 md:flex-row gap-x-5">
           <Search onSearch={handleSearch} />
+          {canWrite ? (
           <LinkButton href="/permission/create">Create Permission</LinkButton>
+          ) : null}
         </div>
       </Card>
 
@@ -149,22 +158,26 @@ export default function Permission() {
                 <th className="border p-2">ROLE</th>
                 <th className="border p-2">NAME</th>
                 <th className="border p-2">PERMISSION-TYPE</th>
+                {canWrite ? (
                 <th className="border p-2">ACTIONS</th>
+                ) : null}
               </tr>
             </thead>
             <tbody>
               {data.map((e, index) => (
+                
                 <tr key={index}>
                   <td className="border p-2">{index + 1}</td>
                   <td className="border p-2">{e.type_name}</td>
                   <td className="border p-2">{e.permission_name}</td>
                   <td className="border p-2">
                     {e.permission.length > 0
-                      ? e.permission.map((permission, i) => (
-                          <li><span key={i}>{permission.type}</span></li>
+                      ? e.permission.slice(0,3).map((permission, i) => (
+                          <li><span key={i}>{`${permission.type}`}</span></li>
                         ))
                       : ''}
                   </td>
+                  {canWrite ? (
                   <td className="border p-2">
                   <td className="border p-2">
                   <Link href={`/permission/create?id=${e.id}`}>
@@ -173,9 +186,11 @@ export default function Permission() {
       <span>View</span>
     </button>
   </Link>
+ 
 </td>
 
 </td>
+ ) : null}
                 </tr>
               ))}
             </tbody>
