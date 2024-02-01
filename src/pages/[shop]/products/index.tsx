@@ -35,12 +35,15 @@ export default function ProductsPage() {
   const router = useRouter();
   const { permissions } = getAuthCredentials();
   const { data: me } = useMeQuery();
+  console.log('data-product-check', me)
   const {
     query: { shop },
   } = useRouter();
   const { data: shopData, isLoading: fetchingShop } = useShopQuery({
     slug: shop as string,
   });
+
+  
   const shopId = shopData?.id!;
   const { t } = useTranslation();
   const [searchTerm, setSearchTerm] = useState('');
@@ -102,6 +105,10 @@ export default function ProductsPage() {
   ) {
     router.replace(Routes.dashboard);
   }
+
+
+
+
 
   return (
     <>
