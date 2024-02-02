@@ -262,13 +262,15 @@ const CreatePermission = () => {
       console.log('permissionData', permissionData )
 
       setTypeName([permissionData.type_name]);
-      setPermissionName(permissionData.permission_name);
+      setPermissionName(permissionData.permissionName);
 
       const formattedPermissions = permissionData.permission.map((perm) => ({
         type: perm.type,
         read: perm.read,
         write: perm.write,
       }));
+
+      
       setSelectedPermissions(formattedPermissions);
     } catch (error) {
       console.error('Error fetching permission data:', error);
@@ -385,6 +387,7 @@ const CreatePermission = () => {
   };
   
   console.log('selectedType', selectedType)
+  console.log('permissionName', permissionName)
 
   return (
     <>
@@ -422,6 +425,7 @@ const CreatePermission = () => {
             name="permission"
             className={`mt-1 block w-full p-2 border rounded-md bg-gray-100 ${permissionError && 'border-red-500'}`}
             placeholder="Enter permissions"
+            value={permissionName}
             onChange={(e) => handlePermissionNameChange(e)}
           />
           {permissionError && <p className="text-red-500 text-sm mt-1">{permissionError}</p>}
