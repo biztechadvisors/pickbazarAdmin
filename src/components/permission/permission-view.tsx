@@ -11,8 +11,7 @@ import { ShopPaginator, SortOrder } from '@/types';
 import TitleWithSort from '@/components/ui/title-with-sort';
 import Link from '@/components/ui/link';
 import { Shop, MappedPaginatorInfo } from '@/types';
-import { newPermission } from '@/contexts/permission/storepermission';
-import { useAtom } from 'jotai';
+import { ViewPermission } from '@/data/client/permission';
 
 type IProps = {
   shops: Shop[] | undefined;
@@ -22,7 +21,7 @@ type IProps = {
   onOrder: (current: string) => void;
 };
 
-const ShopList = ({
+const PermissionView = ({
   shops,
   paginatorInfo,
   onPagination,
@@ -31,11 +30,7 @@ const ShopList = ({
 }: IProps) => {
   const { t } = useTranslation();
   const { alignLeft, alignRight } = useIsRTL();
-  const [getPermission,_]=useAtom(newPermission)
-  const canWrite = getPermission?.find(
-    (permission) => permission.type === 'sidebar-nav-item-shops'
-  )?.write;
-
+  console.log("ViewPermission",ViewPermission)
 
   const [sortingObj, setSortingObj] = useState<{
     sort: SortOrder;
@@ -93,7 +88,9 @@ const ShopList = ({
       align: alignLeft,
       onHeaderCell: () => onHeaderClick('name'),
       render: (name: any, { slug }: any) => (
+        
         <Link href={`/${slug}`}>
+           
           <span className="whitespace-nowrap">{name}</span>
         </Link>
       ),
@@ -163,8 +160,6 @@ const ShopList = ({
       ),
     },
     {
-      ...(canWrite
-      ?{
       title: t('table:table-item-actions'),
       dataIndex: 'id',
       key: 'actions',
@@ -179,8 +174,7 @@ const ShopList = ({
           />
         );
       },
-    }: null),
-  },
+    },
   ];
 
   return (
@@ -210,4 +204,6 @@ const ShopList = ({
   );
 };
 
-export default ShopList;
+
+
+export default PermissionView;

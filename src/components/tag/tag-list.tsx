@@ -10,6 +10,8 @@ import { Config } from '@/config';
 import Link from '@/components/ui/link';
 import { Routes } from '@/config/routes';
 import LanguageSwitcher from '@/components/ui/lang-action/action';
+import { newPermission } from '@/contexts/permission/storepermission';
+import { useAtom } from 'jotai';
 
 export type IProps = {
   tags: any | undefined | null;
@@ -28,6 +30,11 @@ const TagList = ({
 }: IProps) => {
   const { t } = useTranslation();
   const rowExpandable = (record: any) => record.children?.length;
+  
+  const [getPermission,_]=useAtom(newPermission)
+   const canWrite = getPermission?.find(
+    (permission) => permission.type === 'sidebar-nav-item-tags'
+  )?.write;
 
   const { alignLeft, alignRight } = useIsRTL();
 
@@ -100,19 +107,25 @@ const TagList = ({
       ),
     },
     {
-      title: t('table:table-item-actions'),
-      dataIndex: 'slug',
-      key: 'actions',
-      align: alignRight,
-      render: (slug: string, record: Tag) => (
-        <LanguageSwitcher
-          slug={slug}
-          record={record}
-          deleteModalView="DELETE_TAG"
-          routes={Routes?.tag}
-        />
-      ),
-    },
+      ...(canWrite
+      ? {
+        title: t('table:table-item-actions'),
+        dataIndex: 'slug',
+        key: 'actions',
+        align: alignRight,
+        render: (slug: string, record: Tag) => (
+          <LanguageSwitcher
+            slug={slug}
+            record={record}
+            deleteModalView="DELETE_TAG"
+            routes={Routes?.tag}
+          />
+          ),
+      }      
+      : null),
+      },
+    
+    
   ];
 
   return (

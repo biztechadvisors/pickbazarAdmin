@@ -35,12 +35,6 @@ export const Routes = {
   dealerlist: {
     ...routesFactory('/dealerlist'),
   },
-  totalsale: {
-    ...routesFactory('/total-sale'),
-  },
-  productsheet: {
-    ...routesFactory('/product-upload-excel'),
-  },
   reviews: {
     ...routesFactory('/reviews'),
   },
@@ -67,6 +61,9 @@ export const Routes = {
   },
   orderCreate: {
     ...routesFactory('/orders/create'),
+  },
+  permission: {
+    ...routesFactory('/permission'),
   },
   product: {
     ...routesFactory('/products'),
@@ -110,6 +107,7 @@ export const Routes = {
 };
 
 function routesFactory(endpoint: string) {
+  console.log("endpoint", endpoint)
   return {
     list: `${endpoint}`,
     create: `${endpoint}/create`,

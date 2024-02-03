@@ -18,6 +18,8 @@ import { Config } from '@/config';
 import { Routes } from '@/config/routes';
 import { useRouter } from 'next/router';
 import LanguageSwitcher from '@/components/ui/lang-action/action';
+import { newPermission } from '@/contexts/permission/storepermission';
+import { useAtom } from 'jotai';
 
 dayjs.extend(relativeTime);
 dayjs.extend(utc);
@@ -47,6 +49,11 @@ const CouponList = ({
     sort: SortOrder.Desc,
     column: null,
   });
+
+  const [getPermission,_]=useAtom(newPermission)
+   const canWrite = getPermission?.find(
+    (permission) => permission.type === 'sidebar-nav-item-coupons'
+  )?.write;
 
   const onHeaderClick = (column: string | null) => ({
     onClick: () => {
@@ -199,20 +206,26 @@ const CouponList = ({
         </span>
       ),
     },
+    
     {
-      title: t('table:table-item-actions'),
-      dataIndex: 'code',
-      key: 'actions',
-      align: 'right',
-      render: (slug: string, record: Coupon) => (
-        <LanguageSwitcher
-          slug={slug}
-          record={record}
-          deleteModalView="DELETE_COUPON"
-          routes={Routes?.coupon}
-        />
-      ),
-    },
+      ...(canWrite
+      ?
+      {
+        title: t('table:table-item-actions'),
+        dataIndex: 'code',
+        key: 'actions',
+        align: 'right',
+        render: (slug: string, record: Coupon) =>  (
+          <LanguageSwitcher
+            slug={slug}
+            record={record}
+            deleteModalView="DELETE_COUPON"
+            routes={Routes?.coupon}
+          />
+          ) 
+      }
+      : null),
+      },
   ];
 
   return (

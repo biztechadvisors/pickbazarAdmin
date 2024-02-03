@@ -127,7 +127,6 @@ const DealerList = ({ users, onSort, onOrder }: IProps) => {
       onHeaderCell: () => onHeaderClick('walletPoints'),
       render: (dealer: any) => <span className="whitespace-nowrap">{dealer ? dealer.walletBalance : 0}</span>,
     },    
-
     {
       title: t('table:table-item-actions'),
       dataIndex: 'slug',

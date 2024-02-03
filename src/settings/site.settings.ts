@@ -1,7 +1,19 @@
-import { adminAndOwnerOnly, adminOwnerAndStaffOnly } from '@/utils/auth-utils';
+import { adminAndOwnerOnly, adminOwnerAndStaffOnly, type_names} from '@/utils/auth-utils';
 import { Routes } from '@/config/routes';
+import { useAtom } from 'jotai';
+import { filterPermission, permissionAtom } from '@/contexts/permission/storepermission';
+import React from 'react';
+
+const Type = {
+Dealer : "dealer", 
+Admin : "admin",
+Customer : "customer",
+Staff : "staff"
+}
 
 export const siteSettings = {
+
+
   name: 'PickBazar',
   description: '',
   logo: {
@@ -32,7 +44,7 @@ export const siteSettings = {
   sidebarLinks: {
     admin: [
       {
-        href: Routes.dashboard,
+        href:  Routes.dashboard,
         label: 'sidebar-nav-item-dashboard',
         icon: 'DashboardIcon',
       },
@@ -66,26 +78,33 @@ export const siteSettings = {
         label: 'sidebar-nav-item-categories',
         icon: 'CategoriesIcon',
       },
-      {
-        href: Routes.productsheet.list,
-        label: 'Product Sheet',
-        icon: 'UploadIcon',
-      },
+      // {
+      //   href: Routes.productsheet.list,
+      //   label: 'Product Sheet',
+      //   icon: 'UploadIcon',
+      // },
       {
         href: Routes.tag.list,
         label: 'sidebar-nav-item-tags',
         icon: 'TagIcon',
       },
+
       {
         href: Routes.dealerlist.list,
         label: 'sidebar-nav-item-dealerlist',
         icon: 'DealerListIcon',
       },
+      
       {
-        href: Routes.totalsale.list,
-        label: 'sidebar-nav-item-total-sale',
-        icon: 'TotalSaleIcon',
+        href: Routes.dealerlist.list,
+        label: 'sidebar-nav-item-dealerlist',
+        icon: 'DealerListIcon',
       },
+      // {
+      //   href: Routes.totalsale.list,
+      //   label: 'sidebar-nav-item-total-sale',
+      //   icon: 'TotalSaleIcon',
+      // },
       {
         href: Routes.manufacturer.list,
         label: 'sidebar-nav-item-manufacturers',
@@ -104,6 +123,11 @@ export const siteSettings = {
       {
         href: Routes.order.create,
         label: 'sidebar-nav-item-create-order',
+        icon: 'CalendarScheduleIcon',
+      },
+      {
+        href: Routes.permission.list,
+        label: 'sidebar-nav-item-permission',
         icon: 'CalendarScheduleIcon',
       },
       {
@@ -135,11 +159,16 @@ export const siteSettings = {
         href: Routes.message.list,
         label: 'sidebar-nav-item-message',
         icon: 'ChatIcon',
-      },
+      },      
       {
         href: Routes.refund.list,
         label: 'sidebar-nav-item-refunds',
         icon: 'RefundsIcon',
+      },
+      {
+        href: Routes.staff.list,
+        label: 'sidebar-nav-item-staffs',
+        icon: 'UsersIcon',        
       },
       {
         href: Routes.question.list,
@@ -236,6 +265,27 @@ export const siteSettings = {
         permissions: adminAndOwnerOnly,
       },
     ],
+    // dealer: [
+    //   {
+    //     href: (dealer: string) => `${Routes.dashboard}${dealer}`,
+    //     label: 'sidebar-nav-item-dashboard',
+    //     icon: 'DashboardIcon',
+    //     permissions: adminOwnerAndStaffOnly,
+    //   },      
+    //   {
+    //     href: (dealer: string) => `/${dealer}${Routes.product.list}`,
+    //     label: 'sidebar-nav-item-products',
+    //     icon: 'ProductsIcon',
+    //     permissions: adminOwnerAndStaffOnly,
+    //   },      
+    //   {
+    //     href: (dealer: string) => `/${dealer}${Routes.order.list}`,
+    //     label: 'sidebar-nav-item-orders',
+    //     icon: 'OrdersIcon',
+    //     permissions: adminOwnerAndStaffOnly,
+    //   },
+      
+    // ],
   },
   product: {
     placeholder: '/product-placeholder.svg',

@@ -19,6 +19,8 @@ import { useState } from 'react';
 import { SortOrder } from '@/types';
 import { Routes } from '@/config/routes';
 import { useMeQuery } from '@/data/user';
+import { useAtom } from 'jotai';
+import { newPermission } from '@/contexts/permission/storepermission';
 
 export default function WithdrawsPage() {
   const router = useRouter();
@@ -35,6 +37,11 @@ export default function WithdrawsPage() {
     slug: shop as string,
   });
   const shopId = shopData?.id!;
+
+  const [getPermission,_]=useAtom(newPermission)
+  const canWrite = getPermission?.find(
+   (permission) => permission.type === 'sidebar-nav-item-withdraws'
+ )?.write;
 
   const { withdraws, paginatorInfo, loading, error } = useWithdrawsQuery(
     {
@@ -72,13 +79,14 @@ export default function WithdrawsPage() {
             {t('common:sidebar-nav-item-withdraws')}
           </h1>
         </div>
-
+        {canWrite ? (
         <LinkButton
           href={`/${shop}/withdraws/create`}
           className="h-12 w-full md:w-auto md:ms-auto"
         >
           <span>+ {t('form:button-label-add-withdraw')}</span>
         </LinkButton>
+         ) : null}
       </Card>
 
       <WithdrawList

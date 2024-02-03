@@ -8,6 +8,8 @@ import { Config } from '@/config';
 import Link from '@/components/ui/link';
 import { Routes } from '@/config/routes';
 import LanguageSwitcher from '@/components/ui/lang-action/action';
+import { useAtom } from 'jotai';
+import { newPermission } from '@/contexts/permission/storepermission';
 
 export type IProps = {
   attributes: Attribute[] | undefined;
@@ -30,6 +32,11 @@ const AttributeList = ({ attributes, onSort, onOrder }: IProps) => {
     sort: SortOrder.Desc,
     column: null,
   });
+
+  const [getPermission,_]=useAtom(newPermission) 
+   const canWrite = getPermission?.find(
+    (permission) => permission.type === 'sidebar-nav-item-attributes'
+  )?.write;
 
   const onHeaderClick = (column: string | null) => ({
     onClick: () => {
@@ -100,20 +107,26 @@ const AttributeList = ({ attributes, onSort, onOrder }: IProps) => {
         );
       },
     },
-    {
-      title: t('table:table-item-actions'),
-      dataIndex: 'slug',
-      key: 'actions',
-      align: alignRight,
-      render: (slug: string, record: Attribute) => (
-        <LanguageSwitcher
-          slug={slug}
-          record={record}
-          deleteModalView="DELETE_ATTRIBUTE"
-          routes={Routes?.attribute}
-        />
-      ),
-    },
+    {      
+      ...(canWrite
+        ? {
+          title: t('table:table-item-actions'),
+          dataIndex: 'slug',
+          key: 'actions',
+          align: alignRight,
+          render: (slug: string, record: Attribute) =>  (
+            <LanguageSwitcher
+              slug={slug}
+              record={record}
+              deleteModalView="DELETE_ATTRIBUTE"
+              routes={Routes?.attribute}
+            />
+            ),
+        }
+        
+        : null),
+    },    
+    
   ];
 
   if (router?.query?.shop) {

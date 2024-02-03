@@ -6,6 +6,10 @@ import { AddToCart } from '@/components/cart/add-to-cart/add-to-cart';
 import { useTranslation } from 'next-i18next';
 import { PlusIcon } from '@/components/icons/plus-icon';
 import { Product, ProductType } from '@/types';
+import React, { useState } from 'react';
+import { useAtom } from 'jotai';
+import { newPermission } from '@/contexts/permission/storepermission';
+
 
 interface Props {
   item: Product;
@@ -40,6 +44,11 @@ const ProductCard = ({ item }: Props) => {
   });
 
   const { openModal } = useModalAction();
+
+  const [getPermission,_]=useAtom(newPermission)
+   const canWrite = getPermission?.find(
+    (permission) => permission.type === 'sidebar-nav-item-tags'
+  )?.write;
 
   function handleVariableProduct() {
     return openModal('SELECT_PRODUCT_VARIATION', slug);
@@ -106,9 +115,12 @@ const ProductCard = ({ item }: Props) => {
             )}
           </>
         ) : (
-          <>
-            {Number(quantity) > 0 && <AddToCart variant="neon" data={item} />}
-          </>
+          canWrite && (
+            <>
+              {Number(quantity) > 0 && <AddToCart variant="neon" data={item} />}
+            </>
+          )
+          
         )}
 
         {Number(quantity) <= 0 && (

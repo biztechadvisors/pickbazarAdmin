@@ -6,6 +6,8 @@ import { useTranslation } from 'next-i18next';
 import { useIsRTL } from '@/utils/locals';
 import { useState } from 'react';
 import TitleWithSort from '@/components/ui/title-with-sort';
+import { useAtom } from 'jotai';
+import { newPermission } from '@/contexts/permission/storepermission';
 
 export type IProps = {
   shippings: Shipping[] | undefined;
@@ -15,6 +17,10 @@ export type IProps = {
 const ShippingList = ({ shippings, onSort, onOrder }: IProps) => {
   const { t } = useTranslation();
   const { alignLeft } = useIsRTL();
+  const [getPermission,_]=useAtom(newPermission)
+   const canWrite = getPermission?.find(
+    (permission) => permission.type === 'sidebar-nav-item-shippings'
+  )?.write;
 
   const [sortingObj, setSortingObj] = useState<{
     sort: SortOrder;
@@ -105,20 +111,25 @@ const ShippingList = ({ shippings, onSort, onOrder }: IProps) => {
       align: 'center',
       onHeaderCell: () => onHeaderClick('type'),
     },
+    
     {
-      title: t('table:table-item-actions'),
-      dataIndex: 'id',
-      key: 'actions',
-      align: 'right',
-      render: (id: string) => (
-        <ActionButtons
-          id={id}
-          editUrl={`${Routes.shipping.list}/edit/${id}`}
-          deleteModalView="DELETE_SHIPPING"
-        />
-      ),
-      width: 200,
-    },
+      ...(canWrite
+      ?{
+        title: t('table:table-item-actions'),
+        dataIndex: 'id',
+        key: 'actions',
+        align: 'right',
+        render: (id: string) =>  (
+          <ActionButtons
+            id={id}
+            editUrl={`${Routes.shipping.list}/edit/${id}`}
+            deleteModalView="DELETE_SHIPPING"
+          />
+          ),
+        width: 200,
+      }      
+      : null),
+      },
   ];
 
   return (

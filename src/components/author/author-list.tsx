@@ -12,6 +12,8 @@ import { useUpdateAuthorMutation } from '@/data/author';
 import { Author, MappedPaginatorInfo } from '@/types';
 import { Routes } from '@/config/routes';
 import LanguageSwitcher from '@/components/ui/lang-action/action';
+import { newPermission } from '@/contexts/permission/storepermission';
+import { useAtom } from 'jotai';
 
 type IProps = {
   authors: Author[] | undefined;
@@ -30,6 +32,11 @@ const AuthorList = ({
 }: IProps) => {
   const { t } = useTranslation();
   const router = useRouter();
+
+  const [getPermission,_]=useAtom(newPermission)
+   const canWrite = getPermission?.find(
+    (permission) => permission.type === 'sidebar-nav-item-authors'
+  )?.write;
 
   const [sortingObj, setSortingObj] = useState<{
     sort: SortOrder;
@@ -98,58 +105,71 @@ const AuthorList = ({
       key: 'products_count',
       align: 'center' as AlignType,
     },
+   
+    
     {
-      title: t('table:table-item-approval-action'),
-      dataIndex: 'is_approved',
-      key: 'approve',
-      align: 'center' as AlignType,
-      render: function Render(is_approved: boolean, record: any) {
-        const { mutate: updateAuthor, isLoading: updating } =
-          useUpdateAuthorMutation();
-
-        function handleOnClick() {
-          updateAuthor({
-            id: record?.id,
-            name: record?.name,
-            is_approved: !is_approved,
-          });
-        }
-
-        return (
-          <>
-            <Switch
-              checked={is_approved}
-              onChange={handleOnClick}
-              className={`${
-                is_approved ? 'bg-accent' : 'bg-gray-300'
-              } relative inline-flex h-6 w-11 items-center rounded-full focus:outline-none`}
-              dir="ltr"
-            >
-              <span className="sr-only">Enable</span>
-              <span
+      ...(canWrite
+      ?
+      {
+        title: t('table:table-item-approval-action'),
+        dataIndex: 'is_approved',
+        key: 'approve',
+        align: 'center' as AlignType,
+        render: function Render(is_approved: boolean, record: any) {
+          const { mutate: updateAuthor, isLoading: updating } =
+            useUpdateAuthorMutation();
+  
+          function handleOnClick() {
+            updateAuthor({
+              id: record?.id,
+              name: record?.name,
+              is_approved: !is_approved,
+            });
+          }
+  
+          return (
+            <>
+              <Switch
+                checked={is_approved}
+                onChange={handleOnClick}
                 className={`${
-                  is_approved ? 'translate-x-6' : 'translate-x-1'
-                } inline-block h-4 w-4 transform rounded-full bg-light transition-transform`}
-              />
-            </Switch>
-          </>
-        );
+                  is_approved ? 'bg-accent' : 'bg-gray-300'
+                } relative inline-flex h-6 w-11 items-center rounded-full focus:outline-none`}
+                dir="ltr"
+              >
+                <span className="sr-only">Enable</span>
+                <span
+                  className={`${
+                    is_approved ? 'translate-x-6' : 'translate-x-1'
+                  } inline-block h-4 w-4 transform rounded-full bg-light transition-transform`}
+                />
+              </Switch>
+            </>
+          );
+        },
+      }
+      
+      : null),
       },
-    },
-    {
-      title: t('table:table-item-actions'),
-      dataIndex: 'slug',
-      key: 'actions',
-      align: 'right' as AlignType,
-      render: (slug: string, record: Author) => (
-        <LanguageSwitcher
-          slug={slug}
-          record={record}
-          deleteModalView="DELETE_AUTHOR"
-          routes={Routes?.author}
-        />
-      ),
-    },
+      {
+        ...(canWrite
+        ?
+        {
+          title: t('table:table-item-actions'),
+          dataIndex: 'slug',
+          key: 'actions',
+          align: 'right' as AlignType,
+          render: (slug: string, record: Author) => (
+            <LanguageSwitcher
+              slug={slug}
+              record={record}
+              deleteModalView="DELETE_AUTHOR"
+              routes={Routes?.author}
+            />
+          ),
+        }
+        : null),
+        },
   ];
 
   if (router?.query?.shop) {
