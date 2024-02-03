@@ -10,12 +10,12 @@ import React, { useState } from 'react';
 import { useAtom } from 'jotai';
 import { newPermission } from '@/contexts/permission/storepermission';
 
-
 interface Props {
   item: Product;
+  showMargins: boolean;
 }
 
-const ProductCard = ({ item }: Props) => {
+const ProductCard = ({ item, showMargins }: Props) => {
   const { t } = useTranslation();
   const {
     slug,
@@ -27,6 +27,7 @@ const ProductCard = ({ item }: Props) => {
     max_price,
     min_price,
     sale_price,
+    margin,
   } = item ?? {};
   const {
     price: currentPrice,
@@ -45,8 +46,8 @@ const ProductCard = ({ item }: Props) => {
 
   const { openModal } = useModalAction();
 
-  const [getPermission,_]=useAtom(newPermission)
-   const canWrite = getPermission?.find(
+  const [getPermission, _] = useAtom(newPermission);
+  const canWrite = getPermission?.find(
     (permission) => permission.type === 'sidebar-nav-item-tags'
   )?.write;
 
@@ -67,6 +68,16 @@ const ProductCard = ({ item }: Props) => {
           sizes="(max-width: 768px) 100vw"
           className="product-image object-contain"
         />
+
+        {showMargins && (
+          <div className="absolute top-2 right-2">
+            <div className="flex items-center space-x-2 rounded-md bg-green-600 p-2 text-light">
+              <span className="text-xs md:text-sm">${margin}</span>
+              {/* <span className="text-xs md:text-sm">{t('margin')}</span> */}
+            </div>
+          </div>
+        )}
+
         {discount && (
           <div className="absolute top-3 rounded bg-accent px-1.5 text-xs font-semibold leading-6 text-light end-3 sm:px-2 md:top-4 md:px-2.5 md:end-4">
             {discount}
@@ -120,7 +131,6 @@ const ProductCard = ({ item }: Props) => {
               {Number(quantity) > 0 && <AddToCart variant="neon" data={item} />}
             </>
           )
-          
         )}
 
         {Number(quantity) <= 0 && (

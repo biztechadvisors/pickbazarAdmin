@@ -102,10 +102,7 @@ export const useProductQuery = ({ slug, language }: GetParams) => {
   };
 };
 
-export const useProductsQuery = (
-  params: Partial<ProductQueryOptions>,
-  options: any = {}
-) => {
+export const useProductsQuery = (params: Partial<ProductQueryOptions>,options: any = {}) => {
   const { data, error, isLoading } = useQuery<ProductPaginator, Error>(
     [API_ENDPOINTS.PRODUCTS, params],
     ({ queryKey, pageParam }) =>

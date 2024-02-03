@@ -34,6 +34,8 @@ export default function CreateAttributePage() {
     router.replace(Routes.dashboard);
   }
 
+  console.log('me', me )
+
   return (
     <>
       <div className="flex py-5 border-b border-dashed border-border-base sm:py-8">

@@ -603,6 +603,7 @@ export interface Product {
   created_at: string;
   updated_at: string;
   ratings: number;
+  margin:string
 }
 
 export interface CreateProduct {
@@ -1456,6 +1457,7 @@ export interface ProductQueryOptions extends QueryOptions {
   max_price: string;
   rating: string;
   question: string;
+  userId: string;
 }
 
 export interface UserQueryOptions extends QueryOptions {

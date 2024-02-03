@@ -6,7 +6,7 @@ import * as yup from 'yup';
 import Link from '@/components/ui/link';
 import Form from '@/components/ui/forms/form';
 import { Routes } from '@/config/routes';
-import { useLogin } from '@/data/user';
+import { useLogin, useMeQuery } from '@/data/user';
 import type { LoginInput } from '@/types';
 import { useEffect, useState } from 'react';
 import Alert from '@/components/ui/alert';
@@ -32,7 +32,7 @@ const LoginForm = () => {
   const { t } = useTranslation();
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const { mutate: login, isLoading, error } = useLogin();
-  const [_, setPermissionState] = useAtom(newPermission);  
+  const [_, setPermissionState] = useAtom(newPermission);
   
   console.log('login')
   console.log(isLoading)

@@ -22,9 +22,11 @@ import { Product, ProductStatus } from '@/types';
 import { useProductsQuery } from '@/data/product';
 import NotFound from '@/components/ui/not-found';
 import { useRouter } from 'next/router';
-import {useSettings} from "@/contexts/settings.context";
+import { useSettings } from '@/contexts/settings.context';
 import { newPermission } from '@/contexts/permission/storepermission';
 import { useAtom } from 'jotai';
+import { useMeQuery } from '@/data/user';
+import { EyeIcon, EyeOffIcon } from '@heroicons/react/solid';
 
 export default function ProductsPage() {
   const { locale } = useRouter();
@@ -38,6 +40,13 @@ export default function ProductsPage() {
   const toggleVisible = () => {
     setVisible((v) => !v);
   };
+
+  const { data: meData } = useMeQuery();
+
+  const userId = meData?.dealer?.id;
+
+  const [showMargins, setShowMargins] = useState(false);
+
   const { products, loading, paginatorInfo, error } = useProductsQuery({
     limit: 18,
     language: locale,
@@ -46,10 +55,13 @@ export default function ProductsPage() {
     page,
     type,
     categories: category,
+    userId,
   });
 
-  const [getPermission,_]=useAtom(newPermission) 
-   const canWrite = getPermission?.find(
+  console.log('products', products);
+
+  const [getPermission, _] = useAtom(newPermission);
+  const canWrite = getPermission?.find(
     (permission) => permission.type === 'sidebar-nav-item-create-order'
   )?.write;
 
@@ -64,9 +76,24 @@ export default function ProductsPage() {
     setPage(current);
   }
 
-  // const { products } = data;
+  const renderMarginsButton = userId && (
+    <button
+      className="hover:text-accent-dark mt-5 mb-5 flex items-center whitespace-nowrap text-base font-semibold text-accent transition-colors duration-300 md:mt-0"
+      onClick={() => setShowMargins((prev) => !prev)}
+    >
+      <span className="mr-2">
+        {showMargins ? (
+          <EyeOffIcon className="h-5 w-5" />
+        ) : (
+          <EyeIcon className="h-5 w-5" />
+        )}
+      </span>
+      {showMargins ? 'Hide Margins' : 'Show Margins'}
+    </button>
+  );
   return (
     <>
+      {renderMarginsButton}
       <Card className="mb-8 flex flex-col">
         <div className="flex w-full flex-col items-center md:flex-row">
           <div className="mb-4 md:mb-0 md:w-1/4">
@@ -75,12 +102,12 @@ export default function ProductsPage() {
             </h1>
           </div>
 
-          <div className="ms-auto flex w-full flex-col items-center md:w-3/4">
+          <div className="flex w-full flex-col items-center ms-auto md:w-3/4">
             <Search onSearch={handleSearch} />
           </div>
 
           <button
-            className="md:ms-5 mt-5 flex items-center whitespace-nowrap text-base font-semibold text-accent md:mt-0"
+            className="mt-5 flex items-center whitespace-nowrap text-base font-semibold text-accent md:mt-0 md:ms-5"
             onClick={toggleVisible}
           >
             {t('common:text-filter')}{' '}
@@ -118,7 +145,11 @@ export default function ProductsPage() {
       <div className="flex space-x-5">
         <div className="grid w-full grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-2 xl:grid-cols-4 3xl:grid-cols-6">
           {products?.map((product: Product) => (
-            <ProductCard key={product.id} item={product} />
+            <ProductCard
+              key={product.id}
+              item={product}
+              showMargins={showMargins}
+            />
           ))}
         </div>
       </div>
@@ -137,10 +168,8 @@ export default function ProductsPage() {
             />
           </div>
         )}
-      </div> 
-      {canWrite ? (     
-      <CartCounterButton />
-      ) : null}
+      </div>
+      {canWrite ? <CartCounterButton /> : null}
       <Drawer
         open={displayCartSidebar}
         onClose={closeCartSidebar}
