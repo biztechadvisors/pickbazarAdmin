@@ -32,9 +32,6 @@ export default function Customers() {
   });
 
   const [getPermission,_]=useAtom(newPermission)
-   const canWrite = getPermission?.find(
-    (permission) => permission.type === 'sidebar-nav-item-users'
-  )?.write;
 
   if (loading) return <Loader text={t('common:text-loading')} />;
   if (error) return <ErrorMessage message={error.message} />;

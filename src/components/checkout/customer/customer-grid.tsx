@@ -15,6 +15,8 @@ const CustomerGrid = ({ label, count, className }: CustomerProps) => {
   const { openModal } = useModalAction();
   const { t } = useTranslation('common');
 
+  console.log("hello customer", customer)
+
   function onAddOrChange() {
     openModal('SELECT_CUSTOMER');
   }
