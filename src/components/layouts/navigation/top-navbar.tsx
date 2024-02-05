@@ -14,15 +14,15 @@ import {
 import LanguageSwitcher from './language-switer';
 import { Config } from '@/config';
 import React, { useState } from 'react';
+import { newPermission } from '@/contexts/permission/storepermission';
+import { useAtom } from 'jotai';
 
 const Navbar = () => {
   const { t } = useTranslation();
   const { toggleSidebar } = useUI();
-
-  const [matchedData, setMatchedLinks] = useState<any[]>(
-    JSON.parse(localStorage.getItem('matchedData') || '[]')
-  );
-   const canWrite = matchedData?.find(
+ 
+  const [getPermission,_]=useAtom(newPermission)
+   const canWrite = getPermission?.find(
     (permission) => permission.type === 'sidebar-nav-item-dashboard'
   )?.write;
 
