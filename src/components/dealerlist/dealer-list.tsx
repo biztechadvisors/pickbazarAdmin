@@ -126,7 +126,41 @@ const DealerList = ({ users, onSort, onOrder }: IProps) => {
       align: alignLeft,
       onHeaderCell: () => onHeaderClick('walletPoints'),
       render: (dealer: any) => <span className="whitespace-nowrap">{dealer ? dealer.walletBalance : 0}</span>,
-    },    
+    }, 
+    
+    {
+      title: t('table:table-item-permissions'),
+      dataIndex: 'permissions',
+      key: 'permissions',
+      align: 'center',
+      render: (permissions: any, record: any) => {
+        return (
+          <div>
+            {permissions?.map(({ name }: { name: string }) => name).join(', ')}
+          </div>
+        );
+      },
+    },
+
+    {
+      title: (
+        <TitleWithSort
+          title={t('table:table-item-status')}
+          ascending={
+            sortingObj.sort === SortOrder.Asc &&
+            sortingObj.column === 'is_active'
+          }
+          isActive={sortingObj.column === 'is_active'}
+        />
+      ),
+      className: 'cursor-pointer',
+      dataIndex: 'is_active',
+      key: 'is_active',
+      align: 'center',
+      onHeaderCell: () => onHeaderClick('is_active'),
+      render: (is_active: boolean) => (is_active ? 'Active' : 'Inactive'),
+    },
+    
     {
       title: t('table:table-item-actions'),
       dataIndex: 'slug',

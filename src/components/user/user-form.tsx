@@ -11,6 +11,7 @@ import { customerValidationSchema } from './user-validation-schema';
 import { Permission } from '@/types';
 import Select from '../ui/select/select';
 import Label from '../ui/label';
+import { useRouter } from 'next/router';
 
 type FormValues = {
   name: string;
@@ -28,6 +29,7 @@ const defaultValues = {
 
 const CustomerCreateForm = () => {
   const { t } = useTranslation();
+  const router = useRouter();
   const { mutate: registerUser, isLoading: loading } = useRegisterMutation();
 
   const {
@@ -58,7 +60,7 @@ const CustomerCreateForm = () => {
         name,
         email,
         password,
-        type: type.value, 
+        type: type.value,
         permission: Permission.StoreOwner,
       },
       {
@@ -129,7 +131,18 @@ const CustomerCreateForm = () => {
         </Card >
       </div >
 
+
+
       <div className="text-end mb-4">
+        <Button
+          variant="outline"
+          onClick={router.back}
+          className="me-4"
+          type="button"
+        >
+          {t('form:button-label-back')}
+        </Button>
+
         <Button loading={loading} disabled={loading}>
           {t('form:form-title-create-user')}
         </Button>

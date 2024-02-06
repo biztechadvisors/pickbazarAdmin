@@ -214,6 +214,7 @@ import { useTranslation } from 'react-i18next';
 import axios from 'axios';
 import { useRouter } from 'next/router';
 import { ToastContainer, toast } from 'react-toastify';
+import Button from '@/components/ui/button';
 
 const CreatePermission = () => {
   const router = useRouter();
@@ -473,12 +474,20 @@ const CreatePermission = () => {
         </div>
       </div>
       <div className="flex justify-end">
-        <button
+      <Button
+          variant="outline"
+          onClick={router.back}
+          className="m-4"
+          type="button"
+        >
+          {t('form:button-label-back')}
+        </Button>
+        <Button
           onClick={handleSavePermission}
-          className="mt-4 px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-400 cursor-pointer text-left"
+          className="mt-4"
         >
           Save Permission
-        </button>
+        </Button>
       </div>
     </>
   );

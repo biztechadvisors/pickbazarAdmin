@@ -542,7 +542,7 @@ export default function CreateOrUpdateProductForm({
             />
           )}
           <div className="mb-4 text-end">
-            {initialValues && (
+            
               <Button
                 variant="outline"
                 onClick={router.back}
@@ -551,7 +551,7 @@ export default function CreateOrUpdateProductForm({
               >
                 {t('form:button-label-back')}
               </Button>
-            )}
+            
             <Button loading={updating || creating}>
               {initialValues
                 ? t('form:button-label-update-product')

@@ -14,6 +14,7 @@ interface CartProviderState extends State {
   isInStock: (id: Item['id']) => boolean;
   resetCart: () => void;
 }
+
 export const cartContext = React.createContext<CartProviderState | undefined>(
   undefined
 );

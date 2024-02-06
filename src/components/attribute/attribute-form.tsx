@@ -183,7 +183,7 @@ export default function CreateOrUpdateAttributeForm({ initialValues }: IProps) {
         </div>
 
         <div className="text-end mb-4">
-          {initialValues && (
+          {/* {initialValues && ( */}
             <Button
               variant="outline"
               onClick={router.back}
@@ -192,7 +192,7 @@ export default function CreateOrUpdateAttributeForm({ initialValues }: IProps) {
             >
               {t('form:button-label-back')}
             </Button>
-          )}
+          {/* )} */}
 
           <Button loading={creating || updating}>
             {initialValues

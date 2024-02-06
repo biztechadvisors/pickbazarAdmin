@@ -175,11 +175,18 @@ const Withdraw = () => {
             <div className="mb-2 text-sm font-semibold text-heading">
               <span>{t('common:text-note')} :</span>
             </div>
-
             <span className="text-sm text-body">{withdraw?.note}</span>
           </Card>
         )}
       </div>
+      <Button
+          variant="outline"
+          onClick={router.back}
+          className="mt-5"
+          type="button"
+        >
+          {t('form:button-label-back')}
+        </Button>
     </>
   );
 };
