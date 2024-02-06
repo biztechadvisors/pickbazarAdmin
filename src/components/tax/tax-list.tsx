@@ -1,3 +1,4 @@
+
 import { AlignType, Table } from '@/components/ui/table';
 import ActionButtons from '@/components/common/action-buttons';
 import { SortOrder, Tax } from '@/types';
@@ -15,12 +16,6 @@ export type IProps = {
 const TaxList = ({ taxes, onSort, onOrder }: IProps) => {
   const { t } = useTranslation();
   const { alignLeft } = useIsRTL();
-  const [matchedData, setMatchedLinks] = useState<any[]>(
-    JSON.parse(localStorage.getItem('matchedData') || '[]')
-  );
-   const canWrite = matchedData?.find(
-    (permission) => permission.type === 'sidebar-nav-item-taxes'
-  )?.write;
 
   const [sortingObj, setSortingObj] = useState<{
     sort: SortOrder;
@@ -89,52 +84,104 @@ const TaxList = ({ taxes, onSort, onOrder }: IProps) => {
     {
       title: (
         <TitleWithSort
-          title={t('table:table-item-country')}
+          title={t('table:table-item-hsn_no')}
           ascending={
             sortingObj.sort === SortOrder.Asc && sortingObj.column === 'country'
           }
-          isActive={sortingObj.column === 'country'}
+          isActive={sortingObj.column === 'hsn'}
         />
       ),
       className: 'cursor-pointer',
-      dataIndex: 'country',
-      key: 'country',
+      dataIndex: 'hsn_no',
+      key: 'hsn_no',
       align: 'center' as AlignType,
-      onHeaderCell: () => onHeaderClick('country'),
+      onHeaderCell: () => onHeaderClick('hsn'),
     },
     {
-      title: t('table:table-item-city'),
-      dataIndex: 'city',
-      key: 'city',
-      align: 'center' as AlignType,
-    },
-    {
-      title: t('table:table-item-state'),
-      dataIndex: 'state',
-      key: 'state',
+
+      // title:`${t('table:table-item-cgst')} (%)
+      title: `${t('table:table-item-cgst')} (%)`,
+      dataIndex: 'cgst',
+      key: 'cgst',
       align: 'center' as AlignType,
     },
     {
-      title: t('table:table-item-zip'),
-      dataIndex: 'zip',
-      key: 'zip',
+      title: `${t('table:table-item-sgst')} (%)`,
+      dataIndex: 'sgst',
+      key: 'sgst',
       align: 'center' as AlignType,
     },
+    {
+      title: t('table:table-item-gst_Name'),
+      dataIndex: 'gst_Name',
+      key: 'gst_Name',
+      align: 'center' as AlignType,
+    },
+    // {
+    //   title: t('table:table-item-compensatoin'),
+    //   dataIndex: 'compensatoin_cess',
+    //   key: 'compensatoin_cess',
+    //   align: 'center' as AlignType,
+    // },
+    // {
+    //   title: t('table:table-item-sac_no'),
+    //   dataIndex: 'sac_no',
+    //   key: 'sac_no',
+    //   align: 'center' as AlignType,
+    // },
+
+
+
+
+
+
+
+    // {
+    //   title: (
+    //     <TitleWithSort
+    //       title={t('table:table-item-country')}
+    //       ascending={
+    //         sortingObj.sort === SortOrder.Asc && sortingObj.column === 'country'
+    //       }
+    //       isActive={sortingObj.column === 'country'}
+    //     />
+    //   ),
+    //   className: 'cursor-pointer',
+    //   dataIndex: 'country',
+    //   key: 'country',
+    //   align: 'center' as AlignType,
+    //   onHeaderCell: () => onHeaderClick('country'),
+    // },
+    // {
+    //   title: t('table:table-item-city'),
+    //   dataIndex: 'city',
+    //   key: 'city',
+    //   align: 'center' as AlignType,
+    // },
+    // {
+    //   title: t('table:table-item-state'),
+    //   dataIndex: 'state',
+    //   key: 'state',
+    //   align: 'center' as AlignType,
+    // },
+    // {
+    //   title: t('table:table-item-zip'),
+    //   dataIndex: 'zip',
+    //   key: 'zip',
+    //   align: 'center' as AlignType,
+    // },
     {
       title: t('table:table-item-actions'),
       dataIndex: 'id',
       key: 'actions',
       align: 'right' as AlignType,
-      render: (id: string) => {
-        // Check if 'write' permission is true before rendering the column
-        return canWrite ? (
+      render: (id: string) => (
         <ActionButtons
           id={id}
           editUrl={`${Routes.tax.list}/edit/${id}`}
           deleteModalView="DELETE_TAX"
         />
-        ) : null;
-      },
+      ),
       width: 200,
     },
   ];
