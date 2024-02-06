@@ -17,7 +17,7 @@ import {
   setAuthCredentials,
 } from '@/utils/auth-utils';
 import { useAtom } from 'jotai';
-import { filterPermission, newPermission, permissionAtom } from '@/contexts/permission/storepermission';
+import { filterPermission, newPermission, permissionAtom, typeName } from '@/contexts/permission/storepermission';
 import { siteSettings } from '@/settings/site.settings';
 
 const loginFormSchema = yup.object().shape({
@@ -33,6 +33,7 @@ const LoginForm = () => {
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const { mutate: login, isLoading, error } = useLogin();
   const [_, setPermissionState] = useAtom(newPermission);  
+  // const [__, setTypeNameState] = useAtom(typeName); 
   
   console.log('login')
   console.log(isLoading)
@@ -48,12 +49,13 @@ const LoginForm = () => {
       },
       {
         onSuccess: (data) => {
-          // console.log('data',data?.type_name)
+          console.log('data2',data)
           // console.log("data?.permissions",data?.permissions)
           if (data?.token) {
             if (hasAccess(allowedRoles, data?.type_name)) {
               // console.log(allowedRoles, data?.type_name,"allowedRoles, data?.type_name")          
-              setPermissionState(data?.permissions);             
+              setPermissionState(data?.permissions);
+              // setTypeNameState(data?.type_name);             
               setAuthCredentials(data?.token,data?.permissions, data?.type_name);
               Router.push(Routes.dashboard);
               return;

@@ -4,13 +4,17 @@ import PasswordInput from '@/components/ui/password-input';
 import { Controller, useForm } from 'react-hook-form';
 import Card from '@/components/common/card';
 import Description from '@/components/ui/description';
-import { useRegisterMutation } from '@/data/user';
+import { useMeQuery, useRegisterMutation } from '@/data/user';
 import { useTranslation } from 'next-i18next';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { customerValidationSchema } from './user-validation-schema';
-import { Permission } from '@/types';
+import { Permission, User } from '@/types';
 import Select from '../ui/select/select';
 import Label from '../ui/label';
+import { useAtom } from 'jotai';
+import { newPermission } from '@/contexts/permission/storepermission';
+import Cookies from 'js-cookie';
+
 
 type FormValues = {
   name: string;
@@ -18,6 +22,9 @@ type FormValues = {
   password: string;
   type: { value: string };
   permission: Permission;
+  data: any
+  type_name: any
+
 };
 
 const defaultValues = {
@@ -27,8 +34,10 @@ const defaultValues = {
 
 const CustomerCreateForm = () => {
   const { t } = useTranslation();
+  const { data } = useMeQuery();
+  // const [typeName] = useAtom(newPermission); 
   const { mutate: registerUser, isLoading: loading } = useRegisterMutation();
-
+console.log('newdata',data)
   const {
     register,
     handleSubmit,
@@ -57,8 +66,9 @@ const CustomerCreateForm = () => {
         name,
         email,
         password,
-        type: type.value, // This line has been modified
+        type: type.value,
         permission: Permission.StoreOwner,
+        UsrBy:data?.id
       },
       {
         onError: (error: any) => {

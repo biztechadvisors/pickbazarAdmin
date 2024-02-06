@@ -1238,6 +1238,7 @@ export interface RegisterInput {
   type: string;
   shop_id?: number;
   permission: Permission;
+  UsrBy: any;
 }
 
 export interface ChangePasswordInput {
