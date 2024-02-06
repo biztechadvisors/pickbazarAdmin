@@ -16,10 +16,16 @@ import { taxValidationSchema } from './tax-validation-schema';
 const defaultValues = {
   name: '',
   rate: 0,
-  country: '',
-  state: '',
-  zip: '',
-  city: '',
+  cgst:'',
+  sgst:'',
+  gst_Name:'',
+  hsn_no:'',
+  sac_no:'',
+  compensatoin:'',
+  // country: '',
+  // state: '',
+  // zip: '',
+  // city: '',
 };
 
 type IProps = {
@@ -82,34 +88,76 @@ export default function CreateOrUpdateTaxForm({ initialValues }: IProps) {
             variant="outline"
             className="mb-5"
           />
+          <Input  //form.json to change languages and set all aditional fiels(hsn,CGST,SGST,GSTName, Compensatoin) 
+            label={t('form:input-label-hsn_no')}
+            {...register('hsn_no')}
+            error={t(errors.hsn_no?.message!)}
+            variant="outline"
+            className="mb-5"
+          />
           <Input
+            label={t('form:input-label-cgst')}
+            {...register('cgst')}
+            error={t(errors.cgst?.message!)}
+            variant="outline"
+            className="mb-5"
+          />
+          <Input
+            label={t('form:input-label-sgst')}
+            {...register('sgst')}
+            error={t(errors.sgst?.message!)}
+            variant="outline"
+            className="mb-5"
+          />
+          <Input
+            label={t('form:input-label-gst_Name')}
+            {...register('gst_Name')}
+            error={t(errors.gst_Name?.message!)}
+            variant="outline"
+            className="mb-5"
+          />
+          <Input  //form.json to change languages and set all aditional fiels(hsn,CGST,SGST,GSTName, Compensatoin) 
+            label={t('form:input-label-sac_no')}
+            {...register('sac_no')}
+            error={t(errors.sac_no?.message!)}
+            variant="outline"
+            className="mb-5"
+          />
+           <Input
+            label={t('form:input-label-compensatoin')}
+            {...register('compensation_Cess')}
+            error={t(errors.compensation_Cess?.message!)}
+            variant="outline"
+            className="mb-5"
+          />
+          {/* <Input
             label={t('form:input-label-country')}
             {...register('country')}
             error={t(errors.country?.message!)}
             variant="outline"
             className="mb-5"
-          />
-          <Input
+          /> */}
+          {/* <Input
             label={t('form:input-label-city')}
             {...register('city')}
             error={t(errors.city?.message!)}
             variant="outline"
             className="mb-5"
-          />
-          <Input
+          /> */}
+          {/* <Input
             label={t('form:input-label-state')}
             {...register('state')}
             error={t(errors.state?.message!)}
             variant="outline"
             className="mb-5"
-          />
-          <Input
+          /> */}
+          {/* <Input
             label={t('form:input-label-zip')}
             {...register('zip')}
             error={t(errors.zip?.message!)}
             variant="outline"
             className="mb-5"
-          />
+          /> */}
         </Card>
       </div>
 
