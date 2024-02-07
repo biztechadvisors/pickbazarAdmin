@@ -20,6 +20,7 @@ import { Routes } from '@/config/routes';
 import LanguageSwitcher from '@/components/ui/lang-action/action';
 import { newPermission, permissionAtom } from '@/contexts/permission/storepermission';
 import { useAtom } from 'jotai';
+import { getAuthCredentials } from '@/utils/auth-utils';
 
 export type IProps = {
   products: Product[] | undefined;
@@ -45,9 +46,11 @@ const ProductList = ({
   const router = useRouter();
   const { t } = useTranslation();
   const { alignLeft, alignRight } = useIsRTL();
-
+  const { permissions } = getAuthCredentials();
   const [getPermission,_]=useAtom(newPermission)  
-  const canWrite = getPermission?.find(
+  const canWrite = permissions.includes('super_admin')
+  ? siteSettings.sidebarLinks.admin 
+  :getPermission?.find(
     (permission : any) => permission.type === 'sidebar-nav-item-products'
   )?.write;
 
