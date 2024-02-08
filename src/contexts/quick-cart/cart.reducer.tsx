@@ -1,3 +1,4 @@
+import axios from 'axios';
 import {
   Item,
   UpdateItemInput,
@@ -41,13 +42,12 @@ export const initialState: State = {
   meta: null,
 };
 export function cartReducer(state: State, action: Action): State {
+  console.log("statess", state)
+  console.log('action', action)
   switch (action.type) {
     case 'ADD_ITEM_WITH_QUANTITY': {
-      const items = addItemWithQuantity(
-        state.items,
-        action.item,
-        action.quantity
-      );
+      const items = addItemWithQuantity(state.items,action.item.cartData,action.quantity);
+      updateCartApi(items, action.customerId, action.email, action.phone);
       return generateFinalState(state, items);
     }
     case 'REMOVE_ITEM_OR_QUANTITY': {
@@ -88,3 +88,20 @@ const generateFinalState = (state: State, items: Item[]) => {
     isEmpty: totalUniqueItems === 0,
   };
 };
+
+
+async function updateCartApi(items: Item[], customerId, email, phone): Promise<void> {
+  try {
+    await axios.post('http://localhost:5000/api/carts', {
+      customerId,
+      email,
+      phone,
+      cartData: items
+    });
+    console.log('Cart updated successfully');
+  } catch (error) {
+    console.error('Failed to update cart:', error.message);
+    throw new Error('Failed to update cart');
+  }
+}
+

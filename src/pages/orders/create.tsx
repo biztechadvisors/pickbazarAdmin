@@ -27,6 +27,7 @@ import { newPermission } from '@/contexts/permission/storepermission';
 import { useAtom } from 'jotai';
 import { useMeQuery } from '@/data/user';
 import { EyeIcon, EyeOffIcon } from '@heroicons/react/solid';
+import { toggleAtom } from '@/utils/atoms';
 
 export default function ProductsPage() {
   const { locale } = useRouter();
@@ -41,11 +42,18 @@ export default function ProductsPage() {
     setVisible((v) => !v);
   };
 
-  const { data: meData } = useMeQuery();
+  const { data: meData, } = useMeQuery();
+
+  console.log('meData', meData)
+
+  const { id, email } = meData || {};
+
+  console.log('Id', id)
+  console.log('email', email)
 
   const userId = meData?.dealer?.id;
 
-  const [showMargins, setShowMargins] = useState(false);
+  const [isChecked] = useAtom(toggleAtom);
 
   const { products, loading, paginatorInfo, error } = useProductsQuery({
     limit: 18,
@@ -57,8 +65,6 @@ export default function ProductsPage() {
     categories: category,
     userId,
   });
-
-  console.log('products', products);
 
   const [getPermission, _] = useAtom(newPermission);
   const canWrite = getPermission?.find(
@@ -76,24 +82,11 @@ export default function ProductsPage() {
     setPage(current);
   }
 
-  const renderMarginsButton = userId && (
-    <button
-      className="hover:text-accent-dark mt-5 mb-5 flex items-center whitespace-nowrap text-base font-semibold text-accent transition-colors duration-300 md:mt-0"
-      onClick={() => setShowMargins((prev) => !prev)}
-    >
-      <span className="mr-2">
-        {showMargins ? (
-          <EyeOffIcon className="h-5 w-5" />
-        ) : (
-          <EyeIcon className="h-5 w-5" />
-        )}
-      </span>
-      {showMargins ? 'Hide Margins' : 'Show Margins'}
-    </button>
-  );
+
+  console.log('products', products)
+
   return (
     <>
-      {renderMarginsButton}
       <Card className="mb-8 flex flex-col">
         <div className="flex w-full flex-col items-center md:flex-row">
           <div className="mb-4 md:mb-0 md:w-1/4">
@@ -148,7 +141,9 @@ export default function ProductsPage() {
             <ProductCard
               key={product.id}
               item={product}
-              showMargins={showMargins}
+              isChecked={isChecked}
+              id={id}
+              email={email}
             />
           ))}
         </div>

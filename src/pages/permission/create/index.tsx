@@ -226,6 +226,7 @@ const CreatePermission = () => {
   const [selectedPermissions, setSelectedPermissions] = useState([]);
   const [typeError, setTypeError] = useState('');
   const [permissionError, setPermissionError] = useState('');
+  const [permDataUpdate, setPermDataUpdate]=useState([])
 
   useEffect(() => {
     const getTypeData = async () => {
@@ -261,14 +262,19 @@ const CreatePermission = () => {
       const permissionData = response.data;
       console.log('permissionData', permissionData )
 
+      setPermDataUpdate(permissionData)
+
       setTypeName([permissionData.type_name]);
       setPermissionName(permissionData.permissionName);
 
-      const formattedPermissions = permissionData.permission.map((perm) => ({
+      const formattedPermissions = permissionData.permission.map((perm,i) => ({
+        id:i+1,
         type: perm.type,
         read: perm.read,
         write: perm.write,
       }));
+
+      console.log(' formattedPermissions', formattedPermissions)
 
       
       setSelectedPermissions(formattedPermissions);
@@ -301,46 +307,6 @@ const CreatePermission = () => {
   };
 
 
-
-
-
-
-
-  // const handleSavePermission = async () => {
-  //       if (!permissionName) {
-  //         setPermissionError('Please enter a permission name.');
-  //         return;
-  //       }
-    
-  //       let typeToSend = selectedType;
-  //       if (!selectedType) {
-  //         const firstType = Object.values(typeName)[0];
-  //         typeToSend = firstType;
-  //         setSelectedType(firstType);
-  //       }
-    
-  //       const dataToSend = {
-  //         type_name: typeToSend,
-  //         permission_name: permissionName,
-  //         permission: selectedPermissions,
-  //       };
-    
-  //       try {
-  //         const response = await axios.post('http://localhost:5000/api/permission', dataToSend);
-  //         console.log('res', response)
-  //         console.log('Permission saved:', response.data);
-  //         if (response.status === 201) {
-  //           toast.success('UPDATED');
-  //           setPermissionName('');
-  //           setSelectedPermissions([]);
-  //         }
-  //       } catch (error) {
-  //         console.error('Error saving permission:', error);
-  //         toast.error('Error')
-  //       }
-  //     };
-
-
   const handleSavePermission = async () => {
     if (!permissionName) {
       setPermissionError('Please enter a permission name.');
@@ -353,6 +319,7 @@ const CreatePermission = () => {
       typeToSend = firstType;
       setSelectedType(firstType);
     }
+    
   
     const dataToSend = {
       type_name: typeToSend,
@@ -388,6 +355,7 @@ const CreatePermission = () => {
   
   console.log('selectedType', selectedType)
   console.log('permissionName', permissionName)
+  console.log('permDataUpdate', permDataUpdate)
 
   return (
     <>

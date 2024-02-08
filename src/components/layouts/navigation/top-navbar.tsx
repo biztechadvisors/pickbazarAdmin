@@ -14,17 +14,17 @@ import {
 import LanguageSwitcher from './language-switer';
 import { Config } from '@/config';
 import React, { useState } from 'react';
+import { useAtom } from 'jotai';
+import { newPermission } from '@/contexts/permission/storepermission';
 
 const Navbar = () => {
   const { t } = useTranslation();
   const { toggleSidebar } = useUI();
 
-  const [matchedData, setMatchedLinks] = useState<any[]>(
-    JSON.parse(localStorage.getItem('matchedData') || '[]')
-  );
-   const canWrite = matchedData?.find(
-    (permission) => permission.type === 'sidebar-nav-item-dashboard'
-  )?.write;
+  const [getPermission,_]=useAtom(newPermission)
+  const canWrite = getPermission?.find(
+   (permission) => permission.type === 'sidebar-nav-item-dashboard'
+ )?.write;
 
   const { permissions } = getAuthCredentials();
   console.log('Permissions====:', permissions);
