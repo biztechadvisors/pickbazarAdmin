@@ -16,17 +16,21 @@ import { Config } from '@/config';
 import React, { useState } from 'react';
 import { newPermission } from '@/contexts/permission/storepermission';
 import { useAtom } from 'jotai';
+import { siteSettings } from '@/settings/site.settings';
 
 const Navbar = () => {
   const { t } = useTranslation();
   const { toggleSidebar } = useUI();
  
   const [getPermission,_]=useAtom(newPermission)
-   const canWrite = getPermission?.find(
+  const { permissions } = getAuthCredentials();
+  const canWrite =  permissions.includes('super_admin')
+  ? siteSettings.sidebarLinks
+  :getPermission?.find(
     (permission) => permission.type === 'sidebar-nav-item-dashboard'
   )?.write;
 
-  const { permissions } = getAuthCredentials();
+  // const { permissions } = getAuthCredentials();
   console.log('Permissions====:', permissions);
 console.log('Has Access:', hasAccess(adminAndOwnerOnly, permissions));
 console.log("adminAndOwnerOnly",adminAndOwnerOnly)

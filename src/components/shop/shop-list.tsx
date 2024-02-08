@@ -13,6 +13,7 @@ import Link from '@/components/ui/link';
 import { Shop, MappedPaginatorInfo } from '@/types';
 import { newPermission } from '@/contexts/permission/storepermission';
 import { useAtom } from 'jotai';
+import { getAuthCredentials } from '@/utils/auth-utils';
 
 type IProps = {
   shops: Shop[] | undefined;
@@ -32,7 +33,10 @@ const ShopList = ({
   const { t } = useTranslation();
   const { alignLeft, alignRight } = useIsRTL();
   const [getPermission,_]=useAtom(newPermission)
-  const canWrite = getPermission?.find(
+  const { permissions } = getAuthCredentials();
+  const canWrite =  permissions.includes('super_admin')
+  ? siteSettings.sidebarLinks
+  :getPermission?.find(
     (permission) => permission.type === 'sidebar-nav-item-shops'
   )?.write;
 

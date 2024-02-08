@@ -85,10 +85,11 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import Search from '@/components/common/search';
 import LinkButton from '@/components/ui/link-button';
-import { adminOnly } from '@/utils/auth-utils';
+import { adminOnly, getAuthCredentials } from '@/utils/auth-utils';
 import Link from 'next/link';
 import { newPermission } from '@/contexts/permission/storepermission';
 import { useAtom } from 'jotai';
+import { siteSettings } from '@/settings/site.settings';
 
 export default function Permission() {
   const { t } = useTranslation();
@@ -100,7 +101,10 @@ export default function Permission() {
   const [error, setError] = useState<string | null>(null);
 
   const [getPermission,_]=useAtom(newPermission)
-  const canWrite = getPermission?.find(
+  const { permissions } = getAuthCredentials();
+  const canWrite =  permissions.includes('super_admin')
+  ? siteSettings.sidebarLinks
+  :getPermission?.find(
    (permission) => permission.type === 'sidebar-nav-item-permission'
  )?.write;
 

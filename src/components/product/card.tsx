@@ -9,6 +9,8 @@ import { Product, ProductType } from '@/types';
 import React, { useState } from 'react';
 import { useAtom } from 'jotai';
 import { newPermission } from '@/contexts/permission/storepermission';
+import { getAuthCredentials } from '@/utils/auth-utils';
+import { siteSettings } from '@/settings/site.settings';
 
 
 interface Props {
@@ -46,8 +48,11 @@ const ProductCard = ({ item }: Props) => {
   const { openModal } = useModalAction();
 
   const [getPermission,_]=useAtom(newPermission)
-   const canWrite = getPermission?.find(
-    (permission) => permission.type === 'sidebar-nav-item-tags'
+  const { permissions } = getAuthCredentials();
+  const canWrite =  permissions.includes('super_admin')
+  ? siteSettings.sidebarLinks
+  :getPermission?.find(
+    (permission) => permission.type === 'sidebar-nav-item-create-order'
   )?.write;
 
   function handleVariableProduct() {
