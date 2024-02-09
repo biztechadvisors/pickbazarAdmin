@@ -36,6 +36,7 @@ import AccessDeniedPage from '@/components/common/access-denied';
 import React, { useState } from 'react';
 import { useAtom } from 'jotai';
 import { newPermission } from '@/contexts/permission/storepermission';
+import { siteSettings } from '@/settings/site.settings';
 
 
 
@@ -67,7 +68,9 @@ export default function ShopPage() {
   );
 
   const [getPermission,_]=useAtom(newPermission)
-   const canWrite = getPermission?.find(
+  const canWrite =  permissions.includes('super_admin')
+  ? siteSettings.sidebarLinks
+  :getPermission?.find(
     (permission) => permission.type === 'sidebar-nav-item-my-shops'
     // (permission) => permission.type === 'sidebar-nav-item-dashboard'
   )?.write;

@@ -12,6 +12,8 @@ import { Routes } from '@/config/routes';
 import LanguageSwitcher from '@/components/ui/lang-action/action';
 import { newPermission } from '@/contexts/permission/storepermission';
 import { useAtom } from 'jotai';
+import { getAuthCredentials } from '@/utils/auth-utils';
+import { siteSettings } from '@/settings/site.settings';
 
 export type IProps = {
   tags: any | undefined | null;
@@ -32,7 +34,10 @@ const TagList = ({
   const rowExpandable = (record: any) => record.children?.length;
   
   const [getPermission,_]=useAtom(newPermission)
-   const canWrite = getPermission?.find(
+  const { permissions } = getAuthCredentials();
+  const canWrite =  permissions.includes('super_admin')
+  ? siteSettings.sidebarLinks
+  :getPermission?.find(
     (permission) => permission.type === 'sidebar-nav-item-tags'
   )?.write;
 

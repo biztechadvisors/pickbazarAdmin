@@ -9,6 +9,8 @@ import TitleWithSort from '@/components/ui/title-with-sort';
 import { User, MappedPaginatorInfo } from '@/types';
 import { useAtom } from 'jotai';
 import { newPermission } from '@/contexts/permission/storepermission';
+import { getAuthCredentials } from '@/utils/auth-utils';
+import { siteSettings } from '@/settings/site.settings';
 
 type IProps = {
   staffs: User[] | undefined;
@@ -28,7 +30,10 @@ const StaffList = ({
   const { t } = useTranslation();
   const { alignLeft, alignRight } = useIsRTL();
   const [getPermission,_]=useAtom(newPermission)
-  const canWrite = getPermission?.find(
+  const { permissions } = getAuthCredentials();
+  const canWrite =  permissions.includes('super_admin')
+  ? siteSettings.sidebarLinks
+  :getPermission?.find(
    (permission) => permission.type === 'sidebar-nav-item-staffs'
  )?.write;
 

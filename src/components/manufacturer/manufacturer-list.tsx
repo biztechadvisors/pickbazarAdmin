@@ -19,6 +19,7 @@ import { useUpdateManufacturerMutation } from '@/data/manufacturer';
 import LanguageSwitcher from '@/components/ui/lang-action/action';
 import { newPermission } from '@/contexts/permission/storepermission';
 import { useAtom } from 'jotai';
+import { getAuthCredentials } from '@/utils/auth-utils';
 
 type IProps = {
   manufacturers: Manufacturer[] | null | undefined;
@@ -38,7 +39,10 @@ const ManufacturerList = ({
   const { t } = useTranslation();
   const router = useRouter();
   const [getPermission,_]=useAtom(newPermission)
-   const canWrite = getPermission?.find(
+  const { permissions } = getAuthCredentials();
+  const canWrite =  permissions.includes('super_admin')
+  ? siteSettings.sidebarLinks
+  :getPermission?.find(
     (permission) => permission.type === 'sidebar-nav-item-manufacturers'
   )?.write;
 

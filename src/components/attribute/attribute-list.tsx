@@ -10,6 +10,8 @@ import { Routes } from '@/config/routes';
 import LanguageSwitcher from '@/components/ui/lang-action/action';
 import { useAtom } from 'jotai';
 import { newPermission } from '@/contexts/permission/storepermission';
+import { getAuthCredentials } from '@/utils/auth-utils';
+import { siteSettings } from '@/settings/site.settings';
 
 export type IProps = {
   attributes: Attribute[] | undefined;
@@ -34,7 +36,10 @@ const AttributeList = ({ attributes, onSort, onOrder }: IProps) => {
   });
 
   const [getPermission,_]=useAtom(newPermission) 
-   const canWrite = getPermission?.find(
+  const { permissions } = getAuthCredentials();
+   const canWrite =  permissions.includes('super_admin')
+   ? siteSettings.sidebarLinks
+   :getPermission?.find(
     (permission) => permission.type === 'sidebar-nav-item-attributes'
   )?.write;
 

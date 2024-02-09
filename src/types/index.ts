@@ -49,6 +49,16 @@ export enum PaymentGateway {
   FLUTTERWAVE = 'FLUTTERWAVE',
 }
 
+export interface PaymentIntentInfo {
+  order_id: string;
+  client_secret: string;
+  payment_id: string;
+  is_redirect: boolean;
+  redirect_url: string;
+  currency: string;
+  amount: string;
+}
+
 export enum ProductStatus {
   Publish = 'publish',
   Draft = 'draft',

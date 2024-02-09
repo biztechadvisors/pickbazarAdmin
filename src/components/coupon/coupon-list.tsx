@@ -20,6 +20,7 @@ import { useRouter } from 'next/router';
 import LanguageSwitcher from '@/components/ui/lang-action/action';
 import { newPermission } from '@/contexts/permission/storepermission';
 import { useAtom } from 'jotai';
+import { getAuthCredentials } from '@/utils/auth-utils';
 
 dayjs.extend(relativeTime);
 dayjs.extend(utc);
@@ -51,7 +52,10 @@ const CouponList = ({
   });
 
   const [getPermission,_]=useAtom(newPermission)
-   const canWrite = getPermission?.find(
+  const { permissions } = getAuthCredentials();
+  const canWrite =  permissions.includes('super_admin')
+  ? siteSettings.sidebarLinks
+  :getPermission?.find(
     (permission) => permission.type === 'sidebar-nav-item-coupons'
   )?.write;
 

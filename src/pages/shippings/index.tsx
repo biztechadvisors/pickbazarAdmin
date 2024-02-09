@@ -12,9 +12,10 @@ import { useTranslation } from 'next-i18next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import { Routes } from '@/config/routes';
 import { SortOrder } from '@/types';
-import { adminOnly } from '@/utils/auth-utils';
+import { adminOnly, getAuthCredentials } from '@/utils/auth-utils';
 import { useAtom } from 'jotai';
 import { newPermission, permissionAtom } from '@/contexts/permission/storepermission';
+import { siteSettings } from '@/settings/site.settings';
 
 export default function ShippingsPage() {
   const { t } = useTranslation();
@@ -28,7 +29,10 @@ const [searchTerm, setSearch] = useState('');
   });
 
   const [getPermission,_]=useAtom(newPermission)
-  const canWrite = getPermission?.find(
+  const { permissions } = getAuthCredentials();
+  const canWrite =  permissions.includes('super_admin')
+  ? siteSettings.sidebarLinks
+  :getPermission?.find(
     (permission) => permission.type === 'sidebar-nav-item-shippings'
   )?.write;
   

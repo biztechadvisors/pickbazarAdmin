@@ -22,6 +22,9 @@ import { ChatIcon } from '@/components/icons/chat';
 import { useCreateConversations } from '@/data/conversations';
 import { SUPER_ADMIN } from '@/utils/constants';
 import { getAuthCredentials } from '@/utils/auth-utils';
+import { useAtom } from 'jotai';
+import { siteSettings } from '@/settings/site.settings';
+import { newPermission } from '@/contexts/permission/storepermission';
 
 type IProps = {
   orders: Order[] | undefined;
@@ -55,10 +58,14 @@ const OrderList = ({
     column: null,
   });
 
-  const [matchedData, setMatchedLinks] = useState<any[]>(
-    JSON.parse(localStorage.getItem('matchedData') || '[]')
-  );
-   const canWrite = matchedData?.find(
+  // const [matchedData, setMatchedLinks] = useState<any[]>(
+  //   JSON.parse(localStorage.getItem('matchedData') || '[]')
+  // );
+  const [getPermission,_]=useAtom(newPermission)
+  // const { permissions } = getAuthCredentials();
+  const canWrite =  permissions.includes('super_admin')
+  ? siteSettings.sidebarLinks
+  :getPermission?.find(
     (permission) => permission.type === 'sidebar-nav-item-orders'
   )?.write;
 
