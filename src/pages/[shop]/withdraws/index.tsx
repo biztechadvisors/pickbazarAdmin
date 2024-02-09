@@ -21,6 +21,7 @@ import { Routes } from '@/config/routes';
 import { useMeQuery } from '@/data/user';
 import { useAtom } from 'jotai';
 import { newPermission } from '@/contexts/permission/storepermission';
+import { siteSettings } from '@/settings/site.settings';
 
 export default function WithdrawsPage() {
   const router = useRouter();
@@ -38,8 +39,10 @@ export default function WithdrawsPage() {
   });
   const shopId = shopData?.id!;
 
-  const [getPermission,_]=useAtom(newPermission)
-  const canWrite = getPermission?.find(
+  const [getPermission,_]=useAtom(newPermission)  
+  const canWrite =  permissions.includes('super_admin')
+  ? siteSettings.sidebarLinks
+  :getPermission?.find(
    (permission) => permission.type === 'sidebar-nav-item-withdraws'
  )?.write;
 

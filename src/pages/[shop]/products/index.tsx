@@ -30,6 +30,7 @@ import { Routes } from '@/config/routes';
 import { useMeQuery } from '@/data/user';
 import { useAtom } from 'jotai';
 import { newPermission } from '@/contexts/permission/storepermission';
+import { siteSettings } from '@/settings/site.settings';
 
 export default function ProductsPage() {
   const router = useRouter();
@@ -54,7 +55,9 @@ export default function ProductsPage() {
   const { locale } = useRouter();
 
   const [getPermission,_]=useAtom(newPermission)
-   const canWrite = getPermission?.find(
+  const canWrite =  permissions.includes('super_admin')
+  ? siteSettings.sidebarLinks
+  :getPermission?.find(
     (permission) => permission.type === 'sidebar-nav-item-products'
   )?.write;
 
