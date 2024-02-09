@@ -1,18 +1,27 @@
 import cn from 'classnames';
-import { Fragment } from 'react';
+import { Fragment, useState } from 'react';
 import { Menu, Transition } from '@headlessui/react';
 import Avatar from '@/components/common/avatar';
 import Link from '@/components/ui/link';
 import { siteSettings } from '@/settings/site.settings';
 import { useTranslation } from 'next-i18next';
 import { useMeQuery } from '@/data/user';
+import ToggleSwitch from './ToggleSwitch';
+import { useAtom } from 'jotai';
+import { toggleAtom } from '../../../utils/atoms';
 
 export default function AuthorizedMenu() {
   const { data } = useMeQuery();
-  // console.log("first-data", data)
   const { t } = useTranslation('common');
 
-  // Again, we're using framer-motion for the transition effect
+  console.log('data', data);
+
+  const [isChecked, setIsChecked] = useAtom(toggleAtom);
+
+  const handleToggle = () => {
+    setIsChecked((prevIsChecked) => !prevIsChecked);
+  };
+
   return (
     <Menu as="div" className="relative inline-block text-left">
       <Menu.Button className="flex items-center focus:outline-none">
@@ -36,7 +45,7 @@ export default function AuthorizedMenu() {
       >
         <Menu.Items
           as="ul"
-          className="end-0 origin-top-end absolute mt-1 w-48 rounded bg-white shadow-md focus:outline-none"
+          className="absolute mt-1 w-48 rounded bg-white shadow-md end-0 origin-top-end focus:outline-none"
         >
           <Menu.Item key={data?.email}>
             <li
@@ -47,6 +56,12 @@ export default function AuthorizedMenu() {
               <span className="text-xs">{data?.email}</span>
             </li>
           </Menu.Item>
+
+          <li className="pl-3">
+            {data?.dealer?.id && (
+              <ToggleSwitch isChecked={isChecked} handleToggle={handleToggle} />
+            )}
+          </li>
 
           {siteSettings.authorizedLinks.map(({ href, labelTransKey }) => (
             <Menu.Item key={`${href}${labelTransKey}`}>

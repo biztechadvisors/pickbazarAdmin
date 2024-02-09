@@ -3,14 +3,15 @@
   "version": "10.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev -p 3002",
+    "dev": "next dev -p 3001",
     "build": "next build",
-    "start": "next start -p 3002",
+    "start": "next start -p 3001",
     "lint": "next lint"
   },
   "dependencies": {
     "@floating-ui/react-dom-interactions": "0.13.3",
     "@headlessui/react": "1.7.13",
+    "@heroicons/react": "v1",
     "@hookform/resolvers": "2.9.11",
     "@reach/portal": "0.16.2",
     "@react-google-maps/api": "2.18.1",

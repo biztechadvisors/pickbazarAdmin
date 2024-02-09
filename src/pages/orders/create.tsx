@@ -22,10 +22,12 @@ import { Product, ProductStatus } from '@/types';
 import { useProductsQuery } from '@/data/product';
 import NotFound from '@/components/ui/not-found';
 import { useRouter } from 'next/router';
-import {useSettings} from "@/contexts/settings.context";
+import { useSettings } from '@/contexts/settings.context';
 import { newPermission } from '@/contexts/permission/storepermission';
 import { useAtom } from 'jotai';
 import { siteSettings } from '@/settings/site.settings';
+import { useMeQuery } from '@/data/user';
+import { toggleAtom } from '@/utils/atoms';
 
 export default function ProductsPage() {
   const { locale } = useRouter();
@@ -39,6 +41,20 @@ export default function ProductsPage() {
   const toggleVisible = () => {
     setVisible((v) => !v);
   };
+
+  const { data: meData, } = useMeQuery();
+
+  console.log('meData', meData)
+
+  const { id, email } = meData || {};
+
+  console.log('Id', id)
+  console.log('email', email)
+
+  const userId = meData?.dealer?.id;
+
+  const [isChecked] = useAtom(toggleAtom);
+
   const { products, loading, paginatorInfo, error } = useProductsQuery({
     limit: 18,
     language: locale,
@@ -47,6 +63,7 @@ export default function ProductsPage() {
     page,
     type,
     categories: category,
+    userId,
   });
 
   const [getPermission,_]=useAtom(newPermission) 
@@ -56,6 +73,14 @@ export default function ProductsPage() {
   :getPermission?.find(
     (permission) => permission.type === 'sidebar-nav-item-create-order'
   )?.write;
+  // const canWrite = false
+
+  console.log("canWrite=====",canWrite)
+
+  // const [getPermission, _] = useAtom(newPermission);
+  // const canWrite = getPermission?.find(
+  //   (permission) => permission.type === 'sidebar-nav-item-create-order'
+  // )?.write;
 
   if (loading) return <Loader text={t('common:text-loading')} />;
   if (error) return <ErrorMessage message={error.message} />;
@@ -68,7 +93,9 @@ export default function ProductsPage() {
     setPage(current);
   }
 
-  // const { products } = data;
+
+  console.log('products', products)
+
   return (
     <>
       <Card className="mb-8 flex flex-col">
@@ -79,12 +106,12 @@ export default function ProductsPage() {
             </h1>
           </div>
 
-          <div className="ms-auto flex w-full flex-col items-center md:w-3/4">
+          <div className="flex w-full flex-col items-center ms-auto md:w-3/4">
             <Search onSearch={handleSearch} />
           </div>
 
           <button
-            className="md:ms-5 mt-5 flex items-center whitespace-nowrap text-base font-semibold text-accent md:mt-0"
+            className="mt-5 flex items-center whitespace-nowrap text-base font-semibold text-accent md:mt-0 md:ms-5"
             onClick={toggleVisible}
           >
             {t('common:text-filter')}{' '}
@@ -122,7 +149,13 @@ export default function ProductsPage() {
       <div className="flex space-x-5">
         <div className="grid w-full grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-2 xl:grid-cols-4 3xl:grid-cols-6">
           {products?.map((product: Product) => (
-            <ProductCard key={product.id} item={product} />
+            <ProductCard
+              key={product.id}
+              item={product}
+              isChecked={isChecked}
+              id={id}
+              email={email}
+            />
           ))}
         </div>
       </div>
@@ -141,10 +174,8 @@ export default function ProductsPage() {
             />
           </div>
         )}
-      </div> 
-      {canWrite ? (     
-      <CartCounterButton />
-      ) : null}
+      </div>
+      {canWrite ? <CartCounterButton /> : null}
       <Drawer
         open={displayCartSidebar}
         onClose={closeCartSidebar}
