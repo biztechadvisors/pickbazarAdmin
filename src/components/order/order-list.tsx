@@ -57,12 +57,8 @@ const OrderList = ({
     sort: SortOrder.Desc,
     column: null,
   });
-
-  // const [matchedData, setMatchedLinks] = useState<any[]>(
-  //   JSON.parse(localStorage.getItem('matchedData') || '[]')
-  // );
-  const [getPermission,_]=useAtom(newPermission)
-  // const { permissions } = getAuthCredentials();
+ 
+  const [getPermission,_]=useAtom(newPermission)  
   const canWrite =  permissions.includes('super_admin')
   ? siteSettings.sidebarLinks
   :getPermission?.find(
