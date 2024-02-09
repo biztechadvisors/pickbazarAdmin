@@ -268,7 +268,7 @@ const CreatePermission = () => {
       setPermissionName(permissionData.permissionName);
 
       const formattedPermissions = permissionData.permission.map((perm,i) => ({
-        id:i+1,
+        id:perm.id,
         type: perm.type,
         read: perm.read,
         write: perm.write,
@@ -323,7 +323,7 @@ const CreatePermission = () => {
   
     const dataToSend = {
       type_name: typeToSend,
-      permission_name: permissionName,
+      permissionName: permissionName,
       permission: selectedPermissions,
     };
   
@@ -331,6 +331,7 @@ const CreatePermission = () => {
       if (router.query.id) {
         const permissionId = router.query.id;
         const response = await axios.put(`http://localhost:5000/api/permission/${permissionId}`, dataToSend);
+        console.log("dar", dataToSend)
         console.log('response', response)
         console.log('Permission updated:', response.data);
         if (response.status === 200) {
@@ -340,6 +341,8 @@ const CreatePermission = () => {
         }
       } else {
         const response = await axios.post('http://localhost:5000/api/permission', dataToSend);
+        console.log('dataToSend', dataToSend)
+        console.log('Permission saved:', response);
         console.log('Permission saved:', response.data);
         if (response.status === 201) {
           toast.success('SAVED');
@@ -352,11 +355,8 @@ const CreatePermission = () => {
       toast.error('Error');
     }
   };
-  
-  console.log('selectedType', selectedType)
-  console.log('permissionName', permissionName)
-  console.log('permDataUpdate', permDataUpdate)
 
+  console.log('selectedPermissions', selectedPermissions)
   return (
     <>
       <Card className="mb-8 flex flex-col items-center xl:flex-row">
