@@ -13,10 +13,11 @@ import { GetStaticProps } from 'next';
 import { useTypesQuery } from '@/data/type';
 import { Routes } from '@/config/routes';
 import { useRouter } from 'next/router';
-import { adminOnly } from '@/utils/auth-utils';
+import { adminOnly, getAuthCredentials } from '@/utils/auth-utils';
 import { Config } from '@/config';
 import { useAtom } from 'jotai';
 import { newPermission } from '@/contexts/permission/storepermission';
+import { siteSettings } from '@/settings/site.settings';
 
 export default function TypesPage() {
   const { locale } = useRouter();
@@ -31,7 +32,10 @@ export default function TypesPage() {
     sortedBy,
   });
   const [getPermission,_]=useAtom(newPermission) 
-  const canWrite = getPermission?.find(
+  const { permissions } = getAuthCredentials();
+   const canWrite =  permissions.includes('super_admin')
+   ? siteSettings.sidebarLinks
+   : getPermission?.find(
     (permission) => permission.type === 'sidebar-nav-item-groups'
   )?.write;
   

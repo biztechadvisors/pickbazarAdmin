@@ -293,18 +293,43 @@ const CreatePermission = () => {
     setPermissionError('');
   };
 
+  // const handleCheckboxChange = (menuItem, type, isChecked) => {
+  //   const permission = {
+  //     type: menuItem,
+  //     read: type === 'read' ? isChecked : selectedPermissions.find((p) => p.type === menuItem)?.read || false,
+  //     write: type === 'write' ? isChecked : selectedPermissions.find((p) => p.type === menuItem)?.write || false,
+  //   };
+
+  //   const updatedPermissions = selectedPermissions.filter((p) => p.type !== menuItem);
+  //   updatedPermissions.push(permission);
+
+  //   setSelectedPermissions(updatedPermissions);
+  // };
+
+
+
   const handleCheckboxChange = (menuItem, type, isChecked) => {
-    const permission = {
-      type: menuItem,
-      read: type === 'read' ? isChecked : selectedPermissions.find((p) => p.type === menuItem)?.read || false,
-      write: type === 'write' ? isChecked : selectedPermissions.find((p) => p.type === menuItem)?.write || false,
-    };
-
-    const updatedPermissions = selectedPermissions.filter((p) => p.type !== menuItem);
-    updatedPermissions.push(permission);
-
-    setSelectedPermissions(updatedPermissions);
+    const permissionIndex = selectedPermissions.findIndex((p) => p.type === menuItem);
+    if (permissionIndex !== -1) {
+      // Permission exists, update it
+      const updatedPermissions = [...selectedPermissions];
+      updatedPermissions[permissionIndex] = {
+        ...updatedPermissions[permissionIndex],
+        [type]: isChecked,
+      };
+      setSelectedPermissions(updatedPermissions);
+    } else {
+      const newPermission = {
+        id: null,
+        type: menuItem,
+        read: false,
+        write: false,
+      };
+      newPermission[type] = isChecked;
+      setSelectedPermissions((prevPermissions) => [...prevPermissions, newPermission]);
+    }
   };
+  
 
 
   const handleSavePermission = async () => {

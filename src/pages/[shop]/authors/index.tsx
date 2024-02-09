@@ -24,6 +24,7 @@ import { useShopQuery } from '@/data/shop';
 import { useMeQuery } from '@/data/user';
 import { newPermission } from '@/contexts/permission/storepermission';
 import { useAtom } from 'jotai';
+import { siteSettings } from '@/settings/site.settings';
 export default function Authors() {
   const router = useRouter();
   const { permissions } = getAuthCredentials();
@@ -52,7 +53,9 @@ export default function Authors() {
   const { id: shop_id } = shopData ?? {};
 
   const [getPermission,_]=useAtom(newPermission)
-   const canWrite = getPermission?.find(
+  const canWrite =  permissions.includes('super_admin')
+  ? siteSettings.sidebarLinks
+  :getPermission?.find(
     (permission) => permission.type === 'sidebar-nav-item-authors'
   )?.write;
 

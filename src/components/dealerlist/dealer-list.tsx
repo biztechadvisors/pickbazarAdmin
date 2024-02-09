@@ -11,6 +11,8 @@ import LanguageSwitcher from '@/components/ui/lang-action/action';
 import Button from '../ui/button';
 import { useAtom } from 'jotai';
 import { newPermission } from '@/contexts/permission/storepermission';
+import { getAuthCredentials } from '@/utils/auth-utils';
+import { siteSettings } from '@/settings/site.settings';
 
 export type IProps = {
   users: any[] | undefined;
@@ -26,7 +28,10 @@ const DealerList = ({ users, onSort, onOrder }: IProps) => {
   const { t } = useTranslation();
   const { alignLeft, alignRight } = useIsRTL();
   const [getPermission,_]=useAtom(newPermission)
-  const canWrite = getPermission?.find(
+  const { permissions } = getAuthCredentials();
+   const canWrite =  permissions.includes('super_admin')
+   ? siteSettings.sidebarLinks
+   :getPermission?.find(
    (permission) => permission.type === 'sidebar-nav-item-dealerlist'
  )?.write;
 

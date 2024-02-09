@@ -18,6 +18,7 @@ import { StarIcon } from '@/components/icons/star-icon';
 import { useModalAction } from '@/components/ui/modal/modal.context';
 import { newPermission } from '@/contexts/permission/storepermission';
 import { useAtom } from 'jotai';
+import { getAuthCredentials } from '@/utils/auth-utils';
 
 export type IProps = {
   reviews: Review[] | undefined;
@@ -38,7 +39,10 @@ const ReviewList = ({
   const { alignLeft } = useIsRTL();
   const { openModal } = useModalAction();
   const [getPermission,_]=useAtom(newPermission)
-  const canWrite = getPermission?.find(
+  const { permissions } = getAuthCredentials();
+  const canWrite =  permissions.includes('super_admin')
+  ? siteSettings.sidebarLinks
+  :getPermission?.find(
     (permission) => permission.type === 'sidebar-nav-item-reviews'
   )?.write;
 

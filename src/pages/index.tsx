@@ -76,7 +76,7 @@ import {
   hasAccess,
   isAuthenticated,
 } from '@/utils/auth-utils';
-import { DEALER, STAFF, STORE_OWNER, SUPER_ADMIN } from '@/utils/constants';
+import { ADMIN, DEALER, STAFF, STORE_OWNER, SUPER_ADMIN } from '@/utils/constants';
 import AppLayout from '@/components/layouts/app';
 import { Routes } from '@/config/routes';
 import { Config } from '@/config';
@@ -91,7 +91,7 @@ export default function Dashboard({
 }) {
   if (
     userPermissions.some(permission =>
-      [DEALER, STAFF, STORE_OWNER, SUPER_ADMIN].includes(permission)
+      [DEALER, STAFF, STORE_OWNER, SUPER_ADMIN, ADMIN].includes(permission)
     )
   ) {
     return <AdminDashboard />;
