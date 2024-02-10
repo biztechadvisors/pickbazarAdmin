@@ -1,3 +1,4 @@
+
 import React, { useEffect, useState } from 'react';
 import AdminLayout from '@/components/layouts/admin';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
@@ -84,6 +85,27 @@ const CreatePermission = () => {
   };
 
 
+  // const handleCheckboxChange = (menuItem, type, isChecked) => {
+  //   const permissionIndex = selectedPermissions.findIndex((p) => p.type === menuItem);
+  //   if (permissionIndex !== -1) {
+  //     // Permission exists, update it
+  //     const updatedPermissions = [...selectedPermissions];
+  //     updatedPermissions[permissionIndex] = {
+  //       ...updatedPermissions[permissionIndex],
+  //       [type]: isChecked,
+  //     };
+  //     setSelectedPermissions(updatedPermissions);
+  //   } else {
+  //     const newPermission = {
+  //       type: menuItem,
+  //       read: false,
+  //       write: false,
+  //     };
+  //     newPermission[type] = isChecked;
+  //     setSelectedPermissions((prevPermissions) => [...prevPermissions, newPermission]);
+  //   }
+  // };
+
   const handleCheckboxChange = (menuItem, type, isChecked) => {
     const permissionIndex = selectedPermissions.findIndex((p) => p.type === menuItem);
     if (permissionIndex !== -1) {
@@ -92,17 +114,23 @@ const CreatePermission = () => {
         ...updatedPermissions[permissionIndex],
         [type]: isChecked,
       };
+      if (!updatedPermissions[permissionIndex].read && !updatedPermissions[permissionIndex].write) {
+        updatedPermissions.splice(permissionIndex, 1);
+      }
       setSelectedPermissions(updatedPermissions);
     } else {
-      const newPermission = {
-        type: menuItem,
-        read: false,
-        write: false,
-      };
-      newPermission[type] = isChecked;
-      setSelectedPermissions((prevPermissions) => [...prevPermissions, newPermission]);
+      if (isChecked) {
+        const newPermission = {
+          type: menuItem,
+          read: false,
+          write: false,
+        };
+        newPermission[type] = isChecked;
+        setSelectedPermissions((prevPermissions) => [...prevPermissions, newPermission]);
+      }
     }
   };
+  
   
 
 
@@ -145,6 +173,9 @@ const CreatePermission = () => {
         }
       } else {
         const response = await axios.post('http://localhost:5000/api/permission', dataToSend2);
+        console.log('dataToSend', dataToSend)
+        console.log('Permission saved:', response);
+        console.log('Permission saved:', response.data);
         if (response.status === 201) {
           toast.success('SAVED');
           setPermissionName('');
@@ -157,7 +188,7 @@ const CreatePermission = () => {
     }
   };
 
-  
+  console.log('selectedPermissions', selectedPermissions)
   return (
     <>
       <Card className="mb-8 flex flex-col items-center xl:flex-row">
