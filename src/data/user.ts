@@ -108,7 +108,7 @@ export const useLogoutMutation = () => {
 export const useRegisterMutation = () => {
   const queryClient = useQueryClient();
   const { t } = useTranslation();
-  console.log(t, queryClient)
+  // console.log(t, queryClient)
 
   return useMutation(userClient.register, {
     onSuccess: () => {

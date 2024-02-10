@@ -1241,9 +1241,10 @@ export interface RegisterInput {
   email: string;
   password: string;
   name: string;
-  type: string;
+  // type: string;
   shop_id?: number;
   permission: Permission;
+  contact: string;
   UsrBy: any;
 }
 
