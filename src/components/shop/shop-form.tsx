@@ -157,8 +157,7 @@ function SelectUser({
             option.name.toLowerCase().includes(searchValue) ||
             option.email.toLowerCase().includes(searchValue)
           );
-        }}
-      />
+        } } defaultValue={[]}      />
       <ValidationError message={t(errors.user?.message)} />
     </div>
 

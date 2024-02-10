@@ -26,8 +26,8 @@ import { useSettings } from '@/contexts/settings.context';
 import { newPermission } from '@/contexts/permission/storepermission';
 import { useAtom } from 'jotai';
 import { siteSettings } from '@/settings/site.settings';
-import { useMeQuery } from '@/data/user';
 import { toggleAtom } from '@/utils/atoms';
+import { useMeQuery } from '@/data/user';
 
 export default function ProductsPage() {
   const { locale } = useRouter();

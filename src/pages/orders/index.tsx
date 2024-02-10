@@ -54,7 +54,6 @@ export default function Orders() {
     page,
     tracking_number: searchTerm,
   });
-
   const { refetch } = useExportOrderQuery(
     {
       ...(shopId && { shop_id: shopId }),
@@ -70,7 +69,6 @@ export default function Orders() {
   async function handleExportOrder() {
     const { data } = await refetch();
 
-    console.log("Data", data)
     if (data) {
       const a = document.createElement('a');
       a.href = data;

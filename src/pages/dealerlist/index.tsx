@@ -67,7 +67,7 @@ export default function DealerPage() {
         <div className="flex w-full flex-col items-center space-y-4 ms-auto md:flex-row md:space-y-0 xl:w-1/2">
           <Search onSearch={handleSearch} />
 
-          { canWrite && locale === Config.defaultLanguage && (
+          {locale === Config.defaultLanguage && (
             <LinkButton
               href={Routes.user.create}
               className="h-12 w-full md:w-auto md:ms-6"

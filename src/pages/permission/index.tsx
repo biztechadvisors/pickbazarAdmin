@@ -97,6 +97,7 @@ export default function Permission() {
   const [page, setPage] = useState(1);
   const [orderBy, setOrder] = useState('created_at');
   const [data, setData] = useState([]); 
+  console.log("first-data",data)
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -158,7 +159,7 @@ export default function Permission() {
           <table className="w-full">
             <thead>
               <tr>
-                <th className="border p-2">SL.No</th>
+                <th className="border p-2">S.No</th>
                 <th className="border p-2">ROLE</th>
                 <th className="border p-2">NAME</th>
                 <th className="border p-2">PERMISSION-TYPE</th>

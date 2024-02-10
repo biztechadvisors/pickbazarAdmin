@@ -11,6 +11,8 @@ import { customerValidationSchema } from './user-validation-schema';
 import { Permission } from '@/types';
 import Select from '../ui/select/select';
 import Label from '../ui/label';
+import { useRouter } from 'next/router';
+import { ViewPermission, usePermissionData } from '@/data/permission';
 
 type FormValues = {
   name: string;
@@ -25,8 +27,10 @@ const defaultValues = {
   password: '',
 };
 
+
 const CustomerCreateForm = () => {
   const { t } = useTranslation();
+  const router = useRouter();
   const { mutate: registerUser, isLoading: loading } = useRegisterMutation();
 
   const {
@@ -46,10 +50,20 @@ const CustomerCreateForm = () => {
   //   'Vendor',
   //   'Customer',
   // }
+  
+  const permissionData = usePermissionData();
+  console.log("permissionData",permissionData)  
+  const permissionNames = permissionData?.data?.map(permission => permission.permission_name) ?? [];
+console.log("Permission Names:", permissionNames);
 
-  const UserType = ['Admin', 'Dealer', 'Vendor', 'Customer']
+const permissionOptions = permissionNames.map(name => ({ value: name, label: name }));
 
-  const userTypes = UserType.map((value) => ({ value }));
+
+  console.log("permissionOptions",permissionOptions)
+   
+  // const UserType = ['Admin', 'Dealer', 'Vendor', 'Customer']
+
+  // const userTypes = UserType.map((value) => ({ value }));
 
   async function onSubmit({ name, email, password, type }: FormValues) {
     registerUser(
@@ -57,7 +71,7 @@ const CustomerCreateForm = () => {
         name,
         email,
         password,
-        type: type.value, // This line has been modified
+        type: type.value,
         permission: Permission.StoreOwner,
       },
       {
@@ -117,7 +131,7 @@ const CustomerCreateForm = () => {
                   {...field}
                   getOptionLabel={(option: any) => option.value}
                   getOptionValue={(option: any) => option.value}
-                  options={userTypes}
+                  options={permissionOptions}
                   isClearable={true}
                   isLoading={loading}
                   className="mb-4"
@@ -128,9 +142,20 @@ const CustomerCreateForm = () => {
         </Card >
       </div >
 
+
+
       <div className="text-end mb-4">
+        <Button
+          variant="outline"
+          onClick={router.back}
+          className="me-4"
+          type="button"
+        >
+          {t('form:button-label-back')}
+        </Button>
+
         <Button loading={loading} disabled={loading}>
-          {t('form:button-label-create-customer')}
+          {t('form:form-title-create-user')}
         </Button>
       </div>
     </form >
