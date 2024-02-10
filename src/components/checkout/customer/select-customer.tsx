@@ -14,6 +14,7 @@ const AddOrUpdateCheckoutCustomer = () => {
   const [selectedCustomer, setCustomer] = useAtom(customerAtom);
 
   function onCustomerUpdate(customer: any) {
+    console.log("customer2", customer)
     setCustomer(customer);
     closeModal();
   }
@@ -28,6 +29,7 @@ const AddOrUpdateCheckoutCustomer = () => {
     return data?.data?.map((user: any) => ({
       value: user.id,
       label: user.name,
+      email: user.email,
     }));
   }
 

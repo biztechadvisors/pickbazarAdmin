@@ -7,4 +7,3 @@ export { BookIcon } from './book-icon';
 export { MedicineIcon } from './medicine-icon';
 export { Restaurant } from './restaurant-icon';
 export { Bakery } from './bakery-icon';
-export { MattressPillow } from './mattress-pillow-icon'

@@ -9,13 +9,18 @@ import { Product, ProductType } from '@/types';
 import React, { useState } from 'react';
 import { useAtom } from 'jotai';
 import { newPermission } from '@/contexts/permission/storepermission';
-
+import { getAuthCredentials } from '@/utils/auth-utils';
+import { siteSettings } from '@/settings/site.settings';
 
 interface Props {
   item: Product;
+  isChecked: boolean;
+  id:Number;
+  email:string
 }
 
-const ProductCard = ({ item }: Props) => {
+const ProductCard = ({ item, isChecked, id, email }: Props) => {
+  console.log("Items", item)
   const { t } = useTranslation();
   const {
     slug,
@@ -27,6 +32,7 @@ const ProductCard = ({ item }: Props) => {
     max_price,
     min_price,
     sale_price,
+    margin,
   } = item ?? {};
   const {
     price: currentPrice,
@@ -46,13 +52,18 @@ const ProductCard = ({ item }: Props) => {
   const { openModal } = useModalAction();
 
   const [getPermission,_]=useAtom(newPermission)
-   const canWrite = getPermission?.find(
-    (permission) => permission.type === 'sidebar-nav-item-tags'
+  const { permissions } = getAuthCredentials();
+  const canWrite =  permissions.includes('super_admin')
+  ? siteSettings.sidebarLinks
+  :getPermission?.find(
+    (permission) => permission.type === 'sidebar-nav-item-create-order'
   )?.write;
 
   function handleVariableProduct() {
     return openModal('SELECT_PRODUCT_VARIATION', slug);
   }
+
+  console.log('item', item)
 
   return (
     <div className="cart-type-neon h-full overflow-hidden rounded border border-border-200 bg-light shadow-sm transition-all duration-200 hover:shadow-md">
@@ -67,6 +78,16 @@ const ProductCard = ({ item }: Props) => {
           sizes="(max-width: 768px) 100vw"
           className="product-image object-contain"
         />
+
+        {isChecked && (
+          <div className="absolute top-2 right-2">
+            <div className="flex items-center space-x-2 rounded-md bg-green-600 p-2 text-light">
+              {/* <span className="text-xs md:text-sm">${margin}</span> */}
+              <span className="text-xs md:text-sm">$25</span>
+            </div>
+          </div>
+        )}
+
         {discount && (
           <div className="absolute top-3 rounded bg-accent px-1.5 text-xs font-semibold leading-6 text-light end-3 sm:px-2 md:top-4 md:px-2.5 md:end-4">
             {discount}
@@ -117,10 +138,9 @@ const ProductCard = ({ item }: Props) => {
         ) : (
           canWrite && (
             <>
-              {Number(quantity) > 0 && <AddToCart variant="neon" data={item} />}
+              {Number(quantity) > 0 && <AddToCart variant="neon" data={item} id={id} email={email} />}
             </>
           )
-          
         )}
 
         {Number(quantity) <= 0 && (

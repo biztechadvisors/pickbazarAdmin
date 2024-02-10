@@ -1,6 +1,8 @@
 import Select from '@/components/ui/select/select';
+import { tree } from 'next/dist/build/templates/app-page';
 import { Controller } from 'react-hook-form';
-import { GetOptionLabel } from 'react-select';
+import { GetOptionLabel, GetOptionValue } from 'react-select';
+import { boolean } from 'yup';
 
 interface SelectInputProps {
   control: any;
@@ -15,6 +17,8 @@ interface SelectInputProps {
   isLoading?: boolean;
   [key: string]: unknown;
   placeholder?: string;
+  defaultValue: object[];
+  defValue?: string;
 }
 
 const SelectInput = ({
@@ -29,12 +33,15 @@ const SelectInput = ({
   isClearable,
   isLoading,
   placeholder,
+  defaultValue,
+  defValue,
   ...rest
 }: SelectInputProps) => {
   return (
     <Controller
       control={control}
       name={name}
+      defaultValue={defaultValue}
       rules={rules}
       {...rest}
       render={({ field }) => (
@@ -45,7 +52,9 @@ const SelectInput = ({
           placeholder={placeholder}
           isMulti={isMulti}
           isClearable={isClearable}
+          defaultInputValue={defValue} 
           isLoading={isLoading}
+          hideSelectedOptions={true}
           options={options}
           isDisabled={disabled as boolean}
         />

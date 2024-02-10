@@ -24,6 +24,7 @@ import { LikeIcon } from '@/components/icons/like-icon';
 import { DislikeIcon } from '@/components/icons/dislike-icon';
 import { newPermission } from '@/contexts/permission/storepermission';
 import { useAtom } from 'jotai';
+import { getAuthCredentials } from '@/utils/auth-utils';
 
 export type IProps = {
   questions: Question[] | undefined;
@@ -42,7 +43,10 @@ const QuestionList = ({
   const { t } = useTranslation();
   const { alignLeft } = useIsRTL();
   const [getPermission,_]=useAtom(newPermission)
-  const canWrite = getPermission?.find(
+  const { permissions } = getAuthCredentials();
+  const canWrite =  permissions.includes('super_admin')
+  ? siteSettings.sidebarLinks
+  :getPermission?.find(
     (permission) => permission.type === 'sidebar-nav-item-questions'
   )?.write;
 

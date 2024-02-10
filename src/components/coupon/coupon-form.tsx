@@ -344,7 +344,7 @@ export default function CreateOrUpdateCouponForm({ initialValues }: IProps) {
         </Card>
       </div>
       <div className="mb-4 text-end">
-        {initialValues && (
+        {/* {initialValues && ( */}
           <Button
             variant="outline"
             onClick={router.back}
@@ -353,7 +353,7 @@ export default function CreateOrUpdateCouponForm({ initialValues }: IProps) {
           >
             {t('form:button-label-back')}
           </Button>
-        )}
+        {/* )} */}
 
         <Button loading={updating || creating}>
           {initialValues

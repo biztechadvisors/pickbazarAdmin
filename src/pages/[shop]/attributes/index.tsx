@@ -25,6 +25,7 @@ import { useMeQuery } from '@/data/user';
 import { Routes } from '@/config/routes';
 import { useAtom } from 'jotai';
 import { newPermission } from '@/contexts/permission/storepermission';
+import { siteSettings } from '@/settings/site.settings';
 
 export default function AttributePage() {
   const router = useRouter();
@@ -60,7 +61,9 @@ export default function AttributePage() {
   );
 
   const [getPermission,_]=useAtom(newPermission)
-   const canWrite = getPermission?.find(
+  const canWrite =  permissions.includes('super_admin')
+  ? siteSettings.sidebarLinks
+  :getPermission?.find(
     (permission) => permission.type === 'sidebar-nav-item-attributes'
   )?.write;
 

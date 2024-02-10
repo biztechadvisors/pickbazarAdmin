@@ -338,7 +338,7 @@ export default function CreateOrUpdateCategoriesForm({
         </Card>
       </div>
       <div className="mb-4 text-end">
-        {initialValues && (
+        {/* {initialValues && ( */}
           <Button
             variant="outline"
             onClick={router.back}
@@ -347,7 +347,7 @@ export default function CreateOrUpdateCategoriesForm({
           >
             {t('form:button-label-back')}
           </Button>
-        )}
+        {/* )} */}
 
         <Button loading={creating || updating}>
           {initialValues

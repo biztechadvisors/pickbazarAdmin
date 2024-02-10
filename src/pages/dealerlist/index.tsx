@@ -11,13 +11,14 @@ import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import { GetStaticProps } from 'next';
 import { Routes } from '@/config/routes';
 import { useRouter } from 'next/router';
-import { adminOnly } from '@/utils/auth-utils';
+import { adminOnly, getAuthCredentials } from '@/utils/auth-utils';
 import { Config } from '@/config';
 import DealerTypeList from '@/components/dealerlist/dealer-list';
 import { useUsersQuery } from '@/data/user';
 import { useDealerQuery, useDealerQueryGet } from '@/data/dealer';
 import { useAtom } from 'jotai';
 import { newPermission } from '@/contexts/permission/storepermission';
+import { siteSettings } from '@/settings/site.settings';
 
 export default function DealerPage() {
   const { locale } = useRouter();
@@ -34,7 +35,10 @@ export default function DealerPage() {
   });
 
   const [getPermission,_]=useAtom(newPermission)
-   const canWrite = getPermission?.find(
+  const { permissions } = getAuthCredentials();
+  const canWrite =  permissions.includes('super_admin')
+  ? siteSettings.sidebarLinks
+  :getPermission?.find(
     (permission) => permission.type === 'sidebar-nav-item-dealerlist'
   )?.write;
 
@@ -63,7 +67,7 @@ export default function DealerPage() {
         <div className="flex w-full flex-col items-center space-y-4 ms-auto md:flex-row md:space-y-0 xl:w-1/2">
           <Search onSearch={handleSearch} />
 
-          { canWrite && locale === Config.defaultLanguage && (
+          {locale === Config.defaultLanguage && (
             <LinkButton
               href={Routes.user.create}
               className="h-12 w-full md:w-auto md:ms-6"

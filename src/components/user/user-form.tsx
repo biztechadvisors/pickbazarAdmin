@@ -1,185 +1,133 @@
-import Input from '@/components/ui/input';
-import { useForm } from 'react-hook-form';
 import Button from '@/components/ui/button';
-import Description from '@/components/ui/description';
+import Input from '@/components/ui/input';
+import PasswordInput from '@/components/ui/password-input';
+import { Controller, useForm } from 'react-hook-form';
 import Card from '@/components/common/card';
-import { useRouter } from 'next/router';
-import { Tax } from '@/types';
-import {
-  useCreateTaxClassMutation,
-  useUpdateTaxClassMutation,
-} from '@/data/tax';
+import Description from '@/components/ui/description';
+import { useRegisterMutation } from '@/data/user';
 import { useTranslation } from 'next-i18next';
 import { yupResolver } from '@hookform/resolvers/yup';
-import { taxValidationSchema } from './tax-validation-schema';
+import { customerValidationSchema } from './user-validation-schema';
+import { Permission } from '@/types';
+import Select from '../ui/select/select';
+import Label from '../ui/label';
+
+type FormValues = {
+  name: string;
+  email: string;
+  password: string;
+  type: { value: string };
+  permission: Permission;
+};
 
 const defaultValues = {
-  name: '',
-  rate: 0,
-  cgst:'',
-  sgst:'',
-  gst_Name:'',
-  hsn_no:'',
-  sac_no:'',
-  compensatoin:'',
-  // country: '',
-  // state: '',
-  // zip: '',
-  // city: '',
+  email: '',
+  password: '',
 };
 
-type IProps = {
-  initialValues?: Tax | null;
-};
-export default function CreateOrUpdateTaxForm({ initialValues }: IProps) {
-  const router = useRouter();
+const CustomerCreateForm = () => {
   const { t } = useTranslation();
+  const { mutate: registerUser, isLoading: loading } = useRegisterMutation();
+
   const {
     register,
     handleSubmit,
+    setError,
     formState: { errors },
-  } = useForm<Tax>({
-    shouldUnregister: true,
-    resolver: yupResolver(taxValidationSchema),
-    defaultValues: initialValues ?? defaultValues,
+    control
+  } = useForm<FormValues>({
+    defaultValues,
+    resolver: yupResolver(customerValidationSchema),
   });
-  const { mutate: createTaxClass, isLoading: creating } =
-    useCreateTaxClassMutation();
-  const { mutate: updateTaxClass, isLoading: updating } =
-    useUpdateTaxClassMutation();
-  const onSubmit = async (values: Tax) => {
-    if (initialValues) {
-      updateTaxClass({
-        id: initialValues.id!,
-        ...values,
-      });
-    } else {
-      createTaxClass({
-        ...values,
-      });
-    }
-  };
+
+  const UserType = ['Admin', 'Dealer', 'Vendor', 'Customer']
+
+  const userTypes = UserType.map((value) => ({ value }));
+
+  async function onSubmit({ name, email, password, type }: FormValues) {
+    registerUser(
+      {
+        name,
+        email,
+        password,
+        type: type.value, // This line has been modified
+        permission: Permission.StoreOwner,
+      },
+      {
+        onError: (error: any) => {
+          Object.keys(error?.response?.data).forEach((field: any) => {
+            setError(field, {
+              type: 'manual',
+              message: error?.response?.data[field][0],
+            });
+          });
+        },
+      }
+    );
+  }
+
+
   return (
-    <form onSubmit={handleSubmit(onSubmit)}>
+    <form onSubmit={handleSubmit(onSubmit)} noValidate>
       <div className="my-5 flex flex-wrap sm:my-8">
         <Description
           title={t('form:form-title-information')}
-          details={`${
-            initialValues
-              ? t('form:item-description-update')
-              : t('form:item-description-add')
-          } ${t('form:tax-form-info-help-text')}`}
-          className="w-full px-0 pb-5 sm:w-4/12 sm:py-8 sm:pe-4 md:w-1/3 md:pe-5 "
+          details={t('form:customer-form-info-help-text')}
+          className="sm:pe-4 md:pe-5 w-full px-0 pb-5 sm:w-4/12 sm:py-8 md:w-1/3"
         />
 
         <Card className="w-full sm:w-8/12 md:w-2/3">
           <Input
             label={t('form:input-label-name')}
-            {...register('name', { required: 'Name is required' })}
+            {...register('name')}
+            type="text"
+            variant="outline"
+            className="mb-4"
             error={t(errors.name?.message!)}
-            variant="outline"
-            className="mb-5"
           />
           <Input
-            label={t('form:input-label-rate')}
-            {...register('rate')}
-            type="number"
-            error={t(errors.rate?.message!)}
+            label={t('form:input-label-email')}
+            {...register('email')}
+            type="email"
             variant="outline"
-            className="mb-5"
+            className="mb-4"
+            error={t(errors.email?.message!)}
           />
-          <Input  //form.json to change languages and set all aditional fiels(hsn,CGST,SGST,GSTName, Compensatoin) 
-            label={t('form:input-label-hsn_no')}
-            {...register('hsn_no')}
-            error={t(errors.hsn_no?.message!)}
+          <PasswordInput
+            label={t('form:input-label-password')}
+            {...register('password')}
+            error={t(errors.password?.message!)}
             variant="outline"
-            className="mb-5"
+            className="mb-4"
           />
-          <Input
-            label={t('form:input-label-cgst')}
-            {...register('cgst')}
-            error={t(errors.cgst?.message!)}
-            variant="outline"
-            className="mb-5"
+          <Controller
+            name="type"
+            control={control}
+            render={({ field }) => (
+              <>
+                <Label>{t('form:input-label-type')}</Label>
+                <Select
+                  {...field}
+                  getOptionLabel={(option: any) => option.value}
+                  getOptionValue={(option: any) => option.value}
+                  options={userTypes}
+                  isClearable={true}
+                  isLoading={loading}
+                  className="mb-4"
+                />
+              </>
+            )}
           />
-          <Input
-            label={t('form:input-label-sgst')}
-            {...register('sgst')}
-            error={t(errors.sgst?.message!)}
-            variant="outline"
-            className="mb-5"
-          />
-          <Input
-            label={t('form:input-label-gst_Name')}
-            {...register('gst_Name')}
-            error={t(errors.gst_Name?.message!)}
-            variant="outline"
-            className="mb-5"
-          />
-          <Input  //form.json to change languages and set all aditional fiels(hsn,CGST,SGST,GSTName, Compensatoin) 
-            label={t('form:input-label-sac_no')}
-            {...register('sac_no')}
-            error={t(errors.sac_no?.message!)}
-            variant="outline"
-            className="mb-5"
-          />
-           <Input
-            label={t('form:input-label-compensatoin')}
-            {...register('compensation_Cess')}
-            error={t(errors.compensation_Cess?.message!)}
-            variant="outline"
-            className="mb-5"
-          />
-          {/* <Input
-            label={t('form:input-label-country')}
-            {...register('country')}
-            error={t(errors.country?.message!)}
-            variant="outline"
-            className="mb-5"
-          /> */}
-          {/* <Input
-            label={t('form:input-label-city')}
-            {...register('city')}
-            error={t(errors.city?.message!)}
-            variant="outline"
-            className="mb-5"
-          /> */}
-          {/* <Input
-            label={t('form:input-label-state')}
-            {...register('state')}
-            error={t(errors.state?.message!)}
-            variant="outline"
-            className="mb-5"
-          /> */}
-          {/* <Input
-            label={t('form:input-label-zip')}
-            {...register('zip')}
-            error={t(errors.zip?.message!)}
-            variant="outline"
-            className="mb-5"
-          /> */}
-        </Card>
-      </div>
+        </Card >
+      </div >
 
-      <div className="mb-4 text-end">
-        {initialValues && (
-          <Button
-            variant="outline"
-            onClick={router.back}
-            className="me-4"
-            type="button"
-          >
-            {t('form:button-label-back')}
-          </Button>
-        )}
-
-        <Button loading={creating || updating}>
-          {initialValues
-            ? t('form:button-label-update')
-            : t('form:button-label-add')}{' '}
-          {t('form:button-label-tax')}
+      <div className="text-end mb-4">
+        <Button loading={loading} disabled={loading}>
+          {t('form:button-label-create-customer')}
         </Button>
       </div>
-    </form>
+    </form >
   );
-}
+};
+
+export default CustomerCreateForm;

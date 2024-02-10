@@ -11,6 +11,8 @@ import LanguageSwitcher from '@/components/ui/lang-action/action';
 import Button from '../ui/button';
 import { useAtom } from 'jotai';
 import { newPermission } from '@/contexts/permission/storepermission';
+import { getAuthCredentials } from '@/utils/auth-utils';
+import { siteSettings } from '@/settings/site.settings';
 
 export type IProps = {
   users: any[] | undefined;
@@ -26,7 +28,10 @@ const DealerList = ({ users, onSort, onOrder }: IProps) => {
   const { t } = useTranslation();
   const { alignLeft, alignRight } = useIsRTL();
   const [getPermission,_]=useAtom(newPermission)
-  const canWrite = getPermission?.find(
+  const { permissions } = getAuthCredentials();
+   const canWrite =  permissions.includes('super_admin')
+   ? siteSettings.sidebarLinks
+   :getPermission?.find(
    (permission) => permission.type === 'sidebar-nav-item-dealerlist'
  )?.write;
 
@@ -132,10 +137,41 @@ const DealerList = ({ users, onSort, onOrder }: IProps) => {
       align: alignLeft,
       onHeaderCell: () => onHeaderClick('walletPoints'),
       render: (dealer: any) => <span className="whitespace-nowrap">{dealer ? dealer.walletBalance : 0}</span>,
-    },    
+    }, 
+    
     {
-      ...(canWrite
-      ?
+      title: t('table:table-item-permissions'),
+      dataIndex: 'permissions',
+      key: 'permissions',
+      align: 'center',
+      render: (permissions: any, record: any) => {
+        return (
+          <div>
+            {permissions?.map(({ name }: { name: string }) => name).join(', ')}
+          </div>
+        );
+      },
+    },
+
+    {
+      title: (
+        <TitleWithSort
+          title={t('table:table-item-status')}
+          ascending={
+            sortingObj.sort === SortOrder.Asc &&
+            sortingObj.column === 'is_active'
+          }
+          isActive={sortingObj.column === 'is_active'}
+        />
+      ),
+      className: 'cursor-pointer',
+      dataIndex: 'is_active',
+      key: 'is_active',
+      align: 'center',
+      onHeaderCell: () => onHeaderClick('is_active'),
+      render: (is_active: boolean) => (is_active ? 'Active' : 'Inactive'),
+    },
+    
     {
       title: t('table:table-item-actions'),
       dataIndex: 'slug',
@@ -149,8 +185,7 @@ const DealerList = ({ users, onSort, onOrder }: IProps) => {
           routes={Routes?.dealerlist}
         />
       ),
-    }: null),
-  },
+    },
   ];
 
   return (

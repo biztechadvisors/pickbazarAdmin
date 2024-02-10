@@ -82,6 +82,8 @@ export const PlaceOrderAction: React.FC<{
       delivery_time: delivery_time?.title,
       customer_contact,
       customer_id: customer?.value,
+      customerId:customer?.value,
+      customer,
       use_wallet_points,
       payment_gateway: use_wallet_points
         ? PaymentGateway.FULL_WALLET_PAYMENT
@@ -93,6 +95,7 @@ export const PlaceOrderAction: React.FC<{
         ...(shipping_address?.address && shipping_address.address),
       },
     };
+    console.log("inputData", input)
     // if (payment_gateway === "STRIPE") {
     //   //@ts-ignore
     //   input.token = token;

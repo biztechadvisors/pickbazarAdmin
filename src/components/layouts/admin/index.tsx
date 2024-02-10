@@ -1,13 +1,14 @@
 import Navbar from '@/components/layouts/navigation/top-navbar';
 import { Fragment, useState } from 'react';
 import MobileNavigation from '@/components/layouts/navigation/mobile-navigation';
-import { siteSettings,  matchedLinks } from '@/settings/site.settings';
+import { siteSettings} from '@/settings/site.settings';
 import { useTranslation } from 'next-i18next';
 import SidebarItem from '@/components/layouts/navigation/sidebar-item';
 import { useRouter } from 'next/router';
 import { useEffect,   } from 'react';
-import { filterPermission, newPermission, permissionAtom } from '@/contexts/permission/storepermission';
+import { newPermission} from '@/contexts/permission/storepermission';
 import { useAtom } from 'jotai';
+import { getAuthCredentials } from '@/utils/auth-utils';
 
 const AdminLayout: React.FC<{ children?: React.ReactNode }> = ({
   children,
@@ -18,11 +19,17 @@ const AdminLayout: React.FC<{ children?: React.ReactNode }> = ({
   
   
   const [matched,_]=useAtom(newPermission)
-  console.log("matched",matched)
-  const matchedLinks =  siteSettings.sidebarLinks.admin.filter(link => {   
-    return matched.some(newItem => newItem.type === link.label);
-   
-  });
+  console.log("matched",matched)  
+  const { permissions } = getAuthCredentials(); 
+  console.log("permissions%%%%%%%",permissions)
+
+  const matchedLinks = permissions.includes('super_admin')
+    ? siteSettings.sidebarLinks.admin
+    : siteSettings.sidebarLinks.admin.filter(link =>
+        matched.some(newItem => newItem.type === link.label)
+      );
+  
+
   console.log('matchedLinks:', matchedLinks);
 
   const SidebarItemMap = () => (

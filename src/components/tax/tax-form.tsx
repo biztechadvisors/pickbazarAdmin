@@ -162,7 +162,7 @@ export default function CreateOrUpdateTaxForm({ initialValues }: IProps) {
       </div>
 
       <div className="mb-4 text-end">
-        {initialValues && (
+        {/* {initialValues && ( */}
           <Button
             variant="outline"
             onClick={router.back}
@@ -171,7 +171,7 @@ export default function CreateOrUpdateTaxForm({ initialValues }: IProps) {
           >
             {t('form:button-label-back')}
           </Button>
-        )}
+        {/* )} */}
 
         <Button loading={creating || updating}>
           {initialValues
