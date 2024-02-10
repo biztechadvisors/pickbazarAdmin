@@ -16,6 +16,8 @@ import { Config } from '@/config';
 import DealerTypeList from '@/components/dealerlist/dealer-list';
 import { useUsersQuery } from '@/data/user';
 import { useDealerQuery, useDealerQueryGet } from '@/data/dealer';
+import { useAtom } from 'jotai';
+import { newPermission } from '@/contexts/permission/storepermission';
 
 export default function DealerPage() {
   const { locale } = useRouter();
@@ -31,11 +33,15 @@ export default function DealerPage() {
     sortedBy,
   });
 
+  const [getPermission,_]=useAtom(newPermission)
+   const canWrite = getPermission?.find(
+    (permission) => permission.type === 'sidebar-nav-item-dealerlist'
+  )?.write;
+
   // const {
   //   data,
   //   isLoading,
   // } = useDealerQueryAllGet();
-  // console.log("moye moye a dealer ", data)
 
   if (loading) return <Loader text={t('common:text-loading')} />;
   if (error) return <ErrorMessage message={error.message} />;
@@ -56,7 +62,7 @@ export default function DealerPage() {
         <div className="flex w-full flex-col items-center space-y-4 ms-auto md:flex-row md:space-y-0 xl:w-1/2">
           <Search onSearch={handleSearch} />
 
-          {locale === Config.defaultLanguage && (
+          { canWrite && locale === Config.defaultLanguage && (
             <LinkButton
               href={Routes.user.create}
               className="h-12 w-full md:w-auto md:ms-6"

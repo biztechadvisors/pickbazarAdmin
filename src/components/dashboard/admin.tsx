@@ -15,31 +15,44 @@ import { ShopIcon } from '@/components/icons/sidebar';
 import { DollarIcon } from '@/components/icons/shops/dollar';
 import { useAnalyticsQuery, usePopularProductsQuery } from '@/data/dashboard';
 import { useRouter } from 'next/router';
+import { useMeQuery } from '@/data/user';
 
 export default function Dashboard() {
   const { t } = useTranslation();
   const { locale } = useRouter();
-  const { data, isLoading: loading } = useAnalyticsQuery();
+
+  const { data: useMe } = useMeQuery();
+
+  const customerId = useMe?.id ?? ''
+
+  const state = ''
+
+  const { data, isLoading: loading } = useAnalyticsQuery(String(customerId), state);
+
   const { price: total_revenue } = usePrice(
     data && {
       amount: data?.totalRevenue!,
     }
   );
+
   const { price: todays_revenue } = usePrice(
     data && {
       amount: data?.todaysRevenue!,
     }
   );
+
   const {
     error: orderError,
     orders: orderData,
     loading: orderLoading,
     paginatorInfo,
   } = useOrdersQuery({
+    customer_id: parseInt(customerId),
     language: locale,
     limit: 10,
     page: 1,
   });
+
   const {
     data: popularProductData,
     isLoading: popularProductLoading,

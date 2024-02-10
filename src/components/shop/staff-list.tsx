@@ -7,6 +7,8 @@ import { SortOrder } from '@/types';
 import { useState } from 'react';
 import TitleWithSort from '@/components/ui/title-with-sort';
 import { User, MappedPaginatorInfo } from '@/types';
+import { useAtom } from 'jotai';
+import { newPermission } from '@/contexts/permission/storepermission';
 
 type IProps = {
   staffs: User[] | undefined;
@@ -25,6 +27,10 @@ const StaffList = ({
 }: IProps) => {
   const { t } = useTranslation();
   const { alignLeft, alignRight } = useIsRTL();
+  const [getPermission,_]=useAtom(newPermission)
+  const canWrite = getPermission?.find(
+   (permission) => permission.type === 'sidebar-nav-item-staffs'
+ )?.write;
 
   const [sortingObj, setSortingObj] = useState<{
     sort: SortOrder;
@@ -81,13 +87,16 @@ const StaffList = ({
         is_active ? t('common:text-active') : t('common:text-inactive'),
     },
     {
-      title: t('table:table-item-actions'),
-      dataIndex: 'id',
-      key: 'actions',
-      align: alignRight,
-      render: (id: string) => {
-        return <ActionButtons id={id} deleteModalView="DELETE_STAFF" />;
-      },
+        ...(canWrite
+        ?{
+        title: t('table:table-item-actions'),
+        dataIndex: 'id',
+        key: 'actions',
+        align: alignRight,
+        render: (id: string) => {
+          return <ActionButtons id={id} deleteModalView="DELETE_STAFF" />;
+        },
+      } : null),
     },
   ];
 

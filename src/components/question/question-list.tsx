@@ -22,6 +22,8 @@ import TitleWithSort from '@/components/ui/title-with-sort';
 import QuestionCard from './question-card';
 import { LikeIcon } from '@/components/icons/like-icon';
 import { DislikeIcon } from '@/components/icons/dislike-icon';
+import { newPermission } from '@/contexts/permission/storepermission';
+import { useAtom } from 'jotai';
 
 export type IProps = {
   questions: Question[] | undefined;
@@ -39,6 +41,10 @@ const QuestionList = ({
 }: IProps) => {
   const { t } = useTranslation();
   const { alignLeft } = useIsRTL();
+  const [getPermission,_]=useAtom(newPermission)
+  const canWrite = getPermission?.find(
+    (permission) => permission.type === 'sidebar-nav-item-questions'
+  )?.write;
 
   const [sortingObj, setSortingObj] = useState<{
     sort: SortOrder;
@@ -164,6 +170,8 @@ const QuestionList = ({
       },
     },
     {
+      ...(canWrite
+      ?{
       title: t('table:table-item-actions'),
       dataIndex: 'id',
       key: 'actions',
@@ -181,7 +189,8 @@ const QuestionList = ({
           />
         );
       },
-    },
+    }: null),
+  },
   ];
 
   return (

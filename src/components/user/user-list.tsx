@@ -33,6 +33,13 @@ const CustomerList = ({
   const { t } = useTranslation();
   const { alignLeft } = useIsRTL();
 
+  const [matchedData, setMatchedLinks] = useState<any[]>(
+    JSON.parse(localStorage.getItem('matchedData') || '[]')
+  );
+   const canWrite = matchedData?.find(
+    (permission) => permission.type === 'sidebar-nav-item-users'
+  )?.write;
+
   const [sortingObj, setSortingObj] = useState<{
     sort: SortOrder;
     column: any | null;
@@ -124,27 +131,32 @@ const CustomerList = ({
       render: (is_active: boolean) => (is_active ? 'Active' : 'Inactive'),
     },
     {
-      title: t('table:table-item-actions'),
-      dataIndex: 'id',
-      key: 'actions',
-      align: 'right',
-      render: function Render(id: string, { is_active }: any) {
-        const { data } = useMeQuery();
-        return (
-          <>
-            {data?.id != id && (
-              <ActionButtons
-                id={id}
-                userStatus={true}
-                isUserActive={is_active}
-                showAddWalletPoints={true}
-                showMakeAdminButton={true}
-              />
-            )}
-          </>
-        );
+      ...(canWrite
+      ?{
+        title: t('table:table-item-actions'),
+        dataIndex: 'id',
+        key: 'actions',
+        align: 'right',
+        render: function Render(id: string, { is_active }: any) {
+          const { data } = useMeQuery();
+          return (
+            <>
+              {data?.id != id && (
+                <ActionButtons
+                  id={id}
+                  userStatus={true}
+                  isUserActive={is_active}
+                  showAddWalletPoints={true}
+                  showMakeAdminButton={true}
+                />
+              )}
+            </>
+          );
+        },
+      }      
+      : null),
       },
-    },
+    
   ];
 
   return (

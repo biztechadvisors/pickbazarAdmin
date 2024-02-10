@@ -13,6 +13,8 @@ import { Config } from '@/config';
 import Link from '@/components/ui/link';
 import { Routes } from '@/config/routes';
 import LanguageSwitcher from '@/components/ui/lang-action/action';
+import { newPermission } from '@/contexts/permission/storepermission';
+import { useAtom } from 'jotai';
 
 export type IProps = {
   categories: Category[] | undefined;
@@ -30,7 +32,11 @@ const CategoryList = ({
 }: IProps) => {
   const { t } = useTranslation();
   const rowExpandable = (record: any) => record.children?.length;
-  const { alignLeft, alignRight } = useIsRTL();
+  const { alignLeft, alignRight } = useIsRTL();  
+  const [getPermission,_]=useAtom(newPermission)
+   const canWrite = getPermission?.find(
+    (permission) => permission.type === 'sidebar-nav-item-categories'
+  )?.write;
 
   const [sortingObj, setSortingObj] = useState<{
     sort: SortOrder;
@@ -162,21 +168,26 @@ const CategoryList = ({
         </div>
       ),
     },
-    {
-      title: t('table:table-item-actions'),
-      dataIndex: 'slug',
-      key: 'actions',
-      align: alignRight,
-      width: 290,
-      render: (slug: string, record: Category) => (
-        <LanguageSwitcher
-          slug={slug}
-          record={record}
-          deleteModalView="DELETE_CATEGORY"
-          routes={Routes?.category}
-        />
-      ),
-    },
+    {      
+      ...(canWrite
+        ?  {
+          title: t('table:table-item-actions'),
+          dataIndex: 'slug',
+          key: 'actions',
+          align: alignRight,
+          width: 290,
+          render: (slug: string, record: Category) =>  (
+            <LanguageSwitcher
+              slug={slug}
+              record={record}
+              deleteModalView="DELETE_CATEGORY"
+              routes={Routes?.category}
+            />
+            ) ,
+        }        
+        : null),
+    }, 
+   
   ];
 
   return (

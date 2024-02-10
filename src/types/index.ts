@@ -57,6 +57,7 @@ export enum ProductStatus {
   UnPublish = 'unpublish',
   Rejected = 'rejected',
 }
+
 export enum WithdrawStatus {
   Approved = 'APPROVED',
   Pending = 'PENDING',
@@ -156,10 +157,24 @@ export interface LoginInput {
   password: string;
 }
 
+// export interface AuthResponse {
+//   token: string;
+//   permissions: string[];
+// }
+
 export interface AuthResponse {
+  id: number;
   token: string;
-  permissions: string[];
+  type_name: string[];
+  permissions: PermissionItem[];
 }
+
+export interface PermissionItem {
+  type: string;
+  read: boolean;
+  write: boolean;
+}
+
 
 export interface Type {
   id: string;
@@ -182,6 +197,16 @@ export interface CreateTypeInput {
   icon?: string;
   banner_text?: string;
 }
+
+export declare type AddDealerInput = {
+  user: AddDealerInput | null | undefined;
+  // dealerProductMargins: AddDealerInput | null | undefined;
+  // dealerCategoryMargins: AddDealerInput | null | undefined;
+  // product:AddDealerInput | null | undefined;
+  id: string;
+  translated_languages: any;
+  name: string;
+};
 
 export interface Category {
   id: string;
@@ -1455,6 +1480,7 @@ export interface OrderQueryOptions extends QueryOptions {
   name: string;
   shop_id: string;
   tracking_number: string;
+  customer_id: number;
 }
 
 export interface CouponQueryOptions extends QueryOptions {
@@ -1515,19 +1541,10 @@ export interface ItemProps {
   title: string;
 }
 
-export declare type AddDealerInput = {
-  user: AddDealerInput | null | undefined;
-  dealerProductMargins: AddDealerInput | null | undefined;
-  dealerCategoryMargins: AddDealerInput | null | undefined;
-  // product:AddDealerInput | null | undefined;
-  id: string;
-  translated_languages: any;
-  name: string;
-};
-
 export interface DealerQueryOptions extends Omit<QueryOptions, 'language'> {
   shop_id: string;
 }
+
 
 export interface ShopPaginator extends PaginatorInfo<Shop> { }
 
@@ -1536,6 +1553,8 @@ export interface WithdrawPaginator extends PaginatorInfo<Withdraw> { }
 export interface UserPaginator extends PaginatorInfo<User> { }
 
 export interface QuestionPaginator extends PaginatorInfo<Question> { }
+
+export interface DealerPaginator extends PaginatorInfo<AddDealerInput> { }
 
 export interface StaffPaginator extends PaginatorInfo<User> { }
 

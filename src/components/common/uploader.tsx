@@ -31,8 +31,6 @@ export default function Uploader({
   const { mutate: upload, isLoading: loading } = useUploadMutation();
   const [error, setError] = useState<string | null>(null);
 
-  // console.log("Ram", files)
-
   const { getRootProps, getInputProps } = useDropzone({
     ...(!acceptFile
       ? {

@@ -13,6 +13,8 @@ import timezone from 'dayjs/plugin/timezone';
 import { useIsRTL } from '@/utils/locals';
 import usePrice from '@/utils/use-price';
 import { Routes } from '@/config/routes';
+import { newPermission } from '@/contexts/permission/storepermission';
+import { useAtom } from 'jotai';
 
 dayjs.extend(relativeTime);
 dayjs.extend(utc);
@@ -29,6 +31,10 @@ const RefundList = ({ refunds, onSort, onOrder, onPagination }: IProps) => {
   const { t } = useTranslation();
   const router = useRouter();
   const { alignLeft } = useIsRTL();
+  const [getPermission,_]=useAtom(newPermission)
+  const canWrite = getPermission?.find(
+    (permission) => permission.type === 'sidebar-nav-item-refunds'
+  )?.write;
 
   const [sortingObj, setSortingObj] = useState<{
     sort: SortOrder;
@@ -167,21 +173,25 @@ const RefundList = ({ refunds, onSort, onOrder, onPagination }: IProps) => {
       width: 120,
       onHeaderCell: () => onHeaderClick('status'),
     },
+    
     {
-      title: t('table:table-item-actions'),
-      dataIndex: 'id',
-      key: 'actions',
-      align: 'right',
-      width: 120,
-      render: (id: string, refund: any) => {
-        return (
-          <ActionButtons
-            id={id}
-            detailsUrl={`${Routes.refund.list}/${id}`}
-            customLocale={refund?.order?.language}
-          />
-        );
-      },
+      ...(canWrite
+      ?{
+        title: t('table:table-item-actions'),
+        dataIndex: 'id',
+        key: 'actions',
+        align: 'right',
+        width: 120,
+        render: (id: string, refund: any) => {
+          return (
+            <ActionButtons
+              id={id}
+              detailsUrl={`${Routes.refund.list}/${id}`}
+              customLocale={refund?.order?.language}
+            />
+          );
+        },
+      }: null),
     },
   ];
 

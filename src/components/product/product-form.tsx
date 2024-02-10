@@ -175,7 +175,7 @@ export default function CreateOrUpdateProductForm({
           ...(initialValues?.slug && { slug: initialValues.slug }),
           shop_id: shopId || initialValues?.shop_id,
         });
-        console.log("Create-Product", inputValues)
+
       } else {
         //@ts-ignore
         updateProduct({
@@ -183,7 +183,7 @@ export default function CreateOrUpdateProductForm({
           id: initialValues.id!,
           shop_id: initialValues.shop_id!,
         });
-        console.log("Update-Product", inputValues)
+   
 
       }
     } catch (error) {

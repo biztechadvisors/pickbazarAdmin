@@ -33,6 +33,11 @@ import ReadMore from '@/components/ui/truncate';
 import { useMeQuery } from '@/data/user';
 import { Routes } from '@/config/routes';
 import AccessDeniedPage from '@/components/common/access-denied';
+import React, { useState } from 'react';
+import { useAtom } from 'jotai';
+import { newPermission } from '@/contexts/permission/storepermission';
+
+
 
 export default function ShopPage() {
   const router = useRouter();
@@ -60,6 +65,14 @@ export default function ShopPage() {
       amount: data?.balance?.current_balance!,
     }
   );
+
+  const [getPermission,_]=useAtom(newPermission)
+   const canWrite = getPermission?.find(
+    (permission) => permission.type === 'sidebar-nav-item-my-shops'
+    // (permission) => permission.type === 'sidebar-nav-item-dashboard'
+  )?.write;
+
+
   if (loading) return <Loader text={t('common:text-loading')} />;
   if (error) return <ErrorMessage message={error.message} />;
   const {
@@ -78,6 +91,9 @@ export default function ShopPage() {
     id: shop_id,
   } = data ?? {};
 
+
+  
+
   if (
     !hasAccess(adminOnly, permissions) &&
     !me?.shops?.map((shop) => shop.id).includes(shop_id) &&
@@ -85,6 +101,8 @@ export default function ShopPage() {
   ) {
     router.replace(Routes.dashboard);
   }
+
+  
 
   return (
     <div className="grid grid-cols-12 gap-6">
@@ -169,7 +187,8 @@ export default function ShopPage() {
           className="object-contain"
         />
 
-        {hasAccess(adminAndOwnerOnly, permissions) && (
+        {/* {hasAccess(adminAndOwnerOnly, permissions) && ( */}
+        {canWrite ? (
           <LinkButton
             size="small"
             className="absolute top-3 bg-blue-500 shadow-sm hover:bg-blue-600 ltr:right-3 rtl:left-3"
@@ -177,7 +196,8 @@ export default function ShopPage() {
           >
             <EditIcon className="w-4 me-2" /> {t('common:text-edit-shop')}
           </LinkButton>
-        )}
+          ) : null}
+        {/* )} */}
       </div>
 
       {/* Mini Dashboard */}

@@ -12,6 +12,8 @@ import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import { Routes } from '@/config/routes';
 import { SortOrder } from '@/types';
 import { adminOnly } from '@/utils/auth-utils';
+import { newPermission } from '@/contexts/permission/storepermission';
+import { useAtom } from 'jotai';
 
 export default function Customers() {
   const [searchTerm, setSearchTerm] = useState('');
@@ -28,6 +30,11 @@ export default function Customers() {
     orderBy,
     sortedBy,
   });
+
+  const [getPermission,_]=useAtom(newPermission)
+   const canWrite = getPermission?.find(
+    (permission) => permission.type === 'sidebar-nav-item-users'
+  )?.write;
 
   if (loading) return <Loader text={t('common:text-loading')} />;
   if (error) return <ErrorMessage message={error.message} />;
@@ -52,12 +59,17 @@ export default function Customers() {
 
         <div className="ms-auto flex w-full items-center md:w-3/4">
           <Search onSearch={handleSearch} />
-          <LinkButton
-            href={`${Routes.user.create}`}
-            className="ms-4 md:ms-6 h-12"
-          >
-            <span>+ {t('form:button-label-add-customer')}</span>
-          </LinkButton>
+          
+          {canWrite ? (
+            <LinkButton
+              href={`${Routes.user.create}`}
+              className="ms-4 md:ms-6 h-12"
+            >
+              <span>+ {t('form:button-label-add-customer')}</span>
+            </LinkButton>
+          ) : null}
+
+          
         </div>
       </Card>
 

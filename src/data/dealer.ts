@@ -46,11 +46,23 @@ export const useAddDealerMutation = () => {
   });
 };
 
+
+
 export const useDealerQueryGet = ({ id }: any) => {
   return useQuery<{ AddDealerInput: any }, Error>(
     [API_ENDPOINTS.DEALER, id],
     async () => {
       const response = await dealerClient.getDealer({ id });
+      return response
+    }
+  );
+};
+
+export const useDealerQueryGetAll = () => {
+  return useQuery<{ AddDealerInput: any }, Error>(
+    [API_ENDPOINTS.DEALER],
+    async () => {
+      const response = await dealerClient.getAllDealer();
       return response
     }
   );

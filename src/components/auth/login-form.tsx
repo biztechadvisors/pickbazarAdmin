@@ -8,7 +8,7 @@ import Form from '@/components/ui/forms/form';
 import { Routes } from '@/config/routes';
 import { useLogin } from '@/data/user';
 import type { LoginInput } from '@/types';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Alert from '@/components/ui/alert';
 import Router from 'next/router';
 import {
@@ -16,6 +16,9 @@ import {
   hasAccess,
   setAuthCredentials,
 } from '@/utils/auth-utils';
+import { useAtom } from 'jotai';
+import { filterPermission, newPermission, permissionAtom } from '@/contexts/permission/storepermission';
+import { siteSettings } from '@/settings/site.settings';
 
 const loginFormSchema = yup.object().shape({
   email: yup
@@ -29,6 +32,9 @@ const LoginForm = () => {
   const { t } = useTranslation();
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const { mutate: login, isLoading, error } = useLogin();
+  const [_, setPermissionState] = useAtom(newPermission);  
+
+  // export { matchedLinksState as matchedLinks };
 
   function onSubmit({ email, password }: LoginInput) {
     login(
@@ -39,8 +45,9 @@ const LoginForm = () => {
       {
         onSuccess: (data) => {
           if (data?.token) {
-            if (hasAccess(allowedRoles, data?.permissions)) {
-              setAuthCredentials(data?.token, data?.permissions);
+            if (hasAccess(allowedRoles, data?.type_name)) {
+              setPermissionState(data?.permissions);             
+              setAuthCredentials(data?.token,data?.permissions, data?.type_name);
               Router.push(Routes.dashboard);
               return;
             }

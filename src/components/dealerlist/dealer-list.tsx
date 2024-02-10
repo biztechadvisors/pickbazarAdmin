@@ -9,6 +9,8 @@ import TitleWithSort from '@/components/ui/title-with-sort';
 import { Routes } from '@/config/routes';
 import LanguageSwitcher from '@/components/ui/lang-action/action';
 import Button from '../ui/button';
+import { useAtom } from 'jotai';
+import { newPermission } from '@/contexts/permission/storepermission';
 
 export type IProps = {
   users: any[] | undefined;
@@ -19,10 +21,12 @@ export type IProps = {
 
 const DealerList = ({ users, onSort, onOrder }: IProps) => {
 
-  console.log("listdealer",users)
-
   const { t } = useTranslation();
   const { alignLeft, alignRight } = useIsRTL();
+  const [getPermission, _] = useAtom(newPermission)
+  const canWrite = getPermission?.find(
+    (permission) => permission.type === 'sidebar-nav-item-dealerlist'
+  )?.write;
 
   const [sortingObj, setSortingObj] = useState<{
     sort: SortOrder;
@@ -126,21 +130,24 @@ const DealerList = ({ users, onSort, onOrder }: IProps) => {
       align: alignLeft,
       onHeaderCell: () => onHeaderClick('walletPoints'),
       render: (dealer: any) => <span className="whitespace-nowrap">{dealer ? dealer.walletBalance : 0}</span>,
-    },    
-
+    },
     {
-      title: t('table:table-item-actions'),
-      dataIndex: 'slug',
-      key: 'actions',
-      align: alignRight,
-      render: (slug: string, record: Type) => (
-        <LanguageSwitcher
-          slug={record.id}
-          record={record}
-          deleteModalView="DELETE_DEALER"
-          routes={Routes?.dealerlist}
-        />
-      ),
+      ...(canWrite
+        ?
+        {
+          title: t('table:table-item-actions'),
+          dataIndex: 'slug',
+          key: 'actions',
+          align: alignRight,
+          render: (slug: string, record: Type) => (
+            <LanguageSwitcher
+              slug={record.id}
+              record={record}
+              deleteModalView="DELETE_DEALER"
+              routes={Routes?.dealerlist}
+            />
+          ),
+        } : null),
     },
   ];
 

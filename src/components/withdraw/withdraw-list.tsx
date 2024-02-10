@@ -16,6 +16,8 @@ import timezone from 'dayjs/plugin/timezone';
 import { useState } from 'react';
 import TitleWithSort from '@/components/ui/title-with-sort';
 import { Withdraw, MappedPaginatorInfo } from '@/types';
+import { useAtom } from 'jotai';
+import { newPermission } from '@/contexts/permission/storepermission';
 
 type IProps = {
   withdraws: Withdraw[] | undefined;
@@ -36,6 +38,11 @@ const WithdrawList = ({
   const { alignLeft } = useIsRTL();
 
   const router = useRouter();
+
+  const [getPermission,_]=useAtom(newPermission)
+  const canWrite = getPermission?.find(
+    (permission) => permission.type === 'sidebar-nav-item-withdraws'
+  )?.write;
 
   const renderStatusBadge = (status: string) => {
     switch (status.toUpperCase()) {
@@ -149,24 +156,29 @@ const WithdrawList = ({
         );
       },
     },
+    
     {
-      title: t('table:table-item-actions'),
-      dataIndex: 'id',
-      key: 'actions',
-      align: 'right',
-      render: (id: string) => {
-        const { permissions } = getAuthCredentials();
-        if (hasAccess(adminOnly, permissions)) {
-          return (
-            <ActionButtons
-              detailsUrl={`${Routes.withdraw.list}/${id}`}
-              id={id}
-            />
-          );
-        }
-        return null;
+      ...(canWrite
+      ?{
+        title: t('table:table-item-actions'),
+        dataIndex: 'id',
+        key: 'actions',
+        align: 'right',
+        render: (id: string) => {
+          const { permissions } = getAuthCredentials();
+          if (hasAccess(adminOnly, permissions)) {
+            return (
+              <ActionButtons
+                detailsUrl={`${Routes.withdraw.list}/${id}`}
+                id={id}
+              />
+            );
+          }
+          return null;
+        },
+      }      
+      : null),
       },
-    },
   ];
   if (router?.query?.shop) {
     columns = columns?.filter((column) => column?.key !== 'actions');

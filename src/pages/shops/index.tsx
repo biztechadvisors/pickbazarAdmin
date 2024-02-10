@@ -10,6 +10,7 @@ import Search from '@/components/common/search';
 import { adminOnly } from '@/utils/auth-utils';
 import { useShopsQuery } from '@/data/shop';
 import { SortOrder } from '@/types';
+import permission from '../permission';
 
 export default function AllShopPage() {
   const { t } = useTranslation();

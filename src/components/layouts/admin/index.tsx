@@ -1,10 +1,13 @@
 import Navbar from '@/components/layouts/navigation/top-navbar';
-import { Fragment } from 'react';
+import { Fragment, useState } from 'react';
 import MobileNavigation from '@/components/layouts/navigation/mobile-navigation';
-import { siteSettings } from '@/settings/site.settings';
+import { siteSettings,  matchedLinks } from '@/settings/site.settings';
 import { useTranslation } from 'next-i18next';
 import SidebarItem from '@/components/layouts/navigation/sidebar-item';
 import { useRouter } from 'next/router';
+import { useEffect,   } from 'react';
+import { filterPermission, newPermission, permissionAtom } from '@/contexts/permission/storepermission';
+import { useAtom } from 'jotai';
 
 const AdminLayout: React.FC<{ children?: React.ReactNode }> = ({
   children,
@@ -12,10 +15,18 @@ const AdminLayout: React.FC<{ children?: React.ReactNode }> = ({
   const { t } = useTranslation();
   const { locale } = useRouter();
   const dir = locale === 'ar' || locale === 'he' ? 'rtl' : 'ltr';
+  
+  
+  const [matched,_]=useAtom(newPermission)
+
+  const matchedLinks =  siteSettings.sidebarLinks.admin.filter(link => {   
+    return matched.some(newItem => newItem.type === link.label);
+   
+  });
 
   const SidebarItemMap = () => (
     <Fragment>
-      {siteSettings.sidebarLinks.admin.map(({ href, label, icon }) => (
+      {matchedLinks.map(({ href, label, icon }) => (
         <SidebarItem href={href} label={t(label)} icon={icon} key={href} />
       ))}
     </Fragment>

@@ -14,6 +14,8 @@ import { Routes } from '@/config/routes';
 import { useTagsQuery } from '@/data/tag';
 import { useRouter } from 'next/router';
 import { Config } from '@/config';
+import { newPermission } from '@/contexts/permission/storepermission';
+import { useAtom } from 'jotai';
 
 export default function Tags() {
   const { t } = useTranslation();
@@ -35,6 +37,11 @@ export default function Tags() {
     page,
     language: locale,
   });
+
+  const [getPermission,_]=useAtom(newPermission)
+  const canWrite = getPermission?.find(
+    (permission) => permission.type === 'sidebar-nav-item-tags'
+  )?.write;
 
   if (loading) return <Loader text={t('common:text-loading')} />;
   if (error) return <ErrorMessage message={error.message} />;
@@ -59,7 +66,7 @@ export default function Tags() {
         <div className="ms-auto flex w-full flex-col items-center space-y-4 md:flex-row md:space-y-0 xl:w-1/2">
           <Search onSearch={handleSearch} />
 
-          {locale === Config.defaultLanguage && (
+          {canWrite && locale === Config.defaultLanguage && (
             <LinkButton
               href={`${Routes.tag.create}`}
               className="md:ms-6 h-12 w-full md:w-auto"

@@ -11,6 +11,8 @@ import { ShopPaginator, SortOrder } from '@/types';
 import TitleWithSort from '@/components/ui/title-with-sort';
 import Link from '@/components/ui/link';
 import { Shop, MappedPaginatorInfo } from '@/types';
+import { newPermission } from '@/contexts/permission/storepermission';
+import { useAtom } from 'jotai';
 
 type IProps = {
   shops: Shop[] | undefined;
@@ -29,6 +31,11 @@ const ShopList = ({
 }: IProps) => {
   const { t } = useTranslation();
   const { alignLeft, alignRight } = useIsRTL();
+  const [getPermission,_]=useAtom(newPermission)
+  const canWrite = getPermission?.find(
+    (permission) => permission.type === 'sidebar-nav-item-shops'
+  )?.write;
+
 
   const [sortingObj, setSortingObj] = useState<{
     sort: SortOrder;
@@ -156,6 +163,8 @@ const ShopList = ({
       ),
     },
     {
+      ...(canWrite
+      ?{
       title: t('table:table-item-actions'),
       dataIndex: 'id',
       key: 'actions',
@@ -170,7 +179,8 @@ const ShopList = ({
           />
         );
       },
-    },
+    }: null),
+  },
   ];
 
   return (

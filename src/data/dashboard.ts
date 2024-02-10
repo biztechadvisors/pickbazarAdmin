@@ -4,8 +4,9 @@ import { API_ENDPOINTS } from './client/api-endpoints';
 import { dashboardClient } from '@/data/client/dashboard';
 import { productClient } from '@/data/client/product';
 
-export function useAnalyticsQuery() {
-  return useQuery([API_ENDPOINTS.ANALYTICS], dashboardClient.analytics);
+export function useAnalyticsQuery(customerId: string, state: string) {
+  console.log("customerId**,state**", typeof(customerId), state)
+  return useQuery([API_ENDPOINTS.ANALYTICS], () => dashboardClient.analytics({ customerId, state }));
 }
 
 export function usePopularProductsQuery(options: Partial<ProductQueryOptions>) {

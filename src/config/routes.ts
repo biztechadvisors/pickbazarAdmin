@@ -32,6 +32,9 @@ export const Routes = {
   tag: {
     ...routesFactory('/tags'),
   },
+  dealerlist: {
+    ...routesFactory('/dealerlist'),
+  },
   reviews: {
     ...routesFactory('/reviews'),
   },
@@ -58,6 +61,9 @@ export const Routes = {
   },
   orderCreate: {
     ...routesFactory('/orders/create'),
+  },
+  permission: {
+    ...routesFactory('/permission'),
   },
   product: {
     ...routesFactory('/products'),
@@ -97,10 +103,7 @@ export const Routes = {
   },
   storeNoticeRead: {
     ...routesFactory('/store-notices/read'),
-  },
-  dealerlist: {
-    ...routesFactory('/dealerlist'),
-  },
+  }
 };
 
 function routesFactory(endpoint: string) {

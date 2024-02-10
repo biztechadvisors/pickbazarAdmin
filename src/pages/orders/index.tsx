@@ -70,7 +70,6 @@ export default function Orders() {
   async function handleExportOrder() {
     const { data } = await refetch();
 
-    console.log("Data", data)
     if (data) {
       const a = document.createElement('a');
       a.href = data;
