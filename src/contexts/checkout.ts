@@ -75,6 +75,13 @@ export const paymentGatewayAtom = atom(
     return set(checkoutAtom, { ...prev, payment_gateway: data });
   }
 );
+export const paymentSubGatewayAtom = atom(
+  (get) => get(checkoutAtom).payment_sub_gateway,
+  (get, set, data: string) => {
+    const prev = get(checkoutAtom);
+    return set(checkoutAtom, { ...prev, payment_sub_gateway: data });
+  }
+);
 export const verifiedTokenAtom = atom(
   (get) => get(checkoutAtom).token,
   (get, set, data: string) => {

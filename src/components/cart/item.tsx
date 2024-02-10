@@ -32,6 +32,7 @@ const CartItem = ({ item }: CartItemProps) => {
     e.stopPropagation();
     removeItemFromCart(item.id);
   };
+  
   const outOfStock = !isInStock(item.id);
   return (
     <motion.div

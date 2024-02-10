@@ -4,32 +4,79 @@ import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import Card from '@/components/common/card';
 import { useTranslation } from 'react-i18next';
 import axios from 'axios';
+import { useRouter } from 'next/router';
 import { ToastContainer, toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
+import Button from '@/components/ui/button';
 
 const CreatePermission = () => {
+  const router = useRouter();
+  const { t } = useTranslation();
+
   const [typeName, setTypeName] = useState([]);
   const [selectedType, setSelectedType] = useState('');
   const [menusData, setMenusData] = useState({});
   const [permissionName, setPermissionName] = useState('');
   const [selectedPermissions, setSelectedPermissions] = useState([]);
-  const { t } = useTranslation();
   const [typeError, setTypeError] = useState('');
   const [permissionError, setPermissionError] = useState('');
+  const [permDataUpdate, setPermDataUpdate]=useState([])
 
-  const getTypeData = async () => {
-    const data = await axios.get(`http://localhost:6000/type_name`);
-    setTypeName(data.data);
+  useEffect(() => {
+    const getTypeData = async () => {
+      try {
+        const response = await axios.get('http://localhost:8000/type_name');
+        setTypeName(response.data);
+      } catch (error) {
+        console.error('Error fetching type data:', error);
+      }
+    };
+
+    const getMenusData = async () => {
+      try {
+        const response = await axios.get('http://localhost:8000/Menus');
+        setMenusData(response.data);
+      } catch (error) {
+        console.error('Error fetching menus data:', error);
+      }
+    };
+
+    getTypeData();
+    getMenusData();
+
+    if (router.query.id) {
+      const permissionId = router.query.id;
+      fetchPermissionData(permissionId);
+    }
+  }, [router.query.id]);
+
+  const fetchPermissionData = async (permissionId) => {
+    try {
+      const response = await axios.get(`http://localhost:5000/api/permission/${permissionId}`);
+      const permissionData = response.data;
+      console.log('permissionData', permissionData )
+
+      setPermDataUpdate(permissionData)
+
+      setTypeName([permissionData.type_name]);
+      setPermissionName(permissionData.permissionName);
+
+      const formattedPermissions = permissionData.permission.map((perm,i) => ({
+        id:perm.id,
+        type: perm.type,
+        read: perm.read,
+        write: perm.write,
+      }));
+
+      
+      setSelectedPermissions(formattedPermissions);
+    } catch (error) {
+      console.error('Error fetching permission data:', error);
+    }
   };
 
-  const getMenusData = async () => {
-    const data = await axios.get(`http://localhost:6000/Menus`);
-    setMenusData(data.data);
-  };
-
-  const handleChange = (e: any) => {
-    setSelectedType(e.target.value);
-    setTypeError('');
+  const handleChange = (e) => {
+      setSelectedType(e.target.value);
+      setTypeError('');
   };
 
   const handlePermissionNameChange = (e: any) => {
@@ -37,58 +84,81 @@ const CreatePermission = () => {
     setPermissionError('');
   };
 
-  const handleCheckboxChange = (menuItem: unknown, type: string, isChecked: boolean) => {
-    const permission = {
-      type: menuItem,
-      read: type === 'read' ? isChecked : selectedPermissions.find(p => p.type === menuItem)?.read || false,
-      write: type === 'write' ? isChecked : selectedPermissions.find(p => p.type === menuItem)?.write || false,
-    };
 
-    const updatedPermissions = selectedPermissions.filter(p => p.type !== menuItem);
-    updatedPermissions.push(permission);
-
-    setSelectedPermissions(updatedPermissions);
+  const handleCheckboxChange = (menuItem, type, isChecked) => {
+    const permissionIndex = selectedPermissions.findIndex((p) => p.type === menuItem);
+    if (permissionIndex !== -1) {
+      const updatedPermissions = [...selectedPermissions];
+      updatedPermissions[permissionIndex] = {
+        ...updatedPermissions[permissionIndex],
+        [type]: isChecked,
+      };
+      setSelectedPermissions(updatedPermissions);
+    } else {
+      const newPermission = {
+        type: menuItem,
+        read: false,
+        write: false,
+      };
+      newPermission[type] = isChecked;
+      setSelectedPermissions((prevPermissions) => [...prevPermissions, newPermission]);
+    }
   };
+  
+
 
   const handleSavePermission = async () => {
     if (!permissionName) {
       setPermissionError('Please enter a permission name.');
       return;
     }
-
+  
     let typeToSend = selectedType;
     if (!selectedType) {
       const firstType = Object.values(typeName)[0];
       typeToSend = firstType;
       setSelectedType(firstType);
     }
-
+    
+  
     const dataToSend = {
+      type_name: typeToSend,
+      permissionName: permissionName,
+      permission: selectedPermissions,
+    };
+    const dataToSend2 = {
       type_name: typeToSend,
       permission_name: permissionName,
       permission: selectedPermissions,
     };
-
+  
     try {
-      const response = await axios.post('http://localhost:5000/api/permission', dataToSend);
-
-      if (response.status === 201) {
-        toast.success('UPDATED');
-        setPermissionName('');
-        setSelectedPermissions([]);
+      if (router.query.id) {
+        const permissionId = router.query.id;
+        const response = await axios.put(`http://localhost:5000/api/permission/${permissionId}`, dataToSend);
+        console.log("dar", dataToSend)
+        console.log('response', response)
+        console.log('Permission updated:', response.data);
+        if (response.status === 200) {
+          toast.success('UPDATED');
+          setPermissionName('');
+          setSelectedPermissions([]);
+        }
+      } else {
+        const response = await axios.post('http://localhost:5000/api/permission', dataToSend2);
+        if (response.status === 201) {
+          toast.success('SAVED');
+          setPermissionName('');
+          setSelectedPermissions([]);
+        }
       }
     } catch (error) {
-      console.error('Error saving permission:', error);
-      toast.error('Error')
+      console.error('Error saving/updating permission:', error);
+      toast.error('Error');
     }
   };
 
-  useEffect(() => {
-    getTypeData();
-    getMenusData();
-
-  }, []);
-
+  
   return (
     <>
       <Card className="mb-8 flex flex-col items-center xl:flex-row">
@@ -125,6 +195,7 @@ const CreatePermission = () => {
             name="permission"
             className={`mt-1 block w-full p-2 border rounded-md bg-gray-100 ${permissionError && 'border-red-500'}`}
             placeholder="Enter permissions"
+            value={permissionName}
             onChange={(e) => handlePermissionNameChange(e)}
           />
           {permissionError && <p className="text-red-500 text-sm mt-1">{permissionError}</p>}
@@ -153,7 +224,7 @@ const CreatePermission = () => {
                       type="checkbox"
                       id={`readCheckbox${index}`}
                       onChange={(e) => handleCheckboxChange(entityName, 'read', e.target.checked)}
-                      checked={selectedPermissions.find(p => p.type === entityName)?.read || false}
+                      checked={selectedPermissions.find((p) => p.type === entityName)?.read || false}
                     />
                   </td>
                   <td className="border p-2 items-center justify-center">
@@ -162,7 +233,7 @@ const CreatePermission = () => {
                       type="checkbox"
                       id={`writeCheckbox${index}`}
                       onChange={(e) => handleCheckboxChange(entityName, 'write', e.target.checked)}
-                      checked={selectedPermissions.find(p => p.type === entityName)?.write || false}
+                      checked={selectedPermissions.find((p) => p.type === entityName)?.write || false}
                     />
                   </td>
                 </tr>
@@ -172,12 +243,20 @@ const CreatePermission = () => {
         </div>
       </div>
       <div className="flex justify-end">
-        <button
+      <Button
+          variant="outline"
+          onClick={router.back}
+          className="m-4"
+          type="button"
+        >
+          {t('form:button-label-back')}
+        </Button>
+        <Button
           onClick={handleSavePermission}
-          className="mt-4 px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-400 cursor-pointer text-left"
+          className="mt-4"
         >
           Save Permission
-        </button>
+        </Button>
       </div>
     </>
   );
@@ -185,17 +264,13 @@ const CreatePermission = () => {
 
 CreatePermission.Layout = AdminLayout;
 
-export const getStaticProps = async ({ locale }: any) => ({
+export const getStaticProps = async ({ locale }) => ({
   props: {
     ...(await serverSideTranslations(locale, ['table', 'common', 'form'])),
   },
 });
 
 export default CreatePermission;
-
-
-
-
 
 
 

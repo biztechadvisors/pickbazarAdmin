@@ -11,12 +11,13 @@ import { useTranslation } from 'next-i18next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import { Routes } from '@/config/routes';
 import TypeFilter from '@/components/category/type-filter';
-import { adminOnly } from '@/utils/auth-utils';
+import { adminOnly, getAuthCredentials } from '@/utils/auth-utils';
 import { useCategoriesQuery } from '@/data/category';
 import { useRouter } from 'next/router';
 import { Config } from '@/config';
 import { newPermission } from '@/contexts/permission/storepermission';
 import { useAtom } from 'jotai';
+import { siteSettings } from '@/settings/site.settings';
 
 export default function Categories() {
   const { locale } = useRouter();
@@ -38,7 +39,10 @@ export default function Categories() {
   });
 
   const [getPermission,_]=useAtom(newPermission)
-  const canWrite = getPermission?.find(
+  const { permissions } = getAuthCredentials();
+   const canWrite =  permissions.includes('super_admin')
+   ? siteSettings.sidebarLinks
+   :getPermission?.find(
     (permission) => permission.type === 'sidebar-nav-item-categories'
   )?.write;
 

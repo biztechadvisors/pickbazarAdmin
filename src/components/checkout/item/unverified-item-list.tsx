@@ -30,7 +30,7 @@ const UnverifiedItemList = () => {
             </h4>
           </div>
         ) : (
-          items?.map((item) => <ItemCard item={item} key={item.id} />)
+          items?.map((item) => <ItemCard item={item} margin={item.margin} key={item.id} />)
         )}
       </div>
       <div className="mt-4 space-y-2">

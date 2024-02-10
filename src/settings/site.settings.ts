@@ -1,8 +1,5 @@
-import { adminAndOwnerOnly, adminOwnerAndStaffOnly, type_names} from '@/utils/auth-utils';
+import { adminAndOwnerOnly, adminOwnerAndStaffOnly} from '@/utils/auth-utils';
 import { Routes } from '@/config/routes';
-import { useAtom } from 'jotai';
-import { filterPermission, permissionAtom } from '@/contexts/permission/storepermission';
-import React from 'react';
 
 const Type = {
 Dealer : "dealer", 
@@ -78,6 +75,11 @@ export const siteSettings = {
         label: 'sidebar-nav-item-categories',
         icon: 'CategoriesIcon',
       },
+      // {
+      //   href: Routes.productsheet.list,
+      //   label: 'Product Sheet',
+      //   icon: 'UploadIcon',
+      // },
       {
         href: Routes.tag.list,
         label: 'sidebar-nav-item-tags',
@@ -90,6 +92,11 @@ export const siteSettings = {
         icon: 'DealerListIcon',
       },
       
+      {
+        href: Routes.totalsale.list,
+        label: 'sidebar-nav-item-total-sale',
+        icon: 'TotalSaleIcon',
+      },
       {
         href: Routes.manufacturer.list,
         label: 'sidebar-nav-item-manufacturers',

@@ -11,9 +11,10 @@ import { useTranslation } from 'next-i18next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import { Routes } from '@/config/routes';
 import { SortOrder } from '@/types';
-import { adminOnly } from '@/utils/auth-utils';
+import { adminOnly, getAuthCredentials } from '@/utils/auth-utils';
 import { newPermission } from '@/contexts/permission/storepermission';
 import { useAtom } from 'jotai';
+import { siteSettings } from '@/settings/site.settings';
 
 export default function Customers() {
   const [searchTerm, setSearchTerm] = useState('');
@@ -32,7 +33,10 @@ export default function Customers() {
   });
 
   const [getPermission,_]=useAtom(newPermission)
-   const canWrite = getPermission?.find(
+  const { permissions } = getAuthCredentials();
+  const canWrite =  permissions.includes('super_admin')
+  ? siteSettings.sidebarLinks
+  :getPermission?.find(
     (permission) => permission.type === 'sidebar-nav-item-users'
   )?.write;
 
@@ -53,23 +57,18 @@ export default function Customers() {
       <Card className="mb-8 flex flex-col items-center md:flex-row">
         <div className="mb-4 md:mb-0 md:w-1/4">
           <h1 className="text-lg font-semibold text-heading">
-            {t('form:input-label-customers')}
+            {t('common:sidebar-nav-item-users')}
           </h1>
         </div>
 
         <div className="ms-auto flex w-full items-center md:w-3/4">
           <Search onSearch={handleSearch} />
-          
-          {canWrite ? (
-            <LinkButton
-              href={`${Routes.user.create}`}
-              className="ms-4 md:ms-6 h-12"
-            >
-              <span>+ {t('form:button-label-add-customer')}</span>
-            </LinkButton>
-          ) : null}
-
-          
+          <LinkButton
+            href={`${Routes.user.create}`}
+            className="ms-4 md:ms-6 h-12"
+          >
+            <span>+ {t('form:button-label-add-user')}</span>
+          </LinkButton>
         </div>
       </Card>
 

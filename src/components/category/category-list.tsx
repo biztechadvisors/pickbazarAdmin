@@ -15,6 +15,8 @@ import { Routes } from '@/config/routes';
 import LanguageSwitcher from '@/components/ui/lang-action/action';
 import { newPermission } from '@/contexts/permission/storepermission';
 import { useAtom } from 'jotai';
+import { getAuthCredentials } from '@/utils/auth-utils';
+import { siteSettings } from '@/settings/site.settings';
 
 export type IProps = {
   categories: Category[] | undefined;
@@ -34,7 +36,10 @@ const CategoryList = ({
   const rowExpandable = (record: any) => record.children?.length;
   const { alignLeft, alignRight } = useIsRTL();  
   const [getPermission,_]=useAtom(newPermission)
-   const canWrite = getPermission?.find(
+  const { permissions } = getAuthCredentials();
+  const canWrite =  permissions.includes('super_admin')
+  ? siteSettings.sidebarLinks
+  :getPermission?.find(
     (permission) => permission.type === 'sidebar-nav-item-categories'
   )?.write;
 
@@ -107,13 +112,13 @@ const CategoryList = ({
         return (
           <div className="relative mx-auto h-10 w-10">
             <Image
-              // src={image?.thumbnail ?? '/'}
-              src={`${process?.env?.NEXT_PUBLIC_REST_API_ENDPOINT}/${image.thumbnail}`}
+              src={image?.thumbnail ? `/${image.thumbnail}` : '/'}
               alt={name}
               fill
               sizes="(max-width: 768px) 100vw"
               className="overflow-hidden rounded object-fill"
             />
+
           </div>
         );
       },

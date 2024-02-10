@@ -6,7 +6,7 @@ import * as yup from 'yup';
 import Link from '@/components/ui/link';
 import Form from '@/components/ui/forms/form';
 import { Routes } from '@/config/routes';
-import { useLogin } from '@/data/user';
+import { useLogin, useMeQuery } from '@/data/user';
 import type { LoginInput } from '@/types';
 import { useEffect, useState } from 'react';
 import Alert from '@/components/ui/alert';
@@ -17,7 +17,11 @@ import {
   setAuthCredentials,
 } from '@/utils/auth-utils';
 import { useAtom } from 'jotai';
-import { filterPermission, newPermission, permissionAtom } from '@/contexts/permission/storepermission';
+import {
+  filterPermission,
+  newPermission,
+  permissionAtom,
+} from '@/contexts/permission/storepermission';
 import { siteSettings } from '@/settings/site.settings';
 
 const loginFormSchema = yup.object().shape({
@@ -32,7 +36,10 @@ const LoginForm = () => {
   const { t } = useTranslation();
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const { mutate: login, isLoading, error } = useLogin();
-  const [_, setPermissionState] = useAtom(newPermission);  
+  const [_, setPermissionState] = useAtom(newPermission);
+
+  console.log('login');
+  console.log(isLoading);
 
   // export { matchedLinksState as matchedLinks };
 
@@ -46,8 +53,13 @@ const LoginForm = () => {
         onSuccess: (data) => {
           if (data?.token) {
             if (hasAccess(allowedRoles, data?.type_name)) {
-              setPermissionState(data?.permissions);             
-              setAuthCredentials(data?.token,data?.permissions, data?.type_name);
+              // console.log(allowedRoles, data?.type_name,"allowedRoles, data?.type_name")
+              setPermissionState(data?.permissions);
+              setAuthCredentials(
+                data?.token,
+                data?.permissions,
+                data?.type_name
+              );
               Router.push(Routes.dashboard);
               return;
             }

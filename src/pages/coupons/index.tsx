@@ -9,12 +9,13 @@ import Loader from '@/components/ui/loader/loader';
 import { useTranslation } from 'next-i18next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import { SortOrder } from '@/types';
-import { adminOnly } from '@/utils/auth-utils';
+import { adminOnly, getAuthCredentials } from '@/utils/auth-utils';
 import { useCouponsQuery } from '@/data/coupon';
 import { useRouter } from 'next/router';
 import { Config } from '@/config';
 import { newPermission } from '@/contexts/permission/storepermission';
 import { useAtom } from 'jotai';
+import { siteSettings } from '@/settings/site.settings';
 
 export default function Coupons() {
   const { t } = useTranslation();
@@ -33,7 +34,10 @@ export default function Coupons() {
   });
 
   const [getPermission,_]=useAtom(newPermission)
-   const canWrite = getPermission?.find(
+  const { permissions } = getAuthCredentials();
+  const canWrite =  permissions.includes('super_admin')
+  ? siteSettings.sidebarLinks
+  :getPermission?.find(
     (permission) => permission.type === 'sidebar-nav-item-coupons'
   )?.write;
 

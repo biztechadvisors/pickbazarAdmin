@@ -63,10 +63,11 @@ export default function ProductVariableForm({
     <div className="my-5 flex flex-wrap sm:my-8">
       <Description
         title={t('form:form-title-variation-product-info')}
-        details={`${initialValues
-          ? t('form:item-description-update')
-          : t('form:item-description-choose')
-          } ${t('form:form-description-variation-product-info')}`}
+        details={`${
+          initialValues
+            ? t('form:item-description-update')
+            : t('form:item-description-choose')
+        } ${t('form:form-description-variation-product-info')}`}
         className="w-full px-0 pb-5 sm:w-4/12 sm:py-8 sm:pe-4 md:w-1/3 md:pe-5"
       />
       <Card className="w-full p-0 sm:w-8/12 md:w-2/3 md:p-0">
@@ -187,7 +188,7 @@ export default function ProductVariableForm({
                           type="number"
                           {...register(`variation_options.${index}.sale_price`)}
                           // @ts-ignore
-                          error={t(errors.variation_options?.[index]?.sale_price?.message)}
+                          error={t(errors.variation_options?.[index]?.sale_price?.message )}
                           variant="outline"
                           className="mb-5"
                         />
@@ -244,7 +245,7 @@ export default function ProductVariableForm({
                               defaultValue={{}}
                             />
                             <ValidationError
-                              // @ts-ignore
+                            // @ts-ignore
                               message={t(errors?.variation_options?.[index]?.digital_file_input?.message)}
                             />
 
@@ -261,7 +262,7 @@ export default function ProductVariableForm({
                         <Checkbox
                           {...register(`variation_options.${index}.is_disable`)}
                           // @ts-ignore
-                          error={t(errors.variation_options?.[index]?.is_disable?.message)}
+                          error={t(errors.variation_options?.[index]?.is_disable?.message )}
                           label={t('form:input-label-disable-variant')}
                         />
                       </div>

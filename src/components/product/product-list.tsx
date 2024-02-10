@@ -20,6 +20,7 @@ import { Routes } from '@/config/routes';
 import LanguageSwitcher from '@/components/ui/lang-action/action';
 import { newPermission, permissionAtom } from '@/contexts/permission/storepermission';
 import { useAtom } from 'jotai';
+import { getAuthCredentials } from '@/utils/auth-utils';
 
 export type IProps = {
   products: Product[] | undefined;
@@ -45,9 +46,11 @@ const ProductList = ({
   const router = useRouter();
   const { t } = useTranslation();
   const { alignLeft, alignRight } = useIsRTL();
-
+  const { permissions } = getAuthCredentials();
   const [getPermission,_]=useAtom(newPermission)  
-  const canWrite = getPermission?.find(
+  const canWrite = permissions.includes('super_admin')
+  ? siteSettings.sidebarLinks.admin 
+  :getPermission?.find(
     (permission : any) => permission.type === 'sidebar-nav-item-products'
   )?.write;
 
@@ -81,7 +84,7 @@ const ProductList = ({
       render: (image: any, { name }: { name: string }) => (
         <div className="relative flex h-[42px] w-[42px] items-center">
           <Image
-            src={`${process?.env?.NEXT_PUBLIC_REST_API_ENDPOINT}/${image?.thumbnail ?? siteSettings.product.placeholder}`}
+            src={image?.thumbnail ?? siteSettings.product.placeholder}
             alt={name}
             fill
             sizes="(max-width: 768px) 100vw"
@@ -217,10 +220,11 @@ const ProductList = ({
       width: 180,
       render: (status: string, record: any) => (
         <div
-          className={`flex justify-start ${record?.quantity > 0 && record?.quantity < 10
-            ? 'flex-col items-baseline space-y-3 3xl:flex-row 3xl:space-x-3 3xl:space-y-0 rtl:3xl:space-x-reverse'
-            : 'items-center space-x-3 rtl:space-x-reverse'
-            }`}
+          className={`flex justify-start ${
+            record?.quantity > 0 && record?.quantity < 10
+              ? 'flex-col items-baseline space-y-3 3xl:flex-row 3xl:space-x-3 3xl:space-y-0 rtl:3xl:space-x-reverse'
+              : 'items-center space-x-3 rtl:space-x-reverse'
+          }`}
         >
           <Badge
             text={status}

@@ -54,7 +54,6 @@ export default function Orders() {
     page,
     tracking_number: searchTerm,
   });
-
   const { refetch } = useExportOrderQuery(
     {
       ...(shopId && { shop_id: shopId }),

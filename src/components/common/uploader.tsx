@@ -30,7 +30,6 @@ export default function Uploader({
   const [files, setFiles] = useState<Attachment[]>(getPreviewImage(value));
   const { mutate: upload, isLoading: loading } = useUploadMutation();
   const [error, setError] = useState<string | null>(null);
-
   const { getRootProps, getInputProps } = useDropzone({
     ...(!acceptFile
       ? {
@@ -128,8 +127,9 @@ export default function Uploader({
 
       return (
         <div
-          className={`relative mt-2 inline-flex flex-col overflow-hidden rounded me-2 ${isImage ? 'border border-border-200' : ''
-            }`}
+          className={`relative mt-2 inline-flex flex-col overflow-hidden rounded me-2 ${
+            isImage ? 'border border-border-200' : ''
+          }`}
           key={idx}
         >
           {/* {file?.thumbnail && isImage ? ( */}

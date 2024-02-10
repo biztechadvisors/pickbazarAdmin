@@ -385,7 +385,7 @@ export default function CreateOrUpdateStoreNoticeForm({
         </Card>
       </div>
       <div className="mb-4 text-end">
-        {initialValues && (
+        {/* {initialValues && ( */}
           <Button
             variant="outline"
             onClick={router.back}
@@ -394,7 +394,7 @@ export default function CreateOrUpdateStoreNoticeForm({
           >
             {t('form:button-label-back')}
           </Button>
-        )}
+        {/* )} */}
 
         <Button loading={updating || creating}>
           {initialValues

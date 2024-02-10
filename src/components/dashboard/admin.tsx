@@ -22,13 +22,14 @@ export default function Dashboard() {
   const { locale } = useRouter();
 
   const { data: useMe } = useMeQuery();
-
   const customerId = useMe?.id ?? ''
 
-  const state = ''
+  const query = {
+    customerId: parseInt(customerId),
+    state: '',
+  };
 
-  const { data, isLoading: loading } = useAnalyticsQuery(String(customerId), state);
-
+  const { data, isLoading: loading } = useAnalyticsQuery(query);
   const { price: total_revenue } = usePrice(
     data && {
       amount: data?.totalRevenue!,
