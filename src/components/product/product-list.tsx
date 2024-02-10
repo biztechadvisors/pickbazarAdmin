@@ -84,7 +84,7 @@ const ProductList = ({
       render: (image: any, { name }: { name: string }) => (
         <div className="relative flex h-[42px] w-[42px] items-center">
           <Image
-            src={`${process?.env?.NEXT_PUBLIC_REST_API_ENDPOINT}/${image?.thumbnail ?? siteSettings.product.placeholder}`}
+            src={image?.thumbnail ?? siteSettings.product.placeholder}
             alt={name}
             fill
             sizes="(max-width: 768px) 100vw"
@@ -220,10 +220,11 @@ const ProductList = ({
       width: 180,
       render: (status: string, record: any) => (
         <div
-          className={`flex justify-start ${record?.quantity > 0 && record?.quantity < 10
-            ? 'flex-col items-baseline space-y-3 3xl:flex-row 3xl:space-x-3 3xl:space-y-0 rtl:3xl:space-x-reverse'
-            : 'items-center space-x-3 rtl:space-x-reverse'
-            }`}
+          className={`flex justify-start ${
+            record?.quantity > 0 && record?.quantity < 10
+              ? 'flex-col items-baseline space-y-3 3xl:flex-row 3xl:space-x-3 3xl:space-y-0 rtl:3xl:space-x-reverse'
+              : 'items-center space-x-3 rtl:space-x-reverse'
+          }`}
         >
           <Badge
             text={status}

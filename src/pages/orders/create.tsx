@@ -26,8 +26,8 @@ import { useSettings } from '@/contexts/settings.context';
 import { newPermission } from '@/contexts/permission/storepermission';
 import { useAtom } from 'jotai';
 import { siteSettings } from '@/settings/site.settings';
-import { useMeQuery } from '@/data/user';
 import { toggleAtom } from '@/utils/atoms';
+import { useMeQuery } from '@/data/user';
 
 export default function ProductsPage() {
   const { locale } = useRouter();
@@ -73,14 +73,6 @@ export default function ProductsPage() {
   :getPermission?.find(
     (permission) => permission.type === 'sidebar-nav-item-create-order'
   )?.write;
-  // const canWrite = false
-
-  console.log("canWrite=====",canWrite)
-
-  // const [getPermission, _] = useAtom(newPermission);
-  // const canWrite = getPermission?.find(
-  //   (permission) => permission.type === 'sidebar-nav-item-create-order'
-  // )?.write;
 
   if (loading) return <Loader text={t('common:text-loading')} />;
   if (error) return <ErrorMessage message={error.message} />;

@@ -112,13 +112,13 @@ const CategoryList = ({
         return (
           <div className="relative mx-auto h-10 w-10">
             <Image
-              // src={image?.thumbnail ?? '/'}
-              src={`${process?.env?.NEXT_PUBLIC_REST_API_ENDPOINT}/${image.thumbnail}`}
+              src={image?.thumbnail ? `/${image.thumbnail}` : '/'}
               alt={name}
               fill
               sizes="(max-width: 768px) 100vw"
               className="overflow-hidden rounded object-fill"
             />
+
           </div>
         );
       },

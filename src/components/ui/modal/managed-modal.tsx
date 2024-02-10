@@ -29,6 +29,9 @@ const ProductDeleteView = dynamic(
 const TypeDeleteView = dynamic(
   () => import('@/components/group/group-delete-view')
 );
+const DealerDeleteView = dynamic(
+  () => import('@/components/dealerlist/dealer-delete-view')
+);
 const AttributeDeleteView = dynamic(
   () => import('@/components/attribute/attribute-delete-view')
 );
@@ -112,6 +115,8 @@ function renderModal(view: MODAL_VIEWS | undefined, data: any) {
       return <ProductDeleteView />;
     case 'DELETE_TYPE':
       return <TypeDeleteView />;
+      case 'DELETE_DEALER':
+        return <DealerDeleteView />;
     case 'DELETE_ATTRIBUTE':
       return <AttributeDeleteView />;
     case 'DELETE_CATEGORY':

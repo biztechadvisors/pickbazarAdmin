@@ -20,10 +20,6 @@ export const typeIconList = [
     label: 'Furniture Icon',
   },
   {
-    value: 'MattressPillow',
-    label: 'Mattress-Pillow Icon',
-  },
-  {
     value: 'BookIcon',
     label: 'Book Icon',
   },
