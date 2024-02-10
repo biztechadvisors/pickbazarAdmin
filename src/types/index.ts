@@ -125,6 +125,8 @@ export enum Permission {
   StoreOwner = 'store_owner',
   Staff = 'staff',
   Customer = 'customer',
+  Admin = 'admin',
+  Dealer = 'dealer',
 }
 
 export interface GetParams {
