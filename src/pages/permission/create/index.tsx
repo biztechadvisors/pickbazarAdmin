@@ -320,7 +320,6 @@ const CreatePermission = () => {
       setSelectedPermissions(updatedPermissions);
     } else {
       const newPermission = {
-        id: null,
         type: menuItem,
         read: false,
         write: false,
@@ -351,6 +350,11 @@ const CreatePermission = () => {
       permissionName: permissionName,
       permission: selectedPermissions,
     };
+    const dataToSend2 = {
+      type_name: typeToSend,
+      permission_name: permissionName,
+      permission: selectedPermissions,
+    };
   
     try {
       if (router.query.id) {
@@ -365,7 +369,7 @@ const CreatePermission = () => {
           setSelectedPermissions([]);
         }
       } else {
-        const response = await axios.post('http://localhost:5000/api/permission', dataToSend);
+        const response = await axios.post('http://localhost:5000/api/permission', dataToSend2);
         console.log('dataToSend', dataToSend)
         console.log('Permission saved:', response);
         console.log('Permission saved:', response.data);
