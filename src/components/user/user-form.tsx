@@ -51,19 +51,14 @@ const CustomerCreateForm = () => {
   //   'Customer',
   // }
   
-  const permissionData = usePermissionData();
-  console.log("permissionData",permissionData)  
+  const permissionData = usePermissionData();   
   const permissionNames = permissionData?.data?.map(permission => permission.permission_name) ?? [];
-console.log("Permission Names:", permissionNames);
-
-const permissionOptions = permissionNames.map(name => ({ value: name, label: name }));
-
-
-  console.log("permissionOptions",permissionOptions)
+  
+  const permissionOptions = permissionNames.map(name => ({ value: name, label: name }));
    
-  // const UserType = ['Admin', 'Dealer', 'Vendor', 'Customer']
+  // const permissionOptions = ['Admin', 'Dealer', 'Vendor', 'Customer']
 
-  // const userTypes = UserType.map((value) => ({ value }));
+  // const permissionOptions = UserType.map((value) => ({ value }));
 
   async function onSubmit({ name, email, password, type }: FormValues) {
     registerUser(
