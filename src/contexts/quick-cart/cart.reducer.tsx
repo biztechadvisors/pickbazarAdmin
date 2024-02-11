@@ -12,11 +12,11 @@ import {
   calculateTotalItems,
   calculateTotal,
 } from './cart.utils';
-
+ 
 interface Metadata {
   [key: string]: any;
 }
-
+ 
 type Action =
   | { type: 'ADD_ITEM_WITH_QUANTITY'; item: Item; quantity: number }
   | { type: 'REMOVE_ITEM_OR_QUANTITY'; id: Item['id']; quantity?: number }
@@ -24,7 +24,7 @@ type Action =
   | { type: 'UPDATE_ITEM'; id: Item['id']; item: UpdateItemInput }
   | { type: 'REMOVE_ITEM'; id: Item['id'] }
   | { type: 'RESET_CART' };
-
+ 
 export interface State {
   items: Item[];
   isEmpty: boolean;
@@ -41,9 +41,9 @@ export const initialState: State = {
   total: 0,
   meta: null,
 };
-
+ 
 let updateCartTimeout: NodeJS.Timeout | null = null;
-
+ 
 export  function cartReducer(state: State, action: Action): State {
   switch (action.type) {
     case 'ADD_ITEM_WITH_QUANTITY': {
@@ -54,7 +54,7 @@ export  function cartReducer(state: State, action: Action): State {
       }
       updateCartTimeout = setTimeout(() => {
         updateCartApi(items, action.customerId, action.email, action.phone);
-      }, 1000); 
+      }, 1000);
       return generateFinalState(state, items);
     }
     case 'REMOVE_ITEM_OR_QUANTITY': {
@@ -83,7 +83,7 @@ export  function cartReducer(state: State, action: Action): State {
       return state;
   }
 }
-
+ 
 const generateFinalState = (state: State, items: Item[]) => {
   const totalUniqueItems = calculateUniqueItems(items);
   return {
@@ -95,11 +95,11 @@ const generateFinalState = (state: State, items: Item[]) => {
     isEmpty: totalUniqueItems === 0,
   };
 };
-
-
+ 
+ 
 async function updateCartApi(items: Item[], customerId, email, phone): Promise<void> {
   try {
-    await axios.post('http://localhost:5000/api/carts', {
+    await axios.post('http://localhost:5050/api/carts', {
       customerId,
       email,
       phone,
@@ -111,4 +111,4 @@ async function updateCartApi(items: Item[], customerId, email, phone): Promise<v
     throw new Error('Failed to update cart');
   }
 }
-
+ 

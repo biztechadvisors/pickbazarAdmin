@@ -10,7 +10,7 @@ interface CustomerData {
 export const addItemToCartApi = async (customerData: CustomerData): Promise<any> => {
   try {
     // Make a POST request to the API endpoint
-    const response = await axios.post('http://localhost:5000/api/carts', customerData);
+    const response = await axios.post('http://localhost:5050/api/carts', customerData);
 
     // Return the response data
     return response.data;
