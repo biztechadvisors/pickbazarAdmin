@@ -30,7 +30,7 @@ const PermissionView = ({
 }: IProps) => {
   const { t } = useTranslation();
   const { alignLeft, alignRight } = useIsRTL();
-
+  console.log("ViewPermission", ViewPermission)
 
   const [sortingObj, setSortingObj] = useState<{
     sort: SortOrder;
@@ -88,9 +88,9 @@ const PermissionView = ({
       align: alignLeft,
       onHeaderCell: () => onHeaderClick('name'),
       render: (name: any, { slug }: any) => (
-        
+
         <Link href={`/${slug}`}>
-           
+
           <span className="whitespace-nowrap">{name}</span>
         </Link>
       ),

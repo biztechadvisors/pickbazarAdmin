@@ -20,7 +20,7 @@ const CreatePermission = () => {
   const [selectedPermissions, setSelectedPermissions] = useState([]);
   const [typeError, setTypeError] = useState('');
   const [permissionError, setPermissionError] = useState('');
-  const [permDataUpdate, setPermDataUpdate]=useState([])
+  const [permDataUpdate, setPermDataUpdate] = useState([])
 
   useEffect(() => {
     const getTypeData = async () => {
@@ -54,21 +54,21 @@ const CreatePermission = () => {
     try {
       const response = await axios.get(`http://localhost:5050/api/permission/${permissionId}`);
       const permissionData = response.data;
-      console.log('permissionData', permissionData )
+      console.log('permissionData', permissionData)
 
       setPermDataUpdate(permissionData)
 
       setTypeName([permissionData.type_name]);
       setPermissionName(permissionData.permissionName);
 
-      const formattedPermissions = permissionData.permission.map((perm,i) => ({
-        id:perm.id,
+      const formattedPermissions = permissionData.permission.map((perm, i) => ({
+        id: perm.id,
         type: perm.type,
         read: perm.read,
         write: perm.write,
       }));
 
-      
+
       setSelectedPermissions(formattedPermissions);
     } catch (error) {
       console.error('Error fetching permission data:', error);
@@ -76,11 +76,11 @@ const CreatePermission = () => {
   };
 
   const handleChange = (e) => {
-      setSelectedType(e.target.value);
-      setTypeError('');
+    setSelectedType(e.target.value);
+    setTypeError('');
   };
 
-  const handlePermissionNameChange = (e: any) => {
+  const handlePermissionNameChange = (e) => {
     setPermissionName(e.target.value);
     setPermissionError('');
   };
@@ -131,8 +131,8 @@ const CreatePermission = () => {
       }
     }
   };
-  
-  
+
+
 
 
   const handleSavePermission = async () => {
@@ -140,15 +140,15 @@ const CreatePermission = () => {
       setPermissionError('Please enter a permission name.');
       return;
     }
-  
+
     let typeToSend = selectedType;
     if (!selectedType) {
       const firstType = Object.values(typeName)[0];
       typeToSend = firstType;
       setSelectedType(firstType);
     }
-    
-  
+
+
     const dataToSend = {
       type_name: typeToSend,
       permissionName: permissionName,
@@ -159,7 +159,7 @@ const CreatePermission = () => {
       permission_name: permissionName,
       permission: selectedPermissions,
     };
-  
+
     try {
       if (router.query.id) {
         const permissionId = router.query.id;
@@ -274,7 +274,7 @@ const CreatePermission = () => {
         </div>
       </div>
       <div className="flex justify-end">
-      <Button
+        <Button
           variant="outline"
           onClick={router.back}
           className="m-4"
@@ -302,6 +302,5 @@ export const getStaticProps = async ({ locale }) => ({
 });
 
 export default CreatePermission;
-
 
 

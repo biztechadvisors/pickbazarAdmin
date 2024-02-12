@@ -6,8 +6,7 @@
     "dev": "next dev -p 3002",
     "build": "next build",
     "start": "next start -p 3002",
-    "lint": "next lint",
-    "json-server": "json-server --watch permission.json --port 8000"
+    "lint": "next lint"
   },
   "dependencies": {
     "@floating-ui/react-dom-interactions": "0.13.3",

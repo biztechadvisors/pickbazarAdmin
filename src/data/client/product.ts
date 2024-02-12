@@ -13,12 +13,14 @@ import { HttpClient } from './http-client';
 
 export const productClient = {
   ...crudFactory<Product, QueryOptions, CreateProduct>(API_ENDPOINTS.PRODUCTS),
+
   get({ slug, language }: GetParams) {
     return HttpClient.get<Product>(`${API_ENDPOINTS.PRODUCTS}/${slug}`, {
       language,
       with: 'type;shop;categories;tags;variations.attribute.values;variation_options;author;manufacturer;digital_file',
     });
   },
+
   paginated: ({
     type,
     name,
