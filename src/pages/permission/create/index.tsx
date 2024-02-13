@@ -52,7 +52,7 @@ const CreatePermission = () => {
 
   const fetchPermissionData = async (permissionId) => {
     try {
-      const response = await axios.get(`http://localhost:5000/api/permission/${permissionId}`);
+      const response = await axios.get(`http://localhost:5050/api/permission/${permissionId}`);
       const permissionData = response.data;
       console.log('permissionData', permissionData )
 
@@ -163,7 +163,7 @@ const CreatePermission = () => {
     try {
       if (router.query.id) {
         const permissionId = router.query.id;
-        const response = await axios.put(`http://localhost:5000/api/permission/${permissionId}`, dataToSend);
+        const response = await axios.put(`http://localhost:5050/api/permission/${permissionId}`, dataToSend);
         console.log("dar", dataToSend)
         console.log('response', response)
         console.log('Permission updated:', response.data);
@@ -173,7 +173,7 @@ const CreatePermission = () => {
           setSelectedPermissions([]);
         }
       } else {
-        const response = await axios.post('http://localhost:5000/api/permission', dataToSend2);
+        const response = await axios.post('http://localhost:5050/api/permission', dataToSend2);
         console.log('dataToSend', dataToSend)
         console.log('Permission saved:', response);
         console.log('Permission saved:', response.data);

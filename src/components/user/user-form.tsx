@@ -51,7 +51,8 @@ const CustomerCreateForm = () => {
   //   'Customer',
   // }
   
-  const permissionData = usePermissionData();   
+  const permissionData = usePermissionData();  
+ 
   const permissionNames = permissionData?.data?.map(permission => permission.permission_name) ?? [];
   
   const permissionOptions = permissionNames.map(name => ({ value: name, label: name }));

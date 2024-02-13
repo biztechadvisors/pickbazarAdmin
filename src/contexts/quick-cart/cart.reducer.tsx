@@ -101,7 +101,7 @@ const generateFinalState = (state: State, items: Item[]) => {
  
 async function updateCartApi(items: Item[], customerId, email, phone): Promise<void> {
   try {
-    await axios.post('http://localhost:5000/api/carts', {
+    await axios.post('http://localhost:5050/api/carts', {
       customerId,
       email,
       phone,

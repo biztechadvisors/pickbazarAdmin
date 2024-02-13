@@ -214,6 +214,7 @@ import Select from '../ui/select/select';
 import Radio from '../ui/radio/radio';
 import { useAnalyticsQuery } from '@/data/dashboard';
 import { useState } from 'react';
+import { usetotalSale } from '@/data/total-sale';
 
 const dummySalesData = [1, 2, 2, 1.8, 2.2, 2.5, 3.0, 2.80, 3.20, 0, 0, 0];
 
@@ -275,6 +276,9 @@ export default function CreateOrUpdateTypeForm({ initialValues }: IProps) {
   const [checkRegion, setCheckRegion] = useState<boolean>(false);
   const [checkCustomer, setCheckCustomer] = useState<boolean>(false);
   const [checkDealer, setCheckDealer] = useState<boolean>(false);
+  const { data, isLoading, isError } = usetotalSale('92', '');
+  console.log("data====", data)
+
 
   const handlecheckData = () => {
     if (checkRegion) {

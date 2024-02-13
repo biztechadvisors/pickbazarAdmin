@@ -89,7 +89,7 @@ import { adminOnly, getAuthCredentials } from '@/utils/auth-utils';
 import Link from 'next/link';
 import { newPermission } from '@/contexts/permission/storepermission';
 import { useAtom } from 'jotai';
-import { siteSettings } from '@/settings/site.settings';
+import { siteSettings} from '@/settings/site.settings';
 
 export default function Permission() {
   const { t } = useTranslation();
@@ -112,7 +112,7 @@ export default function Permission() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get('http://localhost:5000/api/permission');
+        const response = await axios.get('http://localhost:5050/api/permission');
         setData(response.data);
       } catch (error) {
         setError('Error fetching data from the API');
