@@ -1,89 +1,86 @@
-import Alert from '@/components/ui/alert';
-import Button from '@/components/ui/button';
-import Input from '@/components/ui/input';
-import PasswordInput from '@/components/ui/password-input';
-import { useRouter } from 'next/router';
-import { useState } from 'react';
+import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { Routes } from '@/config/routes';
 import { useTranslation } from 'next-i18next';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
-import Link from '@/components/ui/link';
-import {
-  allowedRoles,
-  hasAccess,
-  setAuthCredentials,
-} from '@/utils/auth-utils';
-import { Permission } from '@/types';
 import { useRegisterMutation } from '@/data/user';
+import { Permission } from '@/types';
+import { setAuthCredentials } from '@/utils/auth-utils';
+import { Routes } from '@/config/routes';
+import Input from '@/components/ui/input';
+import Button from '@/components/ui/button';
+import Alert from '@/components/ui/alert';
+import Link from '@/components/ui/link';
+import Radio from '@mui/material/Radio';
+import RadioGroup from '@mui/material/RadioGroup';
+import FormControlLabel from '@mui/material/FormControlLabel';
+import FormControl from '@mui/material/FormControl';
+import FormLabel from '@mui/material/FormLabel';
+import { makeStyles } from '@mui/styles';
 
-type FormValues = {
-  name: string;
-  email: string;
-  password: string;
-  permission: Permission;
-};
+const useStyles = makeStyles({
+  checkboxLabel: {
+    fontSize: 8,
+    fontWeight: 'lighter',
+  },
+});
+
 const registrationFormSchema = yup.object().shape({
   name: yup.string().required('form:error-name-required'),
-  email: yup
-    .string()
-    .email('form:error-email-format')
-    .required('form:error-email-required'),
-  password: yup.string().required('form:error-password-required'),
+  email: yup.string().email('form:error-email-format').required('form:error-email-required'),
+  phone: yup.string().required('form:error-phone-required'),
   permission: yup.string().default('store_owner').oneOf(['store_owner']),
+  shopName: yup.string(),
+  occupation: yup.string(),
+  space: yup.string(),
+  fund: yup.string()
 });
+
 const RegistrationForm = () => {
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [selectedType, setSelectedType] = useState('');
   const { mutate: registerUser, isLoading: loading } = useRegisterMutation();
-
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-    setError,
-  } = useForm<FormValues>({
+  const { register, handleSubmit, formState: { errors }, setError } = useForm({
     resolver: yupResolver(registrationFormSchema),
     defaultValues: {
       permission: Permission.StoreOwner,
     },
   });
-  const router = useRouter();
   const { t } = useTranslation();
 
-  async function onSubmit({ name, email, password, permission }: FormValues) {
-    registerUser(
-      {
-        name,
-        email,
-        password,
-        permission,
+  async function onSubmit({ name, email, phone, permission, shopName, occupation, space, fund }: any) {
+    registerUser({
+      name,
+      email,
+      phone,
+      permission,
+      shopName,
+      occupation,
+      space,
+      fund
+    }, {
+      onSuccess: (data: any) => {
+        if (data?.token) {
+          setAuthCredentials(data?.token, data?.permissions);
+          window.location.href = Routes.dashboard;
+        } else {
+          setErrorMessage('form:error-credential-wrong');
+        }
       },
-
-      {
-        onSuccess: (data) => {
-          if (data?.token) {
-            if (hasAccess(allowedRoles, data?.permissions)) {
-              setAuthCredentials(data?.token, data?.permissions);
-              router.push(Routes.dashboard);
-              return;
-            }
-            setErrorMessage('form:error-enough-permission');
-          } else {
-            setErrorMessage('form:error-credential-wrong');
-          }
-        },
-        onError: (error: any) => {
-          Object.keys(error?.response?.data).forEach((field: any) => {
-            setError(field, {
-              type: 'manual',
-              message: error?.response?.data[field],
-            });
+      onError: (error: any) => {
+        Object.keys(error?.response?.data).forEach((field: any) => {
+          setError(field, {
+            type: 'manual',
+            message: error?.response?.data[field],
           });
-        },
-      }
-    );
+        });
+      },
+    });
   }
+
+  const handleTypeChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setSelectedType(event.target.value);
+  };
 
   return (
     <>
@@ -103,18 +100,85 @@ const RegistrationForm = () => {
           className="mb-4"
           error={t(errors?.email?.message!)}
         />
-        <PasswordInput
-          label={t('form:input-label-password')}
-          {...register('password')}
-          error={t(errors?.password?.message!)}
+        <Input
+          label={t('form:input-label-phone')}
+          {...register('phone')}
+          type="tel"
           variant="outline"
           className="mb-4"
+          error={t(errors?.phone?.message!)}
         />
+        <FormControl component="fieldset" className='checkboxLabel'>
+          <FormLabel component="legend">Type</FormLabel>
+          <RadioGroup
+            aria-label="type"
+            name="type"
+            value={selectedType}
+            onChange={handleTypeChange}
+          >
+            <FormControlLabel 
+              value="Shop Owner"
+              control={<Radio />}
+              label="Shop Owner"
+            />
+            <FormControlLabel 
+              value="Dealer"
+              control={<Radio />}
+              label="Dealer"
+            />
+          </RadioGroup>
+        </FormControl>
+
+        {selectedType === 'Shop Owner' && (
+          <>
+            <Input
+              label={('Shop Name')}
+              {...register('shopName')}
+              variant="outline"
+              className="mb-4"
+              error={t(errors?.shopName?.message!)}
+            />
+            <Input
+              label={t('occupation')}
+              {...register('occupation')}
+              variant="outline"
+              className="mb-4"
+              error={t(errors?.occupation?.message!)}
+            />
+          </>
+        )}
+
+        {selectedType === 'Dealer' && (
+          <>
+            <Input
+              label={t('space')}
+              {...register('space')}
+              variant="outline"
+              className="mb-4"
+              error={t(errors?.space?.message!)}
+            />
+            <Input
+              label={t('occupation')}
+              {...register('occupation')}
+              variant="outline"
+              className="mb-4"
+              error={t(errors?.occupation?.message!)}
+            />
+            <Input
+              label={t('Fund')}
+              {...register('fund')}
+              variant="outline"
+              className="mb-4"
+              error={t(errors?.fund?.message!)}
+            />
+          </>
+        )}
+
         <Button className="w-full" loading={loading} disabled={loading}>
           {t('form:text-register')}
         </Button>
 
-        {errorMessage ? (
+        {errorMessage && (
           <Alert
             message={t(errorMessage)}
             variant="error"
@@ -122,7 +186,7 @@ const RegistrationForm = () => {
             className="mt-5"
             onClose={() => setErrorMessage(null)}
           />
-        ) : null}
+        )}
       </form>
       <div className="relative mt-8 mb-6 flex flex-col items-center justify-center text-sm text-heading sm:mt-11 sm:mb-8">
         <hr className="w-full" />

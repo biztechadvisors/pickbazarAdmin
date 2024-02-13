@@ -443,7 +443,7 @@ export default function CreateOrUpdateAuthorForm({ initialValues }: IProps) {
                   <div className="grid grid-cols-1 gap-5 sm:grid-cols-5">
                     <div className="sm:col-span-2">
                       <Label>{t('form:input-label-select-platform')}</Label>
-                      <SelectInput
+                     < SelectInput
                         name={`socials.${index}.icon` as const}
                         control={control}
                         options={updatedIcons}
