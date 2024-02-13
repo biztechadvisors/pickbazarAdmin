@@ -4,10 +4,9 @@ import { formatAddress } from '@/lib/format-address';
 import { PaymentGateway, PaymentIntentInfo } from '@/types';
 import { useTranslation } from 'next-i18next';
 import { useModalAction } from '@/components/ui/modal/modal.context';
-import { useOrder, useOrderPayment } from '@/framework/order';
-import client from '@/framework/client';
-import { useSettingsQuery } from '@/data/settings';
-import { useRouter } from 'next/router';
+import { useSettings } from '@/framework/rest/settings';
+import { useOrder, useOrderPayment } from '@/framework/rest/order';
+import client from '@/framework/rest/client';
 import Spinner from '@/components/ui/loader/spinner/spinner';
 
 interface Props {
@@ -22,10 +21,9 @@ const RazorpayPaymentModal: React.FC<Props> = ({
   paymentGateway,
 }) => {
   const { t } = useTranslation();
-  const {locale}:any = useRouter()
   const { closeModal } = useModalAction();
   const { loadRazorpayScript, checkScriptLoaded } = useRazorpay();
-  const { settings, loading: isSettingsLoading } = useSettingsQuery(locale);
+  const { settings, isLoading: isSettingsLoading } = useSettings();
   const { order, isLoading, refetch } = useOrder({
     tracking_number: trackingNumber,
   });

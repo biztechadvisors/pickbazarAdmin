@@ -1,19 +1,19 @@
 import { useTranslation } from 'next-i18next';
-import {
-  useStripe,
-  useElements,
-  Elements,
-  CardNumberElement,
-} from '@stripe/react-stripe-js';
+// import {
+//   useStripe,
+//   useElements,
+//   Elements,
+//   CardNumberElement,
+// } from '@stripe/react-stripe-js';
 import { useState } from 'react';
-import { useOrderPayment, useSavePaymentMethod } from '@/framework/order';
+import { useOrderPayment, useSavePaymentMethod } from '@/framework/rest/order';
 import { toast } from 'react-toastify';
 import { useModalAction } from '@/components/ui/modal/modal.context';
 import { PaymentGateway, PaymentIntentInfo } from '@/types';
 import StripeBaseForm from '@/components/payment/stripe/stripe-base-form';
-import getStripe from '@/lib/get-stripejs';
+// import getStripe from '@/lib/get-stripejs';
 import StripeElementForm from '@/components/payment/stripe/stripe-element-base-form';
-import { StripeElementsOptions } from '@stripe/stripe-js';
+// import { StripeElementsOptions } from '@stripe/stripe-js';
 interface Props {
   paymentIntentInfo: PaymentIntentInfo;
   trackingNumber: string;

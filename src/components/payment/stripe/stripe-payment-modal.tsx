@@ -1,13 +1,14 @@
 import { PaymentGateway, PaymentIntentInfo } from '@/types';
-import { Elements } from '@stripe/react-stripe-js';
-import getStripe from '@/lib/get-stripejs';
+// import { Elements } from '@stripe/react-stripe-js';
+// import getStripe from '@/lib/get-stripejs';
 import StripePaymentForm from '@/components/payment/stripe/stripe-payment-form';
 import SavedCardViewHeader from '@/components/payment/saved-card-view-header';
 import StripeSavedCardsList from '@/components/payment/stripe/stripe-saved-cards-list';
-import { useCards } from '@/framework/card';
+import { useCards } from '@/framework/rest/card';
 import React from 'react';
 import ErrorMessage from '@/components/ui/error-message';
-import Spinner from '@/components/ui/loaders/spinner/spinner';
+import Spinner from '@/components/ui/loader/spinner/spinner';
+
 
 interface Props {
   paymentIntentInfo: PaymentIntentInfo;

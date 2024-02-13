@@ -34,6 +34,8 @@ export default function DealerPage() {
     sortedBy,
   });
 
+  console.log("dealerlist", users)
+
   const [getPermission,_]=useAtom(newPermission)
   const { permissions } = getAuthCredentials();
   const canWrite =  permissions.includes('super_admin')

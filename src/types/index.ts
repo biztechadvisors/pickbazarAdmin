@@ -32,6 +32,46 @@ export enum StoreNoticeType {
   specific_shop = 'specific_shop',
 }
 
+export interface SearchParamOptions {
+  type: string;
+  name: string;
+  categories: string;
+  tags: string;
+  author: string;
+  price: string;
+  manufacturer: string;
+  status: string;
+  is_active: string;
+  shop_id: string;
+  min_price: string;
+  max_price: string;
+  rating: string;
+  question: string;
+  notice: string;
+}
+
+export interface RegisterUserInput {
+  name: string;
+  email: string;
+  password: string;
+}
+
+export interface ChangePasswordUserInput {
+  id: number;
+  email: string;
+  oldPassword: string;
+  newPassword: string;
+}
+
+export interface OtpLoginInputType {
+  phone_number: string;
+  code: string;
+  otp_id: string;
+  name?: string;
+  email?: string;
+}
+
+
 export enum PaymentGateway {
   STRIPE = 'STRIPE',
   COD = 'CASH_ON_DELIVERY',
@@ -114,6 +154,7 @@ export enum PaymentStatus {
   FAILED = 'payment-failed',
   REVERSAL = 'payment-reversal',
   COD = 'payment-cash-on-delivery',
+  AWAITING_FOR_APPROVAL = 'payment-awaiting-for-approval',
 }
 
 export interface NameAndValueType {
@@ -321,6 +362,15 @@ export interface AttachmentInput {
 
 export interface ConnectTypeBelongsTo {
   connect?: string;
+}
+
+export interface Card {
+  expires: string;
+  network: string;
+  origin: string;
+  owner_name: string;
+  payment_gateway_id: number | string;
+  default_card: number;
 }
 
 export interface Shop {
@@ -1613,3 +1663,5 @@ export interface OrderStatusPaginator extends PaginatorInfo<OrderStatus> {}
 export interface ConversionPaginator extends PaginatorInfo<Conversations> {}
 
 export interface MessagePaginator extends PaginatorInfo<Message> {}
+
+export interface SettingsQueryOptions extends QueryOptions {}
