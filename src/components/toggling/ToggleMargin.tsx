@@ -1,12 +1,13 @@
 import { useState } from 'react';
 
-const ToggleButton = () => {
+const ToggleButton = ({margin}) => {
   const [isActive, setIsActive] = useState(false);
 
   const toggleButton = () => {
     setIsActive(!isActive);
   };
 
+  console.log('checkMar', margin)
   return (
     <div className="flex items-center">
       <label
@@ -21,7 +22,7 @@ const ToggleButton = () => {
           } inline-block w-6 h-6 transform bg-white rounded-full transition-transform`}
         />
       </label>
-      <span className="ml-2">{isActive ? 'Hide' : 'Show'}</span>
+      <span className="ml-2">{isActive ? `$ ${margin}` : 'Show'}</span>
     </div>
   );
 };

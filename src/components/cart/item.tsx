@@ -6,12 +6,15 @@ import { fadeInOut } from '@/utils/motion/fade-in-out';
 import { useTranslation } from 'next-i18next';
 import { useCart } from '@/contexts/quick-cart/cart.context';
 import usePrice from '@/utils/use-price';
+import { CustomerData } from './add-to-cart/add-to-cart';
 
 interface CartItemProps {
   item: any;
+  id:number;
+  email:string
 }
 
-const CartItem = ({ item }: CartItemProps) => {
+const CartItem = ({ item, id, email }: CartItemProps) => {
   const { t } = useTranslation('common');
   const { isInStock, clearItemFromCart, addItemToCart, removeItemFromCart } =
     useCart();
@@ -25,7 +28,13 @@ const CartItem = ({ item }: CartItemProps) => {
 
   function handleIncrement(e: any) {
     e.stopPropagation();
-    addItemToCart(item, 1);
+    const customerData: CustomerData = {
+      customerId: id,
+      email: email,
+      phone: '8910412312',
+      cartData: item
+    };
+   addItemToCart(customerData, 1, customerData.customerId, customerData.email, customerData.phone);
   }
 
   const handleRemoveClick = (e: any) => {

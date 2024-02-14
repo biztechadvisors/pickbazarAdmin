@@ -14,8 +14,6 @@ export default function AuthorizedMenu() {
   const { data } = useMeQuery();
   const { t } = useTranslation('common');
 
-  console.log('data', data);
-
   const [isChecked, setIsChecked] = useAtom(toggleAtom);
 
   const handleToggle = () => {

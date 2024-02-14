@@ -10,11 +10,13 @@ import { GetStaticProps } from 'next';
 import Layout from '@/components/layouts/admin';
 import { adminOnly } from '@/utils/auth-utils';
 import CustomerGrid from '@/components/checkout/customer/customer-grid';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useAtom } from 'jotai';
 import Loader from '@/components/ui/loader/loader';
 import { useUserQuery } from '@/data/user';
 import { AddressType } from '@/types';
+import { PlusIcon } from '@/components/icons/plus-icon';
+import AddCustomerSlider from './AddCustomerSlider';
 
 const ScheduleGrid = dynamic(
   () => import('@/components/checkout/schedule/schedule-grid')
@@ -36,6 +38,26 @@ export default function CheckoutPage() {
     isLoading: loading,
     refetch,
   } = useUserQuery({ id: customer?.value });
+
+  const [showAddCustomerSlider, setShowAddCustomerSlider] = useState(false);
+
+  const handleCloseAddCustomerSlider = () => {
+    setShowAddCustomerSlider(false);
+  };
+
+  const handleOpenAddCustomerSlider = () => {
+    setShowAddCustomerSlider(true);
+  };
+
+  const handleSubmitAddCustomerForm = (formData: {
+    email: string;
+    phone: string;
+  }) => {
+    // Handle form submission logic here
+    console.log('Submitted form data:', formData);
+    setShowAddCustomerSlider(false);
+  };
+
   useEffect(() => {
     if (customer?.value) {
       refetch(customer?.value);
@@ -46,12 +68,10 @@ export default function CheckoutPage() {
 
   return (
     <div className="bg-gray-100">
-      <div className="lg:space-s-8 m-auto flex w-full max-w-5xl flex-col items-center lg:flex-row lg:items-start">
+      <div className="m-auto flex w-full max-w-5xl flex-col items-center lg:flex-row lg:items-start lg:space-s-8">
         <div className="w-full space-y-6 lg:max-w-2xl">
           <CustomerGrid
             className="shadow-700 bg-light p-5 md:p-8"
-            //@ts-ignore
-            // contact={user?.profile?.contact}
             label={t('text-customer')}
             count={1}
           />

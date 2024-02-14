@@ -44,12 +44,7 @@ export default function ProductsPage() {
 
   const { data: meData, } = useMeQuery();
 
-  console.log('meData', meData)
-
   const { id, email } = meData || {};
-
-  console.log('Id', id)
-  console.log('email', email)
 
   const userId = meData?.dealer?.id;
 

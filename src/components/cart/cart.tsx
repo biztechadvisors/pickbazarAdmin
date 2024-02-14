@@ -11,6 +11,8 @@ import { useUI } from '@/contexts/ui.context';
 import { Routes } from '@/config/routes';
 import usePrice from '@/utils/use-price';
 import { useCart } from '@/contexts/quick-cart/cart.context';
+import CheckoutForm from '../checkout/CheckoutForm';
+import { useMeQuery } from '@/data/user';
 // import { drawerAtom } from '@store/drawer-atom';
 
 const Cart = () => {
@@ -35,6 +37,15 @@ const Cart = () => {
   const { price: totalPrice } = usePrice({
     amount: total,
   });
+
+
+  
+  const { data: meData, } = useMeQuery();
+
+  const { id, email } = meData || {};
+
+  console.log('id', id)
+  console.log('email', email)
   return (
     <section className="relative flex h-full flex-col bg-white">
       <header className="fixed top-0 z-10 flex h-16 w-full max-w-md items-center justify-between border-b border-border-200 border-opacity-75 bg-light px-6">
@@ -56,7 +67,7 @@ const Cart = () => {
 
       <motion.div layout className="flex-grow pb-20">
         {items.length > 0 ? (
-          items?.map((item) => <CartItem item={item} key={item.id} />)
+          items?.map((item) => <CartItem item={item} key={item.id} id={id} email={email} />)
         ) : (
           <motion.div
             layout
@@ -72,10 +83,14 @@ const Cart = () => {
             </h4>
           </motion.div>
         )}
+        
+
       </motion.div>
       {/* End of cart items */}
 
       <footer className="fixed bottom-0 z-10 w-full max-w-md bg-light px-6 py-5">
+      {/* <CheckoutForm/> */}
+        <br/>
         <button
           className="shadow-700 flex h-12 w-full justify-between rounded-full bg-accent p-1 text-sm font-bold transition-colors hover:bg-accent-hover focus:bg-accent-hover focus:outline-none md:h-14"
           onClick={handleCheckout}

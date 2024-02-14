@@ -45,8 +45,6 @@ export const initialState: State = {
 let updateCartTimeout: NodeJS.Timeout | null = null;
  
 export  function cartReducer(state: State, action: Action): State {
-  console.log("statess", state)
-  console.log('action', action)
   switch (action.type) {
     case 'ADD_ITEM_WITH_QUANTITY': {
       const items = addItemWithQuantity(state.items,action.item.cartData,action.quantity);
