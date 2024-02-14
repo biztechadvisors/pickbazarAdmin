@@ -20,7 +20,6 @@ interface Props {
 }
 
 const ProductCard = ({ item, isChecked, id, email }: Props) => {
-  console.log("Items", item)
   const { t } = useTranslation();
   const {
     slug,
@@ -62,8 +61,6 @@ const ProductCard = ({ item, isChecked, id, email }: Props) => {
   function handleVariableProduct() {
     return openModal('SELECT_PRODUCT_VARIATION', slug);
   }
-
-  console.log('item', item)
 
   return (
     <div className="cart-type-neon h-full overflow-hidden rounded border border-border-200 bg-light shadow-sm transition-all duration-200 hover:shadow-md">

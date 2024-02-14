@@ -38,14 +38,9 @@ const Cart = () => {
     amount: total,
   });
 
-
-  
-  const { data: meData, } = useMeQuery();
+  const { data: meData } = useMeQuery();
 
   const { id, email } = meData || {};
-
-  console.log('id', id)
-  console.log('email', email)
   return (
     <section className="relative flex h-full flex-col bg-white">
       <header className="fixed top-0 z-10 flex h-16 w-full max-w-md items-center justify-between border-b border-border-200 border-opacity-75 bg-light px-6">
@@ -57,7 +52,7 @@ const Cart = () => {
         </div>
         <button
           onClick={closeCartSidebar}
-          className="-me-2 flex h-7 w-7 items-center justify-center rounded-full bg-gray-100 text-muted transition-all duration-200 ms-3 hover:bg-accent hover:text-light focus:bg-accent focus:text-light focus:outline-none"
+          className="flex h-7 w-7 items-center justify-center rounded-full bg-gray-100 text-muted transition-all duration-200 -me-2 ms-3 hover:bg-accent hover:text-light focus:bg-accent focus:text-light focus:outline-none"
         >
           <span className="sr-only">{t('text-close')}</span>
           <CloseIcon className="h-3 w-3" />
@@ -67,7 +62,9 @@ const Cart = () => {
 
       <motion.div layout className="flex-grow pb-20">
         {items.length > 0 ? (
-          items?.map((item) => <CartItem item={item} key={item.id} id={id} email={email} />)
+          items?.map((item) => (
+            <CartItem item={item} key={item.id} id={id} email={email} />
+          ))
         ) : (
           <motion.div
             layout
@@ -83,14 +80,12 @@ const Cart = () => {
             </h4>
           </motion.div>
         )}
-        
-
       </motion.div>
       {/* End of cart items */}
 
       <footer className="fixed bottom-0 z-10 w-full max-w-md bg-light px-6 py-5">
-      {/* <CheckoutForm/> */}
-        <br/>
+        {/* <CheckoutForm/> */}
+        <br />
         <button
           className="shadow-700 flex h-12 w-full justify-between rounded-full bg-accent p-1 text-sm font-bold transition-colors hover:bg-accent-hover focus:bg-accent-hover focus:outline-none md:h-14"
           onClick={handleCheckout}
