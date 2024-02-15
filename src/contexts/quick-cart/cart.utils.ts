@@ -6,7 +6,7 @@ export interface Item {
   [key: string]: any;
 }
 
-export interface UpdateItemInput extends Partial<Omit<Item, 'id'>> {}
+export interface UpdateItemInput extends Partial<Omit<Item, 'id'>> { }
 
 export function addItemWithQuantity(
   items: Item[],
@@ -21,13 +21,13 @@ export function addItemWithQuantity(
     (existingItem) => existingItem.id === item.id
   );
 
-  
+
   if (existingItemIndex > -1) {
     // If the item already exists, update its quantity
     const newItems = [...items];
     newItems[existingItemIndex] = {
       ...newItems[existingItemIndex],
-      quantity: newItems[existingItemIndex].quantity + quantity,
+      quantity: newItems[existingItemIndex].quantity! + quantity,
     };
     return newItems;
   }
@@ -87,7 +87,7 @@ export const calculateItemTotals = (items: Item[]) =>
 
 export const calculateTotal = (items: Item[]) =>
   items.reduce((total, item) => total + item.quantity! * item.price, 0);
-  // items.reduce((total, item) => total + item.quantity! * item.price, 0);
+// items.reduce((total, item) => total + item.quantity! * item.price, 0);
 
 export const calculateTotalItems = (items: Item[]) =>
   items.reduce((sum, item) => sum + item.quantity!, 0);
