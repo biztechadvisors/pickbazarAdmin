@@ -208,7 +208,7 @@ const OrderList = ({
             )}
             <ActionButtons
               id={id}
-              detailsUrl={`${router.asPath}/${id}`}
+              detailsUrl={`${Routes.singleorder}/${id}`}
               customLocale={order.language}
             />
           </>
@@ -217,6 +217,8 @@ const OrderList = ({
       },
     },
   ];
+
+  // console.log("newrouter",router.asPath)
 
   return (
     <>

@@ -11,7 +11,6 @@ export const usePermissionData = () => {
           [API_ENDPOINTS.PERMISSION],
           async () => {
             const response = await permissionClient.getAllPermission();
-            console.log("first-response",response)
             return response
           }
         )

@@ -19,18 +19,14 @@ const AdminLayout: React.FC<{ children?: React.ReactNode }> = ({
   
   
   const [matched,_]=useAtom(newPermission)
-  console.log("matched",matched)  
+
   const { permissions } = getAuthCredentials(); 
-  console.log("permissions%%%%%%%",permissions)
 
   const matchedLinks = permissions.includes('super_admin')
     ? siteSettings.sidebarLinks.admin
     : siteSettings.sidebarLinks.admin.filter(link =>
         matched.some(newItem => newItem.type === link.label)
       );
-  
-
-  console.log('matchedLinks:', matchedLinks);
 
   const SidebarItemMap = () => (
     <Fragment>

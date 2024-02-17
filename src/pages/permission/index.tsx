@@ -20,7 +20,7 @@ export default function Permission() {
   const [page, setPage] = useState(1);
   const [orderBy, setOrder] = useState('created_at');
   const [data, setData] = useState([]);
-  console.log("first-data", data)
+
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -58,8 +58,7 @@ export default function Permission() {
 
   if (loading) return <Loader text={t('common:text-loading')} />;
   if (error) return <ErrorMessage message={error} />;
-  console.log('data', data)
-
+ 
   return (
     <>
       <Card className="mb-8 flex flex-col items-center justify-between md:flex-row">

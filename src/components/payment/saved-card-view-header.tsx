@@ -2,7 +2,7 @@ import { useModalAction } from '@/components/ui/modal/modal.context';
 import { PlusIcon } from '@/components/icons/plus-icon';
 import { useTranslation } from 'next-i18next';
 import { PaymentGateway, PaymentIntentInfo } from '@/types';
-import { useSettings } from '@/framework/settings';
+import { useSettings } from '@/framework/rest/settings';
 
 interface Props {
   paymentIntentInfo: PaymentIntentInfo;

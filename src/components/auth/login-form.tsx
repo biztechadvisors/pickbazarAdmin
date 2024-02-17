@@ -38,9 +38,6 @@ const LoginForm = () => {
   const { mutate: login, isLoading, error } = useLogin();
   const [_, setPermissionState] = useAtom(newPermission);
 
-  console.log('login');
-  console.log(isLoading);
-
   // export { matchedLinksState as matchedLinks };
 
   function onSubmit({ email, password }: LoginInput) {

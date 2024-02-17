@@ -55,11 +55,7 @@ export function getAuthCredentials(context?: any): {
   }
   if (authCred) {
     const parsedData = JSON.parse(authCred);
-    console.log('parsedData', parsedData)
     type_names = parsedData.type_name
-    console.log('parsedData.permissions')
-    console.log("parsedData.type_name",parsedData.type_name)
-    console.log("parsedData.permissions",parsedData.permisssions)
     // console.log(parsedData.token)
     return JSON.parse(authCred);
   }

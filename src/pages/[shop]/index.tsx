@@ -57,8 +57,6 @@ export default function ShopPage() {
     slug: shop!.toString(),
   });
 
-  console.log("data****Shop", data)
-
   const { price: totalEarnings } = usePrice(
     data && {
       amount: data?.balance?.total_earnings!,

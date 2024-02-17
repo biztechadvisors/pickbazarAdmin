@@ -44,12 +44,7 @@ export default function ProductsPage() {
 
   const { data: meData, } = useMeQuery();
 
-  console.log('meData', meData)
-
   const { id, email } = meData || {};
-
-  console.log('Id', id)
-  console.log('email', email)
 
   const userId = meData?.dealer?.id;
 
@@ -66,13 +61,15 @@ export default function ProductsPage() {
     userId,
   });
 
-  const [getPermission,_]=useAtom(newPermission) 
+  console.log("products******", products)
+
+  const [getPermission, _] = useAtom(newPermission)
   const { permissions } = getAuthCredentials();
-  const canWrite =  permissions.includes('super_admin')
-  ? siteSettings.sidebarLinks
-  :getPermission?.find(
-    (permission) => permission.type === 'sidebar-nav-item-create-order'
-  )?.write;
+  const canWrite = permissions.includes('super_admin')
+    ? siteSettings.sidebarLinks
+    : getPermission?.find(
+      (permission) => permission.type === 'sidebar-nav-item-create-order'
+    )?.write;
 
   if (loading) return <Loader text={t('common:text-loading')} />;
   if (error) return <ErrorMessage message={error.message} />;
@@ -84,9 +81,6 @@ export default function ProductsPage() {
   function handlePagination(current: any) {
     setPage(current);
   }
-
-
-  console.log('products', products)
 
   return (
     <>

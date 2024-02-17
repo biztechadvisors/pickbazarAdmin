@@ -25,7 +25,6 @@ export const ScheduleGrid: React.FC<ScheduleProps> = ({
     setSchedule(schedules[0]);
   }, []);
 
-  console.log("schedules",schedules)
   return (
     <div className={className}>
       <div className="mb-5 flex items-center justify-between md:mb-8">
