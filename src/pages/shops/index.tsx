@@ -25,7 +25,6 @@ export default function AllShopPage() {
     orderBy,
     sortedBy,
   });
-  console.log("permission==",permission)
 
   if (loading) return <Loader text={t('common:text-loading')} />;
   if (error) return <ErrorMessage message={error.message} />;

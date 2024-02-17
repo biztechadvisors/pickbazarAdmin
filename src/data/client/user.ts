@@ -23,7 +23,6 @@ export const userClient = {
     return HttpClient.get<User>(`${API_ENDPOINTS.ME}?username=${params.username}&sub=${params.sub}`);
   },
   login: (variables: LoginInput) => {
-    console.log("variables**", variables)
     return HttpClient.post<AuthResponse>(API_ENDPOINTS.TOKEN, variables);
   },
   logout: () => {

@@ -113,7 +113,6 @@ export const Routes = {
 };
 
 function routesFactory(endpoint: string) {
-  console.log("endpoint", endpoint)
   return {
     list: `${endpoint}`,
     create: `${endpoint}/create`,

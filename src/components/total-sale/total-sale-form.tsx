@@ -277,7 +277,6 @@ export default function CreateOrUpdateTypeForm({ initialValues }: IProps) {
   const [checkCustomer, setCheckCustomer] = useState<boolean>(false);
   const [checkDealer, setCheckDealer] = useState<boolean>(false);
   const { data, isLoading, isError } = usetotalSale('92', '');
-  console.log("data====", data)
 
 
   const handlecheckData = () => {

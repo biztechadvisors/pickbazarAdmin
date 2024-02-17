@@ -137,7 +137,6 @@ function SelectUser({
   const { data: users, isLoading } = useVendorQuery();
 
   const options: any = users || []
-  console.log("myVendor", options.data)
 
   return (
     <div className="mb-5">

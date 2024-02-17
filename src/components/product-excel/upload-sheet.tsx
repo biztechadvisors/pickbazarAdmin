@@ -125,7 +125,6 @@ const UploadProdxl: React.FC = () => {
                     });
     
                     const finalProducts = Object.values(products);
-                    console.log("final",finalProducts)
     
                     resolve(JSON.stringify(finalProducts, null, 2));
                 } catch (error) {

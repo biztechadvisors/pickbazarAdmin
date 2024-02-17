@@ -28,9 +28,9 @@ export const ownerAndStaffOnly = [STORE_OWNER, STAFF];
 
 
 export function setAuthCredentials(token: string, type_name:string,permissions: any) {
-  console.log('setAuth')
-  console.log("setAuth", token + permissions,type_name)
-  console.log("permissions====",permissions)
+  // console.log('setAuth')
+  // console.log("setAuth", token + permissions,type_name)
+  // console.log("permissions====",permissions)
   // Permissions = permissions
   Cookie.set(AUTH_CRED, JSON.stringify({ token, permissions, type_name }));
 }
@@ -62,11 +62,11 @@ export function getAuthCredentials(context?: any): {
   }
   if (authCred) {
     const parsedData = JSON.parse(authCred);
-    console.log('parsedData', parsedData)
+    // console.log('parsedData', parsedData)
     type_names = parsedData.type_name
-    console.log('parsedData.permissions')
-    console.log("parsedData.type_name",parsedData.type_name)
-    console.log("parsedData.permissions",parsedData.permisssions)
+    // console.log('parsedData.permissions')
+    // console.log("parsedData.type_name",parsedData.type_name)
+    // console.log("parsedData.permissions",parsedData.permisssions)
     // console.log(parsedData.token)
     return JSON.parse(authCred);
   }
@@ -75,8 +75,8 @@ export function getAuthCredentials(context?: any): {
 
 export function parseSSRCookie(context: any) 
 {
-  console.log("context"+ context)
-  console.log("context.req.headers.cookie",context.req.headers.cookie)
+  // console.log("context"+ context)
+  // console.log("context.req.headers.cookie",context.req.headers.cookie)
   return SSRCookie.parse(context.req.headers.cookie ?? '');
 }
 
@@ -84,8 +84,8 @@ export function hasAccess(
   _allowedRoles: string[],
   _userPermissions: string[] | undefined | null
 ) {
-  console.log('_allowedRoles:', _allowedRoles);
-  console.log('_userPermissions:', _userPermissions);
+  // console.log('_allowedRoles:', _allowedRoles);
+  // console.log('_userPermissions:', _userPermissions);
   if (_userPermissions) {
     console.log('Check-auth = '+_allowedRoles?.find((aRole) => _userPermissions.includes(aRole)))
     _allowedRoles?.find((aRole) => _userPermissions.includes(aRole))

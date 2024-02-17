@@ -187,8 +187,6 @@ const PaymentGrid: React.FC<{ className?: string; theme?: 'bw' }> = ({
   const { t } = useTranslation('common');
   const { locale }:any = useRouter();
   const { settings, loading:isLoading } = useSettingsQuery(locale)
-
-  console.log("setting of my life", settings?.options)
   // If no payment gateway is set and cash on delivery also disable then cash on delivery will be on by default
   const isEnableCashOnDelivery =
     (!settings?.options?.useCashOnDelivery && !settings?.options?.paymentGateway) ||

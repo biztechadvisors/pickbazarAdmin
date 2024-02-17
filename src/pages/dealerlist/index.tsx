@@ -42,12 +42,6 @@ export default function DealerPage() {
     (permission) => permission.type === 'sidebar-nav-item-dealerlist'
   )?.write;
 
-  // const {
-  //   data,
-  //   isLoading,
-  // } = useDealerQueryAllGet();
-  // console.log("moye moye a dealer ", data)
-
   if (loading) return <Loader text={t('common:text-loading')} />;
   if (error) return <ErrorMessage message={error.message} />;
 

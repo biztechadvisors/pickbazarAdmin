@@ -11,7 +11,6 @@ export const addItemToCartApi = async (customerData: CustomerData): Promise<any>
   try {
     // Make a POST request to the API endpoint
     const response = await axios.post('http://localhost:5050/api/carts', customerData);
-    console.log('rees', response)
     // Return the response data
     return response.data;
   } catch (error) {

@@ -9,7 +9,6 @@ import { permissionClient } from './client/permission';
 export const usePermissionData = () => {
         return useQuery<{ Permission: any }, Error>([API_ENDPOINTS.PERMISSION],async () => {
             const response = await permissionClient.getAllPermission();
-            console.log("first-response",response)
             return response
           }
         )

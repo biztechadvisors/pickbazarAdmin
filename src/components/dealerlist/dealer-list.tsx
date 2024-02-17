@@ -23,8 +23,6 @@ export type IProps = {
 
 const DealerList = ({ users, onSort, onOrder }: IProps) => {
 
-  console.log("listdealer",users)
-
   const { t } = useTranslation();
   const { alignLeft, alignRight } = useIsRTL();
   const [getPermission,_]=useAtom(newPermission)

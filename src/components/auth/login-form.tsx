@@ -38,9 +38,6 @@ const LoginForm = () => {
   const { mutate: login, isLoading, error } = useLogin();
   const [_, setPermissionState] = useAtom(newPermission);
 
-  console.log('login');
-  console.log(isLoading);
-
   // export { matchedLinksState as matchedLinks };
 
   function onSubmit({ email, password }: LoginInput) {
@@ -51,11 +48,8 @@ const LoginForm = () => {
       },
       {
         onSuccess: (data) => {
-          // console.log('data',data?.type_name)
-          // console.log("data?.permissions",data?.permissions)
           if (data?.token) {
             if (hasAccess(allowedRoles, data?.type_name)) {
-              // console.log(allowedRoles, data?.type_name,"allowedRoles, data?.type_name")
               setPermissionState(data?.permissions);
               setAuthCredentials(
                 data?.token,

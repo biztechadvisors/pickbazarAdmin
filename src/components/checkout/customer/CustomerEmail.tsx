@@ -142,7 +142,6 @@ const CustomerEmail = () => {
         label: user.name,
       }));
       setEmailSuggestions(suggestions);
-      console.log('Email Suggestions:', suggestions); 
     } catch (error) {
       console.error('Error fetching email suggestions:', error);
     } finally {
@@ -157,7 +156,6 @@ const CustomerEmail = () => {
   }
 
   function handleAddEmail() {
-    console.log('Add new email:', inputValue);
     closeModal();
   }
 

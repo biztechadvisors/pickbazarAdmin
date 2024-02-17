@@ -10,9 +10,6 @@ import { useMeQuery } from '@/data/user';
 const UserDetails: React.FC = () => {
   const { t } = useTranslation('common');
   const { data, isLoading: loading } = useMeQuery();
-
-  console.log("data+++",data)
-  console.log("t==",t)
   if (loading) return <Loader text={t('text-loading')} />;
 
   return (
