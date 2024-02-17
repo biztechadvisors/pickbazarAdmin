@@ -14,8 +14,6 @@ export function addItemWithQuantity(
   quantity: number
 ) {
 
-  console.log("items-c", items)
-  console.log('itemm', item)
 
   if (quantity <= 0)
     throw new Error("cartQuantity can't be zero or less than zero");

@@ -11,7 +11,7 @@ interface CustomerProps {
   className?: string;
 }
 
-const CustomerGrid = ({ label, count, className, showAddCustomerSlider, handleCloseAddCustomerSlider, handleOpenAddCustomerSlider,handleSubmitAddCustomerForm }: CustomerProps) => {
+const CustomerGrid = ({ label, count, className }: CustomerProps) => {
   const [customer] = useAtom(customerAtom);
   const { openModal } = useModalAction();
   const { t } = useTranslation('common');
@@ -38,21 +38,6 @@ const CustomerGrid = ({ label, count, className, showAddCustomerSlider, handleCl
           <PlusIcon className="me-0.5 h-4 w-4 stroke-2" />
           {customer?.value ? t('text-update') : t('text-add')}
         </button>
-        <button
-              className="flex items-center text-sm font-semibold text-accent transition-colors duration-200 hover:text-accent-hover focus:text-accent-hover focus:outline-none "
-              onClick={handleOpenAddCustomerSlider}
-            >
-              <PlusIcon className="h-4 w-4 stroke-2 me-0.5" />
-              Add Customer
-            </button>
-            {showAddCustomerSlider && (
-              <div className="fixed inset-0 z-50 flex items-center justify-center bg-gray-900 bg-opacity-50">
-                <AddCustomerSlider
-                  onClose={handleCloseAddCustomerSlider}
-                  onSubmit={handleSubmitAddCustomerForm}
-                />
-              </div>
-            )}
       </div>
 
       <div className="grid grid-cols-1 gap-4">

@@ -20,6 +20,7 @@ const AddOrUpdateCheckoutCustomer = () => {
   }
 
   async function fetchAsyncOptions(inputValue: string) {
+    console.log('xxxxxxx')
     const queryClient = new QueryClient();
     const data = await queryClient.fetchQuery(
       [API_ENDPOINTS.USERS, { text: inputValue, page: 1 }],
@@ -33,6 +34,7 @@ const AddOrUpdateCheckoutCustomer = () => {
     }));
   }
 
+  console.log('selectedCustomer', selectedCustomer)
   return (
     <div className="flex min-h-screen w-screen max-w-sm flex-col justify-center bg-light p-5 sm:p-8 md:min-h-0 md:rounded-xl">
       <h1 className="mb-5 text-center text-sm font-semibold text-heading sm:mb-6">
