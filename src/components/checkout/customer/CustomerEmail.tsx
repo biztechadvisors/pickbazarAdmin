@@ -126,7 +126,7 @@ const CustomerEmail = () => {
 
   useEffect(() => {
     fetchEmailSuggestions('');
-  }, []); // Fetch suggestions when component mounts
+  }, []); 
 
   async function fetchEmailSuggestions(value) {
     setLoading(true);
@@ -187,7 +187,7 @@ const CustomerEmail = () => {
           </div>
         )}
         {!loading && emailSuggestions.length === 0 && inputValue !== '' && showAddButton && (
-          <div className="absolute top-0 right-0 bottom-0 flex items-center py-4 text-accent">
+          <div className="absolute top-0 right-0 bottom-0 flex items-center py-4 px-4 text-accent">
             No email found.{' '}
             <button
             type="button"

@@ -105,7 +105,7 @@ async function updateCartApi(items: Item[], customerId, email, phone): Promise<v
       phone,
       cartData: items
     });
-    console.log('Cart updated successfully');
+    // console.log('Cart updated successfully');
   } catch (error) {
     console.error('Failed to update cart:', error.message);
     throw new Error('Failed to update cart');
