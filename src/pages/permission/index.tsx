@@ -1,78 +1,3 @@
-// import Card from '@/components/common/card';
-// import Layout from '@/components/layouts/admin';
-// import ErrorMessage from '@/components/ui/error-message';
-// import Loader from '@/components/ui/loader/loader';
-// import { useTranslation } from 'next-i18next';
-// import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
-// import ShopList from '@/components/shop/shop-list';
-// import { useState } from 'react';
-// import Search from '@/components/common/search';
-// import { adminOnly } from '@/utils/auth-utils';
-// import { useShopsQuery } from '@/data/shop';
-// import { SortOrder } from '@/types';
-// import PermissionView from '@/components/permission/permission-view';
-// import LinkButton from '@/components/ui/link-button';
-
-// export default function permission() {
-//   const { t } = useTranslation();
-//   const [searchTerm, setSearchTerm] = useState('');
-//   const [page, setPage] = useState(1);
-//   const [orderBy, setOrder] = useState('created_at');
-//   const [sortedBy, setColumn] = useState<SortOrder>(SortOrder.Desc);
-//   const { shops, paginatorInfo, loading, error } = useShopsQuery({
-//     name: searchTerm,
-//     limit: 10,
-//     page,
-//     orderBy,
-//     sortedBy,
-//   });
-
-//   if (loading) return <Loader text={t('common:text-loading')} />;
-//   if (error) return <ErrorMessage message={error.message} />;
-
-//   function handleSearch({ searchText }: { searchText: string }) {
-//     setSearchTerm(searchText);
-//   }
-
-//   function handlePagination(current: any) {
-//     setPage(current);
-//   }
-//   return (
-//     <>
-//       <Card className="mb-8 flex flex-col items-center justify-between md:flex-row">
-//         <div className="mb-4 md:mb-0 md:w-1/4">
-//           <h1 className="text-lg font-semibold text-heading">
-//             Permissions
-//             {/* {t('common:sidebar-nav-item-shops')} */}
-//           </h1>
-//         </div>
-
-//         <div className="ms-auto flex w-full flex-col items-center md:w-1/2 md:flex-row">
-//           {/* <Search onSearch={handleSearch} /> */}
-//           <LinkButton href="/permission/create">Create Permission</LinkButton>
-//         </div>
-//       </Card>
-//       <PermissionView
-//         shops={shops}
-//         paginatorInfo={paginatorInfo}
-//         onPagination={handlePagination}
-//         onOrder={setOrder}
-//         onSort={setColumn}
-//       />
-//     </>
-//   );
-// }
-// permission.authenticate = {
-//   permissions: adminOnly,
-// };
-// permission.Layout = Layout;
-
-// export const getStaticProps = async ({ locale }: any) => ({
-//   props: {
-//     ...(await serverSideTranslations(locale, ['table', 'common', 'form'])),
-//   },
-// });
-
 import Card from '@/components/common/card';
 import Layout from '@/components/layouts/admin';
 import ErrorMessage from '@/components/ui/error-message';
@@ -96,7 +21,6 @@ export default function Permission() {
   const [searchTerm, setSearchTerm] = useState('');
   const [page, setPage] = useState(1);
   const [orderBy, setOrder] = useState('created_at');
-  // const [data, setData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -109,24 +33,6 @@ export default function Permission() {
       )?.write;
 
   const permissionData = usePermissionData();
-
- 
-
-  // useEffect(() => {
-  //   const fetchData = async () => {
-  //     try {
-  //       const response = await axios.get('http://localhost:5000/api/permission');
-  //       setData(response.data);
-  //     } catch (error) {
-  //       setError('Error fetching data from the API');
-  //       console.error('Error fetching data:', error);
-  //     } finally {
-  //       setLoading(false);
-  //     }
-  //   };
-
-  //   fetchData();
-  // }, []);
 
   function handleSearch({ searchText }: { searchText: string }) {
     setSearchTerm(searchText);

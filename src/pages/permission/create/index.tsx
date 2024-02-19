@@ -1,4 +1,3 @@
-
 import React, { useEffect, useState } from 'react';
 import AdminLayout from '@/components/layouts/admin';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
@@ -8,6 +7,7 @@ import axios from 'axios';
 import { useRouter } from 'next/router';
 import { ToastContainer, toast } from 'react-toastify';
 import Button from '@/components/ui/button';
+import permissionJson from '../../../../public/static/permission.json'
 
 const CreatePermission = () => {
   const router = useRouter();
@@ -23,26 +23,8 @@ const CreatePermission = () => {
   const [permDataUpdate, setPermDataUpdate]=useState([])
 
   useEffect(() => {
-    const getTypeData = async () => {
-      try {
-        const response = await axios.get('http://localhost:8000/type_name');
-        setTypeName(response.data);
-      } catch (error) {
-        console.error('Error fetching type data:', error);
-      }
-    };
-
-    const getMenusData = async () => {
-      try {
-        const response = await axios.get('http://localhost:8000/Menus');
-        setMenusData(response.data);
-      } catch (error) {
-        console.error('Error fetching menus data:', error);
-      }
-    };
-
-    getTypeData();
-    getMenusData();
+    setTypeName(permissionJson.type_name)
+    setMenusData(permissionJson.Menus)
 
     if (router.query.id) {
       const permissionId = router.query.id;
@@ -52,7 +34,7 @@ const CreatePermission = () => {
 
   const fetchPermissionData = async (permissionId) => {
     try {
-      const response = await axios.get(`http://localhost:5050/api/permission/${permissionId}`);
+      const response = await axios.get(`http://localhost:5000/api/permission/${permissionId}`);
       const permissionData = response.data;
 
       setPermDataUpdate(permissionData)
@@ -83,28 +65,6 @@ const CreatePermission = () => {
     setPermissionName(e.target.value);
     setPermissionError('');
   };
-
-
-  // const handleCheckboxChange = (menuItem, type, isChecked) => {
-  //   const permissionIndex = selectedPermissions.findIndex((p) => p.type === menuItem);
-  //   if (permissionIndex !== -1) {
-  //     // Permission exists, update it
-  //     const updatedPermissions = [...selectedPermissions];
-  //     updatedPermissions[permissionIndex] = {
-  //       ...updatedPermissions[permissionIndex],
-  //       [type]: isChecked,
-  //     };
-  //     setSelectedPermissions(updatedPermissions);
-  //   } else {
-  //     const newPermission = {
-  //       type: menuItem,
-  //       read: false,
-  //       write: false,
-  //     };
-  //     newPermission[type] = isChecked;
-  //     setSelectedPermissions((prevPermissions) => [...prevPermissions, newPermission]);
-  //   }
-  // };
 
   const handleCheckboxChange = (menuItem, type, isChecked) => {
     const permissionIndex = selectedPermissions.findIndex((p) => p.type === menuItem);
@@ -162,14 +122,14 @@ const CreatePermission = () => {
     try {
       if (router.query.id) {
         const permissionId = router.query.id;
-        const response = await axios.put(`http://localhost:5050/api/permission/${permissionId}`, dataToSend);
+        const response = await axios.put(`http://localhost:5000/api/permission/${permissionId}`, dataToSend);
         if (response.status === 200) {
           toast.success('UPDATED');
-          setPermissionName('');
+        setPermissionName('');
           setSelectedPermissions([]);
         }
       } else {
-        const response = await axios.post('http://localhost:5050/api/permission', dataToSend2);
+        const response = await axios.post('http://localhost:5000/api/permission', dataToSend2);
         if (response.status === 201) {
           toast.success('SAVED');
           setPermissionName('');
@@ -181,6 +141,9 @@ const CreatePermission = () => {
       toast.error('Error');
     }
   };
+
+
+  console.log('typeName', typeName)
   return (
     <>
       <Card className="mb-8 flex flex-col items-center xl:flex-row">
