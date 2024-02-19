@@ -164,32 +164,30 @@ export default function CreateOrUpdateProductForm({
     };
 
     try {
+      console.log("try-product-add-update")
+
       if (
         !initialValues ||
         !initialValues.translated_languages.includes(router.locale!)
       ) {
+        console.log("createProduct")
         //@ts-ignore
         createProduct({
           ...inputValues,
           ...(initialValues?.slug && { slug: initialValues.slug }),
           shop_id: shopId || initialValues?.shop_id,
         });
-<<<<<<< HEAD
-
-=======
->>>>>>> 3cbbd93e9e6e90492a8f7e3239064e2ff017706a
       } else {
+
+        console.log("updateProduct")
         //@ts-ignore
         updateProduct({
           ...inputValues,
           id: initialValues.id!,
           shop_id: initialValues.shop_id!,
         });
-<<<<<<< HEAD
-   
 
-=======
->>>>>>> 3cbbd93e9e6e90492a8f7e3239064e2ff017706a
+
       }
     } catch (error) {
       const serverErrors = getErrorMessage(error);
@@ -430,11 +428,10 @@ export default function CreateOrUpdateProductForm({
           <div className="my-5 flex flex-wrap sm:my-8">
             <Description
               title={t('form:item-description')}
-              details={`${
-                initialValues
-                  ? t('form:item-description-edit')
-                  : t('form:item-description-add')
-              } ${t('form:product-description-help-text')}`}
+              details={`${initialValues
+                ? t('form:item-description-edit')
+                : t('form:item-description-add')
+                } ${t('form:product-description-help-text')}`}
               className="w-full px-0 pb-5 sm:w-4/12 sm:py-8 sm:pe-4 md:w-1/3 md:pe-5"
             />
 
@@ -502,21 +499,21 @@ export default function CreateOrUpdateProductForm({
                 <Label>{t('form:input-label-status')}</Label>
                 {!isEmpty(statusList)
                   ? statusList?.map((status: any, index: number) => (
-                      <Radio
-                        key={index}
-                        {...register('status')}
-                        label={t(status?.label)}
-                        id={status?.id}
-                        value={status?.value}
-                        className="mb-2"
-                        disabled={
-                          permission &&
+                    <Radio
+                      key={index}
+                      {...register('status')}
+                      label={t(status?.label)}
+                      id={status?.id}
+                      value={status?.value}
+                      className="mb-2"
+                      disabled={
+                        permission &&
                           initialValues?.status === ProductStatus?.Draft
-                            ? true
-                            : false
-                        }
-                      />
-                    ))
+                          ? true
+                          : false
+                      }
+                    />
+                  ))
                   : ''}
                 {errors.status?.message && (
                   <p className="my-2 text-xs text-red-500">
@@ -551,16 +548,16 @@ export default function CreateOrUpdateProductForm({
             />
           )}
           <div className="mb-4 text-end">
-            
-              <Button
-                variant="outline"
-                onClick={router.back}
-                className="me-4"
-                type="button"
-              >
-                {t('form:button-label-back')}
-              </Button>
-            
+
+            <Button
+              variant="outline"
+              onClick={router.back}
+              className="me-4"
+              type="button"
+            >
+              {t('form:button-label-back')}
+            </Button>
+
             <Button loading={updating || creating}>
               {initialValues
                 ? t('form:button-label-update-product')

@@ -61,7 +61,7 @@ export default function ProductsPage() {
     userId,
   });
 
-  console.log("products******", products)
+  // console.log("products******", products)
 
   const [getPermission, _] = useAtom(newPermission)
   const { permissions } = getAuthCredentials();

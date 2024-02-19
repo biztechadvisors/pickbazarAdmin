@@ -4,7 +4,7 @@ import PasswordInput from '@/components/ui/password-input';
 import { Controller, useForm } from 'react-hook-form';
 import Card from '@/components/common/card';
 import Description from '@/components/ui/description';
-import { useRegisterMutation } from '@/data/user';
+import { useMeQuery, useRegisterMutation } from '@/data/user';
 import { useTranslation } from 'next-i18next';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { customerValidationSchema } from './user-validation-schema';
@@ -20,6 +20,7 @@ type FormValues = {
   password: string;
   type: { value: string };
   permission: Permission;
+  UsrBy: string;
 };
 
 const defaultValues = {
@@ -50,24 +51,26 @@ const CustomerCreateForm = () => {
   //   'Vendor',
   //   'Customer',
   // }
-  
-  const permissionData = usePermissionData();   
+
+  const permissionData = usePermissionData();
+
   const permissionNames = permissionData?.data?.map(permission => permission.permission_name) ?? [];
-  
+
   const permissionOptions = permissionNames.map(name => ({ value: name, label: name }));
-   
-  // const permissionOptions = ['Admin', 'Dealer', 'Vendor', 'Customer']
 
-  // const permissionOptions = UserType.map((value) => ({ value }));
+  const { data: meData } = useMeQuery();
 
-  async function onSubmit({ name, email, password, type }: FormValues) {
+  const { id } = meData || {};
+
+  async function onSubmit({ name, email, password, type, UsrBy }: FormValues) {
     registerUser(
       {
         name,
         email,
         password,
-        type: type.value,
+        type: type?.value !== undefined ? type.value : "Customer",
         permission: Permission.StoreOwner,
+        UsrBy: id,
       },
       {
         onError: (error: any) => {
@@ -81,7 +84,6 @@ const CustomerCreateForm = () => {
       }
     );
   }
-
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} noValidate>
@@ -136,8 +138,6 @@ const CustomerCreateForm = () => {
           />
         </Card >
       </div >
-
-
 
       <div className="text-end mb-4">
         <Button

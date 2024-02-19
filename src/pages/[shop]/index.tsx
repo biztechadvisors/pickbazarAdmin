@@ -76,7 +76,6 @@ export default function ShopPage() {
       // (permission) => permission.type === 'sidebar-nav-item-dashboard'
     )?.write;
 
-
   if (loading) return <Loader text={t('common:text-loading')} />;
   if (error) return <ErrorMessage message={error.message} />;
   const {

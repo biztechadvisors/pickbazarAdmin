@@ -36,7 +36,6 @@ export default function ProfileUpdate({ me }: any) {
   const { permissions } = getAuthCredentials();
 
   let permission = hasAccess(adminOnly, permissions);
-
   const {
     register,
     handleSubmit,

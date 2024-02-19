@@ -6,12 +6,10 @@ import { toast } from 'react-toastify';
 import axios from 'axios';
 import { permissionClient } from './client/permission';
 
-export const usePermissionData = () => {
-  return useQuery<{ Permission: any }, Error>([API_ENDPOINTS.PERMISSION], async () => {
-    const response = await permissionClient.getAllPermission();
-    return response
-  }
-  )
+export const useUpdateCart = () => {
+        return useQuery<{ Permission: any }, Error>([API_ENDPOINTS.CART],async () => {
+            const response = await permissionClient.getAllPermission();
+            return response
+          }
+        )
 }
-
-

@@ -8,6 +8,7 @@ import axios from 'axios';
 import { useRouter } from 'next/router';
 import { ToastContainer, toast } from 'react-toastify';
 import Button from '@/components/ui/button';
+import permissionJsonData from '../../../../public/static/permission.json'
 
 const CreatePermission = () => {
   const router = useRouter();
@@ -23,26 +24,29 @@ const CreatePermission = () => {
   const [permDataUpdate, setPermDataUpdate] = useState([])
 
   useEffect(() => {
-    const getTypeData = async () => {
-      try {
-        const response = await axios.get('http://localhost:8000/type_name');
-        setTypeName(response.data);
-      } catch (error) {
-        console.error('Error fetching type data:', error);
-      }
-    };
+    // const getTypeData = async () => {
+    //   try {
+    //     const response = await axios.get('http://localhost:6000/type_name');
+    //     setTypeName(response.data);
+    //   } catch (error) {
+    //     console.error('Error fetching type data:', error);
+    //   }
+    // };
 
-    const getMenusData = async () => {
-      try {
-        const response = await axios.get('http://localhost:8000/Menus');
-        setMenusData(response.data);
-      } catch (error) {
-        console.error('Error fetching menus data:', error);
-      }
-    };
+    // const getMenusData = async () => {
+    //   try {
+    //     const response = await axios.get('http://localhost:6000/Menus');
+    //     setMenusData(response.data);
+    //   } catch (error) {
+    //     console.error('Error fetching menus data:', error);
+    //   }
+    // };
 
-    getTypeData();
-    getMenusData();
+    // getTypeData();
+    // getMenusData();
+
+    setTypeName(permissionJsonData.type_name);
+    setMenusData(permissionJsonData.Menus)
 
     if (router.query.id) {
       const permissionId = router.query.id;
@@ -163,7 +167,6 @@ const CreatePermission = () => {
       if (router.query.id) {
         const permissionId = router.query.id;
         const response = await axios.put(`http://localhost:5050/api/permission/${permissionId}`, dataToSend);
-
         if (response.status === 200) {
           toast.success('UPDATED');
           setPermissionName('');
@@ -171,7 +174,6 @@ const CreatePermission = () => {
         }
       } else {
         const response = await axios.post('http://localhost:5050/api/permission', dataToSend2);
-
         if (response.status === 201) {
           toast.success('SAVED');
           setPermissionName('');
@@ -183,7 +185,6 @@ const CreatePermission = () => {
       toast.error('Error');
     }
   };
-
   return (
     <>
       <Card className="mb-8 flex flex-col items-center xl:flex-row">

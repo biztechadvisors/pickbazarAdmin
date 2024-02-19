@@ -59,6 +59,7 @@ const ProductVariation = ({ productSlug }: { productSlug: string }) => {
   const { locale } = useRouter();
   const { product, isLoading: loading } = useProductQuery({
     slug: productSlug,
+    userId: userId,
     language: locale!,
   });
 

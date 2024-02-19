@@ -63,10 +63,10 @@ export const API_ENDPOINTS = {
   MESSAGE: '/messages/conversations',
   MESSAGE_SEEN: '/messages/seen',
   ADMIN_LIST: '/admin/list',
-  DEALER:'/dealers',
   STORE_NOTICES: 'store-notices',
   STORE_NOTICES_IS_READ: 'store-notices/read',
   STORE_NOTICE_GET_STORE_NOTICE_TYPE: 'store-notices/getStoreNoticeType',
   STORE_NOTICES_USER_OR_SHOP_LIST: 'store-notices/getUsersToNotify',
   PERMISSION: 'permission',
+  CART:'carts'
 };

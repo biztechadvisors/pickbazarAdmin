@@ -13,6 +13,8 @@ import Link from 'next/link';
 import { newPermission } from '@/contexts/permission/storepermission';
 import { useAtom } from 'jotai';
 import { siteSettings } from '@/settings/site.settings';
+import { usePermissionData } from '@/data/permission';
+import { useUpdateCart } from '@/data/cart';
 
 export default function Permission() {
   const { t } = useTranslation();
@@ -58,17 +60,15 @@ export default function Permission() {
 
   if (loading) return <Loader text={t('common:text-loading')} />;
   if (error) return <ErrorMessage message={error} />;
- 
+
   return (
     <>
       <Card className="mb-8 flex flex-col items-center justify-between md:flex-row">
         <div className="mb-4 md:mb-0 md:w-1/4">
-          <h1 className="text-lg font-semibold text-heading">
-            Permissions
-          </h1>
+          <h1 className="text-lg font-semibold text-heading">Permissions</h1>
         </div>
 
-        <div className="ms-auto flex w-full flex-col items-center md:w-1/2 md:flex-row gap-x-5">
+        <div className="flex w-full flex-col items-center gap-x-5 ms-auto md:w-1/2 md:flex-row">
           <Search onSearch={handleSearch} />
           {canWrite ? (
             <LinkButton href="/permission/create">Create Permission</LinkButton>

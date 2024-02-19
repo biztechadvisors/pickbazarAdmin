@@ -36,7 +36,7 @@ const ItemCard = ({ item, margin, notAvailable }: Props) => {
         </span>
         
       </p>
-      {dealerId && <ToggleButton/>}
+      {dealerId && <ToggleButton margin={margin}/>}
       <span
         className={cn('text-sm', notAvailable ? 'text-red-500' : 'text-body')}
       >

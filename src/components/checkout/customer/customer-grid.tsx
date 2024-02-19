@@ -3,6 +3,7 @@ import { customerAtom } from '@/contexts/checkout';
 import { useModalAction } from '@/components/ui/modal/modal.context';
 import { PlusIcon } from '@/components/icons/plus-icon';
 import { useTranslation } from 'next-i18next';
+import AddCustomerSlider from '@/pages/orders/AddCustomerSlider';
 
 interface CustomerProps {
   label: string;

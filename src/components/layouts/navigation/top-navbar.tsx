@@ -31,6 +31,9 @@ const Navbar = () => {
   )?.write;
 
   // const { permissions } = getAuthCredentials();
+  // const { permissions } = getAuthCredentials()
+
+
   const { enableMultiLang } = Config;
 
   return (

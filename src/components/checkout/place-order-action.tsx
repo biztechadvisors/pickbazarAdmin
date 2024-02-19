@@ -5,7 +5,7 @@ import classNames from 'classnames';
 import { useCreateOrder } from '@/framework/rest/order';
 import ValidationError from '@/components/ui/validation-error';
 import Button from '@/components/ui/button';
-import { formatOrderedProduct} from '@/lib/format-ordered-product';
+import { formatOrderedProduct } from '@/lib/format-ordered-product';
 import { useCart } from '@/contexts/quick-cart/cart.context';
 import { checkoutAtom, discountAtom, walletAtom } from '@/contexts/checkout';
 import {
@@ -107,9 +107,13 @@ export const PlaceOrderAction: React.FC<{
         ...(shipping_address?.address && shipping_address.address),
       },
     };
-    delete input.billing_address.__typename;
-    delete input.shipping_address.__typename;
-    //@ts-ignore
+    // if (payment_gateway === "STRIPE") {
+    //   //@ts-ignore
+    //   input.token = token;
+    // }
+
+    // delete input.billing_address.__typename;
+    // delete input.shipping_address.__typename;
     createOrder(input);
   };
   const isDigitalCheckout = available_items.find((item) =>
