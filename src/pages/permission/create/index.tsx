@@ -143,7 +143,7 @@ const CreatePermission = () => {
   };
 
 
-  console.log('typeName', typeName)
+  // console.log('typeName', typeName)
   return (
     <>
       <Card className="mb-8 flex flex-col items-center xl:flex-row">

@@ -21,8 +21,6 @@ const CustomerEmail = ({ count }) => {
 
   const usrById = meData?.dealer?.id;
 
-  console.log('dealerId', usrById)
-
   async function fetchEmailSuggestions(inputValue) {
     setLoading(true);
     try {
@@ -67,8 +65,6 @@ const CustomerEmail = ({ count }) => {
     setShowAddButton(false);
     closeModal();
   }
-
-  console.log('emailSuggestions', emailSuggestions);
 
   return (
     <div className="shadow-700 bg-light p-5 md:p-8">

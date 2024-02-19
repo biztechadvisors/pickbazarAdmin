@@ -30,7 +30,7 @@ const PermissionView = ({
 }: IProps) => {
   const { t } = useTranslation();
   const { alignLeft, alignRight } = useIsRTL();
-  console.log("ViewPermission",ViewPermission)
+  // console.log("ViewPermission",ViewPermission)
 
   const [sortingObj, setSortingObj] = useState<{
     sort: SortOrder;

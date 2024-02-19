@@ -150,7 +150,7 @@ const UploadProdxl: React.FC = () => {
                 }).then(async (success) => {
                     if (success) {
                         const jsonData = await convertExcelToJson(selectedFile);
-                        console.log("json of excel",jsonData)
+                        // console.log("json of excel",jsonData)
                         // const response = await GetProductDetails.uploadProductList(jsonData);
                         // if (response) {
                         //     NotificationManager.success(response.message, 'Product Successfully Uploaded');
