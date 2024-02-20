@@ -14,4 +14,12 @@ export const usePermissionData = () => {
   )
 }
 
-
+export const usePermissionById = (permissionId) => {
+  return useQuery([API_ENDPOINTS.PERMISSION, permissionId], async () => {
+    if (permissionId) {
+      const response = await permissionClient.getAllPermissionById(permissionId);
+      return response.data;
+    }
+    return null;
+  });
+};

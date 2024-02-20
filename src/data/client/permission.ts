@@ -5,5 +5,8 @@ export const permissionClient = {
   getAllPermission: () => {
     return HttpClient.get<any>(`${API_ENDPOINTS.PERMISSION}`);
   },
+  getAllPermissionById: (permissionId) => {
+    return HttpClient.get<any>(`${API_ENDPOINTS.PERMISSION}/${permissionId}`);
+  },
 };
 

@@ -1527,7 +1527,8 @@ export interface ProductQueryOptions extends QueryOptions {
 }
 
 export interface UserQueryOptions extends QueryOptions {
-  name: string;
+  email: string;
+  usrById: string;
 }
 
 export interface ManufacturerQueryOptions extends QueryOptions {
