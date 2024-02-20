@@ -14,6 +14,7 @@ import {
 } from '@/contexts/quick-cart/cart.utils';
 import { useCreateOrderMutation } from '@/data/order';
 import { PaymentGateway } from '@/types';
+import { useMeQuery } from '@/data/user';
 
 export const PlaceOrderAction: React.FC<{
   children?: React.ReactNode;
@@ -38,6 +39,9 @@ export const PlaceOrderAction: React.FC<{
   ] = useAtom(checkoutAtom);
   const [discount] = useAtom(discountAtom);
   const [use_wallet_points] = useAtom(walletAtom);
+
+  const { data: meData } = useMeQuery();
+  const dealerId = meData?.dealer?.id;
 
   useEffect(() => {
     setErrorMessage(null);
@@ -79,6 +83,7 @@ export const PlaceOrderAction: React.FC<{
       sales_tax: verified_response?.total_tax,
       delivery_fee: verified_response?.shipping_charge,
       total,
+      dealerId,
       delivery_time: delivery_time?.title,
       customer_contact,
       customer_id: customer?.value,

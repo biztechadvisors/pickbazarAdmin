@@ -1249,6 +1249,8 @@ export interface RegisterInput {
   email: string;
   password: string;
   name: string;
+  contact:string;
+  UsrBy:string;
   shop_id?: number;
   permission: Permission;
 }
