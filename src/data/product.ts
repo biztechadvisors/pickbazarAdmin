@@ -135,3 +135,18 @@ export const useGenerateDescriptionMutation = () => {
     },
   });
 };
+
+export const useUpdateQuantity = () => {
+  const queryClient = useQueryClient();
+  const { t } = useTranslation('common');
+  return useMutation(productClient.updateQuantity, {
+    onSuccess: () => {
+      toast.success(t('Quantity Updated'));
+    },
+    // Always refetch after error or success:
+    onSettled: (data) => {
+      queryClient.refetchQueries(API_ENDPOINTS.GENERATE_DESCRIPTION);
+      data;
+    },
+  });
+};

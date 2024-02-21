@@ -73,7 +73,7 @@ const ShopList = ({
       width: 74,
       render: (logo: any, record: any) => (
         <Image
-          src={logo?.thumbnail ?? siteSettings.product.placeholder ? logo?.thumbnail ?? siteSettings.product.placeholder : null}
+          src={logo?.thumbnail ?? siteSettings.product.placeholder ? logo?.thumbnail ?? siteSettings.product.placeholder : ""}
           alt={record?.name}
           width={42}
           height={42}

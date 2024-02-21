@@ -21,6 +21,9 @@ import LanguageSwitcher from '@/components/ui/lang-action/action';
 import { newPermission, permissionAtom } from '@/contexts/permission/storepermission';
 import { useAtom } from 'jotai';
 import { getAuthCredentials } from '@/utils/auth-utils';
+import Input from '../ui/input';
+import Button from '../ui/button';
+import { useUpdateQuantity } from '@/data/product';
 
 export type IProps = {
   products: Product[] | undefined;
@@ -41,18 +44,20 @@ const ProductList = ({
   onPagination,
   onSort,
   onOrder,
-}: IProps) => {  
+}: IProps) => {
   // console.log("products",products)
   const router = useRouter();
   const { t } = useTranslation();
   const { alignLeft, alignRight } = useIsRTL();
   const { permissions } = getAuthCredentials();
-  const [getPermission,_]=useAtom(newPermission)  
+  const [getPermission, _] = useAtom(newPermission)
+  const { mutate: updateQuantity, isLoading: updating} =
+    useUpdateQuantity();
   const canWrite = permissions.includes('super_admin')
-  ? siteSettings.sidebarLinks.admin 
-  :getPermission?.find(
-    (permission : any) => permission.type === 'sidebar-nav-item-products'
-  )?.write;
+    ? siteSettings.sidebarLinks.admin
+    : getPermission?.find(
+      (permission: any) => permission.type === 'sidebar-nav-item-products'
+    )?.write;
 
   const [sortingObj, setSortingObj] = useState<SortingObjType>({
     sort: SortOrder.Desc,
@@ -65,7 +70,6 @@ const ProductList = ({
         currentSortDirection === SortOrder.Desc ? SortOrder.Asc : SortOrder.Desc
       );
       onOrder(column!);
-
       setSortingObj({
         sort:
           sortingObj.sort === SortOrder.Desc ? SortOrder.Asc : SortOrder.Desc,
@@ -183,6 +187,7 @@ const ProductList = ({
         );
       },
     },
+
     {
       title: (
         <TitleWithSort
@@ -200,18 +205,51 @@ const ProductList = ({
       align: 'center',
       width: 150,
       onHeaderCell: () => onHeaderClick('quantity'),
-      render: (quantity: number) => {
-        if (quantity < 1) {
-          return (
-            <Badge
-              text={t('common:text-out-of-stock')}
-              color="bg-red-500 text-white"
-            />
-          );
-        }
-        return <span>{quantity}</span>;
+      render: (quantity: number, id: any) => {
+        const [editMode, setEditMode] = useState(false);
+        const [editedQuantity, setEditedQuantity] = useState(quantity);
+        const [updatedQuantity, setUpdatedQuantity] = useState(quantity);
+        const handleShowQuantity = () => {
+          setEditMode(true);
+        };
+
+        const handleEditQuantity = async () => {
+          // Handle logic to save edited quantity
+          console.log(`Edited Quantity: ${editedQuantity}`);
+          const data = {
+            id: id.id,
+            quantity: editedQuantity,
+          };
+          updateQuantity(data);
+          setUpdatedQuantity(editedQuantity);
+          setEditMode(false); 
+        };
+
+        return (
+          <div>
+            {editMode ? (
+              <>
+                <Input
+                  type="number"
+                  defaultValue={quantity}
+                  onChange={(e) => setEditedQuantity(Number(e.target.value))}
+                />
+                <Button onClick={handleEditQuantity}
+                size='small'
+                className='mt-2'
+                >Update</Button>
+              </>
+            ) : (
+              <>
+                {/* <Button onClick={handleShowQuantity}>Show</Button> */}
+                <span onClick={handleShowQuantity} className='font-semibold text-accent underline transition-colors duration-200 ms-1 hover:text-accent-hover hover:no-underline focus:text-accent-700 focus:no-underline focus:outline-none'>{updatedQuantity}</span>
+              </>
+            )}
+          </div>
+        );
       },
     },
+    
     {
       title: t('table:table-item-status'),
       dataIndex: 'status',
@@ -220,11 +258,10 @@ const ProductList = ({
       width: 180,
       render: (status: string, record: any) => (
         <div
-          className={`flex justify-start ${
-            record?.quantity > 0 && record?.quantity < 10
-              ? 'flex-col items-baseline space-y-3 3xl:flex-row 3xl:space-x-3 3xl:space-y-0 rtl:3xl:space-x-reverse'
-              : 'items-center space-x-3 rtl:space-x-reverse'
-          }`}
+          className={`flex justify-start ${record?.quantity > 0 && record?.quantity < 10
+            ? 'flex-col items-baseline space-y-3 3xl:flex-row 3xl:space-x-3 3xl:space-y-0 rtl:3xl:space-x-reverse'
+            : 'items-center space-x-3 rtl:space-x-reverse'
+            }`}
         >
           <Badge
             text={status}
@@ -244,34 +281,36 @@ const ProductList = ({
         </div>
       ),
     },
-    {      
+    {
       ...(canWrite
         &&
-        {
-            title: t('table:table-item-actions'),
-          
-            dataIndex: 'slug',
-            key: 'actions',
-            align: 'right',
-            width: 120,
-            render: (slug: string, record: Product) => {
-              return (
-                <LanguageSwitcher
-                  slug={slug}
-                  record={record}
-                  deleteModalView="DELETE_PRODUCT"
-                  routes={Routes?.product}
-                />
-              );
-            },
-          }
-        ),
+      {
+        title: t('table:table-item-actions'),
+
+        dataIndex: 'slug',
+        key: 'actions',
+        align: 'right',
+        width: 120,
+        render: (slug: string, record: Product) => {
+          return (
+            <LanguageSwitcher
+              slug={slug}
+              record={record}
+              deleteModalView="DELETE_PRODUCT"
+              routes={Routes?.product}
+            />
+          );
+        },
+      }
+      ),
     },
   ];
 
   if (router?.query?.shop) {
     columns = columns?.filter((column) => column?.key !== 'shop');
   }
+
+  console.log("products+++", products)
 
   return (
     <>

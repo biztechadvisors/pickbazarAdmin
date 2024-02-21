@@ -38,7 +38,6 @@ const Link: React.FC<LinkProps> = ({
   className,
   ...props
 }) => {
-  console.log("props", props )
   if (props.href === undefined) {
     props.href = '/';
   }
