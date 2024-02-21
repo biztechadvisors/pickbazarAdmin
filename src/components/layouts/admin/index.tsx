@@ -9,12 +9,15 @@ import { useEffect,   } from 'react';
 import { newPermission} from '@/contexts/permission/storepermission';
 import { useAtom } from 'jotai';
 import { getAuthCredentials } from '@/utils/auth-utils';
+import { useMeQuery } from '@/data/user';
 
 const AdminLayout: React.FC<{ children?: React.ReactNode }> = ({
   children,
 }) => {
   const { t } = useTranslation();
   const { locale } = useRouter();
+
+  const router=useRouter()
   const dir = locale === 'ar' || locale === 'he' ? 'rtl' : 'ltr';
   
   
@@ -34,8 +37,6 @@ const AdminLayout: React.FC<{ children?: React.ReactNode }> = ({
       ))}
     </Fragment>
   );
-
-  // console.log('permissions', permissions)
 
   return (
     <div

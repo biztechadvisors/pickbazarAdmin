@@ -58,6 +58,7 @@ export function getAuthCredentials(context?: any): {
     authCred = parseSSRCookie(context)[AUTH_CRED];
   } else {
     // console.log('chcek'+Cookie.get(AUTH_CRED))
+    // console.log(Cookie.get(AUTH_CRED))
     authCred = Cookie.get(AUTH_CRED);
   }
   if (authCred) {

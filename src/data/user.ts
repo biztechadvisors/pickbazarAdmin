@@ -114,9 +114,9 @@ export const useRegisterMutation = () => {
       toast.success(t('common:successfully-register'));
     },
     // Always refetch after error or success:
-    onSettled: () => {
-      queryClient.invalidateQueries(API_ENDPOINTS.REGISTER);
-    },
+    // onSettled: () => {
+    //   queryClient.invalidateQueries(API_ENDPOINTS.REGISTER);
+    // },
   });
 };
 

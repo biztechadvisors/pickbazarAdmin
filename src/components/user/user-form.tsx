@@ -19,7 +19,7 @@ type FormValues = {
   email: string;
   password: string;
   contact: string;
-  type: { value: string } | null;
+  type: { value: string };
   permission: Permission;
 };
 
@@ -48,14 +48,25 @@ const CustomerCreateForm = () => {
   });
 
   const permissionData = usePermissionData();
+  // console.log('permissionData', permissionData)
 
   const permissionNames =
     permissionData?.data?.map((permission) => permission.permission_name) ?? [];
+    // console.log('permissionNames', permissionNames)
 
-  const permissionOptions = permissionNames.map((name) => ({
-    value: name,
-    label: name,
-  }));
+  // const permissionOptions = permissionNames.map((name) => ({
+  //   value: name,
+  //   label: name,
+  // }));
+
+  const permissionOptions = [
+    ...permissionNames.map((name) => ({
+      value: name,
+      label: name,
+    })),
+    { value: ['Customer'], label: 'Customer' }, // Adding Customer option
+  ];
+  
 
   async function onSubmit({
     name,
@@ -64,13 +75,14 @@ const CustomerCreateForm = () => {
     contact,
     type,
   }: FormValues) {
+    console.log('type', type);
     registerUser(
       {
         name,
         email,
         password,
         contact,
-        UsrBy:id,
+        UsrBy: id,
         type: type?.value,
         permission: Permission.StoreOwner,
       },
@@ -86,6 +98,8 @@ const CustomerCreateForm = () => {
       }
     );
   }
+
+  // console.log('permissionOptions',permissionOptions)
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} noValidate>
