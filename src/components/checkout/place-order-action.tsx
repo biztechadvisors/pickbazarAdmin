@@ -13,8 +13,6 @@ import {
   calculateTotal,
 } from '@/contexts/quick-cart/cart.utils';
 import { useTranslation } from 'next-i18next';
-import { useRouter } from 'next/router';
-import { useLogout, useUser } from '@/framework/rest/user';
 import { PaymentGateway } from '@/types';
 import { useSettings } from '@/framework/rest/settings';
 
@@ -26,7 +24,6 @@ export const PlaceOrderAction: React.FC<{
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const { createOrder, isLoading } = useCreateOrder();
   const { items } = useCart();
-  const { me } = useUser();
 
   const [
     {
