@@ -9,7 +9,7 @@ import Select from '../ui/select/select';
 import { useEffect, useState } from 'react';
 import { Type } from '@/types';
 import { useMeQuery } from '@/data/user';
-import { useAnalyticsGet, useAnalyticsMutation} from '@/data/analytics';
+import {useAnalyticsMutation} from '@/data/analytics';
 
 type FormValues = {
   name?: string | null;
