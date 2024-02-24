@@ -37,7 +37,6 @@ const AdminLayout: React.FC<{ children?: React.ReactNode }> = ({
       ))}
     </Fragment>
   );
-
   return (
     <div
       className="flex min-h-screen flex-col bg-gray-100 transition-colors duration-150"

@@ -33,7 +33,7 @@ const CustomerCreateForm = () => {
   const { t } = useTranslation();
   const router = useRouter();
   const { data: meData } = useMeQuery();
-  const { id, email } = meData || {};
+  const { id } = meData || {};
   const { mutate: registerUser, isLoading: loading } = useRegisterMutation();
 
   const {
@@ -48,25 +48,17 @@ const CustomerCreateForm = () => {
   });
 
   const permissionData = usePermissionData();
-  // console.log('permissionData', permissionData)
 
   const permissionNames =
     permissionData?.data?.map((permission) => permission.permission_name) ?? [];
-    // console.log('permissionNames', permissionNames)
-
-  // const permissionOptions = permissionNames.map((name) => ({
-  //   value: name,
-  //   label: name,
-  // }));
 
   const permissionOptions = [
     ...permissionNames.map((name) => ({
       value: name,
       label: name,
     })),
-    { value: ['Customer'], label: 'Customer' }, // Adding Customer option
+    { value: ['Customer'], label: 'Customer' },
   ];
-  
 
   async function onSubmit({
     name,
@@ -98,8 +90,6 @@ const CustomerCreateForm = () => {
       }
     );
   }
-
-  // console.log('permissionOptions',permissionOptions)
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} noValidate>

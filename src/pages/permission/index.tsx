@@ -4,8 +4,7 @@ import ErrorMessage from '@/components/ui/error-message';
 import Loader from '@/components/ui/loader/loader';
 import { useTranslation } from 'next-i18next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
-import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import React, { useState } from 'react';
 import Search from '@/components/common/search';
 import LinkButton from '@/components/ui/link-button';
 import { adminOnly, getAuthCredentials } from '@/utils/auth-utils';
@@ -15,15 +14,11 @@ import { useAtom } from 'jotai';
 import { siteSettings } from '@/settings/site.settings';
 import { usePermissionData } from '@/data/permission';
 import { useUpdateCart } from '@/data/cart';
-
 export default function Permission() {
   const { t } = useTranslation();
   const [searchTerm, setSearchTerm] = useState('');
   const [page, setPage] = useState(1);
   const [orderBy, setOrder] = useState('created_at');
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-
   const [getPermission, _] = useAtom(newPermission);
   const { permissions } = getAuthCredentials();
   const canWrite = permissions.includes('super_admin')
@@ -32,7 +27,7 @@ export default function Permission() {
         (permission) => permission.type === 'sidebar-nav-item-permission'
       )?.write;
 
-  const permissionData = usePermissionData();
+  const { isLoading, error, data: permissionData } = usePermissionData();
 
   function handleSearch({ searchText }: { searchText: string }) {
     setSearchTerm(searchText);
@@ -42,10 +37,11 @@ export default function Permission() {
     setPage(current);
   }
 
-  if (permissionData.isLoading)
-    return <Loader text={t('common:text-loading')} />;
-  if (permissionData.error)
-    return <ErrorMessage message={permissionData.error.message} />;
+  if (isLoading) return <Loader text={t('common:text-loading')} />;
+  if (error) return <ErrorMessage message={permissionData.error.message} />;
+  if (!permissionData) {
+    return <div>No permission data available</div>;
+  }
 
   return (
     <>
@@ -75,7 +71,7 @@ export default function Permission() {
               </tr>
             </thead>
             <tbody>
-              {permissionData.data.map((e, index) => (
+              {permissionData.map((e, index) => (
                 <tr key={index}>
                   <td className="border p-2">{index + 1}</td>
                   <td className="border p-2">{e.type_name}</td>
@@ -83,9 +79,18 @@ export default function Permission() {
                   <td className="border p-2">
                     {e.permission.length > 0
                       ? e.permission.slice(0, 3).map((permission, i) => (
-                          <li>
-                            <span key={i}>{`${permission.type}`}</span>
-                          </li>
+                          <React.Fragment key={i}>
+                            <li>
+                              {permission.type
+                                .replace('sidebar-nav-item-', '')
+                                .charAt(0)
+                                .toUpperCase() +
+                                permission.type
+                                  .replace('sidebar-nav-item-', '')
+                                  .slice(1)}
+                            </li>
+                            {i !== e.permission.length - 1 && ' '}
+                          </React.Fragment>
                         ))
                       : ''}
                   </td>
