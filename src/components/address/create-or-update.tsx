@@ -29,6 +29,7 @@ const CreateOrUpdateAddressForm = () => {
 
   function onSubmit(values: FormValues) {
     const { __typename, ...rest } = values;
+    console.log("value of address",rest)
     updateProfile({
       id: customerId,
       input: {

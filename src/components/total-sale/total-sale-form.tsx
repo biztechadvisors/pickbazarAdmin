@@ -122,7 +122,6 @@ export default function CreateOrUpdateTotalSaleForm({ initialValues }: IProps) {
     setValue('selectRegion', null);
     setValue('selectDealer', null);
     setValue('selectCustomer', null);
-
     field.onChange(selectedOption);
   };
 
@@ -213,7 +212,6 @@ export default function CreateOrUpdateTotalSaleForm({ initialValues }: IProps) {
       </form>
 
       <h1 className="text-xl font-bold text-heading m-10">
-        {/* {t(`Total Sale :- ${allData && allData?.totalSale || "450"}$`)} */}
         {t(`Total Sale :- ${getAnalyticsData && getAnalyticsData?.totalRevenue || "0"}$`)}
       </h1>
 
@@ -221,7 +219,6 @@ export default function CreateOrUpdateTotalSaleForm({ initialValues }: IProps) {
         <ColumnChart
           widgetTitle={t('common:sale-history')}
           colors={['#03D3B5']}
-          // series={allData && allData.salesData || dummySalesData}
           series={salesByYear}
           categories={[
             t('common:january'),
