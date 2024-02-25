@@ -9,11 +9,12 @@ import { useModalState } from '@/components/ui/modal/modal.context';
 import { Form } from '@/components/ui/form/form';
 import { AddressType, GoogleMapLocation } from '@/types';
 import { useSettings } from '@/contexts/settings.context';
-import { Controller } from 'react-hook-form';
+import { Control, Controller, FieldErrors } from 'react-hook-form';
 import GooglePlacesAutocomplete from '@/components/form/google-places-autocomplete';
 import ValidationError from '../ui/validation-error';
 import Select from '../ui/select/select';
 import SelectInput from '../ui/select-input';
+import { useState } from 'react';
 
 type FormValues = {
   title: string;
@@ -73,6 +74,38 @@ const optionRegion = [
   { value: "Uttarakhand", label: "Uttarakhand" },
   { value: "West Bengal", label: "West Bengal" }
 ];
+
+function SelectState({
+  control,
+  errors,
+}: {
+  control: Control<FormValues>;
+  errors: FieldErrors;
+}) {
+  const { t } = useTranslation();
+  return (
+    <div>
+      <Label>{t('State')}</Label>
+      <Controller
+        control={control}
+        name="address.state"
+        render={({ field }) => (
+          <SelectInput
+            defaultValue={[]}
+            {...field}
+            control={control}
+            getOptionLabel={(option: any) => option.value}
+            getOptionValue={(option: any) => option.value}
+            options={optionRegion}
+            isSearchable={false}
+          />
+        )}
+      />
+      <ValidationError message={t(errors.address?.state?.message)} />
+    </div>
+
+  );
+}
 
 
 const AddressForm: React.FC<any> = ({ onSubmit }) => {
@@ -191,6 +224,24 @@ const AddressForm: React.FC<any> = ({ onSubmit }) => {
               variant="outline"
             />
 
+            {/* <SelectState control={control} errors={errors}/> */}
+
+            {/* <Label>{t('State')}</Label> */}
+
+            {/* <SelectInput
+              defaultValue={[]}
+              control={control}
+              getOptionLabel={(option: any) => {
+                // setValue('address.state', option.value);
+                return option.value;
+              }}
+              getOptionValue={(option: any) => option.value}
+              options={optionRegion}
+              isSearchable={false} 
+              name={'address.state'} />
+
+            <ValidationError message={t(errors.address?.state?.message)} /> */}
+
             <Input
               label={t('text-state')}
               {...register('address.state')}
@@ -202,19 +253,21 @@ const AddressForm: React.FC<any> = ({ onSubmit }) => {
               name="address.state"
               control={control}
               render={({ field }) => (
-                <>
-                  <Select
-                    options={optionRegion}
-                    placeholder={t('Select')}
-                    {...register('address.state')}
-                    onChange={(selectedOption) => {
-                      field.onChange(selectedOption?.value);
-                    }}
-                  />
-                  <ValidationError message={t(errors.address?.state?.message!)} />
-                </>
+                <Select
+                  options={optionRegion}
+                  placeholder={t('Select')}
+                  // value={field.value}
+                  onChange={(selectedOption:any) => {
+                    // Extracting the value property from the selected option
+                    const selectedValue = selectedOption?.value;
+                    field.onChange(selectedValue);
+                  }}
+                />
               )}
             /> */}
+        
+
+            <ValidationError message={t(errors.address?.state?.message!)} />
             <Input
               label={t('text-zip')}
               {...register('address.zip')}

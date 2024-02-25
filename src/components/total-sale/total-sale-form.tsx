@@ -9,7 +9,7 @@ import Select from '../ui/select/select';
 import { useEffect, useState } from 'react';
 import { Type } from '@/types';
 import { useMeQuery } from '@/data/user';
-import {useAnalyticsMutation} from '@/data/analytics';
+import {useAnalyticsCustomer, useAnalyticsMutation} from '@/data/analytics';
 
 type FormValues = {
   name?: string | null;
@@ -87,6 +87,8 @@ export default function CreateOrUpdateTotalSaleForm({ initialValues }: IProps) {
 
   const { data } = useMeQuery();
   const {mutate:getAnalytics, data:getAnalyticsData}= useAnalyticsMutation()
+  const { data:customer }= useAnalyticsCustomer('99')
+  console.log("customerData", customer)
   const [allData, setAllData] = useState<any>();
   const [checkRegion, setCheckRegion] = useState<boolean>(false);
   const [checkCustomer, setCheckCustomer] = useState<boolean>(false);

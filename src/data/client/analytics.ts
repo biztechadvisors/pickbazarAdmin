@@ -7,4 +7,8 @@ export const analyticsClient = {
     console.log("myinputs", input)
     return HttpClient.post<any>(`${API_ENDPOINTS.ANALYTICS}`, input);
   },
+  getAnalyticsCustomer: ( id: any ) => {
+    console.log("myinputs2", id)
+    return HttpClient.get<any>(`${API_ENDPOINTS.ANALYTICS}/?userId=${id}`);
+  },
 };
