@@ -67,7 +67,6 @@ const CustomerCreateForm = () => {
     contact,
     type,
   }: FormValues) {
-    console.log('type', type);
     registerUser(
       {
         name,

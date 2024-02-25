@@ -9,8 +9,8 @@ import { API_ENDPOINTS } from './client/api-endpoints';
 import { userClient } from './client/user';
 import { User, QueryOptionsType, UserPaginator } from '@/types';
 import { mapPaginatorData } from '@/utils/data-mappers';
-import axios from "axios";
-import { setEmailVerified } from "@/utils/auth-utils";
+import axios from 'axios';
+import { setEmailVerified } from '@/utils/auth-utils';
 
 // Get cookie value
 function getCookie(name: string) {
@@ -19,10 +19,10 @@ function getCookie(name: string) {
     return null;
   }
 
-  let cookieArr = document.cookie.split(";");
+  let cookieArr = document.cookie.split(';');
 
   for (let i = 0; i < cookieArr.length; i++) {
-    let cookiePair = cookieArr[i].split("=");
+    let cookiePair = cookieArr[i].split('=');
 
     if (name == cookiePair[0].trim()) {
       return decodeURIComponent(cookiePair[1]);
@@ -43,9 +43,14 @@ export class UserService {
       // Parse the JWT token
       let base64Url = authToken.split('.')[1];
       let base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
-      let jsonPayload = decodeURIComponent(atob(base64).split('').map(function (c) {
-        return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
-      }).join(''));
+      let jsonPayload = decodeURIComponent(
+        atob(base64)
+          .split('')
+          .map(function (c) {
+            return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+          })
+          .join('')
+      );
 
       let data = JSON.parse(jsonPayload);
 
@@ -65,27 +70,31 @@ export const useMeQuery = () => {
   // Get user details from UserService
   const { username, sub } = UserService.getUserDetails();
 
-  return useQuery<User, Error>([API_ENDPOINTS.ME, { username, sub }], () => userClient.me({ username, sub }), {
-    retry: false,
-    onSuccess: () => {
-      if (router.pathname === Routes.verifyEmail) {
-        setEmailVerified(true);
-        router.replace(Routes.dashboard);
-      }
-    },
-
-    onError: (err) => {
-      if (axios.isAxiosError(err)) {
-        if (err.response?.status === 409) {
-          setEmailVerified(false);
-          router.replace(Routes.verifyEmail);
-          return;
+  return useQuery<User, Error>(
+    [API_ENDPOINTS.ME, { username, sub }],
+    () => userClient.me({ username, sub }),
+    {
+      retry: false,
+      onSuccess: () => {
+        if (router.pathname === Routes.verifyEmail) {
+          setEmailVerified(true);
+          router.replace(Routes.dashboard);
         }
-        queryClient.clear();
-        router.replace(Routes.login);
-      }
-    },
-  });
+      },
+
+      onError: (err) => {
+        if (axios.isAxiosError(err)) {
+          if (err.response?.status === 409) {
+            setEmailVerified(false);
+            router.replace(Routes.verifyEmail);
+            return;
+          }
+          queryClient.clear();
+          router.replace(Routes.login);
+        }
+      },
+    }
+  );
 };
 
 export function useLogin() {
@@ -106,17 +115,24 @@ export const useLogoutMutation = () => {
 };
 
 export const useRegisterMutation = () => {
+  const router = useRouter();
   const queryClient = useQueryClient();
   const { t } = useTranslation();
 
   return useMutation(userClient.register, {
     onSuccess: () => {
+      const queryParams = new URLSearchParams(window.location.search);
+      const fromCheckout = queryParams.get('from') === 'checkout';
+
       toast.success(t('common:successfully-register'));
+      if (fromCheckout) {
+        router.push('orders/checkout');
+      }
     },
     // Always refetch after error or success:
-    // onSettled: () => {
-    //   queryClient.invalidateQueries(API_ENDPOINTS.REGISTER);
-    // },
+    onSettled: () => {
+      queryClient.invalidateQueries(API_ENDPOINTS.REGISTER);
+    },
   });
 };
 
@@ -154,7 +170,7 @@ export const useUpdateUserEmailMutation = () => {
       queryClient.invalidateQueries(API_ENDPOINTS.USERS);
     },
   });
-}
+};
 
 export const useChangePasswordMutation = () => {
   return useMutation(userClient.changePassword);
@@ -171,9 +187,9 @@ export const useResendVerificationEmail = () => {
     },
     onError: () => {
       toast(t('common:PICKBAZAR_MESSAGE.EMAIL_SENT_FAILED'));
-    }
+    },
   });
-}
+};
 
 export const useVerifyForgetPasswordTokenMutation = () => {
   return useMutation(userClient.verifyForgetPasswordToken);
