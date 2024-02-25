@@ -48,11 +48,13 @@ export default function OrderDetailsPage() {
   }, [resetCart, resetCheckout]);
 
   const { mutate: updateOrder, isLoading: updating } = useUpdateOrderMutation();
-  const {
-    order,
-    isLoading: loading,
-    error,
-  } = useOrderQuery({ id: query.orderId as string, language: locale! });
+
+  const orderId = query.orderId || (query.tracking_number as string);
+  const { order, isLoading: loading, error } = useOrderQuery({
+    id: orderId,
+    language: locale!,
+  });
+
   const { refetch } = useDownloadInvoiceMutation(
     {
       order_id: query.orderId as string,

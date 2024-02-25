@@ -35,7 +35,7 @@ export const userClient = {
     return HttpClient.put<User>(`${API_ENDPOINTS.USERS}/${id}`, input);
   },
   changePassword: (variables: ChangePasswordInput) => {
-    return HttpClient.post<any>(API_ENDPOINTS.CHANGE_PASSWORD, variables);
+  return HttpClient.post<any>(API_ENDPOINTS.CHANGE_PASSWORD, variables);
   },
   forgetPassword: (variables: ForgetPasswordInput) => {
     return HttpClient.post<any>(API_ENDPOINTS.FORGET_PASSWORD, variables);

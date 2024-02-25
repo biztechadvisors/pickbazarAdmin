@@ -16,6 +16,7 @@ import { useTranslation } from 'next-i18next';
 import { useRouter } from 'next/router';
 import { useLogout, useUser } from '@/framework/rest/user';
 import { PaymentGateway } from '@/types';
+import { useMeQuery } from '@/data/user';
 import { useSettings } from '@/framework/rest/settings';
 
 export const PlaceOrderAction: React.FC<{
@@ -47,6 +48,10 @@ export const PlaceOrderAction: React.FC<{
   ] = useAtom(checkoutAtom);
   const [discount] = useAtom(discountAtom);
   const [use_wallet_points] = useAtom(walletAtom);
+
+  const { data: meData } = useMeQuery();
+  const dealerId = meData?.dealer?.id;
+
   useEffect(() => {
     setErrorMessage(null);
   }, [payment_gateway]);
@@ -91,6 +96,7 @@ export const PlaceOrderAction: React.FC<{
       sales_tax: verified_response?.total_tax,
       delivery_fee: freeShippings ? 0 : verified_response?.shipping_charge,
       total,
+      dealerId,
       delivery_time: delivery_time?.title,
       customer,
       customer_contact,

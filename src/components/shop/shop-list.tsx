@@ -40,7 +40,6 @@ const ShopList = ({
       (permission) => permission.type === 'sidebar-nav-item-shops'
     )?.write;
 
-
   const [sortingObj, setSortingObj] = useState<{
     sort: SortOrder;
     column: string | null;

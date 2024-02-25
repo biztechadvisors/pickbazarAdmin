@@ -18,7 +18,8 @@ type FormValues = {
   name: string;
   email: string;
   password: string;
-  type: { value: string };
+  contact: string;
+  type: { value: string } | null;
   permission: Permission;
   UsrBy: string;
 };
@@ -26,12 +27,14 @@ type FormValues = {
 const defaultValues = {
   email: '',
   password: '',
+  contact: '',
 };
-
 
 const CustomerCreateForm = () => {
   const { t } = useTranslation();
   const router = useRouter();
+  const { data: meData } = useMeQuery();
+  const { id, email } = meData || {};
   const { mutate: registerUser, isLoading: loading } = useRegisterMutation();
 
   const {
@@ -39,38 +42,39 @@ const CustomerCreateForm = () => {
     handleSubmit,
     setError,
     formState: { errors },
-    control
+    control,
   } = useForm<FormValues>({
     defaultValues,
     resolver: yupResolver(customerValidationSchema),
   });
 
-  // enum UserType {
-  //   'Admin',
-  //   'Dealer',
-  //   'Vendor',
-  //   'Customer',
-  // }
-
   const permissionData = usePermissionData();
 
-  const permissionNames = permissionData?.data?.map(permission => permission.permission_name) ?? [];
+  const permissionNames =
+    permissionData?.data?.map((permission) => permission.permission_name) ?? [];
 
-  const permissionOptions = permissionNames.map(name => ({ value: name, label: name }));
+  const permissionOptions = permissionNames.map((name) => ({
+    value: name,
+    label: name,
+  }));
 
-  const { data: meData } = useMeQuery();
-
-  const { id } = meData || {};
-
-  async function onSubmit({ name, email, password, type, UsrBy }: FormValues) {
+  async function onSubmit({
+    name,
+    email,
+    password,
+    contact,
+    type,
+  }: FormValues) {
     registerUser(
       {
         name,
         email,
         password,
-        type: type?.value !== undefined ? type.value : "Customer",
-        permission: Permission.StoreOwner,
+        contact,
         UsrBy: id,
+        type: type?.value || ['Customer'],
+        permission: Permission.StoreOwner,
+        // UsrBy: id,
       },
       {
         onError: (error: any) => {
@@ -91,7 +95,7 @@ const CustomerCreateForm = () => {
         <Description
           title={t('form:form-title-information')}
           details={t('form:customer-form-info-help-text')}
-          className="sm:pe-4 md:pe-5 w-full px-0 pb-5 sm:w-4/12 sm:py-8 md:w-1/3"
+          className="w-full px-0 pb-5 sm:w-4/12 sm:py-8 sm:pe-4 md:w-1/3 md:pe-5"
         />
 
         <Card className="w-full sm:w-8/12 md:w-2/3">
@@ -118,6 +122,15 @@ const CustomerCreateForm = () => {
             variant="outline"
             className="mb-4"
           />
+          <Input
+            label={t('form:input-label-contact')}
+            {...register('contact')}
+            type="text"
+            variant="outline"
+            className="mb-4"
+            error={t(errors.contact?.message!)}
+          />
+
           <Controller
             name="type"
             control={control}
@@ -136,10 +149,10 @@ const CustomerCreateForm = () => {
               </>
             )}
           />
-        </Card >
-      </div >
+        </Card>
+      </div>
 
-      <div className="text-end mb-4">
+      <div className="mb-4 text-end">
         <Button
           variant="outline"
           onClick={router.back}
@@ -153,7 +166,7 @@ const CustomerCreateForm = () => {
           {t('form:form-title-create-user')}
         </Button>
       </div>
-    </form >
+    </form>
   );
 };
 

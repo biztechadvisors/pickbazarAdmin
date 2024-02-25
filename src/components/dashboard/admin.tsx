@@ -80,6 +80,9 @@ export default function Dashboard() {
       item.total.toFixed(2)
     );
   }
+
+  console.log("data----analytics", data)
+
   return (
     <>
       <div className="mb-6 grid w-full grid-cols-1 gap-5 sm:grid-cols-2 xl:grid-cols-4">

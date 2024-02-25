@@ -6,6 +6,7 @@ import { useTranslation } from 'next-i18next';
 import { userClient } from '@/data/client/user';
 import { useMeQuery } from '@/data/user';
 import { PlusIcon } from '@/components/icons/plus-icon';
+import { useRouter } from 'next/router';
 
 const CustomerEmail = ({ count }) => {
   const { closeModal } = useModalAction();
@@ -15,9 +16,10 @@ const CustomerEmail = ({ count }) => {
   const [emailSuggestions, setEmailSuggestions] = useState([]);
   const [loading, setLoading] = useState(false);
   const [showAddButton, setShowAddButton] = useState(true);
+  const router = useRouter();
 
   const { data: meData } = useMeQuery();
-  const { id } = meData || {};
+  const { id, email } = meData || {};
   const usrById = id;
 
   async function fetchEmailSuggestions(inputValue) {
@@ -54,12 +56,13 @@ const CustomerEmail = ({ count }) => {
 
   function handleAddEmail(e: any) {
     e.preventDefault();
-    console.log('Add new email:', inputValue);
-    closeModal();
+    // console.log('Add new email:', inputValue);
+    // closeModal();
+    router.push('/users/create');
   }
 
   function handleSelectEmail(suggestion, e) {
-    e.preventDefault()
+    e.preventDefault();
     setCustomer({
       id: suggestion.value,
       email: suggestion.email,
@@ -84,17 +87,21 @@ const CustomerEmail = ({ count }) => {
             {t('text-customer')}
           </p>
         </div>
-        <button
-          type="button"
-          className="flex items-center text-sm font-semibold text-accent transition-colors duration-200 hover:text-accent-hover focus:text-accent-hover focus:outline-none"
-          onClick={handleAddEmail}
-        >
-          <PlusIcon className="me-0.5 h-4 w-4 stroke-2" />
-          Add
-        </button>
+        {
+          !loading &&
+          emailSuggestions.length === 0 &&
+          inputValue !== '' &&
+          showAddButton && <button
+            type="button"
+            className="flex items-center text-sm font-semibold text-accent transition-colors duration-200 hover:text-accent-hover focus:text-accent-hover focus:outline-none"
+            onClick={handleAddEmail}
+          >
+            <PlusIcon className="h-4 w-4 stroke-2 me-0.5" />
+            Add
+          </button>
+        }
+
       </div>
-
-
 
       <div className="relative">
         <input
@@ -114,7 +121,7 @@ const CustomerEmail = ({ count }) => {
           emailSuggestions.length === 0 &&
           inputValue !== '' &&
           showAddButton && (
-            <div className="relative rounded border border-border-200 bg-gray-100 px-5 py-6 text-center text-base mt-2">
+            <div className="relative mt-2 rounded border border-border-200 bg-gray-100 px-5 py-6 text-center text-base">
               No email found{' '}
             </div>
           )}
