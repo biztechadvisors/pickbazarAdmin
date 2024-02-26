@@ -9,7 +9,7 @@ import Select from '../ui/select/select';
 import { useEffect, useState } from 'react';
 import { Type } from '@/types';
 import { useMeQuery } from '@/data/user';
-import {useAnalyticsCustomer, useAnalyticsMutation} from '@/data/analytics';
+import { useAnalyticsCustomer, useAnalyticsMutation } from '@/data/analytics';
 
 type FormValues = {
   name?: string | null;
@@ -74,6 +74,7 @@ export default function CreateOrUpdateTotalSaleForm({ initialValues }: IProps) {
   const { t } = useTranslation();
   const {
     setValue,
+    getValues,
     control,
     handleSubmit,
     formState: { errors },
@@ -86,13 +87,14 @@ export default function CreateOrUpdateTotalSaleForm({ initialValues }: IProps) {
   });
 
   const { data } = useMeQuery();
-  const {mutate:getAnalytics, data:getAnalyticsData}= useAnalyticsMutation()
-  const { data:customer }= useAnalyticsCustomer('99')
-  console.log("customerData", customer)
+  const { mutate: getAnalytics, data: getAnalyticsData } = useAnalyticsMutation()
+  const { data: customer } = useAnalyticsCustomer(data?.id)
   const [allData, setAllData] = useState<any>();
   const [checkRegion, setCheckRegion] = useState<boolean>(false);
   const [checkCustomer, setCheckCustomer] = useState<boolean>(false);
   const [checkDealer, setCheckDealer] = useState<boolean>(false);
+
+  console.log("customerData", customer)
 
   const handlecheckData = () => {
     if (checkRegion) {
@@ -108,14 +110,14 @@ export default function CreateOrUpdateTotalSaleForm({ initialValues }: IProps) {
   };
 
   useEffect(() => {
-    const input={
-      customerId:data?.id,
-      state:allData?.value
+    const input = {
+      customerId: data?.id,
+      state: allData?.value
     }
     getAnalytics(input)
-    }, [allData,data,]);
+  }, [allData, data,]);
 
-    console.log("newResponce", getAnalyticsData)
+  console.log("newResponce", getAnalyticsData)
 
   const handleSelectCustomerChange = (selectedOption: any, field: any, optionNewData: any) => {
     const selectedData = optionNewData.find((option: { value: any }) => option.value === selectedOption.value);
@@ -126,7 +128,6 @@ export default function CreateOrUpdateTotalSaleForm({ initialValues }: IProps) {
     setValue('selectCustomer', null);
     field.onChange(selectedOption);
   };
-
 
   let salesByYear: number[] = Array.from({ length: 12 }, (_) => 0);
   if (!!getAnalyticsData?.totalYearSaleByMonth?.length) {
@@ -169,22 +170,39 @@ export default function CreateOrUpdateTotalSaleForm({ initialValues }: IProps) {
           </Card>
           <Card className="w-full mt-5">
             <label htmlFor="selectCustomer" className='mb-3 block text-sm font-semibold leading-none text-body-dark'>{"Total sale of Customer​"}</label>
+            {/* <Controller
+              name="selectCustomer"
+              control={control}
+              render={({ field }) => (
+                <Select
+                  id="selectCustomer"
+                  options={customer}
+                  placeholder={t('Select Customer')}
+                  value={field.value}
+                  onChange={(selectedOption: any) => (handleSelectCustomerChange(selectedOption, field, optionCustomer))}
+                />
+              )}
+            /> */}
+
             <Controller
               name="selectCustomer"
               control={control}
               render={({ field }) => (
                 <Select
                   id="selectCustomer"
-                  options={optionCustomer}
+                  options={customer?.map((c: { user_name: any; }) => ({ value: c.user_name, label: c.user_name }))}
                   placeholder={t('Select Customer')}
-                  value={field.value}
-                  onChange={(selectedOption: any) => (handleSelectCustomerChange(selectedOption, field, optionCustomer))}
+                  onChange={(selectedOption:any) => {
+                    field.onChange(selectedOption.value)
+                    setValue('selectCustomer', selectedOption.value)
+                  }}
                 />
               )}
             />
 
+
             {optionCustomer.find((option) => option.value === allData?.value) && (
-              <div className='mt-5'>Customer :- {allData.value}
+              <div className='mt-5'>Customer :- {getValue()}
               </div>
 
             )}

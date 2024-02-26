@@ -75,39 +75,6 @@ const optionRegion = [
   { value: "West Bengal", label: "West Bengal" }
 ];
 
-// function SelectState({
-//   control,
-//   errors,
-// }: {
-//   control: Control<FormValues>;
-//   errors: FieldErrors;
-// }) {
-//   const { t } = useTranslation();
-//   return (
-//     <div>
-//       <Label>{t('State')}</Label>
-//       <Controller
-//         control={control}
-//         name="address.state"
-//         render={({ field }) => (
-//           <SelectInput
-//             defaultValue={[]}
-//             {...field}
-//             control={control}
-//             getOptionLabel={(option: any) => option.value}
-//             getOptionValue={(option: any) => option.value}
-//             options={optionRegion}
-//             isSearchable={false}
-//           />
-//         )}
-//       />
-//       <ValidationError message={t(errors.address?.state?.message)} />
-//     </div>
-
-//   );
-// }
-
-
 const AddressForm: React.FC<any> = ({ onSubmit }) => {
   const { t } = useTranslation('common');
   const { useGoogleMap } = useSettings();
@@ -115,13 +82,30 @@ const AddressForm: React.FC<any> = ({ onSubmit }) => {
     data: { address, type },
   } = useModalState();
 
+  const [getState, setState] = useState(address?.address?.state)
+
   return (
     <div className="min-h-screen p-5 bg-light sm:p-8 md:min-h-0 md:rounded-xl">
       <h1 className="mb-4 text-lg font-semibold text-center text-heading sm:mb-6">
         {address ? t('text-update') : t('text-add-new')} {t('text-address')}
       </h1>
       <Form<FormValues>
-        onSubmit={onSubmit}
+        onSubmit={(data) => {
+          console.log('Form Data:', data);
+          const dataji = {
+            title: data.title,
+            type: data.type,
+            address: {
+              country: data.address.country,
+              city: data.address.city,
+              state: getState ? getState : '',
+              zip: data.address.zip,
+              street_address: data.address.street_address,
+            },
+            location: data?.address?.location
+          }
+          onSubmit(dataji);
+        }}
         className="grid h-full grid-cols-2 gap-5"
         //@ts-ignore
         validationSchema={addressSchema}
@@ -224,49 +208,27 @@ const AddressForm: React.FC<any> = ({ onSubmit }) => {
               variant="outline"
             />
 
-            {/* <SelectState control={control} errors={errors}/> */}
-
-            {/* <Label>{t('State')}</Label> */}
-
-            {/* <SelectInput
-              defaultValue={[]}
-              control={control}
-              getOptionLabel={(option: any) => {
-                // setValue('address.state', option.value);
-                return option.value;
-              }}
-              getOptionValue={(option: any) => option.value}
-              options={optionRegion}
-              isSearchable={false} 
-              name={'address.state'} />
-
-            <ValidationError message={t(errors.address?.state?.message)} /> */}
-
-            {/* <Input
-              label={t('text-state')}
-              {...register('address.state')}
-              error={t(errors.address?.state?.message!)}
-              variant="outline"
-            /> */}
-
             <Controller
               name="address.state"
               control={control}
               render={({ field }) => (
+                <div>
+                   <Label>{t('text-state')}</Label>
                 <Select
                   options={optionRegion}
                   placeholder={t('Select')}
-                  onChange={(selectedOption:any) => {
-                    const selectedValue = selectedOption?.value;
-                    field.onChange(selectedValue);
-                    setValue('address.state', selectedValue)
+                  defaultValue={getState && optionRegion.find((option) => option.value === getState)}
+                  onChange={(selectedOption: any) => {
+                    field.onChange(selectedOption?.value);
+                    setState(selectedOption?.value);
+                    setValue('address.state', selectedOption?.value);
                   }}
                 />
+                
+                </div>
               )}
-            /> 
-        
+            />
 
-            <ValidationError message={t(errors.address?.state?.message!)} />
             <Input
               label={t('text-zip')}
               {...register('address.zip')}
