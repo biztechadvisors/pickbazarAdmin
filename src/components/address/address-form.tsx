@@ -75,37 +75,37 @@ const optionRegion = [
   { value: "West Bengal", label: "West Bengal" }
 ];
 
-function SelectState({
-  control,
-  errors,
-}: {
-  control: Control<FormValues>;
-  errors: FieldErrors;
-}) {
-  const { t } = useTranslation();
-  return (
-    <div>
-      <Label>{t('State')}</Label>
-      <Controller
-        control={control}
-        name="address.state"
-        render={({ field }) => (
-          <SelectInput
-            defaultValue={[]}
-            {...field}
-            control={control}
-            getOptionLabel={(option: any) => option.value}
-            getOptionValue={(option: any) => option.value}
-            options={optionRegion}
-            isSearchable={false}
-          />
-        )}
-      />
-      <ValidationError message={t(errors.address?.state?.message)} />
-    </div>
+// function SelectState({
+//   control,
+//   errors,
+// }: {
+//   control: Control<FormValues>;
+//   errors: FieldErrors;
+// }) {
+//   const { t } = useTranslation();
+//   return (
+//     <div>
+//       <Label>{t('State')}</Label>
+//       <Controller
+//         control={control}
+//         name="address.state"
+//         render={({ field }) => (
+//           <SelectInput
+//             defaultValue={[]}
+//             {...field}
+//             control={control}
+//             getOptionLabel={(option: any) => option.value}
+//             getOptionValue={(option: any) => option.value}
+//             options={optionRegion}
+//             isSearchable={false}
+//           />
+//         )}
+//       />
+//       <ValidationError message={t(errors.address?.state?.message)} />
+//     </div>
 
-  );
-}
+//   );
+// }
 
 
 const AddressForm: React.FC<any> = ({ onSubmit }) => {
@@ -242,29 +242,28 @@ const AddressForm: React.FC<any> = ({ onSubmit }) => {
 
             <ValidationError message={t(errors.address?.state?.message)} /> */}
 
-            <Input
+            {/* <Input
               label={t('text-state')}
               {...register('address.state')}
               error={t(errors.address?.state?.message!)}
               variant="outline"
-            />
+            /> */}
 
-            {/* <Controller
+            <Controller
               name="address.state"
               control={control}
               render={({ field }) => (
                 <Select
                   options={optionRegion}
                   placeholder={t('Select')}
-                  // value={field.value}
                   onChange={(selectedOption:any) => {
-                    // Extracting the value property from the selected option
                     const selectedValue = selectedOption?.value;
                     field.onChange(selectedValue);
+                    setValue('address.state', selectedValue)
                   }}
                 />
               )}
-            /> */}
+            /> 
         
 
             <ValidationError message={t(errors.address?.state?.message!)} />
