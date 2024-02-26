@@ -19,7 +19,7 @@ type FormValues = {
   email: string;
   password: string;
   contact: string;
-  type: { value: string } | null;
+  type: { value: string };
   permission: Permission;
   UsrBy: string;
 };
@@ -34,7 +34,7 @@ const CustomerCreateForm = () => {
   const { t } = useTranslation();
   const router = useRouter();
   const { data: meData } = useMeQuery();
-  const { id, email } = meData || {};
+  const { id } = meData || {};
   const { mutate: registerUser, isLoading: loading } = useRegisterMutation();
 
   const {
@@ -53,10 +53,13 @@ const CustomerCreateForm = () => {
   const permissionNames =
     permissionData?.data?.map((permission) => permission.permission_name) ?? [];
 
-  const permissionOptions = permissionNames.map((name) => ({
-    value: name,
-    label: name,
-  }));
+  const permissionOptions = [
+    ...permissionNames.map((name) => ({
+      value: name,
+      label: name,
+    })),
+    { value: ['Customer'], label: 'Customer' },
+  ];
 
   async function onSubmit({
     name,
@@ -72,7 +75,7 @@ const CustomerCreateForm = () => {
         password,
         contact,
         UsrBy: id,
-        type: type?.value || ['Customer'],
+        type: type?.value,
         permission: Permission.StoreOwner,
         // UsrBy: id,
       },

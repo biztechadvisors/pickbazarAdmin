@@ -5,8 +5,7 @@ import ErrorMessage from '@/components/ui/error-message';
 import Loader from '@/components/ui/loader/loader';
 import { useTranslation } from 'next-i18next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
-import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import React, { useState } from 'react';
 import Search from '@/components/common/search';
 import LinkButton from '@/components/ui/link-button';
 import { adminOnly, getAuthCredentials } from '@/utils/auth-utils';
@@ -14,18 +13,14 @@ import Link from 'next/link';
 import { newPermission } from '@/contexts/permission/storepermission';
 import { useAtom } from 'jotai';
 import { siteSettings } from '@/settings/site.settings';
-
+import { usePermissionData } from '@/data/permission';
+import { useUpdateCart } from '@/data/cart';
 export default function Permission() {
   const { t } = useTranslation();
   const [searchTerm, setSearchTerm] = useState('');
   const [page, setPage] = useState(1);
   const [orderBy, setOrder] = useState('created_at');
-  const [data, setData] = useState([]);
-  console.log("first-data", data)
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-
-  const [getPermission, _] = useAtom(newPermission)
+  const [getPermission, _] = useAtom(newPermission);
   const { permissions } = getAuthCredentials();
   const canWrite = permissions.includes('super_admin')
     ? siteSettings.sidebarLinks
@@ -33,21 +28,7 @@ export default function Permission() {
       (permission) => permission.type === 'sidebar-nav-item-permission'
     )?.write;
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await axios.get('http://localhost:5050/api/permission');
-        setData(response.data);
-      } catch (error) {
-        setError('Error fetching data from the API');
-        console.error('Error fetching data:', error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchData();
-  }, []);
+  const { isLoading, error, data: permissionData } = usePermissionData();
 
   function handleSearch({ searchText }: { searchText: string }) {
     setSearchTerm(searchText);
@@ -57,9 +38,11 @@ export default function Permission() {
     setPage(current);
   }
 
-  if (loading) return <Loader text={t('common:text-loading')} />;
-  if (error) return <ErrorMessage message={error} />;
-  console.log('data', data)
+  if (isLoading) return <Loader text={t('common:text-loading')} />;
+  if (error) return <ErrorMessage message={permissionData.error.message} />;
+  if (!permissionData) {
+    return <div>No permission data available</div>;
+  }
 
   return (
     <>
@@ -93,16 +76,26 @@ export default function Permission() {
               </tr>
             </thead>
             <tbody>
-              {data.map((e, index) => (
-
+              {permissionData.map((e, index) => (
                 <tr key={index}>
                   <td className="border p-2">{index + 1}</td>
                   <td className="border p-2">{e.type_name}</td>
                   <td className="border p-2">{e.permission_name}</td>
                   <td className="border p-2">
-                    {e.permission.length > 0
-                      ? e.permission.slice(0, 3).map((permission, i) => (
-                        <li><span key={i}>{`${permission.type}`}</span></li>
+                    {e.permissions.length > 0
+                      ? e.permissions.slice(0, 3).map((permission, i) => (
+                        <React.Fragment key={i}>
+                          <li>
+                            {permission.type
+                              .replace('sidebar-nav-item-', '')
+                              .charAt(0)
+                              .toUpperCase() +
+                              permission.type
+                                .replace('sidebar-nav-item-', '')
+                                .slice(1)}
+                          </li>
+                          {i !== e.permissions.length - 1 && ' '}
+                        </React.Fragment>
                       ))
                       : ''}
                   </td>

@@ -1,4 +1,3 @@
-import axios from 'axios';
 import {
   Item,
   UpdateItemInput,
@@ -12,6 +11,8 @@ import {
   calculateTotalItems,
   calculateTotal,
 } from './cart.utils';
+import { cartsClient } from '@/data/client/carts';
+import { toast } from 'react-toastify';
 
 interface Metadata {
   [key: string]: any;
@@ -47,13 +48,27 @@ let updateCartTimeout: NodeJS.Timeout | null = null;
 export function cartReducer(state: State, action: Action): State {
   switch (action.type) {
     case 'ADD_ITEM_WITH_QUANTITY': {
-      const items = addItemWithQuantity(state.items, action.item.cartData, action.quantity);
-      //  updateCartApi(items, action.customerId, action.email, action.phone);
+      const items = addItemWithQuantity(
+        state.items,
+        action.item.cartData,
+        action.quantity
+      );
       if (updateCartTimeout) {
         clearTimeout(updateCartTimeout);
       }
-      updateCartTimeout = setTimeout(() => {
-        updateCartApi(items, action.customerId, action.email, action.phone);
+      updateCartTimeout = setTimeout(async () => {
+        try {
+          await cartsClient.updateCartApi(
+            items,
+            action.customerId,
+            action.email,
+            action.phone
+          );
+          toast.success('Item added to cart successfully');
+        } catch (error) {
+          console.error('Failed to update cart:', error.message);
+          toast.error('Failed to add item to cart');
+        }
       }, 1000);
       return generateFinalState(state, items);
     }
@@ -95,19 +110,3 @@ const generateFinalState = (state: State, items: Item[]) => {
     isEmpty: totalUniqueItems === 0,
   };
 };
-
-
-async function updateCartApi(items: Item[], customerId, email, phone): Promise<void> {
-  try {
-    await axios.post('http://localhost:5050/api/carts', {
-      customerId,
-      email,
-      phone,
-      cartData: items
-    });
-    // console.log('Cart updated successfully');
-  } catch (error) {
-    console.error('Failed to update cart:', error.message);
-    throw new Error('Failed to update cart');
-  }
-}

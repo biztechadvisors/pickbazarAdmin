@@ -58,7 +58,7 @@ const CustomerEmail = ({ count }) => {
     e.preventDefault();
     // console.log('Add new email:', inputValue);
     // closeModal();
-    router.push('/users/create');
+    router.push('/users/create?from=checkout');
   }
 
   function handleSelectEmail(suggestion, e) {

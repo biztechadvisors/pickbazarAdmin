@@ -51,6 +51,8 @@ export function getAuthCredentials(context?: any): {
   if (context) {
     authCred = parseSSRCookie(context)[AUTH_CRED];
   } else {
+    // console.log('chcek'+Cookie.get(AUTH_CRED))
+    // console.log(Cookie.get(AUTH_CRED))
     authCred = Cookie.get(AUTH_CRED);
   }
   if (authCred) {
@@ -72,7 +74,7 @@ export function hasAccess(
 ) {
 
   if (_userPermissions) {
-  
+
     _allowedRoles?.find((aRole) => _userPermissions.includes(aRole))
     return Boolean(
       _allowedRoles?.find((aRole) => _userPermissions.includes(aRole))
