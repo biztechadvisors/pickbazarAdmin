@@ -21,6 +21,7 @@ type FormValues = {
   contact: string;
   type: { value: string };
   permission: Permission;
+  UsrBy: string;
 };
 
 const defaultValues = {
@@ -78,6 +79,7 @@ const CustomerCreateForm = () => {
         UsrBy: id,
         type: type?.value,
         permission: Permission.StoreOwner,
+        // UsrBy: id,
       },
       {
         onError: (error: any) => {

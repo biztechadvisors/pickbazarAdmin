@@ -15,8 +15,8 @@ const ItemCard = ({ item, margin, notAvailable }: Props) => {
     amount: item.itemTotal,
   });
 
-  const {data}=useMeQuery()
-  const dealerId=data?.dealer?.id
+  const { data } = useMeQuery()
+  const dealerId = data?.dealer?.id
   return (
     <div className={cn('flex justify-between py-2')} key={item.id}>
       <p className="flex items-center justify-between text-base">
@@ -34,9 +34,9 @@ const ItemCard = ({ item, margin, notAvailable }: Props) => {
           <span className="mx-2">x</span>
           <span>{item.name}</span> | <span>{item.unit}</span>
         </span>
-        
+
       </p>
-      {dealerId && <ToggleButton margin={margin}/>}
+      {dealerId && <ToggleButton margin={margin} />}
       <span
         className={cn('text-sm', notAvailable ? 'text-red-500' : 'text-body')}
       >

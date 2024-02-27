@@ -30,6 +30,7 @@ const Navbar = () => {
     (permission) => permission.type === 'sidebar-nav-item-dashboard'
   )?.write;
 
+  // const { permissions } = getAuthCredentials();
   // const { permissions } = getAuthCredentials()
 
 

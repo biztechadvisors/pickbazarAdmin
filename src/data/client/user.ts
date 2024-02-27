@@ -18,7 +18,8 @@ import {
 import { API_ENDPOINTS } from './api-endpoints';
 import { HttpClient } from './http-client';
 
-export const userClient = {me: (params: { username: any; sub: any; }) => {
+export const userClient = {
+  me: (params: { username: any; sub: any; }) => {
     return HttpClient.get<User>(`${API_ENDPOINTS.ME}?username=${params.username}&sub=${params.sub}`);
   },
   login: (variables: LoginInput) => {
@@ -28,7 +29,6 @@ export const userClient = {me: (params: { username: any; sub: any; }) => {
     return HttpClient.post<any>(API_ENDPOINTS.LOGOUT, {});
   },
   register: (variables: RegisterInput) => {
-    console.log("variables", variables)
     return HttpClient.post<AuthResponse>(API_ENDPOINTS.REGISTER, variables);
   },
   update: ({ id, input }: { id: string; input: UpdateUser }) => {
@@ -61,12 +61,14 @@ export const userClient = {me: (params: { username: any; sub: any; }) => {
   addWalletPoints: (variables: WalletPointsInput) => {
     return HttpClient.post<any>(API_ENDPOINTS.ADD_WALLET_POINTS, variables);
   },
-  fetchUsers: ({ name, ...params }: Partial<UserQueryOptions>) => {
+  fetchUsers: ({ email, usrById, ...params }: Partial<UserQueryOptions>) => {
+    console.log("name, ...params*********", email, usrById)
     return HttpClient.get<UserPaginator>(API_ENDPOINTS.USERS, {
       searchJoin: 'and',
       with: 'wallet',
       ...params,
-      search: HttpClient.formatSearchParams({ name }),
+      usrById: usrById,
+      search: HttpClient.formatSearchParams({ email }),
     });
   },
   fetchVendor: ({ type }: { type: string }) => {
@@ -79,6 +81,7 @@ export const userClient = {me: (params: { username: any; sub: any; }) => {
     });
   },
   fetchUser: ({ id }: { id: string }) => {
+    console.log("id******", id)
     return HttpClient.get<User>(`${API_ENDPOINTS.USERS}/${id}`);
   },
   resendVerificationEmail: () => {

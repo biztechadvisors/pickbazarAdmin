@@ -1,29 +1,34 @@
 import { useEffect, useState } from 'react';
-import { useRouter } from 'next/router';
-import { Routes } from '@/config/routes';
+import { useAtom } from 'jotai';
+import isEmpty from 'lodash/isEmpty';
+import classNames from 'classnames';
+import { useCreateOrder } from '@/framework/rest/order';
 import ValidationError from '@/components/ui/validation-error';
 import Button from '@/components/ui/button';
-import isEmpty from 'lodash/isEmpty';
-import { formatOrderedProduct } from '@/utils/format-ordered-product';
+import { formatOrderedProduct } from '@/lib/format-ordered-product';
 import { useCart } from '@/contexts/quick-cart/cart.context';
-import { useAtom } from 'jotai';
 import { checkoutAtom, discountAtom, walletAtom } from '@/contexts/checkout';
 import {
   calculatePaidTotal,
   calculateTotal,
 } from '@/contexts/quick-cart/cart.utils';
-import { useCreateOrderMutation } from '@/data/order';
+import { useTranslation } from 'next-i18next';
+import { useRouter } from 'next/router';
+import { useLogout, useUser } from '@/framework/rest/user';
 import { PaymentGateway } from '@/types';
 import { useMeQuery } from '@/data/user';
+import { useSettings } from '@/framework/rest/settings';
 
 export const PlaceOrderAction: React.FC<{
+  className?: string;
   children?: React.ReactNode;
 }> = (props) => {
-  const { locale, ...router } = useRouter();
+  const { t } = useTranslation('common');
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
-  const { createOrder, isLoading: loading } = useCreateOrderMutation();
-
+  const { createOrder, isLoading } = useCreateOrder();
   const { items } = useCart();
+  const { me } = useUser();
+
   const [
     {
       billing_address,
@@ -32,9 +37,13 @@ export const PlaceOrderAction: React.FC<{
       coupon,
       verified_response,
       customer_contact,
+      customer_name,
       customer,
       payment_gateway,
+      payment_sub_gateway,
+      note,
       token,
+      payable_amount
     },
   ] = useAtom(checkoutAtom);
   const [discount] = useAtom(discountAtom);
@@ -52,6 +61,10 @@ export const PlaceOrderAction: React.FC<{
   );
 
   const subtotal = calculateTotal(available_items);
+  const {
+    settings: { freeShippingAmount, freeShipping },
+  } = useSettings();
+  let freeShippings = freeShipping && Number(freeShippingAmount) <= subtotal;
   const total = calculatePaidTotal(
     {
       totalAmount: subtotal,
@@ -69,30 +82,30 @@ export const PlaceOrderAction: React.FC<{
       setErrorMessage('Gateway Is Required');
       return;
     }
-    // if (!use_wallet_points && payment_gateway === "STRIPE" && !token) {
-    //   setErrorMessage("Please Pay First");
-    //   return;
-    // }
+
+    const isFullWalletPayment = (use_wallet_points && payable_amount == 0) ? true : false;
+    const gateWay = isFullWalletPayment ? PaymentGateway.FULL_WALLET_PAYMENT : payment_gateway;
+
     let input = {
-      language: locale,
+      //@ts-ignore
       products: available_items?.map((item) => formatOrderedProduct(item)),
       amount: subtotal,
       coupon_id: Number(coupon?.id),
       discount: discount ?? 0,
       paid_total: total,
       sales_tax: verified_response?.total_tax,
-      delivery_fee: verified_response?.shipping_charge,
+      delivery_fee: freeShippings ? 0 : verified_response?.shipping_charge,
       total,
       dealerId,
       delivery_time: delivery_time?.title,
-      customer_contact,
-      customer_id: customer?.value,
-      customerId:customer?.value,
       customer,
+      customer_contact,
+      customer_name,
+      note,
+      payment_gateway: gateWay,
+      payment_sub_gateway,
       use_wallet_points,
-      payment_gateway: use_wallet_points
-        ? PaymentGateway.FULL_WALLET_PAYMENT
-        : payment_gateway,
+      isFullWalletPayment,
       billing_address: {
         ...(billing_address?.address && billing_address.address),
       },
@@ -109,27 +122,45 @@ export const PlaceOrderAction: React.FC<{
     // delete input.shipping_address.__typename;
     createOrder(input);
   };
-  const isAllRequiredFieldSelected = [
-    customer,
-    customer_contact,
-    payment_gateway,
-    billing_address,
-    shipping_address,
-    delivery_time,
-    available_items,
-  ].every((item) => !isEmpty(item));
+  const isDigitalCheckout = available_items.find((item) =>
+    Boolean(item.is_digital)
+  );
+
+  let formatRequiredFields = isDigitalCheckout
+    ? [customer_contact, payment_gateway, available_items]
+    : [
+      customer_contact,
+      payment_gateway,
+      billing_address,
+      shipping_address,
+      delivery_time,
+      available_items,
+    ];
+  // if (!isDigitalCheckout && !me) {
+  //   formatRequiredFields.push(customer_name);
+  // }
+
+  const isAllRequiredFieldSelected = formatRequiredFields.every(
+    (item) => !isEmpty(item)
+  );
+
   return (
     <>
       <Button
-        loading={loading}
-        className="w-full mt-5"
+        loading={isLoading}
+        className={classNames('mt-5 w-full', props.className)}
         onClick={handlePlaceOrder}
-        disabled={!isAllRequiredFieldSelected}
+        disabled={!isAllRequiredFieldSelected || !!isLoading}
         {...props}
       />
       {errorMessage && (
         <div className="mt-3">
           <ValidationError message={errorMessage} />
+        </div>
+      )}
+      {!isAllRequiredFieldSelected && (
+        <div className="mt-3">
+          <ValidationError message={t('text-place-order-helper-text')} />
         </div>
       )}
     </>

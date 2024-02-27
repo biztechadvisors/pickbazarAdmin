@@ -56,6 +56,7 @@ export default function ShopPage() {
   } = useShopQuery({
     slug: shop!.toString(),
   });
+
   const { price: totalEarnings } = usePrice(
     data && {
       amount: data?.balance?.total_earnings!,
@@ -67,13 +68,13 @@ export default function ShopPage() {
     }
   );
 
-  const [getPermission,_]=useAtom(newPermission)
-  const canWrite =  permissions.includes('super_admin')
-  ? siteSettings.sidebarLinks
-  :getPermission?.find(
-    (permission) => permission.type === 'sidebar-nav-item-my-shops'
-    // (permission) => permission.type === 'sidebar-nav-item-dashboard'
-  )?.write;
+  const [getPermission, _] = useAtom(newPermission)
+  const canWrite = permissions.includes('super_admin')
+    ? siteSettings.sidebarLinks
+    : getPermission?.find(
+      (permission) => permission.type === 'sidebar-nav-item-my-shops'
+      // (permission) => permission.type === 'sidebar-nav-item-dashboard'
+    )?.write;
 
   if (loading) return <Loader text={t('common:text-loading')} />;
   if (error) return <ErrorMessage message={error.message} />;
@@ -93,9 +94,6 @@ export default function ShopPage() {
     id: shop_id,
   } = data ?? {};
 
-
-  
-
   if (
     !hasAccess(adminOnly, permissions) &&
     !me?.shops?.map((shop) => shop.id).includes(shop_id) &&
@@ -103,8 +101,6 @@ export default function ShopPage() {
   ) {
     router.replace(Routes.dashboard);
   }
-
-  
 
   return (
     <div className="grid grid-cols-12 gap-6">
@@ -198,7 +194,7 @@ export default function ShopPage() {
           >
             <EditIcon className="w-4 me-2" /> {t('common:text-edit-shop')}
           </LinkButton>
-          ) : null}
+        ) : null}
         {/* )} */}
       </div>
 

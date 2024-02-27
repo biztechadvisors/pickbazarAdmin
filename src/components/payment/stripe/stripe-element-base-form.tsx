@@ -48,6 +48,7 @@ export default function StripeElementBaseForm({
     }
 
     stripe.retrievePaymentIntent(clientSecret).then(({ paymentIntent }) => {
+
       switch (paymentIntent?.status) {
         case 'succeeded':
           toast.success(t('payment-successful'));

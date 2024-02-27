@@ -26,7 +26,7 @@ const CustomerEmail = ({ count }) => {
     setLoading(true);
     try {
       const response = await userClient.fetchUsers({
-        name: inputValue,
+        email: inputValue,
         page: 1,
         usrById,
       });
@@ -92,15 +92,15 @@ const CustomerEmail = ({ count }) => {
           emailSuggestions.length === 0 &&
           inputValue !== '' &&
           showAddButton && <button
-          type="button"
-          className="flex items-center text-sm font-semibold text-accent transition-colors duration-200 hover:text-accent-hover focus:text-accent-hover focus:outline-none"
-          onClick={handleAddEmail}
-        >
-          <PlusIcon className="h-4 w-4 stroke-2 me-0.5" />
-          Add
-        </button>
+            type="button"
+            className="flex items-center text-sm font-semibold text-accent transition-colors duration-200 hover:text-accent-hover focus:text-accent-hover focus:outline-none"
+            onClick={handleAddEmail}
+          >
+            <PlusIcon className="h-4 w-4 stroke-2 me-0.5" />
+            Add
+          </button>
         }
-        
+
       </div>
 
       <div className="relative">

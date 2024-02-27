@@ -2,7 +2,7 @@ export const API_ENDPOINTS = {
   ATTACHMENTS: 'attachments',
   ANALYTICS: 'analytics',
   ATTRIBUTES: 'attributes',
-  DEALER:'/dealers',
+  DEALER: '/dealers',
   ATTRIBUTE_VALUES: 'attribute-values',
   ORDER_STATUS: 'order-status',
   ORDERS: 'orders',
@@ -63,11 +63,10 @@ export const API_ENDPOINTS = {
   MESSAGE: '/messages/conversations',
   MESSAGE_SEEN: '/messages/seen',
   ADMIN_LIST: '/admin/list',
-  DEALER:'/dealers',
   STORE_NOTICES: 'store-notices',
   STORE_NOTICES_IS_READ: 'store-notices/read',
   STORE_NOTICE_GET_STORE_NOTICE_TYPE: 'store-notices/getStoreNoticeType',
   STORE_NOTICES_USER_OR_SHOP_LIST: 'store-notices/getUsersToNotify',
-  PERMISSION:'permission',
+  PERMISSION: 'permission',
   CART:'carts'
 };

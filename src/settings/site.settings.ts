@@ -1,11 +1,11 @@
-import { adminAndOwnerOnly, adminOwnerAndStaffOnly} from '@/utils/auth-utils';
+import { adminAndOwnerOnly, adminOwnerAndStaffOnly } from '@/utils/auth-utils';
 import { Routes } from '@/config/routes';
 
 const Type = {
-Dealer : "dealer", 
-Admin : "admin",
-Customer : "customer",
-Staff : "staff"
+  Dealer: "dealer",
+  Admin: "admin",
+  Customer: "customer",
+  Staff: "staff"
 }
 
 export const siteSettings = {
@@ -41,7 +41,7 @@ export const siteSettings = {
   sidebarLinks: {
     admin: [
       {
-        href:  Routes.dashboard,
+        href: Routes.dashboard,
         label: 'sidebar-nav-item-dashboard',
         icon: 'DashboardIcon',
       },
@@ -85,13 +85,6 @@ export const siteSettings = {
         label: 'sidebar-nav-item-tags',
         icon: 'TagIcon',
       },
-
-      {
-        href: Routes.dealerlist.list,
-        label: 'sidebar-nav-item-dealerlist',
-        icon: 'DealerListIcon',
-      },
-      
       {
         href: Routes.totalsale.list,
         label: 'sidebar-nav-item-total-sale',
@@ -128,6 +121,11 @@ export const siteSettings = {
         icon: 'UsersIcon',
       },
       {
+        href: Routes.dealerlist.list,
+        label: 'sidebar-nav-item-dealerlist',
+        icon: 'DealerListIcon',
+      },
+      {
         href: Routes.coupon.list,
         label: 'sidebar-nav-item-coupons',
         icon: 'CouponsIcon',
@@ -151,7 +149,7 @@ export const siteSettings = {
         href: Routes.message.list,
         label: 'sidebar-nav-item-message',
         icon: 'ChatIcon',
-      },      
+      },
       {
         href: Routes.refund.list,
         label: 'sidebar-nav-item-refunds',
@@ -160,7 +158,7 @@ export const siteSettings = {
       {
         href: Routes.staff.list,
         label: 'sidebar-nav-item-staffs',
-        icon: 'UsersIcon',        
+        icon: 'UsersIcon',
       },
       {
         href: Routes.question.list,
@@ -276,7 +274,7 @@ export const siteSettings = {
     //     icon: 'OrdersIcon',
     //     permissions: adminOwnerAndStaffOnly,
     //   },
-      
+
     // ],
   },
   product: {

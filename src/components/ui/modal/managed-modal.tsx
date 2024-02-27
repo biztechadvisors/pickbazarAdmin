@@ -2,6 +2,7 @@ import StoreNoticeDeleteView from '@/components/store-notice/store-notice-delete
 import Modal from '@/components/ui/modal/modal';
 import dynamic from 'next/dynamic';
 import { MODAL_VIEWS, useModalAction, useModalState } from './modal.context';
+import PaymentModal from '@/components/payment/payment-modal';
 const TagDeleteView = dynamic(() => import('@/components/tag/tag-delete-view'));
 const TaxDeleteView = dynamic(() => import('@/components/tax/tax-delete-view'));
 const BanCustomerView = dynamic(
@@ -65,6 +66,11 @@ const ReviewImageModal = dynamic(
 );
 const QuestionReplyView = dynamic(
   () => import('@/components/question/question-reply-view')
+);
+
+const GateWayControlModal = dynamic(
+  () => import('@/components/payment/gateway-control/gateway-modal'),
+  { ssr: false }
 );
 const QuestionDeleteView = dynamic(
   () => import('@/components/question/question-delete-view')
@@ -189,10 +195,13 @@ function renderModal(view: MODAL_VIEWS | undefined, data: any) {
 const ManagedModal = () => {
   const { isOpen, view, data } = useModalState();
   const { closeModal } = useModalAction();
-
+  if (view === 'PAYMENT_MODAL') {
+    return <PaymentModal />;
+  }
   return (
     <Modal open={isOpen} onClose={closeModal}>
       {renderModal(view, data)}
+      {view === 'GATEWAY_MODAL' && <GateWayControlModal />}
     </Modal>
   );
 };
