@@ -23,7 +23,8 @@ const Logo: React.FC<React.AnchorHTMLAttributes<{}>> = ({
         }}
       >
         <Image
-          src={logo?.original ?? siteSettings.logo.url}
+          src={`${process?.env?.NEXT_PUBLIC_REST_API_ENDPOINT}/${logo?.original }`}
+          // src={logo?.original ?? siteSettings.logo.url}
           alt={siteTitle ?? siteSettings.logo.alt}
           fill
           sizes="(max-width: 768px) 100vw"

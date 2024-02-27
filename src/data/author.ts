@@ -79,7 +79,6 @@ export const useAuthorQuery = ({ slug, language }: GetParams) => {
     [API_ENDPOINTS.AUTHORS, { slug, language }],
     () => AuthorClient.get({ slug, language })
   );
-
   return {
     author: data,
     error,
@@ -96,6 +95,8 @@ export const useAuthorsQuery = (options: Partial<AuthorQueryOptions>) => {
       keepPreviousData: true,
     }
   );
+console.log("authorget+++++++++++++++++", data)
+
 
   return {
     authors: data?.data ?? [],
