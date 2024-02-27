@@ -34,13 +34,18 @@ export default function DealerPage() {
     sortedBy,
   });
 
-  const [getPermission,_]=useAtom(newPermission)
+  const [getPermission, _] = useAtom(newPermission)
   const { permissions } = getAuthCredentials();
-  const canWrite =  permissions.includes('super_admin')
-  ? siteSettings.sidebarLinks
-  :getPermission?.find(
-    (permission) => permission.type === 'sidebar-nav-item-dealerlist'
-  )?.write;
+  const canWrite = permissions.includes('super_admin')
+    ? siteSettings.sidebarLinks
+    : getPermission?.find(
+      (permission) => permission.type === 'sidebar-nav-item-dealerlist'
+    )?.write;
+
+  // const {
+  //   data,
+  //   isLoading,
+  // } = useDealerQueryAllGet();
 
   if (loading) return <Loader text={t('common:text-loading')} />;
   if (error) return <ErrorMessage message={error.message} />;

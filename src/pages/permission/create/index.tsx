@@ -6,7 +6,7 @@ import { useTranslation } from 'react-i18next';
 import { useRouter } from 'next/router';
 import { ToastContainer, toast } from 'react-toastify';
 import Button from '@/components/ui/button';
-import { useQuery} from 'react-query';
+import { useQuery } from 'react-query';
 import { permissionClient } from '@/data/client/permission';
 import PermissionJson from '../../../../public/static/permission.json';
 import { useSavePermissionData } from '@/data/permission';
@@ -48,7 +48,7 @@ const CreatePermission = () => {
       );
       setSelectedPermissions(formattedPermissions);
     }
-  }, []);
+  }, [permissionId]);
 
   const handleChange = (e) => {
     setSelectedType(e.target.value);

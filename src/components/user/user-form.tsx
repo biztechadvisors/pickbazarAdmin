@@ -21,6 +21,7 @@ type FormValues = {
   contact: string;
   type: { value: string };
   permission: Permission;
+  UsrBy: string;
 };
 
 const defaultValues = {
@@ -48,6 +49,8 @@ const CustomerCreateForm = () => {
   });
 
   const permissionData = usePermissionData();
+  
+  console.log('permissionData', permissionData)
 
   const permissionNames =
     permissionData?.data?.map((permission) => permission.permission_name) ?? [];
@@ -67,7 +70,6 @@ const CustomerCreateForm = () => {
     contact,
     type,
   }: FormValues) {
-    console.log('type', type);
     registerUser(
       {
         name,
@@ -77,6 +79,7 @@ const CustomerCreateForm = () => {
         UsrBy: id,
         type: type?.value,
         permission: Permission.StoreOwner,
+        // UsrBy: id,
       },
       {
         onError: (error: any) => {
@@ -90,6 +93,8 @@ const CustomerCreateForm = () => {
       }
     );
   }
+
+  console.log("Permission.StoreOwner", Permission.StoreOwner)
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} noValidate>
@@ -173,3 +178,18 @@ const CustomerCreateForm = () => {
 };
 
 export default CustomerCreateForm;
+
+
+// Json which require to send while registering.
+
+// {
+//   "name": "John Doe",
+//   "email": "john@example.com",
+//   "password": "password123",
+//   "type": "user",
+//   "UsrBy": "Admin",
+//   "contact": "1234567890",
+//   "permission": {
+//   },
+//   "isVerified": false
+// }

@@ -76,7 +76,6 @@ export const CartProvider: React.FC<{ children?: React.ReactNode }> = (props) =>
     (id: Item['id']) => !!getItem(state.items, id),
     [state.items]
   );
-
   
   const getItemFromCart = useCallback(
     (id: Item['id']) => getItem(state.items, id),

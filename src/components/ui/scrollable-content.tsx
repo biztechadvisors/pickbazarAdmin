@@ -41,7 +41,7 @@ export const ScrollContent: React.FC<Props> = ({
       if (isLeftShowAble) {
         document!.querySelector('.leftArrow')!.classList.add('block');
         document!.querySelector('.leftArrow')!.classList.remove('hidden');
-        console.log('isLeftShowAble = true');
+
       } else {
         document!.querySelector('.leftArrow')!.classList.add('hidden');
         document!.querySelector('.leftArrow')!.classList.remove('block');
@@ -60,6 +60,7 @@ export const ScrollContent: React.FC<Props> = ({
         className="hidden min-h-full leftArrow vertical-scroll-arrow left absolute start-0 top-0 w-4 h-4 bg-red-500"
         onClick={() => {
           document!.querySelector(scrollDiv)!.scrollLeft -= 20;
+ 
         }}
       >
         {/* <img src={PrevIcon} /> */}
@@ -70,7 +71,6 @@ export const ScrollContent: React.FC<Props> = ({
         className="block min-h-full rightArrow vertical-scroll-arrow right absolute end-0 top-0 w-4 h-4 bg-red-500"
         onClick={() => {
           document!.querySelector(scrollDiv)!.scrollLeft += 20;
-          console.log('clicked next');
         }}
       >
         {/* <img src={NextIcon} /> */}

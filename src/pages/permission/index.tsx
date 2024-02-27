@@ -27,7 +27,12 @@ export default function Permission() {
         (permission) => permission.type === 'sidebar-nav-item-permission'
       )?.write;
 
-  const { isLoading, error, data: permissionData } = usePermissionData();
+  const {
+    isLoading,
+    error,
+    data: permissionData,
+    refetch,
+  } = usePermissionData();
 
   function handleSearch({ searchText }: { searchText: string }) {
     setSearchTerm(searchText);
@@ -43,6 +48,7 @@ export default function Permission() {
     return <div>No permission data available</div>;
   }
 
+  console.log('permissionData', permissionData)
   return (
     <>
       <Card className="mb-8 flex flex-col items-center justify-between md:flex-row">
@@ -77,8 +83,8 @@ export default function Permission() {
                   <td className="border p-2">{e.type_name}</td>
                   <td className="border p-2">{e.permission_name}</td>
                   <td className="border p-2">
-                    {e.permission.length > 0
-                      ? e.permission.slice(0, 3).map((permission, i) => (
+                    {e.permissions.length > 0
+                      ? e.permissions.slice(0, 3).map((permission, i) => (
                           <React.Fragment key={i}>
                             <li>
                               {permission.type
@@ -89,7 +95,7 @@ export default function Permission() {
                                   .replace('sidebar-nav-item-', '')
                                   .slice(1)}
                             </li>
-                            {i !== e.permission.length - 1 && ' '}
+                            {i !== e.permissions.length - 1 && ' '}
                           </React.Fragment>
                         ))
                       : ''}
