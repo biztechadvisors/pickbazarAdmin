@@ -48,6 +48,8 @@ const CustomerCreateForm = () => {
   });
 
   const permissionData = usePermissionData();
+  
+  console.log('permissionData', permissionData)
 
   const permissionNames =
     permissionData?.data?.map((permission) => permission.permission_name) ?? [];
@@ -89,6 +91,8 @@ const CustomerCreateForm = () => {
       }
     );
   }
+
+  console.log("Permission.StoreOwner", Permission.StoreOwner)
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} noValidate>
@@ -172,3 +176,18 @@ const CustomerCreateForm = () => {
 };
 
 export default CustomerCreateForm;
+
+
+// Json which require to send while registering.
+
+// {
+//   "name": "John Doe",
+//   "email": "john@example.com",
+//   "password": "password123",
+//   "type": "user",
+//   "UsrBy": "Admin",
+//   "contact": "1234567890",
+//   "permission": {
+//   },
+//   "isVerified": false
+// }

@@ -31,7 +31,7 @@ const CheckoutForm = ({handleAddCustomer}) => {
       // console.log('Response:', response.data);
   
       // Close the cart sidebar after form submission
-      closeCartSidebar();
+    closeCartSidebar();
     } catch (error) {
       console.error('Error submitting form:', error.message);
       // Handle any errors that occur during form submission
