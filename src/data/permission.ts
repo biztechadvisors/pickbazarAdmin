@@ -5,13 +5,15 @@ import { toast } from 'react-toastify';
 import { permissionClient } from './client/permission';
 
 export const usePermissionData = () => {
-  return useQuery<{ Permission: any }, Error>(
+  const { isLoading, error, data, refetch } = useQuery<{ Permission: any }, Error>(
     [API_ENDPOINTS.PERMISSION],
     async () => {
       const response = await permissionClient.getAllPermission();
       return response;
     }
   );
+
+  return { isLoading, error, data, refetch };
 };
 
 export const useSavePermissionData = () => {

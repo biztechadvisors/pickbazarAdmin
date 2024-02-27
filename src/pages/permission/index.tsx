@@ -27,7 +27,12 @@ export default function Permission() {
         (permission) => permission.type === 'sidebar-nav-item-permission'
       )?.write;
 
-  const { isLoading, error, data: permissionData } = usePermissionData();
+  const {
+    isLoading,
+    error,
+    data: permissionData,
+    refetch,
+  } = usePermissionData();
 
   function handleSearch({ searchText }: { searchText: string }) {
     setSearchTerm(searchText);
@@ -43,6 +48,7 @@ export default function Permission() {
     return <div>No permission data available</div>;
   }
 
+  // console.log('permissionData', permissionData)
   return (
     <>
       <Card className="mb-8 flex flex-col items-center justify-between md:flex-row">
