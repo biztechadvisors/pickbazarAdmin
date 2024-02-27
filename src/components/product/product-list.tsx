@@ -45,7 +45,6 @@ const ProductList = ({
   onSort,
   onOrder,
 }: IProps) => {
-
   const router = useRouter();
   const { t } = useTranslation();
   const { alignLeft, alignRight } = useIsRTL();
@@ -70,7 +69,6 @@ const ProductList = ({
         currentSortDirection === SortOrder.Desc ? SortOrder.Asc : SortOrder.Desc
       );
       onOrder(column!);
-
       setSortingObj({
         sort:
           sortingObj.sort === SortOrder.Desc ? SortOrder.Asc : SortOrder.Desc,
@@ -189,6 +187,7 @@ const ProductList = ({
         );
       },
     },
+
     {
       title: (
         <TitleWithSort
@@ -213,7 +212,6 @@ const ProductList = ({
         const handleShowQuantity = () => {
           setEditMode(true);
         };
-
 
         const handleEditQuantity = async () => {
           // Handle logic to save edited quantity
@@ -252,6 +250,7 @@ const ProductList = ({
         );
       },
     },
+    
     {
       title: t('table:table-item-status'),
       dataIndex: 'status',
@@ -311,6 +310,8 @@ const ProductList = ({
   if (router?.query?.shop) {
     columns = columns?.filter((column) => column?.key !== 'shop');
   }
+
+  console.log("products+++", products)
 
   return (
     <>

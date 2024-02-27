@@ -14,8 +14,7 @@ import { Routes } from '@/config/routes';
 import { useRouter } from 'next/router';
 import { adminOnly } from '@/utils/auth-utils';
 import { Config } from '@/config';
-import TotalsaleTypeList from '@/components/total-sale/total-sale-list';
-import CreateOrUpdateTypeForm from '@/components/total-sale/total-sale-form';
+import CreateOrUpdateTotalSaleForm from '@/components/total-sale/total-sale-form';
 
 export default function TypesPage() {
   const { locale } = useRouter();
@@ -46,7 +45,7 @@ export default function TypesPage() {
           </h1>
         </div>
       </Card>
-      <CreateOrUpdateTypeForm />
+      <CreateOrUpdateTotalSaleForm />
     </>
   );
 }

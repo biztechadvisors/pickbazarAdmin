@@ -53,9 +53,7 @@ export const productClient = {
   generateDescription: (data: GenerateDescriptionInput) => {
     return HttpClient.post<any>(API_ENDPOINTS.GENERATE_DESCRIPTION, data);
   },
-
-  updateQuantity: (data: any) => {
+  updateQuantity: (data:any) => {
     return HttpClient.post<any>(`${API_ENDPOINTS.PRODUCTS}/${data.id}`, data);
   },
-
 };

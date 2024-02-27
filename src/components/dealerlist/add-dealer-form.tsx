@@ -359,9 +359,6 @@ export default function CreateOrUpdateDealerForm({ initialValues, id }: IProps) 
 
           <SelectSubType control={control} errors={errors} defaultValue={initialValues} />
 
-          
-          
-
           <Input
             label={t('Wallet Balance')}
             {...register('walletBalance')}
@@ -375,7 +372,6 @@ export default function CreateOrUpdateDealerForm({ initialValues, id }: IProps) 
           <SelectStatus control={control} errors={errors} defaultValue={initialValues} />
           <SelectCategory register={register} control={control} errors={errors} defaultValue={marcategory} />
           <SelectProduct register={register} control={control} errors={errors} defaultValue={marproduct} />
-
         </Card>
       </div>
 

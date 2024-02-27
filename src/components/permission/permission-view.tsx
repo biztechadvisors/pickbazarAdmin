@@ -11,7 +11,6 @@ import { ShopPaginator, SortOrder } from '@/types';
 import TitleWithSort from '@/components/ui/title-with-sort';
 import Link from '@/components/ui/link';
 import { Shop, MappedPaginatorInfo } from '@/types';
-import { ViewPermission } from '@/data/client/permission';
 
 type IProps = {
   shops: Shop[] | undefined;
@@ -30,10 +29,7 @@ const PermissionView = ({
 }: IProps) => {
   const { t } = useTranslation();
   const { alignLeft, alignRight } = useIsRTL();
-<<<<<<< HEAD
-=======
   // console.log("ViewPermission",ViewPermission)
->>>>>>> 580b1a71acf62fc1c0c8f88b261bc1d54e3c6aa6
 
   const [sortingObj, setSortingObj] = useState<{
     sort: SortOrder;
