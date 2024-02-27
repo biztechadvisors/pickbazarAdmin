@@ -148,8 +148,9 @@ const CreatePermission = () => {
           <select
             id="typename"
             name="typename"
-            className={`mt-1 block w-full rounded-md border bg-gray-100 p-2 ${typeError && 'border-red-500'
-              }`}
+            className={`mt-1 block w-full rounded-md border bg-gray-100 p-2 ${
+              typeError && 'border-red-500'
+            }`}
             onChange={(e) => handleChange(e)}
           >
             {Object.values(typeName).map((type, index) => (
@@ -174,8 +175,9 @@ const CreatePermission = () => {
             type="text"
             id="permission"
             name="permission"
-            className={`mt-1 block w-full rounded-md border bg-gray-100 p-2 ${permissionError && 'border-red-500'
-              }`}
+            className={`mt-1 block w-full rounded-md border bg-gray-100 p-2 ${
+              permissionError && 'border-red-500'
+            }`}
             placeholder="Enter permissions"
             value={permissionName}
             onChange={(e) => handlePermissionNameChange(e)}

@@ -1,4 +1,3 @@
-
 import Card from '@/components/common/card';
 import Layout from '@/components/layouts/admin';
 import ErrorMessage from '@/components/ui/error-message';
@@ -25,8 +24,8 @@ export default function Permission() {
   const canWrite = permissions.includes('super_admin')
     ? siteSettings.sidebarLinks
     : getPermission?.find(
-      (permission) => permission.type === 'sidebar-nav-item-permission'
-    )?.write;
+        (permission) => permission.type === 'sidebar-nav-item-permission'
+      )?.write;
 
   const {
     isLoading,
@@ -49,17 +48,15 @@ export default function Permission() {
     return <div>No permission data available</div>;
   }
 
-  // console.log('permissionData', permissionData)
+  console.log('permissionData', permissionData)
   return (
     <>
       <Card className="mb-8 flex flex-col items-center justify-between md:flex-row">
         <div className="mb-4 md:mb-0 md:w-1/4">
-          <h1 className="text-lg font-semibold text-heading">
-            Permissions
-          </h1>
+          <h1 className="text-lg font-semibold text-heading">Permissions</h1>
         </div>
 
-        <div className="ms-auto flex w-full flex-col items-center md:w-1/2 md:flex-row gap-x-5">
+        <div className="flex w-full flex-col items-center gap-x-5 ms-auto md:w-1/2 md:flex-row">
           <Search onSearch={handleSearch} />
           {canWrite ? (
             <LinkButton href="/permission/create">Create Permission</LinkButton>
@@ -76,9 +73,7 @@ export default function Permission() {
                 <th className="border p-2">ROLE</th>
                 <th className="border p-2">NAME</th>
                 <th className="border p-2">PERMISSION-TYPE</th>
-                {canWrite ? (
-                  <th className="border p-2">ACTIONS</th>
-                ) : null}
+                {canWrite ? <th className="border p-2">ACTIONS</th> : null}
               </tr>
             </thead>
             <tbody>
@@ -90,33 +85,50 @@ export default function Permission() {
                   <td className="border p-2">
                     {e.permissions.length > 0
                       ? e.permissions.slice(0, 3).map((permission, i) => (
-                        <React.Fragment key={i}>
-                          <li>
-                            {permission.type
-                              .replace('sidebar-nav-item-', '')
-                              .charAt(0)
-                              .toUpperCase() +
-                              permission.type
+                          <React.Fragment key={i}>
+                            <li>
+                              {permission.type
                                 .replace('sidebar-nav-item-', '')
-                                .slice(1)}
-                          </li>
-                          {i !== e.permissions.length - 1 && ' '}
-                        </React.Fragment>
-                      ))
+                                .charAt(0)
+                                .toUpperCase() +
+                                permission.type
+                                  .replace('sidebar-nav-item-', '')
+                                  .slice(1)}
+                            </li>
+                            {i !== e.permissions.length - 1 && ' '}
+                          </React.Fragment>
+                        ))
                       : ''}
                   </td>
                   {canWrite ? (
                     <td className="border p-2">
                       <td className="border p-2">
                         <Link href={`/permission/create?id=${e.id}`}>
-                          <button className="text-blue-500 hover:underline flex items-center space-x-1">
-                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" width="24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path></svg>
+                          <button className="flex items-center space-x-1 text-blue-500 hover:underline">
+                            <svg
+                              xmlns="http://www.w3.org/2000/svg"
+                              fill="none"
+                              viewBox="0 0 24 24"
+                              stroke="currentColor"
+                              width="24"
+                            >
+                              <path
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                                stroke-width="2"
+                                d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
+                              ></path>
+                              <path
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                                stroke-width="2"
+                                d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"
+                              ></path>
+                            </svg>
                             <span>View</span>
                           </button>
                         </Link>
-
                       </td>
-
                     </td>
                   ) : null}
                 </tr>
