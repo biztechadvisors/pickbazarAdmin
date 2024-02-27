@@ -16,9 +16,6 @@ const CreatePermission = () => {
   const router = useRouter();
   const { t } = useTranslation();
 
-  const {data:userData}=useMeQuery()
-  const { id} = userData || {};
-
   const [typeName, setTypeName] = useState(PermissionJson.type_name);
   const [selectedType, setSelectedType] = useState('');
   const [menusData, setMenusData] = useState(PermissionJson.Menus);
@@ -120,7 +117,6 @@ const CreatePermission = () => {
       permissions: selectedPermissions,
     };
     const dataToSend2 = {
-      usrId:id,
       type_name: typeToSend,
       permission_name: permissionName,
       permissions: selectedPermissions,
