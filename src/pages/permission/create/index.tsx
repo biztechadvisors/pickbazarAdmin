@@ -34,6 +34,8 @@ const CreatePermission = () => {
 
   const { mutateUpdate, mutatePost } = useSavePermissionData();
 
+  // console.log("singlePermissionData", singlePermissionData)
+
   useEffect(() => {
     if (singlePermissionData) {
       setTypeName([singlePermissionData.type_name]);
@@ -109,12 +111,12 @@ const CreatePermission = () => {
     const dataToSend = {
       type_name: typeToSend,
       permissionName: permissionName,
-      permission: selectedPermissions,
+      permissions: selectedPermissions,
     };
     const dataToSend2 = {
       type_name: typeToSend,
       permission_name: permissionName,
-      permission: selectedPermissions,
+      permissions: selectedPermissions,
     };
 
     try {

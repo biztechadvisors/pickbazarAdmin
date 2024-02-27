@@ -48,7 +48,7 @@ export default function Permission() {
     return <div>No permission data available</div>;
   }
 
-  console.log('permissionData', permissionData)
+  // console.log('permissionData', permissionData)
   return (
     <>
       <Card className="mb-8 flex flex-col items-center justify-between md:flex-row">

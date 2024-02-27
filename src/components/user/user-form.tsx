@@ -50,18 +50,22 @@ const CustomerCreateForm = () => {
 
   const permissionData = usePermissionData();
   
-  console.log('permissionData', permissionData)
+  // console.log('permissionData', permissionData)
 
   const permissionNames =
-    permissionData?.data?.map((permission) => permission.permission_name) ?? [];
+    permissionData?.data?.map((permission) => permission) ?? [];
+
+    // console.log('permissionNames', permissionNames)
 
   const permissionOptions = [
     ...permissionNames.map((name) => ({
       value: name,
-      label: name,
+      label: name.type_name,
     })),
     { value: ['Customer'], label: 'Customer' },
   ];
+
+  // console.log("permissionOptions", permissionOptions )
 
   async function onSubmit({
     name,
@@ -78,7 +82,7 @@ const CustomerCreateForm = () => {
         contact,
         UsrBy: id,
         type: type?.value,
-        permission: Permission.StoreOwner,
+        // permission: Permission.StoreOwner,
         // UsrBy: id,
       },
       {
@@ -94,7 +98,7 @@ const CustomerCreateForm = () => {
     );
   }
 
-  console.log("Permission.StoreOwner", Permission.StoreOwner)
+  // console.log("Permission.StoreOwner", Permission.StoreOwner)
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} noValidate>
@@ -146,7 +150,7 @@ const CustomerCreateForm = () => {
                 <Label>{t('form:input-label-type')}</Label>
                 <Select
                   {...field}
-                  getOptionLabel={(option: any) => option.value}
+                  getOptionLabel={(option: any) => option.value.type_name}
                   getOptionValue={(option: any) => option.value}
                   options={permissionOptions}
                   isClearable={true}

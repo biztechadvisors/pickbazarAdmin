@@ -29,6 +29,8 @@ export const userClient = {
     return HttpClient.post<any>(API_ENDPOINTS.LOGOUT, {});
   },
   register: (variables: RegisterInput) => {
+
+    // console.log('variables', variables)
     return HttpClient.post<AuthResponse>(API_ENDPOINTS.REGISTER, variables);
   },
   update: ({ id, input }: { id: string; input: UpdateUser }) => {
