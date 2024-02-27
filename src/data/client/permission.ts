@@ -17,6 +17,7 @@ export const permissionClient = {
     );
   },
   postPermission: (data: any) => {
+    console.log("Data***Post", data)
     return HttpClient.post(`${API_ENDPOINTS.PERMISSION}`, data);
   },
 };
