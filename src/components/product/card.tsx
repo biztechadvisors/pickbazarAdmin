@@ -14,10 +14,12 @@ import { siteSettings } from '@/settings/site.settings';
 
 interface Props {
   item: Product;
-  showMargins: boolean;
+  isChecked: boolean;
+  id:Number;
+  email:string
 }
 
-const ProductCard = ({ item, showMargins }: Props) => {
+const ProductCard = ({ item, isChecked, id, email }: Props) => {
   const { t } = useTranslation();
   const {
     slug,
@@ -74,11 +76,11 @@ const ProductCard = ({ item, showMargins }: Props) => {
           className="product-image object-contain"
         />
 
-        {showMargins && (
+        {isChecked && (
           <div className="absolute top-2 right-2">
             <div className="flex items-center space-x-2 rounded-md bg-green-600 p-2 text-light">
               <span className="text-xs md:text-sm">${margin}</span>
-              {/* <span className="text-xs md:text-sm">{t('margin')}</span> */}
+              {/* <span className="text-xs md:text-sm">$25</span> */}
             </div>
           </div>
         )}
@@ -133,7 +135,7 @@ const ProductCard = ({ item, showMargins }: Props) => {
         ) : (
           canWrite && (
             <>
-              {Number(quantity) > 0 && <AddToCart variant="neon" data={item} />}
+              {Number(quantity) > 0 && <AddToCart variant="neon" data={item} id={id} email={email} />}
             </>
           )
         )}

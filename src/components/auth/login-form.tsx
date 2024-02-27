@@ -17,7 +17,11 @@ import {
   setAuthCredentials,
 } from '@/utils/auth-utils';
 import { useAtom } from 'jotai';
-import { filterPermission, newPermission, permissionAtom } from '@/contexts/permission/storepermission';
+import {
+  filterPermission,
+  newPermission,
+  permissionAtom,
+} from '@/contexts/permission/storepermission';
 import { siteSettings } from '@/settings/site.settings';
 
 const loginFormSchema = yup.object().shape({
@@ -33,10 +37,6 @@ const LoginForm = () => {
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const { mutate: login, isLoading, error } = useLogin();
   const [_, setPermissionState] = useAtom(newPermission);
-  
-  console.log('login')
-  console.log(isLoading)
-
 
   // export { matchedLinksState as matchedLinks };
 
@@ -48,13 +48,15 @@ const LoginForm = () => {
       },
       {
         onSuccess: (data) => {
-          // console.log('data',data?.type_name)
-          // console.log("data?.permissions",data?.permissions)
           if (data?.token) {
             if (hasAccess(allowedRoles, data?.type_name)) {
-              // console.log(allowedRoles, data?.type_name,"allowedRoles, data?.type_name")          
-              setPermissionState(data?.permissions);             
-              setAuthCredentials(data?.token,data?.permissions, data?.type_name);
+              setPermissionState(data?.permissions);
+              setAuthCredentials(
+                data?.token,
+                data?.permissions,
+                data?.type_name
+              );
+              console.log("data****permission", data)
               Router.push(Routes.dashboard);
               return;
             }
@@ -63,7 +65,7 @@ const LoginForm = () => {
             setErrorMessage('form:error-credential-wrong');
           }
         },
-        onError: () => {},
+        onError: () => { },
       }
     );
   }

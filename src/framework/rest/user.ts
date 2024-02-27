@@ -351,8 +351,6 @@ export function useOtpLogin() {
 
 export function useRegister() {
 
-  console.log("Register")
-
   const { t } = useTranslation('common');
   const { setToken } = useToken();
   const [_, setAuthorized] = useAtom(authorizationAtom);

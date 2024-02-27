@@ -451,8 +451,6 @@ export default function SettingsForm({
   const upload_max_filesize = options?.server_info?.upload_max_filesize! / 1024;
   const max_fileSize = options?.server_info?.upload_max_filesize! * 1000;
 
-  // console.log('upload_max_filesize', upload_max_filesize)
-
   const logoInformation = (
     <span>
       {t('form:logo-help-text')} <br />

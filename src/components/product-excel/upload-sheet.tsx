@@ -125,7 +125,6 @@ const UploadProdxl: React.FC = () => {
                     });
     
                     const finalProducts = Object.values(products);
-                    console.log("final",finalProducts)
     
                     resolve(JSON.stringify(finalProducts, null, 2));
                 } catch (error) {
@@ -151,7 +150,6 @@ const UploadProdxl: React.FC = () => {
                 }).then(async (success) => {
                     if (success) {
                         const jsonData = await convertExcelToJson(selectedFile);
-                        console.log("json of excel",jsonData)
                         // const response = await GetProductDetails.uploadProductList(jsonData);
                         // if (response) {
                         //     NotificationManager.success(response.message, 'Product Successfully Uploaded');

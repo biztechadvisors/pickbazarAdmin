@@ -65,11 +65,11 @@ export function Grid({
       >
         {isLoading && !products?.length
           ? rangeMap(limit, (i) => (
-              <ProductLoader key={i} uniqueKey={`product-${i}`} />
-            ))
+            <ProductLoader key={i} uniqueKey={`product-${i}`} />
+          ))
           : products?.map((product) => (
-              <ProductCard product={product} key={product.id} />
-            ))}
+            <ProductCard product={product} key={product.id} />
+          ))}
       </div>
       {hasMore && (
         <div className="flex justify-center mt-8 lg:mt-12">

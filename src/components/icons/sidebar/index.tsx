@@ -1,3 +1,4 @@
+
 export { AttributeIcon } from '@/components/icons/sidebar/attribute';
 export { AttributeValueIcon } from '@/components/icons/sidebar/attribute-value';
 export { CategoriesIcon } from '@/components/icons/sidebar/categories';

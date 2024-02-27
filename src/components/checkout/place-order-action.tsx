@@ -5,7 +5,7 @@ import classNames from 'classnames';
 import { useCreateOrder } from '@/framework/rest/order';
 import ValidationError from '@/components/ui/validation-error';
 import Button from '@/components/ui/button';
-import { formatOrderedProduct} from '@/lib/format-ordered-product';
+import { formatOrderedProduct } from '@/lib/format-ordered-product';
 import { useCart } from '@/contexts/quick-cart/cart.context';
 import { checkoutAtom, discountAtom, walletAtom } from '@/contexts/checkout';
 import {
@@ -14,6 +14,7 @@ import {
 } from '@/contexts/quick-cart/cart.utils';
 import { useTranslation } from 'next-i18next';
 import { PaymentGateway } from '@/types';
+import { useMeQuery } from '@/data/user';
 import { useSettings } from '@/framework/rest/settings';
 
 export const PlaceOrderAction: React.FC<{
@@ -44,6 +45,10 @@ export const PlaceOrderAction: React.FC<{
   ] = useAtom(checkoutAtom);
   const [discount] = useAtom(discountAtom);
   const [use_wallet_points] = useAtom(walletAtom);
+
+  const { data: meData } = useMeQuery();
+  const dealerId = meData?.dealer?.id;
+
   useEffect(() => {
     setErrorMessage(null);
   }, [payment_gateway]);
@@ -88,6 +93,7 @@ export const PlaceOrderAction: React.FC<{
       sales_tax: verified_response?.total_tax,
       delivery_fee: freeShippings ? 0 : verified_response?.shipping_charge,
       total,
+      dealerId,
       delivery_time: delivery_time?.title,
       customer,
       customer_contact,
@@ -104,10 +110,13 @@ export const PlaceOrderAction: React.FC<{
         ...(shipping_address?.address && shipping_address.address),
       },
     };
-    delete input.billing_address.__typename;
-    delete input.shipping_address.__typename;
-    //@ts-ignore
-    console.log("payment input", input)
+    // if (payment_gateway === "STRIPE") {
+    //   //@ts-ignore
+    //   input.token = token;
+    // }
+
+    // delete input.billing_address.__typename;
+    // delete input.shipping_address.__typename;
     createOrder(input);
   };
   const isDigitalCheckout = available_items.find((item) =>
@@ -128,13 +137,10 @@ export const PlaceOrderAction: React.FC<{
   //   formatRequiredFields.push(customer_name);
   // }
 
-  console.log("formatRequiredFields", formatRequiredFields)
-
   const isAllRequiredFieldSelected = formatRequiredFields.every(
     (item) => !isEmpty(item)
   );
 
-  console.log("isAllRequiredFieldSelected",isAllRequiredFieldSelected)
   return (
     <>
       <Button

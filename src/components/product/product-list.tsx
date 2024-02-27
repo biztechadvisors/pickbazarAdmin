@@ -21,9 +21,9 @@ import LanguageSwitcher from '@/components/ui/lang-action/action';
 import { newPermission, permissionAtom } from '@/contexts/permission/storepermission';
 import { useAtom } from 'jotai';
 import { getAuthCredentials } from '@/utils/auth-utils';
+import { useUpdateQuantity } from '@/data/product';
 import Input from '../ui/input';
 import Button from '../ui/button';
-import { useUpdateQuantity } from '@/data/product';
 
 export type IProps = {
   products: Product[] | undefined;
@@ -45,14 +45,11 @@ const ProductList = ({
   onSort,
   onOrder,
 }: IProps) => {
-  // console.log("products",products)
   const router = useRouter();
   const { t } = useTranslation();
   const { alignLeft, alignRight } = useIsRTL();
   const { permissions } = getAuthCredentials();
   const [getPermission, _] = useAtom(newPermission)
-  const { mutate: updateQuantity, isLoading: updating} =
-    useUpdateQuantity();
   const canWrite = permissions.includes('super_admin')
     ? siteSettings.sidebarLinks.admin
     : getPermission?.find(
@@ -63,6 +60,8 @@ const ProductList = ({
     sort: SortOrder.Desc,
     column: null,
   });
+
+  const { mutate: updateQuantity, isLoading: updating } = useUpdateQuantity();
 
   const onHeaderClick = (column: string | null) => ({
     onClick: () => {
@@ -222,8 +221,9 @@ const ProductList = ({
           };
           updateQuantity(data);
           setUpdatedQuantity(editedQuantity);
-          setEditMode(false); 
+          setEditMode(false);
         };
+
 
         return (
           <div>
@@ -235,8 +235,8 @@ const ProductList = ({
                   onChange={(e) => setEditedQuantity(Number(e.target.value))}
                 />
                 <Button onClick={handleEditQuantity}
-                size='small'
-                className='mt-2'
+                  size='small'
+                  className='mt-2'
                 >Update</Button>
               </>
             ) : (

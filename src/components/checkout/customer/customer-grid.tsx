@@ -3,6 +3,7 @@ import { customerAtom } from '@/contexts/checkout';
 import { useModalAction } from '@/components/ui/modal/modal.context';
 import { PlusIcon } from '@/components/icons/plus-icon';
 import { useTranslation } from 'next-i18next';
+import AddCustomerSlider from '@/pages/orders/AddCustomerSlider';
 
 interface CustomerProps {
   label: string;
@@ -14,8 +15,6 @@ const CustomerGrid = ({ label, count, className }: CustomerProps) => {
   const [customer] = useAtom(customerAtom);
   const { openModal } = useModalAction();
   const { t } = useTranslation('common');
-
-  console.log("hello customer", customer)
 
   function onAddOrChange() {
     openModal('SELECT_CUSTOMER');

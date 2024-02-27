@@ -18,6 +18,7 @@ export default function AllShopPage() {
   const [page, setPage] = useState(1);
   const [orderBy, setOrder] = useState('created_at');
   const [sortedBy, setColumn] = useState<SortOrder>(SortOrder.Desc);
+
   const { shops, paginatorInfo, loading, error } = useShopsQuery({
     name: searchTerm,
     limit: 10,
@@ -25,7 +26,8 @@ export default function AllShopPage() {
     orderBy,
     sortedBy,
   });
-  console.log("permission==",permission)
+
+  console.log("shops******", shops)
 
   if (loading) return <Loader text={t('common:text-loading')} />;
   if (error) return <ErrorMessage message={error.message} />;

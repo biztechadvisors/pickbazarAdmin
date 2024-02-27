@@ -31,9 +31,7 @@ const Navbar = () => {
   )?.write;
 
   // const { permissions } = getAuthCredentials();
-  console.log('Permissions====:', permissions);
-console.log('Has Access:', hasAccess(adminAndOwnerOnly, permissions));
-console.log("adminAndOwnerOnly",adminAndOwnerOnly)
+  // const { permissions } = getAuthCredentials()
 
 
   const { enableMultiLang } = Config;

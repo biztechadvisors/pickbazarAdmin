@@ -9,6 +9,7 @@ import { AddToCart } from '@/components/cart/add-to-cart/add-to-cart';
 import { useProductQuery } from '@/data/product';
 import { Config } from '@/config';
 import { useRouter } from 'next/router';
+import { useMeQuery } from '@/data/user';
 
 interface Props {
   product: any;
@@ -57,8 +58,12 @@ const Variation = ({ product }: Props) => {
 
 const ProductVariation = ({ productSlug }: { productSlug: string }) => {
   const { locale } = useRouter();
+
+  const { data } = useMeQuery()
+  const userId = data?.dealer?.id
   const { product, isLoading: loading } = useProductQuery({
     slug: productSlug,
+    userId: userId,
     language: locale!,
   });
 

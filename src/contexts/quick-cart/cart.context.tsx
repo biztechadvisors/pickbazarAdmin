@@ -6,7 +6,7 @@ import { CART_KEY } from '@/utils/constants';
 import { useAtom } from 'jotai';
 import { verifiedResponseAtom } from '@/contexts/checkout';
 interface CartProviderState extends State {
-  addItemToCart: (item: Item, quantity: number) => void;
+  addItemToCart: (item: Item, quantity: number, customerId:number, email:string, phone:string) => void;
   removeItemFromCart: (id: Item['id']) => void;
   clearItemFromCart: (id: Item['id']) => void;
   getItemFromCart: (id: Item['id']) => any | undefined;
@@ -29,36 +29,54 @@ export const useCart = () => {
   return context;
 };
 
-export const CartProvider: React.FC<{ children?: React.ReactNode }> = (
-  props
-) => {
+export const CartProvider: React.FC<{ children?: React.ReactNode }> = (props) => {
+
+
   const [savedCart, saveCart] = useLocalStorage(
     CART_KEY,
     JSON.stringify(initialState)
   );
+
+  
   const [state, dispatch] = React.useReducer(
     cartReducer,
     JSON.parse(savedCart!)
   );
+
+
   const [, emptyVerifiedResponse] = useAtom(verifiedResponseAtom);
+
+
   React.useEffect(() => {
     emptyVerifiedResponse(null);
   }, [emptyVerifiedResponse, state]);
+
+
 
   React.useEffect(() => {
     saveCart(JSON.stringify(state));
   }, [state, saveCart]);
 
-  const addItemToCart = (item: Item, quantity: number) =>
-    dispatch({ type: 'ADD_ITEM_WITH_QUANTITY', item, quantity });
+
+
+  const addItemToCart = (item: Item, quantity: number, customerId:number, email:string, phone:string) =>
+    dispatch({ type: 'ADD_ITEM_WITH_QUANTITY', item, quantity, customerId, email, phone });
+
+
   const removeItemFromCart = (id: Item['id']) =>
     dispatch({ type: 'REMOVE_ITEM_OR_QUANTITY', id });
+
+
+
   const clearItemFromCart = (id: Item['id']) =>
     dispatch({ type: 'REMOVE_ITEM', id });
+
+
   const isInCart = useCallback(
     (id: Item['id']) => !!getItem(state.items, id),
     [state.items]
   );
+  
   const getItemFromCart = useCallback(
     (id: Item['id']) => getItem(state.items, id),
     [state.items]

@@ -26,6 +26,7 @@ import { useSettings } from '@/contexts/settings.context';
 import { newPermission } from '@/contexts/permission/storepermission';
 import { useAtom } from 'jotai';
 import { siteSettings } from '@/settings/site.settings';
+import { toggleAtom } from '@/utils/atoms';
 import { useMeQuery } from '@/data/user';
 
 export default function ProductsPage() {
@@ -41,11 +42,13 @@ export default function ProductsPage() {
     setVisible((v) => !v);
   };
 
-  const { data: meData } = useMeQuery();
+  const { data: meData, } = useMeQuery();
+
+  const { id, email } = meData || {};
 
   const userId = meData?.dealer?.id;
 
-  const [showMargins, setShowMargins] = useState(false);
+  const [isChecked] = useAtom(toggleAtom);
 
   const { products, loading, paginatorInfo, error } = useProductsQuery({
     limit: 18,
@@ -58,13 +61,15 @@ export default function ProductsPage() {
     userId,
   });
 
-  const [getPermission,_]=useAtom(newPermission) 
+  // console.log("products******", products)
+
+  const [getPermission, _] = useAtom(newPermission)
   const { permissions } = getAuthCredentials();
-  const canWrite =  permissions.includes('super_admin')
-  ? siteSettings.sidebarLinks
-  :getPermission?.find(
-    (permission) => permission.type === 'sidebar-nav-item-create-order'
-  )?.write;
+  const canWrite = permissions.includes('super_admin')
+    ? siteSettings.sidebarLinks
+    : getPermission?.find(
+      (permission) => permission.type === 'sidebar-nav-item-create-order'
+    )?.write;
 
   if (loading) return <Loader text={t('common:text-loading')} />;
   if (error) return <ErrorMessage message={error.message} />;
@@ -77,24 +82,8 @@ export default function ProductsPage() {
     setPage(current);
   }
 
-  const renderMarginsButton = userId && (
-    <button
-      className="hover:text-accent-dark mt-5 mb-5 flex items-center whitespace-nowrap text-base font-semibold text-accent transition-colors duration-300 md:mt-0"
-      onClick={() => setShowMargins((prev) => !prev)}
-    >
-      <span className="mr-2">
-        {showMargins ? (
-          <EyeOffIcon className="h-5 w-5" />
-        ) : (
-          <EyeIcon className="h-5 w-5" />
-        )}
-      </span>
-      {showMargins ? 'Hide Margins' : 'Show Margins'}
-    </button>
-  );
   return (
     <>
-      {renderMarginsButton}
       <Card className="mb-8 flex flex-col">
         <div className="flex w-full flex-col items-center md:flex-row">
           <div className="mb-4 md:mb-0 md:w-1/4">
@@ -149,7 +138,9 @@ export default function ProductsPage() {
             <ProductCard
               key={product.id}
               item={product}
-              showMargins={showMargins}
+              isChecked={isChecked}
+              id={id}
+              email={email}
             />
           ))}
         </div>

@@ -6,26 +6,35 @@ export interface Item {
   [key: string]: any;
 }
 
-export interface UpdateItemInput extends Partial<Omit<Item, 'id'>> {}
+export interface UpdateItemInput extends Partial<Omit<Item, 'id'>> { }
 
 export function addItemWithQuantity(
   items: Item[],
   item: Item,
   quantity: number
 ) {
+
+
   if (quantity <= 0)
     throw new Error("cartQuantity can't be zero or less than zero");
   const existingItemIndex = items.findIndex(
     (existingItem) => existingItem.id === item.id
   );
 
+
   if (existingItemIndex > -1) {
+    // If the item already exists, update its quantity
     const newItems = [...items];
-    newItems[existingItemIndex].quantity! += quantity;
+    newItems[existingItemIndex] = {
+      ...newItems[existingItemIndex],
+      quantity: newItems[existingItemIndex].quantity! + quantity,
+    };
     return newItems;
   }
   return [...items, { ...item, quantity }];
 }
+
+
 
 export function removeItemOrQuantity(
   items: Item[],
@@ -78,7 +87,7 @@ export const calculateItemTotals = (items: Item[]) =>
 
 export const calculateTotal = (items: Item[]) =>
   items.reduce((total, item) => total + item.quantity! * item.price, 0);
-  // items.reduce((total, item) => total + item.quantity! * item.price, 0);
+// items.reduce((total, item) => total + item.quantity! * item.price, 0);
 
 export const calculateTotalItems = (items: Item[]) =>
   items.reduce((sum, item) => sum + item.quantity!, 0);

@@ -202,7 +202,7 @@ export default function CreateOrUpdateTotalSaleForm({ initialValues }: IProps) {
 
 
             {optionCustomer.find((option) => option.value === allData?.value) && (
-              <div className='mt-5'>Customer :- {getValue()}
+              <div className='mt-5'>Customer :- {getValues('selectCustomer')}
               </div>
 
             )}

@@ -3,6 +3,8 @@ import AddToCartBtn from '@/components/cart/add-to-cart/add-to-cart-btn';
 import { cartAnimation } from '@/utils/cart-animation';
 import { useCart } from '@/contexts/quick-cart/cart.context';
 import { generateCartItem } from '@/contexts/quick-cart/generate-cart-item';
+import { number } from 'yup';
+import { addItemToCartApi } from '../cartApi';
 
 interface Props {
   data: any;
@@ -17,6 +19,16 @@ interface Props {
   counterClass?: string;
   variation?: any;
   disabled?: boolean;
+  id?: number;
+  email?: string;
+}
+
+export interface CustomerData {
+  customerId: number;
+  email: string;
+  phone: string;
+  cartData: any;
+  quantity: number;
 }
 
 export const AddToCart = ({
@@ -26,6 +38,8 @@ export const AddToCart = ({
   counterClass,
   variation,
   disabled,
+  id,
+  email,
 }: Props) => {
   const {
     addItemToCart,
@@ -35,19 +49,35 @@ export const AddToCart = ({
     isInCart,
   } = useCart();
   const item = generateCartItem(data, variation);
+
   const handleAddClick = (
     e: React.MouseEvent<HTMLButtonElement | MouseEvent>
   ) => {
     e.stopPropagation();
-    addItemToCart(item, 1);
+    const customerData: CustomerData = {
+      customerId: id,
+      email: email,
+      phone: '8910412312',
+      cartData: item,
+    };
+    addItemToCart(
+      customerData,
+      1,
+      customerData.customerId,
+      customerData.email,
+      customerData.phone
+    );
+
     if (!isInCart(item.id)) {
       cartAnimation(e);
     }
   };
+
   const handleRemoveClick = (e: any) => {
     e.stopPropagation();
     removeItemFromCart(item.id);
   };
+
   const outOfStock = isInCart(item?.id) && !isInStock(item.id);
   return !isInCart(item?.id) ? (
     <AddToCartBtn
