@@ -107,4 +107,3 @@ export const getStaticProps: GetStaticProps = async ({ locale }) => ({
     ...(await serverSideTranslations(locale!, ['table', 'common', 'form'])),
   },
 });
-

@@ -3,10 +3,7 @@ import Cookies from 'js-cookie';
 import Router from 'next/router';
 import invariant from 'tiny-invariant';
 
-invariant(
-  process.env.NEXT_PUBLIC_REST_API_ENDPOINT,
-  'NEXT_PUBLIC_REST_API_ENDPOINT is not defined, please define it in your .env file'
-);
+invariant( process.env.NEXT_PUBLIC_REST_API_ENDPOINT, 'NEXT_PUBLIC_REST_API_ENDPOINT is not defined, please define it in your .env file');
 const Axios = axios.create({
   baseURL: process.env.NEXT_PUBLIC_REST_API_ENDPOINT,
   timeout: 50000,

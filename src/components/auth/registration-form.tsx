@@ -58,6 +58,8 @@ const RegistrationForm = () => {
         email,
         password,
         permission,
+        contact: '',
+        UsrBy: ''
       },
 
       {

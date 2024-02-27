@@ -19,7 +19,7 @@ type FormValues = {
   email: string;
   password: string;
   contact: string;
-  type: { value: string } | null;
+  type: { value: string };
   permission: Permission;
   UsrBy: string;
 };
@@ -34,7 +34,7 @@ const CustomerCreateForm = () => {
   const { t } = useTranslation();
   const router = useRouter();
   const { data: meData } = useMeQuery();
-  const { id, email } = meData || {};
+  const { id } = meData || {};
   const { mutate: registerUser, isLoading: loading } = useRegisterMutation();
 
   const {
@@ -49,14 +49,19 @@ const CustomerCreateForm = () => {
   });
 
   const permissionData = usePermissionData();
+  
+  console.log('permissionData', permissionData)
 
   const permissionNames =
     permissionData?.data?.map((permission) => permission.permission_name) ?? [];
 
-  const permissionOptions = permissionNames.map((name) => ({
-    value: name,
-    label: name,
-  }));
+  const permissionOptions = [
+    ...permissionNames.map((name) => ({
+      value: name,
+      label: name,
+    })),
+    { value: ['Customer'], label: 'Customer' },
+  ];
 
   async function onSubmit({
     name,
@@ -72,7 +77,7 @@ const CustomerCreateForm = () => {
         password,
         contact,
         UsrBy: id,
-        type: type?.value || ['Customer'],
+        type: type?.value,
         permission: Permission.StoreOwner,
         // UsrBy: id,
       },
@@ -88,6 +93,8 @@ const CustomerCreateForm = () => {
       }
     );
   }
+
+  console.log("Permission.StoreOwner", Permission.StoreOwner)
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} noValidate>
@@ -171,3 +178,18 @@ const CustomerCreateForm = () => {
 };
 
 export default CustomerCreateForm;
+
+
+// Json which require to send while registering.
+
+// {
+//   "name": "John Doe",
+//   "email": "john@example.com",
+//   "password": "password123",
+//   "type": "user",
+//   "UsrBy": "Admin",
+//   "contact": "1234567890",
+//   "permission": {
+//   },
+//   "isVerified": false
+// }
