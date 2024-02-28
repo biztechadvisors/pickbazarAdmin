@@ -44,6 +44,7 @@ const CustomerList = ({
     (permission) => permission.type === 'sidebar-nav-item-users'
   )?.write;
 
+  console.log("userssssss",customers)
   const [sortingObj, setSortingObj] = useState<{
     sort: SortOrder;
     column: any | null;

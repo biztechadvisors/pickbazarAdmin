@@ -27,12 +27,13 @@ const Navbar = () => {
   const canWrite =  permissions.includes('super_admin')
   ? siteSettings.sidebarLinks
   :getPermission?.find(
-    (permission) => permission.type === 'sidebar-nav-item-dashboard'
+    (permission) => permission.type === 'sidebar-nav-item-dealerlist'
   )?.write;
+
+  console.log("myPermission", getPermission)
 
   // const { permissions } = getAuthCredentials();
   // const { permissions } = getAuthCredentials()
-
 
   const { enableMultiLang } = Config;
 
