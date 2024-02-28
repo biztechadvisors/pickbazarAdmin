@@ -82,7 +82,7 @@ const AddressForm: React.FC<any> = ({ onSubmit }) => {
     data: { address, type },
   } = useModalState();
 
-  const [getState, setState] = useState(address?.address?.state)
+  const [getState, setState] = useState(address?.address?.state) as any
 
   return (
     <div className="min-h-screen p-5 bg-light sm:p-8 md:min-h-0 md:rounded-xl">
@@ -212,18 +212,16 @@ const AddressForm: React.FC<any> = ({ onSubmit }) => {
               control={control}
               render={({ field }) => (
                 <div>
-                   <Label>{t('text-state')}</Label>
-                <Select
-                  options={optionRegion}
-                  placeholder={t('Select')}
-                  defaultValue={getState && optionRegion.find((option) => option.value === getState)}
-                  onChange={(selectedOption: any) => {
-                    field.onChange(selectedOption?.value);
-                    setState(selectedOption?.value);
-                    setValue('address.state', selectedOption?.value);
-                  }}
-                />
-                
+                  <Label>{t('text-state')}</Label>
+                  <Select
+                    options={optionRegion}
+                    placeholder={t('Select')}
+                    defaultValue={getState && optionRegion.find((option) => option.value === getState)}
+                    onChange={(selectedOption: any) => {
+                      field.onChange(selectedOption?.value);
+                      ()=>setState(selectedOption?.value);
+                    }}
+                  />
                 </div>
               )}
             />
