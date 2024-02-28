@@ -230,8 +230,6 @@ export function useCreateOrder() {
   const { username, sub } = UserService.getUserDetails();
   const { mutate: createOrder, isLoading } = useMutation(client.orders.create, {
     onSuccess: (response) => {
-      console.log('Success response:', response);
-
       const { id, payment_gateway, payment_intent } = response;
 
       if (id) {
@@ -250,7 +248,6 @@ export function useCreateOrder() {
           return router.push(Routes.orders(idStr));
         }
 
-        console.log("payment_intent", payment_intent?.payment_intent_info)
         if (payment_intent?.payment_intent_info?.is_redirect) {
           return router.push(
             payment_intent?.payment_intent_info?.redirect_url as string

@@ -49,8 +49,6 @@ const CustomerCreateForm = () => {
   });
 
   const permissionData = usePermissionData();
-  
-  console.log('permissionData', permissionData)
 
   const permissionNames =
     permissionData?.data?.map((permission) => permission.permission_name) ?? [];
@@ -93,8 +91,6 @@ const CustomerCreateForm = () => {
       }
     );
   }
-
-  console.log("Permission.StoreOwner", Permission.StoreOwner)
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} noValidate>

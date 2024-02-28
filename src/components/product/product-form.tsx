@@ -164,13 +164,11 @@ export default function CreateOrUpdateProductForm({
     };
 
     try {
-      console.log("try-product-add-update")
 
       if (
         !initialValues ||
         !initialValues.translated_languages.includes(router.locale!)
       ) {
-        console.log("createProduct")
         //@ts-ignore
         createProduct({
           ...inputValues,
@@ -179,7 +177,6 @@ export default function CreateOrUpdateProductForm({
         });
       } else {
 
-        console.log("updateProduct")
         //@ts-ignore
         updateProduct({
           ...inputValues,

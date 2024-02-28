@@ -43,12 +43,11 @@ export const useOrderQuery = ({
   id: string;
   language: string;
 }) => {
-  console.log("id--query", id)
   const { data, error, isLoading } = useQuery<Order, Error>(
     [API_ENDPOINTS.ORDERS, { id, language }],
     () => orderClient.get({ id, language })
   );
-  console.log("data******", data)
+
   return {
     order: data,
     error,

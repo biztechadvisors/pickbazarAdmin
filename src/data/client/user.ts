@@ -62,7 +62,6 @@ export const userClient = {
     return HttpClient.post<any>(API_ENDPOINTS.ADD_WALLET_POINTS, variables);
   },
   fetchUsers: ({ email, usrById, ...params }: Partial<UserQueryOptions>) => {
-    console.log("name, ...params*********", email, usrById)
     return HttpClient.get<UserPaginator>(API_ENDPOINTS.USERS, {
       searchJoin: 'and',
       with: 'wallet',
@@ -81,7 +80,6 @@ export const userClient = {
     });
   },
   fetchUser: ({ id }: { id: string }) => {
-    console.log("id******", id)
     return HttpClient.get<User>(`${API_ENDPOINTS.USERS}/${id}`);
   },
   resendVerificationEmail: () => {

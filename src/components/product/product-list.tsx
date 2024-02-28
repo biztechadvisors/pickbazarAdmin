@@ -214,7 +214,6 @@ const ProductList = ({
 
         const handleEditQuantity = async () => {
           // Handle logic to save edited quantity
-          console.log(`Edited Quantity: ${editedQuantity}`);
           const data = {
             id: id.id,
             quantity: editedQuantity,
@@ -309,8 +308,6 @@ const ProductList = ({
   if (router?.query?.shop) {
     columns = columns?.filter((column) => column?.key !== 'shop');
   }
-
-  console.log("products+++", products)
 
   return (
     <>

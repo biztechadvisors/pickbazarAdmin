@@ -91,7 +91,6 @@ const AddressForm: React.FC<any> = ({ onSubmit }) => {
       </h1>
       <Form<FormValues>
         onSubmit={(data) => {
-          console.log('Form Data:', data);
           const dataji = {
             title: data.title,
             type: data.type,
