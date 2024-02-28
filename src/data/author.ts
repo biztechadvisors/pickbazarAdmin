@@ -95,7 +95,7 @@ export const useAuthorsQuery = (options: Partial<AuthorQueryOptions>) => {
       keepPreviousData: true,
     }
   );
-console.log("authorget+++++++++++++++++", data)
+
 
 
   return {

@@ -108,7 +108,7 @@ const CreatePermission = () => {
 
     const dataToSend = {
       type_name: typeToSend,
-      permissionName: permissionName,
+      permission_name: permissionName,
       permission: selectedPermissions,
     };
     const dataToSend2 = {
