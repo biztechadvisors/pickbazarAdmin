@@ -16,10 +16,24 @@ import { DollarIcon } from '@/components/icons/shops/dollar';
 import { useAnalyticsQuery, usePopularProductsQuery } from '@/data/dashboard';
 import { useRouter } from 'next/router';
 import { useMeQuery } from '@/data/user';
+import { useAtom } from 'jotai';
+import { newPermission } from '@/contexts/permission/storepermission';
+import { getAuthCredentials } from '@/utils/auth-utils';
+import { siteSettings } from '@/settings/site.settings';
 
 export default function Dashboard() {
   const { t } = useTranslation();
   const { locale } = useRouter();
+
+  const [getPermission,_]=useAtom(newPermission)
+  const { permissions } = getAuthCredentials();
+  const canWrite =  permissions.includes('super_admin')
+  ? siteSettings.sidebarLinks
+  :getPermission?.find(
+    (permission) => permission.type === 'sidebar-nav-item-dealerlist'
+  )?.write;
+
+
 
   const { data: useMe } = useMeQuery();
   const customerId = useMe?.id ?? ''
@@ -108,14 +122,22 @@ export default function Dashboard() {
             price={todays_revenue}
           />
         </div>
-        <div className="w-full ">
+        {canWrite ? (<div className="w-full ">
           <StickerCard
             titleTransKey="sticker-card-title-total-shops"
             icon={<ShopIcon className="w-6" color="#1D4ED8" />}
             iconBgStyle={{ backgroundColor: '#93C5FD' }}
             price={data?.totalShops}
           />
-        </div>
+        </div>) :
+        <div className="w-full ">
+          <StickerCard
+            titleTransKey="sticker-card-title-total-cutomer"
+            icon={<ShopIcon className="w-6" color="#1D4ED8" />}
+            iconBgStyle={{ backgroundColor: '#93C5FD' }}
+            price={data?.totalShops}
+          />
+        </div>}
       </div>
 
       <div className="mb-6 flex w-full flex-wrap md:flex-nowrap">

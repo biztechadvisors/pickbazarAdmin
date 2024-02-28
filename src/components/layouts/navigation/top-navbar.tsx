@@ -30,8 +30,6 @@ const Navbar = () => {
     (permission) => permission.type === 'sidebar-nav-item-dealerlist'
   )?.write;
 
-  console.log("myPermission", getPermission)
-
   // const { permissions } = getAuthCredentials();
   // const { permissions } = getAuthCredentials()
 
