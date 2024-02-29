@@ -33,22 +33,21 @@ const CreatePermission = () => {
 
   const permissionId = router.query.id;
 
-  if (permissionId) {
-    var { data: singlePermissionData } = useQuery(
-      ['permissionById', permissionId],
-      () => permissionClient.getPermissionById(permissionId)
-    );
-  }
+  const { data: singlePermissionData, isLoading } = useQuery(
+    ['permissionById', permissionId],
+    () => permissionClient.getPermissionById(permissionId),
+    { enabled: !!permissionId }
+  );
 
   const { mutateUpdate, mutatePost } = useSavePermissionData();
 
-  // console.log("singlePermissionData", singlePermissionData)
+  console.log('singlePermissionData', singlePermissionData);
 
   // console.log("userData****", userData)
 
-  console.log('permissions', permissions);
-  console.log('matched', matched);
-  console.log('typeName', typeName);
+  // console.log('permissions', permissions);
+  // console.log('matched', matched);
+  // console.log('typeName', typeName);
   useEffect(() => {
     if (singlePermissionData) {
       setTypeName([singlePermissionData.type_name]);
@@ -63,7 +62,7 @@ const CreatePermission = () => {
       );
       setSelectedPermissions(formattedPermissions);
     }
-  }, [permissionId]);
+  }, [singlePermissionData]);
 
   const handleChange = (e) => {
     setSelectedType(e.target.value);
@@ -145,8 +144,8 @@ const CreatePermission = () => {
     }
   };
 
-  console.log("menuDatas", menusData)
-  
+  // console.log('menuDatas', menusData);
+
   return (
     <>
       <Card className="mb-8 flex flex-col items-center xl:flex-row">

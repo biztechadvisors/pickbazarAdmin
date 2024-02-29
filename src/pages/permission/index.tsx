@@ -55,7 +55,7 @@ export default function Permission() {
   }
 
   // console.log('permissionData', permissionData)
-  console.log("id", id)
+  console.log('id', id);
   console.log('canWrite', canWrite);
 
   console.log('getPermission', getPermission);
