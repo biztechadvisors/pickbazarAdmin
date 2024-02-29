@@ -33,6 +33,10 @@ const CreatePermission = () => {
 
   const permissionId = router.query.id;
 
+  const { data: meData } = useMeQuery();
+
+  const { id } = meData || {};
+
   const { data: singlePermissionData, isLoading } = useQuery(
     ['permissionById', permissionId],
     () => permissionClient.getPermissionById(permissionId),
@@ -122,11 +126,13 @@ const CreatePermission = () => {
 
     const dataToSend = {
       type_name: typeToSend,
+      user: id,
       permissionName: permissionName,
       permissions: selectedPermissions,
     };
     const dataToSend2 = {
       type_name: typeToSend,
+      user: id,
       permission_name: permissionName,
       permissions: selectedPermissions,
     };
