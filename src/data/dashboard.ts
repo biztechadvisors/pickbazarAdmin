@@ -5,6 +5,7 @@ import { dashboardClient } from '@/data/client/dashboard';
 import { productClient } from '@/data/client/product';
 
 export function useAnalyticsQuery(query: { customerId: number; state: string }) {
+  // console.log("query********", query);
   return useQuery([API_ENDPOINTS.ANALYTICS], () => dashboardClient.analytics(query));
 }
 

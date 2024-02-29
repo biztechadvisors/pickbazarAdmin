@@ -4,6 +4,8 @@ import * as sidebarIcons from '@/components/icons/sidebar';
 import { useUI } from '@/contexts/ui.context';
 
 const SidebarItem = ({ href, icon, label }: any) => {
+
+  // console.log("label", label)
  
   const { closeSidebar } = useUI();
   return (

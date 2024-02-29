@@ -10,6 +10,10 @@ import { useQuery } from 'react-query';
 import { permissionClient } from '@/data/client/permission';
 import PermissionJson from '../../../../public/static/permission.json';
 import { useSavePermissionData } from '@/data/permission';
+import { useMeQuery } from '@/data/user';
+import { getAuthCredentials } from '@/utils/auth-utils';
+import { newPermission } from '@/contexts/permission/storepermission';
+import { useAtom } from 'jotai';
 
 const CreatePermission = () => {
   const router = useRouter();
@@ -23,6 +27,10 @@ const CreatePermission = () => {
   const [typeError, setTypeError] = useState('');
   const [permissionError, setPermissionError] = useState('');
 
+  const { permissions } = getAuthCredentials();
+
+  const [matched, _] = useAtom(newPermission);
+
   const permissionId = router.query.id;
 
   if (permissionId) {
@@ -34,6 +42,13 @@ const CreatePermission = () => {
 
   const { mutateUpdate, mutatePost } = useSavePermissionData();
 
+  // console.log("singlePermissionData", singlePermissionData)
+
+  // console.log("userData****", userData)
+
+  console.log('permissions', permissions);
+  console.log('matched', matched);
+  console.log('typeName', typeName);
   useEffect(() => {
     if (singlePermissionData) {
       setTypeName([singlePermissionData.type_name]);
@@ -109,12 +124,12 @@ const CreatePermission = () => {
     const dataToSend = {
       type_name: typeToSend,
       permissionName: permissionName,
-      permission: selectedPermissions,
+      permissions: selectedPermissions,
     };
     const dataToSend2 = {
       type_name: typeToSend,
       permission_name: permissionName,
-      permission: selectedPermissions,
+      permissions: selectedPermissions,
     };
 
     try {
@@ -129,6 +144,9 @@ const CreatePermission = () => {
       toast.error('Error');
     }
   };
+
+  console.log("menuDatas", menusData)
+  
   return (
     <>
       <Card className="mb-8 flex flex-col items-center xl:flex-row">

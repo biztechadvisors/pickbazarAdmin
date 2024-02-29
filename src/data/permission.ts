@@ -4,14 +4,15 @@ import { API_ENDPOINTS } from './client/api-endpoints';
 import { toast } from 'react-toastify';
 import { permissionClient } from './client/permission';
 
-export const usePermissionData = () => {
-  const { isLoading, error, data, refetch } = useQuery<{ Permission: any }, Error>(
-    [API_ENDPOINTS.PERMISSION],
-    async () => {
-      const response = await permissionClient.getAllPermission();
-      return response;
-    }
-  );
+export const usePermissionData = (userId: string) => {
+  // console.log("userId", userId)
+  const { isLoading, error, data, refetch } = useQuery<
+    { Permission: any },
+    Error
+  >([API_ENDPOINTS.PERMISSION], async () => {
+    const response = await permissionClient.getAllPermission(userId);
+    return response;
+  });
 
   return { isLoading, error, data, refetch };
 };

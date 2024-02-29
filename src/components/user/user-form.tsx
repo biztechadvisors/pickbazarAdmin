@@ -71,6 +71,8 @@ const CustomerCreateForm = () => {
 
   console.log("permissionOption", permissionOptions)
 
+  // console.log("permissionOptions", permissionOptions )
+
   async function onSubmit({
     name,
     email,
@@ -86,7 +88,7 @@ const CustomerCreateForm = () => {
         contact,
         UsrBy: id,
         type: type?.value,
-        permission: Permission.StoreOwner,
+        // permission: Permission.StoreOwner,
         // UsrBy: id,
       },
       {
@@ -102,6 +104,11 @@ const CustomerCreateForm = () => {
     );
   }
 
+<<<<<<< HEAD
+=======
+  // console.log("Permission.StoreOwner", Permission.StoreOwner)
+
+>>>>>>> 2a66a335afc6dde2b8208a0fb36df2008f820cdd
   return (
     <form onSubmit={handleSubmit(onSubmit)} noValidate>
       <div className="my-5 flex flex-wrap sm:my-8">
@@ -152,7 +159,7 @@ const CustomerCreateForm = () => {
                 <Label>{t('form:input-label-type')}</Label>
                 <Select
                   {...field}
-                  getOptionLabel={(option: any) => option.value}
+                  getOptionLabel={(option: any) => option.value.type_name}
                   getOptionValue={(option: any) => option.value}
                   options={permissionOptions}
                   isClearable={true}
@@ -184,7 +191,6 @@ const CustomerCreateForm = () => {
 };
 
 export default CustomerCreateForm;
-
 
 // Json which require to send while registering.
 
