@@ -9,12 +9,13 @@ import { useModalState } from '@/components/ui/modal/modal.context';
 import { Form } from '@/components/ui/form/form';
 import { AddressType, GoogleMapLocation } from '@/types';
 import { useSettings } from '@/contexts/settings.context';
-import { Control, Controller, FieldErrors } from 'react-hook-form';
+import { Control, Controller, FieldErrors, UseFormGetValues } from 'react-hook-form';
 import GooglePlacesAutocomplete from '@/components/form/google-places-autocomplete';
 import ValidationError from '../ui/validation-error';
 import Select from '../ui/select/select';
 import SelectInput from '../ui/select-input';
 import { useState } from 'react';
+import { error } from 'console';
 
 type FormValues = {
   title: string;
@@ -82,7 +83,9 @@ const AddressForm: React.FC<any> = ({ onSubmit }) => {
     data: { address, type },
   } = useModalState();
 
-  const [getState, setState] = useState(address?.address?.state) as any
+  const [getState, setState] = useState(address?.address?.state)
+  console.log("myState", getState)
+
 
   return (
     <div className="min-h-screen p-5 bg-light sm:p-8 md:min-h-0 md:rounded-xl">
@@ -216,12 +219,14 @@ const AddressForm: React.FC<any> = ({ onSubmit }) => {
                   <Select
                     options={optionRegion}
                     placeholder={t('Select')}
+                    {...field}
                     defaultValue={getState && optionRegion.find((option) => option.value === getState)}
                     onChange={(selectedOption: any) => {
                       field.onChange(selectedOption?.value);
-                      ()=>setState(selectedOption?.value);
+                      setState(selectedOption?.value)
                     }}
                   />
+                  <ValidationError message={errors.address?.state?.message} />
                 </div>
               )}
             />

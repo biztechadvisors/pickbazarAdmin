@@ -110,6 +110,7 @@ export const PlaceOrderAction: React.FC<{
         ...(shipping_address?.address && shipping_address.address),
       },
     };
+    console.log("placeOrder",input)
     // if (payment_gateway === "STRIPE") {
     //   //@ts-ignore
     //   input.token = token;
