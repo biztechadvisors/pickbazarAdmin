@@ -33,6 +33,10 @@ const CreatePermission = () => {
 
   const permissionId = router.query.id;
 
+  const { data: meData } = useMeQuery();
+
+  const { id } = meData || {};
+
   if (permissionId) {
     var { data: singlePermissionData } = useQuery(
       ['permissionById', permissionId],
@@ -123,11 +127,13 @@ const CreatePermission = () => {
 
     const dataToSend = {
       type_name: typeToSend,
+      user: id,
       permissionName: permissionName,
       permissions: selectedPermissions,
     };
     const dataToSend2 = {
       type_name: typeToSend,
+      user: id,
       permission_name: permissionName,
       permissions: selectedPermissions,
     };
@@ -146,7 +152,7 @@ const CreatePermission = () => {
   };
 
   console.log("menuDatas", menusData)
-  
+
   return (
     <>
       <Card className="mb-8 flex flex-col items-center xl:flex-row">
@@ -166,9 +172,8 @@ const CreatePermission = () => {
           <select
             id="typename"
             name="typename"
-            className={`mt-1 block w-full rounded-md border bg-gray-100 p-2 ${
-              typeError && 'border-red-500'
-            }`}
+            className={`mt-1 block w-full rounded-md border bg-gray-100 p-2 ${typeError && 'border-red-500'
+              }`}
             onChange={(e) => handleChange(e)}
           >
             {Object.values(typeName).map((type, index) => (
@@ -193,9 +198,8 @@ const CreatePermission = () => {
             type="text"
             id="permission"
             name="permission"
-            className={`mt-1 block w-full rounded-md border bg-gray-100 p-2 ${
-              permissionError && 'border-red-500'
-            }`}
+            className={`mt-1 block w-full rounded-md border bg-gray-100 p-2 ${permissionError && 'border-red-500'
+              }`}
             placeholder="Enter permissions"
             value={permissionName}
             onChange={(e) => handlePermissionNameChange(e)}
