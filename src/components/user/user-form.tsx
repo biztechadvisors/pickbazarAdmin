@@ -49,13 +49,13 @@ const CustomerCreateForm = () => {
   });
 
   const permissionData = usePermissionData();
-  
+
   // console.log('permissionData', permissionData)
 
   const permissionNames =
     permissionData?.data?.map((permission) => permission) ?? [];
 
-    // console.log('permissionNames', permissionNames)
+  // console.log('permissionNames', permissionNames)
 
   const permissionOptions = [
     ...permissionNames.map((name) => ({
@@ -182,7 +182,6 @@ const CustomerCreateForm = () => {
 };
 
 export default CustomerCreateForm;
-
 
 // Json which require to send while registering.
 

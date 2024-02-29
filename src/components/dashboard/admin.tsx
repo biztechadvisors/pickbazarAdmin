@@ -81,7 +81,7 @@ export default function Dashboard() {
     );
   }
 
-  console.log("data----analytics", data)
+  // console.log("data----analytics", data)
 
   return (
     <>

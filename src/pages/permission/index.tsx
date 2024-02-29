@@ -14,6 +14,7 @@ import { useAtom } from 'jotai';
 import { siteSettings } from '@/settings/site.settings';
 import { usePermissionData } from '@/data/permission';
 import { useUpdateCart } from '@/data/cart';
+import { useMeQuery } from '@/data/user';
 export default function Permission() {
   const { t } = useTranslation();
   const [searchTerm, setSearchTerm] = useState('');
@@ -21,10 +22,15 @@ export default function Permission() {
   const [orderBy, setOrder] = useState('created_at');
   const [getPermission, _] = useAtom(newPermission);
   const { permissions } = getAuthCredentials();
+
+  const { data: meData } = useMeQuery();
+
+  const { id } = meData || {};
+
   const canWrite = permissions.includes('super_admin')
     ? siteSettings.sidebarLinks
     : getPermission?.find(
-        (permission) => permission.type === 'sidebar-nav-item-permission'
+        (permission) => permission.type === 'sidebar-nav-item-permissions'
       )?.write;
 
   const {
@@ -32,7 +38,7 @@ export default function Permission() {
     error,
     data: permissionData,
     refetch,
-  } = usePermissionData();
+  } = usePermissionData(id);
 
   function handleSearch({ searchText }: { searchText: string }) {
     setSearchTerm(searchText);
@@ -49,6 +55,10 @@ export default function Permission() {
   }
 
   // console.log('permissionData', permissionData)
+  console.log("id", id)
+  console.log('canWrite', canWrite);
+
+  console.log('getPermission', getPermission);
   return (
     <>
       <Card className="mb-8 flex flex-col items-center justify-between md:flex-row">

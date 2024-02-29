@@ -2,15 +2,13 @@ import { adminAndOwnerOnly, adminOwnerAndStaffOnly } from '@/utils/auth-utils';
 import { Routes } from '@/config/routes';
 
 const Type = {
-  Dealer: "dealer",
-  Admin: "admin",
-  Customer: "customer",
-  Staff: "staff"
-}
+  Dealer: 'dealer',
+  Admin: 'admin',
+  Customer: 'customer',
+  Staff: 'staff',
+};
 
 export const siteSettings = {
-
-
   name: 'PickBazar',
   description: '',
   logo: {
@@ -261,13 +259,13 @@ export const siteSettings = {
     //     label: 'sidebar-nav-item-dashboard',
     //     icon: 'DashboardIcon',
     //     permissions: adminOwnerAndStaffOnly,
-    //   },      
+    //   },
     //   {
     //     href: (dealer: string) => `/${dealer}${Routes.product.list}`,
     //     label: 'sidebar-nav-item-products',
     //     icon: 'ProductsIcon',
     //     permissions: adminOwnerAndStaffOnly,
-    //   },      
+    //   },
     //   {
     //     href: (dealer: string) => `/${dealer}${Routes.order.list}`,
     //     label: 'sidebar-nav-item-orders',
