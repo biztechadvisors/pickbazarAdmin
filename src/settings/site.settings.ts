@@ -112,7 +112,7 @@ export const siteSettings = {
       },
       {
         href: Routes.permission.list,
-        label: 'sidebar-nav-item-permission',
+        label: 'sidebar-nav-item-permissions',
         icon: 'CalendarScheduleIcon',
       },
       {

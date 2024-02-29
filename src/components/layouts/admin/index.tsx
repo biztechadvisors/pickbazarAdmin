@@ -17,11 +17,12 @@ const AdminLayout: React.FC<{ children?: React.ReactNode }> = ({
   const { t } = useTranslation();
   const { locale } = useRouter();
 
-  const router=useRouter()
+  const router = useRouter()
   const dir = locale === 'ar' || locale === 'he' ? 'rtl' : 'ltr';
 
 
   const [matched, _] = useAtom(newPermission)
+  console.log("matched****25", matched)
 
   const { permissions } = getAuthCredentials();
 
