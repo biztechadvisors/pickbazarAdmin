@@ -5,7 +5,7 @@ import { siteSettings } from '@/settings/site.settings';
 import { useTranslation } from 'next-i18next';
 import SidebarItem from '@/components/layouts/navigation/sidebar-item';
 import { useRouter } from 'next/router';
-import { useEffect, } from 'react';
+import { useEffect } from 'react';
 import { newPermission } from '@/contexts/permission/storepermission';
 import { useAtom } from 'jotai';
 import { getAuthCredentials } from '@/utils/auth-utils';
@@ -17,19 +17,18 @@ const AdminLayout: React.FC<{ children?: React.ReactNode }> = ({
   const { t } = useTranslation();
   const { locale } = useRouter();
 
-  const router=useRouter()
+  const router = useRouter();
   const dir = locale === 'ar' || locale === 'he' ? 'rtl' : 'ltr';
 
-
-  const [matched, _] = useAtom(newPermission)
+  const [matched, _] = useAtom(newPermission);
 
   const { permissions } = getAuthCredentials();
 
   const matchedLinks = permissions.includes('super_admin')
     ? siteSettings.sidebarLinks.admin
-    : siteSettings.sidebarLinks.admin.filter(link =>
-      matched.some(newItem => newItem.type === link.label)
-    );
+    : siteSettings.sidebarLinks.admin.filter((link) =>
+        matched.some((newItem) => newItem.type === link.label)
+      );
 
   const SidebarItemMap = () => (
     <Fragment>
@@ -38,6 +37,10 @@ const AdminLayout: React.FC<{ children?: React.ReactNode }> = ({
       ))}
     </Fragment>
   );
+
+  console.log("matchedLinks", matchedLinks)
+  console.log("matched", matched)
+  // console.log("permissions", permissions)
   return (
     <div
       className="flex min-h-screen flex-col bg-gray-100 transition-colors duration-150"
