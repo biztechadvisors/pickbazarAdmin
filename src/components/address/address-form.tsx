@@ -39,7 +39,10 @@ const addressSchema = yup.object().shape({
   address: yup.object().shape({
     country: yup.string().required('error-country-required'),
     city: yup.string().required('error-city-required'),
-    state: yup.string().required('error-state-required'),
+    // state: yup.string().required('error-state-required'),
+    state: yup.object().shape({
+      value: yup.string().required('error-state-name-required'),
+    }).required('error-state-required'),
     zip: yup.string().required('error-zip-required'),
     street_address: yup.string().required('error-street-required'),
   }),
@@ -100,14 +103,16 @@ const AddressForm: React.FC<any> = ({ onSubmit }) => {
             address: {
               country: data.address.country,
               city: data.address.city,
-              state: getState ? getState : '',
+              state: data.address.state.value,
               zip: data.address.zip,
               street_address: data.address.street_address,
             },
             location: data?.address?.location
           }
+          console.log("StateData", dataji)
           onSubmit(dataji);
         }}
+
         className="grid h-full grid-cols-2 gap-5"
         //@ts-ignore
         validationSchema={addressSchema}
@@ -210,7 +215,7 @@ const AddressForm: React.FC<any> = ({ onSubmit }) => {
               variant="outline"
             />
 
-            <Controller
+            {/* <Controller
               name="address.state"
               control={control}
               render={({ field }) => (
@@ -219,17 +224,31 @@ const AddressForm: React.FC<any> = ({ onSubmit }) => {
                   <Select
                     options={optionRegion}
                     placeholder={t('Select')}
-                    {...field}
-                    defaultValue={getState && optionRegion.find((option) => option.value === getState)}
+                    // defaultValue={getState && optionRegion.find((option) => option.value === getState)}
                     onChange={(selectedOption: any) => {
                       field.onChange(selectedOption?.value);
                       setState(selectedOption?.value)
+                      setValue('address.state',selectedOption?.value)
                     }}
                   />
                   <ValidationError message={errors.address?.state?.message} />
                 </div>
               )}
-            />
+            /> */}
+
+            <div>
+              <Label>{t('text-state')}</Label>
+              <SelectInput
+                options={optionRegion}
+                placeholder={t('Select')}
+                getOptionLabel={(option: any) => `${option?.label}`}
+                getOptionValue={(option: any) => option}
+                control={control} 
+                name={'address.state'} 
+                defaultValue={[]}              />
+              <ValidationError message={errors.address?.state?.message} />
+            </div>
+
 
             <Input
               label={t('text-zip')}
