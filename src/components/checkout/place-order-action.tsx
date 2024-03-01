@@ -29,6 +29,8 @@ export const PlaceOrderAction: React.FC<{
   const { items } = useCart();
   const { me } = useUser();
 
+
+
   const [
     {
       billing_address,
@@ -99,6 +101,8 @@ export const PlaceOrderAction: React.FC<{
       dealerId,
       delivery_time: delivery_time?.title,
       customer,
+      customer_id:customer?.id,
+      customerId:customer?.id,
       customer_contact,
       customer_name,
       note,
@@ -120,6 +124,7 @@ export const PlaceOrderAction: React.FC<{
 
     // delete input.billing_address.__typename;
     // delete input.shipping_address.__typename;
+    
     createOrder(input);
   };
   const isDigitalCheckout = available_items.find((item) =>

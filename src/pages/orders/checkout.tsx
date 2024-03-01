@@ -45,7 +45,7 @@ export default function CheckoutPage() {
 
 
   if (loading) return <Loader text={t('common:text-loading')} />;
-  // console.log('customer', customer)
+  console.log('customer', customer)
 
   return (
     <div className="bg-gray-100">
