@@ -24,14 +24,15 @@ export default function Permission() {
   const { permissions } = getAuthCredentials();
 
   const { data: meData } = useMeQuery();
+  const id = meData?.id;
 
-  const { id } = meData || {};
+  console.log("id", id)
 
   const canWrite = permissions.includes('super_admin')
     ? siteSettings.sidebarLinks
     : getPermission?.find(
-        (permission) => permission.type === 'sidebar-nav-item-permissions'
-      )?.write;
+      (permission) => permission.type === 'sidebar-nav-item-permissions'
+    )?.write;
 
   const {
     isLoading,
@@ -49,14 +50,12 @@ export default function Permission() {
   }
 
   if (isLoading) return <Loader text={t('common:text-loading')} />;
-  if (error) return <ErrorMessage message={permissionData.error.message} />;
+  if (error) return <ErrorMessage message={"Permissions Not Found"} />;
   if (!permissionData) {
     return <div>No permission data available</div>;
   }
 
   // console.log('permissionData', permissionData)
-  console.log("id", id)
-  console.log('canWrite', canWrite);
 
   console.log('getPermission', getPermission);
   return (
@@ -95,19 +94,19 @@ export default function Permission() {
                   <td className="border p-2">
                     {e.permissions.length > 0
                       ? e.permissions.slice(0, 3).map((permission, i) => (
-                          <React.Fragment key={i}>
-                            <li>
-                              {permission.type
+                        <React.Fragment key={i}>
+                          <li>
+                            {permission.type
+                              .replace('sidebar-nav-item-', '')
+                              .charAt(0)
+                              .toUpperCase() +
+                              permission.type
                                 .replace('sidebar-nav-item-', '')
-                                .charAt(0)
-                                .toUpperCase() +
-                                permission.type
-                                  .replace('sidebar-nav-item-', '')
-                                  .slice(1)}
-                            </li>
-                            {i !== e.permissions.length - 1 && ' '}
-                          </React.Fragment>
-                        ))
+                                .slice(1)}
+                          </li>
+                          {i !== e.permissions.length - 1 && ' '}
+                        </React.Fragment>
+                      ))
                       : ''}
                   </td>
                   {canWrite ? (
