@@ -147,7 +147,6 @@ const CustomerCreateForm = () => {
             className="mb-4"
             error={t(errors.contact?.message!)}
           />
-
           <Controller
             name="type"
             control={control}
@@ -156,7 +155,7 @@ const CustomerCreateForm = () => {
                 <Label>{t('form:input-label-type')}</Label>
                 <Select
                   {...field}
-                  getOptionLabel={(option: any) => option.value.type_name}
+                  getOptionLabel={(option: any) => option.value.permission_name}
                   getOptionValue={(option: any) => option.value}
                   options={permissionOptions}
                   isClearable={true}

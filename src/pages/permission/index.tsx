@@ -49,16 +49,10 @@ export default function Permission() {
   }
 
   if (isLoading) return <Loader text={t('common:text-loading')} />;
-  if (error) return <ErrorMessage message={permissionData.error.message} />;
+  if (error) return <ErrorMessage message={error.message} />;
   if (!permissionData) {
     return <div>No permission data available</div>;
   }
-
-  // console.log('permissionData', permissionData)
-  console.log("id", id)
-  console.log('canWrite', canWrite);
-
-  console.log('getPermission', getPermission);
   return (
     <>
       <Card className="mb-8 flex flex-col items-center justify-between md:flex-row">

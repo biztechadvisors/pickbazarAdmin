@@ -3,7 +3,6 @@ import { HttpClient } from '@/data/client/http-client';
 
 export const permissionClient = {
   getAllPermission: (userId: string) => {
-    console.log("userId****", userId)
     // return HttpClient.get<any>(`${API_ENDPOINTS.PERMISSION}`);
     return HttpClient.get<any>(`${API_ENDPOINTS.PERMISSION}?UsrBy=${userId}`);
   },

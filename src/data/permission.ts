@@ -5,7 +5,6 @@ import { toast } from 'react-toastify';
 import { permissionClient } from './client/permission';
 
 export const usePermissionData = (userId: string) => {
-  // console.log("userId", userId)
   const { isLoading, error, data, refetch } = useQuery<
     { Permission: any },
     Error
