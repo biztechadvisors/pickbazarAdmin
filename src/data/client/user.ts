@@ -19,8 +19,10 @@ import { API_ENDPOINTS } from './api-endpoints';
 import { HttpClient } from './http-client';
 
 export const userClient = {
-  me: (params: { username: any; sub: any; }) => {
-    return HttpClient.get<User>(`${API_ENDPOINTS.ME}?username=${params.username}&sub=${params.sub}`);
+  me: (params: { username: any; sub: any }) => {
+    return HttpClient.get<User>(
+      `${API_ENDPOINTS.ME}?username=${params.username}&sub=${params.sub}`
+    );
   },
   login: (variables: LoginInput) => {
     return HttpClient.post<AuthResponse>(API_ENDPOINTS.TOKEN, variables);
@@ -29,13 +31,15 @@ export const userClient = {
     return HttpClient.post<any>(API_ENDPOINTS.LOGOUT, {});
   },
   register: (variables: RegisterInput) => {
+    // console.log('variables', variables)
     return HttpClient.post<AuthResponse>(API_ENDPOINTS.REGISTER, variables);
   },
   update: ({ id, input }: { id: string; input: UpdateUser }) => {
+    console.log("myUpdateUser", input)
     return HttpClient.put<User>(`${API_ENDPOINTS.USERS}/${id}`, input);
   },
   changePassword: (variables: ChangePasswordInput) => {
-  return HttpClient.post<any>(API_ENDPOINTS.CHANGE_PASSWORD, variables);
+    return HttpClient.post<any>(API_ENDPOINTS.CHANGE_PASSWORD, variables);
   },
   forgetPassword: (variables: ForgetPasswordInput) => {
     return HttpClient.post<any>(API_ENDPOINTS.FORGET_PASSWORD, variables);
@@ -62,7 +66,7 @@ export const userClient = {
     return HttpClient.post<any>(API_ENDPOINTS.ADD_WALLET_POINTS, variables);
   },
   fetchUsers: ({ email, usrById, ...params }: Partial<UserQueryOptions>) => {
-    console.log("name, ...params*********", email, usrById)
+    console.log('name, ...params*********', email, usrById);
     return HttpClient.get<UserPaginator>(API_ENDPOINTS.USERS, {
       searchJoin: 'and',
       with: 'wallet',
@@ -81,7 +85,7 @@ export const userClient = {
     });
   },
   fetchUser: ({ id }: { id: string }) => {
-    console.log("id******", id)
+    console.log('id******', id);
     return HttpClient.get<User>(`${API_ENDPOINTS.USERS}/${id}`);
   },
   resendVerificationEmail: () => {
@@ -89,5 +93,5 @@ export const userClient = {
   },
   updateEmail: ({ email }: { email: string }) => {
     return HttpClient.post<any>(API_ENDPOINTS.UPDATE_EMAIL, { email });
-  }
+  },
 };

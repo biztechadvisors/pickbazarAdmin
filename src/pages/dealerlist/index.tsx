@@ -37,7 +37,6 @@ export default function DealerPage() {
   });
   
   const userdealer = users.filter((user)=>user?.type?.type_name==='dealer')
-  console.log("dealerList", userdealer)
 
   const [getPermission,_]=useAtom(newPermission)
   const { permissions } = getAuthCredentials();

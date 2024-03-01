@@ -27,8 +27,6 @@ export default function AllShopPage() {
     sortedBy,
   });
 
-  console.log("shops******", shops)
-
   if (loading) return <Loader text={t('common:text-loading')} />;
   if (error) return <ErrorMessage message={error.message} />;
 

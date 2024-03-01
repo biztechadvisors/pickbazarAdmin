@@ -9,7 +9,7 @@ import Select from '../ui/select/select';
 import { useEffect, useState } from 'react';
 import { Type } from '@/types';
 import { useMeQuery } from '@/data/user';
-import { useAnalyticsCustomer, useAnalyticsMutation } from '@/data/analytics';
+import { useAnalyticsCustomer, useAnalyticsDealer, useAnalyticsMutation } from '@/data/analytics';
 
 type FormValues = {
   name?: string | null;
@@ -49,21 +49,10 @@ const data = {
     { "value": "Uttarakhand", "label": "Uttarakhand" },
     { "value": "West Bengal", "label": "West Bengal" }
   ],
-  "optionDealer": [
-    { "value": "Meta", "label": "Meta", "totalSale": "920", "salesData": [1, 2, 2, 1.8, 2.2, 2.5, 3.0, 2.80, 3.20, 10, 2, 0] },
-    { "value": "GB", "label": "GB", "totalSale": "820", "salesData": [2, 2, 1.8, 2.2, 2.5, 3.0, 2.80, 3.20, 1, 0, 10, 1] },
-    { "value": "MB", "label": "MB", "totalSale": "720", "salesData": [3, 2, 2, 1.8, 2.2, 2.5, 3.0, 2.80, 3.20, 0, 1, 8] }
-  ],
-  "optionCustomer": [
-    { "value": "Arman", "label": "Arman", "totalSale": "1120", "salesData": [1, 2, 2, 1.8, 2.2, 2.5, 3.0, 2.80, 3.20, 0, 0, 0] },
-    { "value": "Ajay", "label": "Ajay", "totalSale": "2220", "salesData": [2, 2, 1.8, 2.2, 2.5, 3.0, 2.80, 3.20, 1, 0, 0, 1] },
-    { "value": "Ayush", "label": "Ayush", "totalSale": "3320", "salesData": [1, 2, 2, 1.8, 2.2, 2.5, 3.0, 2.80, 3.20, 0, 1, 0] }
-  ]
+  
 };
 
 const optionRegion = data.optionRegion;
-const optionDealer = data.optionDealer;
-const optionCustomer = data.optionCustomer;
 
 type IProps = {
   initialValues?: Type | null;
@@ -94,7 +83,7 @@ export default function CreateOrUpdateTotalSaleForm({ initialValues }: IProps) {
   const [checkCustomer, setCheckCustomer] = useState<boolean>(false);
   const [checkDealer, setCheckDealer] = useState<boolean>(false);
 
-  console.log("customerData", customer)
+  const { data:dealer } = useAnalyticsDealer(data?.id)
 
   const handlecheckData = () => {
     if (checkRegion) {
@@ -111,18 +100,14 @@ export default function CreateOrUpdateTotalSaleForm({ initialValues }: IProps) {
 
   useEffect(() => {
     const input = {
-      customerId: data?.id,
+      customerId: allData?.id ? allData.id : data?.id,
       state: allData?.value
     }
     getAnalytics(input)
   }, [allData, data,]);
 
-  console.log("newResponce", getAnalyticsData)
-
-  const handleSelectCustomerChange = (selectedOption: any, field: any, optionNewData: any) => {
-    const selectedData = optionNewData.find((option: { value: any }) => option.value === selectedOption.value);
-    setAllData(selectedData);
-    // console.log("my dataselected",selectedData)
+  const handleSelectCustomerChange = (selectedOption: any, field: any) => {
+    setAllData(selectedOption);
     setValue('selectRegion', null);
     setValue('selectDealer', null);
     setValue('selectCustomer', null);
@@ -158,54 +143,26 @@ export default function CreateOrUpdateTotalSaleForm({ initialValues }: IProps) {
                   options={optionRegion}
                   placeholder={t('Select Region')}
                   value={field.value}
-                  onChange={(selectedOption: any) => (handleSelectCustomerChange(selectedOption, field, optionRegion))}
+                  onChange={(selectedOption: any) => (handleSelectCustomerChange(selectedOption, field))}
                 />
               )}
             />
-            {optionRegion.find((option) => option.value === allData?.value) && (
-              <div className='mt-5'>
-                Region: - {allData.value}
-              </div>
-            )}
           </Card>
           <Card className="w-full mt-5">
             <label htmlFor="selectCustomer" className='mb-3 block text-sm font-semibold leading-none text-body-dark'>{"Total sale of Customer​"}</label>
-            {/* <Controller
-              name="selectCustomer"
-              control={control}
-              render={({ field }) => (
-                <Select
-                  id="selectCustomer"
-                  options={customer}
-                  placeholder={t('Select Customer')}
-                  value={field.value}
-                  onChange={(selectedOption: any) => (handleSelectCustomerChange(selectedOption, field, optionCustomer))}
-                />
-              )}
-            /> */}
-
             <Controller
               name="selectCustomer"
               control={control}
               render={({ field }) => (
                 <Select
                   id="selectCustomer"
-                  options={customer?.map((c: { user_name: any; }) => ({ value: c.user_name, label: c.user_name }))}
+                  value={field.value}
+                  options={customer?.map((c: { userId: any; name: any; }) => ({ label: c.name, id: c.userId }))}
                   placeholder={t('Select Customer')}
-                  onChange={(selectedOption:any) => {
-                    field.onChange(selectedOption.value)
-                    setValue('selectCustomer', selectedOption.value)
-                  }}
+                  onChange={(selectedOption: any) => (handleSelectCustomerChange(selectedOption, field))}
                 />
               )}
             />
-
-
-            {optionCustomer.find((option) => option.value === allData?.value) && (
-              <div className='mt-5'>Customer :- {getValues('selectCustomer')}
-              </div>
-
-            )}
           </Card>
 
           <Card className="w-full mt-5">
@@ -216,17 +173,13 @@ export default function CreateOrUpdateTotalSaleForm({ initialValues }: IProps) {
               render={({ field }) => (
                 <Select
                   id="selectDealer"
-                  options={optionDealer}
+                  options={dealer?.map((c: { userId: any; name: any; }) => ({ label: c.name, id: c.userId }))}
                   placeholder={t('Select Dealer')}
                   value={field.value}
-                  onChange={(selectedOption: any) => (handleSelectCustomerChange(selectedOption, field, optionDealer))}
+                  onChange={(selectedOption: any) => (handleSelectCustomerChange(selectedOption, field))}
                 />
               )}
             />
-            {optionDealer.find((option) => option.value === allData?.value) && (
-              <div className='mt-5'>Dealer :- {allData.value}
-              </div>
-            )}
           </Card>
         </div>
       </form>
