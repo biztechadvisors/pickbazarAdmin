@@ -37,10 +37,6 @@ const AdminLayout: React.FC<{ children?: React.ReactNode }> = ({
       ))}
     </Fragment>
   );
-
-  console.log("matchedLinks", matchedLinks)
-  console.log("matched", matched)
-  // console.log("permissions", permissions)
   return (
     <div
       className="flex min-h-screen flex-col bg-gray-100 transition-colors duration-150"
