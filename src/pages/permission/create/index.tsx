@@ -45,13 +45,6 @@ const CreatePermission = () => {
 
   const { mutateUpdate, mutatePost } = useSavePermissionData();
 
-  console.log('singlePermissionData', singlePermissionData);
-
-  // console.log("userData****", userData)
-
-  // console.log('permissions', permissions);
-  // console.log('matched', matched);
-  // console.log('typeName', typeName);
   useEffect(() => {
     if (singlePermissionData) {
       setTypeName([singlePermissionData.type_name]);
@@ -150,7 +143,59 @@ const CreatePermission = () => {
     }
   };
 
-  // console.log('menuDatas', menusData);
+  const filteredData = () => {
+    if (permissions.includes('super_admin')) {
+      return Object.entries(menusData).map(([key, value], index) => ({
+        [key]: value,
+        id: index + 1,
+      }));
+    } else {
+      const newArrayData = matched.map((item) => item.type);
+      const menusDataArray = Object.values(menusData);
+
+      const finalArray = newArrayData.filter((item) =>
+        menusDataArray.includes(item)
+      );
+
+      const last = finalArray.map((item) => {
+        return Object.fromEntries(
+          Object.entries(menusData).filter(([key, value]) => value === item)
+        );
+      });
+
+      return last;
+    }
+  };
+
+  useEffect(() => {
+    if (permissions.includes('super_admin')) {
+      setTypeName(PermissionJson.type_name);
+    } else {
+      const permList = permissions;
+      const newArray = Object.values(PermissionJson.type_name);
+      const filteredArray = newArray.filter((e) => permList.includes(e));
+
+      let updatedTypeName = [];
+
+      for (let i = 0; i < filteredArray.length; i++) {
+        switch (filteredArray[i]) {
+          case 'admin':
+            updatedTypeName.push('admin', 'store_owner', 'dealer', 'staff');
+            break;
+          case 'store_owner':
+            updatedTypeName.push('store_owner', 'dealer', 'staff');
+            break;
+          case 'dealer':
+            updatedTypeName.push('dealer', 'staff');
+            break;
+          default:
+            updatedTypeName = [];
+        }
+      }
+
+      setTypeName(updatedTypeName);
+    }
+  }, []);
 
   return (
     <>
@@ -223,50 +268,50 @@ const CreatePermission = () => {
               </tr>
             </thead>
             <tbody>
-              {Object.entries(menusData).map(
-                ([menuItem, entityName], index) => (
-                  <tr key={index}>
-                    <td className="border p-2">{index + 1}</td>
-                    <td className="border p-2">{menuItem}</td>
-                    <td className="items-center justify-center border p-2">
-                      <input
-                        className="items-center justify-center"
-                        type="checkbox"
-                        id={`readCheckbox${index}`}
-                        onChange={(e) =>
-                          handleCheckboxChange(
-                            entityName,
-                            'read',
-                            e.target.checked
-                          )
-                        }
-                        checked={
-                          selectedPermissions.find((p) => p.type === entityName)
-                            ?.read || false
-                        }
-                      />
-                    </td>
-                    <td className="items-center justify-center border p-2">
-                      <input
-                        className="items-center justify-center"
-                        type="checkbox"
-                        id={`writeCheckbox${index}`}
-                        onChange={(e) =>
-                          handleCheckboxChange(
-                            entityName,
-                            'write',
-                            e.target.checked
-                          )
-                        }
-                        checked={
-                          selectedPermissions.find((p) => p.type === entityName)
-                            ?.write || false
-                        }
-                      />
-                    </td>
-                  </tr>
-                )
-              )}
+              {filteredData().map((item, index) => (
+                <tr key={index}>
+                  <td className="border p-2">{index + 1}</td>
+                  <td className="border p-2">{Object.keys(item)[0]}</td>
+                  <td className="items-center justify-center border p-2">
+                    <input
+                      className="items-center justify-center"
+                      type="checkbox"
+                      id={`readCheckbox${index}`}
+                      onChange={(e) =>
+                        handleCheckboxChange(
+                          Object.values(item)[0],
+                          'read',
+                          e.target.checked
+                        )
+                      }
+                      checked={
+                        selectedPermissions.find(
+                          (p) => p.type === Object.values(item)[0]
+                        )?.read || false
+                      }
+                    />
+                  </td>
+                  <td className="items-center justify-center border p-2">
+                    <input
+                      className="items-center justify-center"
+                      type="checkbox"
+                      id={`writeCheckbox${index}`}
+                      onChange={(e) =>
+                        handleCheckboxChange(
+                          Object.values(item)[0],
+                          'write',
+                          e.target.checked
+                        )
+                      }
+                      checked={
+                        selectedPermissions.find(
+                          (p) => p.type === Object.values(item)[0]
+                        )?.write || false
+                      }
+                    />
+                  </td>
+                </tr>
+              ))}
             </tbody>
           </table>
         </div>

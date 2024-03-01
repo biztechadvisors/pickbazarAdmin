@@ -53,11 +53,6 @@ export default function Permission() {
   if (!permissionData) {
     return <div>No permission data available</div>;
   }
-  // console.log('permissionData', permissionData)
-  console.log('id', id);
-  console.log('canWrite', canWrite);
-
-  console.log('getPermission', getPermission);
   return (
     <>
       <Card className="mb-8 flex flex-col items-center justify-between md:flex-row">
