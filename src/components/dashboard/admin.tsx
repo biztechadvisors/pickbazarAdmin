@@ -20,6 +20,7 @@ import { useAtom } from 'jotai';
 import { newPermission } from '@/contexts/permission/storepermission';
 import { getAuthCredentials } from '@/utils/auth-utils';
 import { siteSettings } from '@/settings/site.settings';
+import { CustomerIcon } from '../icons/sidebar/customer';
 
 export default function Dashboard() {
   const { t } = useTranslation();
@@ -135,7 +136,7 @@ export default function Dashboard() {
         <div className="w-full ">
           <StickerCard
             titleTransKey="sticker-card-title-total-cutomer"
-            icon={<ShopIcon className="w-6" color="#1D4ED8" />}
+            icon={<CustomerIcon className="w-6" color="#1D4ED8" />}
             iconBgStyle={{ backgroundColor: '#93C5FD' }}
             price={data?.totalShops}
           />
