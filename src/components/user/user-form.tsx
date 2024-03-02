@@ -104,11 +104,8 @@ const CustomerCreateForm = () => {
     );
   }
 
-<<<<<<< HEAD
-=======
   // console.log("Permission.StoreOwner", Permission.StoreOwner)
 
->>>>>>> 2a66a335afc6dde2b8208a0fb36df2008f820cdd
   return (
     <form onSubmit={handleSubmit(onSubmit)} noValidate>
       <div className="my-5 flex flex-wrap sm:my-8">
