@@ -54,8 +54,9 @@ const Logo: React.FC<React.AnchorHTMLAttributes<{}>> = ({
     <Link href='/' className={cn('inline-flex', className)} {...props}>
       <span className="relative h-10 w-32 overflow-hidden md:w-40">
         <Image
-          src={logo?.original ?? logoPlaceholder}
-          alt={siteTitle || 'PickBazar Logo'}
+          src={`${process?.env?.NEXT_PUBLIC_REST_API_ENDPOINT}/${logo?.original }`}
+          // src={logo?.original ?? siteSettings.logo.url}
+          alt={siteTitle ?? 'PickBazar Logo'}
           fill
           sizes="(max-width: 768px) 100vw"
           loading="eager"

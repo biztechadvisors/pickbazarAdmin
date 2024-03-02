@@ -21,7 +21,7 @@ export const AuthorClient = {
     return HttpClient.get<AuthorPaginator>(API_ENDPOINTS.AUTHORS, {
       searchJoin: 'and',
       ...params,
-      search: HttpClient.formatSearchParams({ type, name}),
+      search: HttpClient.formatSearchParams({ type, name }),
     });
   },
 };
