@@ -880,6 +880,7 @@ export interface CreateOrderStatusInput {
 export interface CreateOrderInput {
   tracking_number?: string;
   customer_id: number;
+  customerId:number;
   order_status?: string;
   products: ConnectProductOrderPivot[];
   amount: number;
