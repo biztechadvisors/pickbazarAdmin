@@ -11,6 +11,7 @@ import pick from 'lodash/pick';
 import SwitchInput from '@/components/ui/switch-input';
 import Label from '@/components/ui/label';
 import { adminOnly, getAuthCredentials, hasAccess } from '@/utils/auth-utils';
+import { useUpdateDealerMutation } from '@/data/dealer';
 
 type FormValues = {
   name: string;
@@ -27,12 +28,15 @@ type FormValues = {
       email: string;
       enable: boolean;
     };
+    gst: string;
+    pan: string;
   };
 };
 
 export default function ProfileUpdate({ me }: any) {
   const { t } = useTranslation();
   const { mutate: updateUser, isLoading: loading } = useUpdateUserMutation();
+  const { mutate: updateDealer, isLoading: updating } = useUpdateDealerMutation();
   const { permissions } = getAuthCredentials();
 
   let permission = hasAccess(adminOnly, permissions);
@@ -120,6 +124,24 @@ export default function ProfileUpdate({ me }: any) {
               </Label>
             </div>
           </Card>
+          {/* <Card className="mb-5 w-full sm:w-8/12 md:w-2/3">
+            <Input
+              label={t('GST')}
+              {...register('gst')}
+              error={t(errors?.gst.message!)}
+              variant="outline"
+              className="mb-5"
+             
+            />
+             <Input
+              label={t('PAN')}
+              {...register('pan')}
+              error={t(errors?.pan.message!)}
+              variant="outline"
+              className="mb-5"
+             
+            />
+          </Card> */}
         </div>
       ) : (
         ''

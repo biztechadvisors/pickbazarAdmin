@@ -21,6 +21,7 @@ interface Props {
   disabled?: boolean;
   id?: number;
   email?: string;
+  phone?:string;
 }
 
 export interface CustomerData {
@@ -40,6 +41,7 @@ export const AddToCart = ({
   disabled,
   id,
   email,
+  phone,
 }: Props) => {
   const {
     addItemToCart,
@@ -49,17 +51,17 @@ export const AddToCart = ({
     isInCart,
   } = useCart();
   const item = generateCartItem(data, variation);
+  const customerData: CustomerData = {
+    customerId: id,
+    email: email,
+    phone: phone? phone : '',
+    cartData: item,
+  };
 
   const handleAddClick = (
     e: React.MouseEvent<HTMLButtonElement | MouseEvent>
   ) => {
     e.stopPropagation();
-    const customerData: CustomerData = {
-      customerId: id,
-      email: email,
-      phone: '8910412312',
-      cartData: item,
-    };
     addItemToCart(
       customerData,
       1,
@@ -75,7 +77,14 @@ export const AddToCart = ({
 
   const handleRemoveClick = (e: any) => {
     e.stopPropagation();
-    removeItemFromCart(item.id);
+    removeItemFromCart(
+      item.id,
+      customerData,
+      1,
+      customerData.customerId,
+      customerData.email, 
+      customerData.phone,
+      );
   };
 
   const outOfStock = isInCart(item?.id) && !isInStock(item.id);
