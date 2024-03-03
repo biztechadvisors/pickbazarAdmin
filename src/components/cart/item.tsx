@@ -11,10 +11,11 @@ import { CustomerData } from './add-to-cart/add-to-cart';
 interface CartItemProps {
   item: any;
   id:number;
-  email:string
+  email:string;
+  phone:string;
 }
 
-const CartItem = ({ item, id, email }: CartItemProps) => {
+const CartItem = ({ item, id, email, phone }: CartItemProps) => {
   const { t } = useTranslation('common');
   const { isInStock, clearItemFromCart, addItemToCart, removeItemFromCart } =
     useCart();
@@ -26,20 +27,27 @@ const CartItem = ({ item, id, email }: CartItemProps) => {
     amount: item.itemTotal,
   });
 
+  const customerData: CustomerData = {
+    customerId: id,
+    email: email,
+    phone: phone? phone : '',
+    cartData: item
+  };
+
   function handleIncrement(e: any) {
     e.stopPropagation();
-    const customerData: CustomerData = {
-      customerId: id,
-      email: email,
-      phone: '8910412312',
-      cartData: item
-    };
+    
    addItemToCart(customerData, 1, customerData.customerId, customerData.email, customerData.phone);
   }
 
   const handleRemoveClick = (e: any) => {
     e.stopPropagation();
-    removeItemFromCart(item.id);
+    removeItemFromCart(item.id, 
+      customerData,
+      1,
+      customerData.customerId,
+      customerData.email, 
+      customerData.phone, );
   };
   
   const outOfStock = !isInStock(item.id);

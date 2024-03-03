@@ -215,27 +215,6 @@ const AddressForm: React.FC<any> = ({ onSubmit }) => {
               variant="outline"
             />
 
-            {/* <Controller
-              name="address.state"
-              control={control}
-              render={({ field }) => (
-                <div>
-                  <Label>{t('text-state')}</Label>
-                  <Select
-                    options={optionRegion}
-                    placeholder={t('Select')}
-                    // defaultValue={getState && optionRegion.find((option) => option.value === getState)}
-                    onChange={(selectedOption: any) => {
-                      field.onChange(selectedOption?.value);
-                      setState(selectedOption?.value)
-                      setValue('address.state',selectedOption?.value)
-                    }}
-                  />
-                  <ValidationError message={errors.address?.state?.message} />
-                </div>
-              )}
-            /> */}
-
             <div>
               <Label>{t('text-state')}</Label>
               <SelectInput
@@ -248,7 +227,6 @@ const AddressForm: React.FC<any> = ({ onSubmit }) => {
                 defaultValue={[]}              />
               <ValidationError message={errors.address?.state?.message} />
             </div>
-
 
             <Input
               label={t('text-zip')}

@@ -56,24 +56,7 @@ export function cartReducer(state: State, action: Action): State {
       if (updateCartTimeout) {
         clearTimeout(updateCartTimeout);
       }
-      // updateCartTimeout = setTimeout(async () => {
-      //   try {
-      //     await cartsClient.updateCartApi(
-      //       items,
-      //       action.customerId,
-      //       action.email,
-      //       action.phone
-      //     );
-      //     console.log("myReducerItems",items,
-      //     action.customerId,
-      //     action.email,
-      //     action.phone )
-      //     toast.success('Item added to cart successfully');
-      //   } catch (error) {
-      //     console.error('Failed to update cart:', error.message);
-      //     toast.error('Failed to add item to cart');
-      //   }
-      // }, 1000);
+      
       return generateFinalState(state,action, items);
     }
     case 'REMOVE_ITEM_OR_QUANTITY': {

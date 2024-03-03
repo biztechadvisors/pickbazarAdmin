@@ -8,6 +8,9 @@ import FileInput from '@/components/ui/file-input';
 import Checkbox from '@/components/ui/checkbox/checkbox';
 import { Config } from '@/config';
 import { useRouter } from 'next/router';
+import SelectInput from '../ui/select-input';
+import ValidationError from '../ui/form-validation-error';
+import { useTaxesQuery } from '@/data/tax';
 
 type IProps = {
   initialValues: any;
@@ -27,15 +30,17 @@ export default function ProductSimpleForm({ initialValues }: IProps) {
   const is_digital = watch('is_digital');
   const is_external = watch('is_external');
 
+  const {taxes}= useTaxesQuery()
+  console.log("TExes",taxes)
+
   return (
     <div className="my-5 flex flex-wrap sm:my-8">
       <Description
         title={t('form:form-title-simple-product-info')}
-        details={`${
-          initialValues
+        details={`${initialValues
             ? t('form:item-description-edit')
             : t('form:item-description-add')
-        } ${t('form:form-description-simple-product-info')}`}
+          } ${t('form:form-description-simple-product-info')}`}
         className="sm:pe-4 md:pe-5 w-full px-0 pb-5 sm:w-4/12 sm:py-8 md:w-1/3"
       />
 
@@ -56,6 +61,19 @@ export default function ProductSimpleForm({ initialValues }: IProps) {
           variant="outline"
           className="mb-5"
         />
+
+        <div>
+          <Label>{t('form:input-label-hsn_no')}</Label>
+          <SelectInput
+            options={taxes}
+            placeholder={t('Select')}
+            getOptionLabel={(option: any) => `${option?.name}-${option?.hsn_no}`}
+            getOptionValue={(option: any) => option}
+            control={control}
+            name={'hsn'}
+            defaultValue={[]} />
+          <ValidationError message={errors.address?.state?.message} />
+        </div>
 
         <Input
           label={`${t('form:input-label-quantity')}*`}

@@ -158,6 +158,7 @@ export default function CreateOrUpdateProductForm({
     useUpdateProductMutation();
 
   const onSubmit = async (values: ProductFormValues) => {
+    console.log("valuesProduct",values)
     const inputValues = {
       language: router.locale,
       ...getProductInputValues(values, initialValues),

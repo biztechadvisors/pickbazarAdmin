@@ -8,6 +8,7 @@ interface Permission {
     // Add other properties as needed
   }  
   
+  
   interface PermissionState {
     permission: Permission[];   
   }
