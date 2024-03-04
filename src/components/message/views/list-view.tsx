@@ -69,7 +69,8 @@ const UserListView = ({ conversation, className, ...rest }: Props) => {
             {!isEmpty(conversation?.shop?.logo?.thumbnail) ? (
               <Image
                 // @ts-ignore
-                src={conversation?.shop?.logo?.thumbnail}
+                // src={conversation?.shop?.logo?.thumbnail}
+                src={`${process?.env?.NEXT_PUBLIC_REST_API_ENDPOINT}/${conversation?.shop?.logo?.thumbnail}`}
                 alt={String(conversation?.shop?.name)}
                 fill
                 sizes="(max-width: 768px) 100vw"
