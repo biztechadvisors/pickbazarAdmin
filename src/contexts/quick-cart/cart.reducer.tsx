@@ -56,21 +56,25 @@ export function cartReducer(state: State, action: Action): State {
       if (updateCartTimeout) {
         clearTimeout(updateCartTimeout);
       }
-      updateCartTimeout = setTimeout(async () => {
-        try {
-          await cartsClient.updateCartApi(
-            items,
-            action.customerId,
-            action.email,
-            action.phone
-          );
-          toast.success('Item added to cart successfully');
-        } catch (error) {
-          console.error('Failed to update cart:', error.message);
-          toast.error('Failed to add item to cart');
-        }
-      }, 1000);
-      return generateFinalState(state, items);
+      // updateCartTimeout = setTimeout(async () => {
+      //   try {
+      //     await cartsClient.updateCartApi(
+      //       items,
+      //       action.customerId,
+      //       action.email,
+      //       action.phone
+      //     );
+      //     console.log("myReducerItems",items,
+      //     action.customerId,
+      //     action.email,
+      //     action.phone )
+      //     toast.success('Item added to cart successfully');
+      //   } catch (error) {
+      //     console.error('Failed to update cart:', error.message);
+      //     toast.error('Failed to add item to cart');
+      //   }
+      // }, 1000);
+      return generateFinalState(state,action, items);
     }
     case 'REMOVE_ITEM_OR_QUANTITY': {
       const items = removeItemOrQuantity(
@@ -78,19 +82,19 @@ export function cartReducer(state: State, action: Action): State {
         action.id,
         (action.quantity = 1)
       );
-      return generateFinalState(state, items);
+      return generateFinalState(state,action, items);
     }
     case 'ADD_ITEM': {
       const items = addItem(state.items, action.item);
-      return generateFinalState(state, items);
+      return generateFinalState(state,action, items);
     }
     case 'REMOVE_ITEM': {
       const items = removeItem(state.items, action.id);
-      return generateFinalState(state, items);
+      return generateFinalState(state,action, items);
     }
     case 'UPDATE_ITEM': {
       const items = updateItem(state.items, action.id, action.item);
-      return generateFinalState(state, items);
+      return generateFinalState(state,action, items);
     }
     case 'RESET_CART':
       return initialState;
@@ -99,11 +103,14 @@ export function cartReducer(state: State, action: Action): State {
   }
 }
 
-const generateFinalState = (state: State, items: Item[]) => {
+const generateFinalState = (state: State,action: Action, items: Item[]) => {
   const totalUniqueItems = calculateUniqueItems(items);
   return {
     ...state,
     items: calculateItemTotals(items),
+    customerId: action.customerId, 
+    email:action.email, 
+    phone:action.phone,
     totalItems: calculateTotalItems(items),
     totalUniqueItems,
     total: calculateTotal(items),

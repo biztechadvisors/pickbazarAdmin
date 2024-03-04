@@ -44,7 +44,9 @@ export default function ProductsPage() {
 
   const { data: meData, } = useMeQuery();
 
-  const { id, email } = meData || {};
+  const { id, email, contact } = meData || {};
+
+  console.log("Datadfsdf", id, email, contact)
 
   const userId = meData?.dealer?.id;
 
@@ -141,6 +143,7 @@ export default function ProductsPage() {
               isChecked={isChecked}
               id={id}
               email={email}
+              phone={contact}
             />
           ))}
         </div>

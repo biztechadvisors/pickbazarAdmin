@@ -17,9 +17,10 @@ interface Props {
   isChecked: boolean;
   id:Number;
   email:string
+  phone:string
 }
 
-const ProductCard = ({ item, isChecked, id, email }: Props) => {
+const ProductCard = ({ item, isChecked, id, email, phone }: Props) => {
   const { t } = useTranslation();
   const {
     slug,
@@ -136,7 +137,7 @@ const ProductCard = ({ item, isChecked, id, email }: Props) => {
         ) : (
           canWrite && (
             <>
-              {Number(quantity) > 0 && <AddToCart variant="neon" data={item} id={id} email={email} />}
+              {Number(quantity) > 0 && <AddToCart variant="neon" data={item} id={id} email={email} phone={phone}/>}
             </>
           )
         )}

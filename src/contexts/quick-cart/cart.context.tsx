@@ -7,7 +7,7 @@ import { useAtom } from 'jotai';
 import { verifiedResponseAtom } from '@/contexts/checkout';
 interface CartProviderState extends State {
   addItemToCart: (item: Item, quantity: number, customerId:number, email:string, phone:string) => void;
-  removeItemFromCart: (id: Item['id']) => void;
+  removeItemFromCart: (id: Item['id'],item: Item, quantity: number, customerId:number, email:string, phone:string) => void;
   clearItemFromCart: (id: Item['id']) => void;
   getItemFromCart: (id: Item['id']) => any | undefined;
   isInCart: (id: Item['id']) => boolean;
@@ -55,6 +55,7 @@ export const CartProvider: React.FC<{ children?: React.ReactNode }> = (props) =>
 
   React.useEffect(() => {
     saveCart(JSON.stringify(state));
+    console.log("myState",state)
   }, [state, saveCart]);
 
 
@@ -63,8 +64,8 @@ export const CartProvider: React.FC<{ children?: React.ReactNode }> = (props) =>
     dispatch({ type: 'ADD_ITEM_WITH_QUANTITY', item, quantity, customerId, email, phone });
 
 
-  const removeItemFromCart = (id: Item['id']) =>
-    dispatch({ type: 'REMOVE_ITEM_OR_QUANTITY', id });
+  const removeItemFromCart = (id: Item['id'],item: Item, quantity: number, customerId:number, email:string, phone:string) =>
+    dispatch({ type: 'REMOVE_ITEM_OR_QUANTITY', id, item, quantity, customerId, email, phone});
 
 
 
