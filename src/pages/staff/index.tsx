@@ -1,99 +1,118 @@
 import Card from '@/components/common/card';
-import Layout from '@/components/layouts/admin';
-import Search from '@/components/common/search';
-import CustomerList from '@/components/user/user-list';
 import LinkButton from '@/components/ui/link-button';
-import { useState } from 'react';
-import ErrorMessage from '@/components/ui/error-message';
 import Loader from '@/components/ui/loader/loader';
-import { useMeQuery, useUsersQuery } from '@/data/user';
 import { useTranslation } from 'next-i18next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
-import { Routes } from '@/config/routes';
+import ShopLayout from '@/components/layouts/shop';
+import { useRouter } from 'next/router';
+import StaffList from '@/components/shop/staff-list';
+import {
+  adminAndOwnerOnly,
+  adminOnly,
+  getAuthCredentials,
+  hasAccess,
+} from '@/utils/auth-utils';
+import ErrorMessage from '@/components/ui/error-message';
+import { useShopQuery } from '@/data/shop';
+import { useStaffsQuery } from '@/data/staff';
+import { useState } from 'react';
 import { SortOrder } from '@/types';
-import { adminOnly, getAuthCredentials } from '@/utils/auth-utils';
-import { newPermission } from '@/contexts/permission/storepermission';
+import { Routes } from '@/config/routes';
+import { useMeQuery } from '@/data/user';
 import { useAtom } from 'jotai';
+import { newPermission } from '@/contexts/permission/storepermission';
 import { siteSettings } from '@/settings/site.settings';
-import StaffList from '@/components/staff/staff-list';
 
-export default function Customers() {
-  const [searchTerm, setSearchTerm] = useState('');
-  const [page, setPage] = useState(1);
+export default function StaffsPage() {
+  const router = useRouter();
+  const { permissions } = getAuthCredentials();
+  const { data: me } = useMeQuery();
+  const {
+    query: { shop },
+  } = useRouter();
   const { t } = useTranslation();
-
+  const [page, setPage] = useState(1);
   const [orderBy, setOrder] = useState('created_at');
   const [sortedBy, setColumn] = useState<SortOrder>(SortOrder.Desc);
-  const { data } = useMeQuery();
-
-  const { users, paginatorInfo, loading, error } = useUsersQuery({
-    limit: 20,
-    usrById: data?.id,
-    page,
-    name: searchTerm,
-    orderBy,
-    sortedBy,
-  });
-
-  const [getPermission,_]=useAtom(newPermission)
-  const { permissions } = getAuthCredentials();
+  
+  const [getPermission,_]=useAtom(newPermission)  
   const canWrite =  permissions.includes('super_admin')
   ? siteSettings.sidebarLinks
   :getPermission?.find(
-    (permission) => permission.type === 'sidebar-nav-item-users'
-  )?.write;
+   (permission) => permission.type === 'sidebar-nav-item-staffs'
+ )?.write;
 
-  if (loading) return <Loader text={t('common:text-loading')} />;
-  if (error) return <ErrorMessage message={error.message} />;
+  const { data: shopData, isLoading: fetchingShopId } = useShopQuery({
+    slug: shop as string,
+  });
 
-  function handleSearch({ searchText }: { searchText: string }) {
-    setSearchTerm(searchText);
-    setPage(1);
-  }
+  const shopId = shopData?.id!;
+  const {
+    staffs,
+    paginatorInfo,
+    loading: loading,
+    error,
+  } = useStaffsQuery(
+    {
+      shop_id: shopId,
+      page,
+      orderBy,
+      sortedBy,
+    },
+    {
+      enabled: Boolean(shopId),
+    }
+  );
+  if (fetchingShopId || loading)
+    return <Loader text={t('common:text-loading')} />;
+  if (error) return <ErrorMessage message={error?.message} />;
 
   function handlePagination(current: any) {
     setPage(current);
   }
 
+  if (
+    !hasAccess(adminOnly, permissions) &&
+    !me?.shops?.map((shop) => shop.id).includes(shopId) &&
+    me?.managed_shop?.id != shopId
+  ) {
+    router.replace(Routes.dashboard);
+  }
+
   return (
     <>
-      <Card className="mb-8 flex flex-col items-center md:flex-row">
-        <div className="mb-4 md:mb-0 md:w-1/4">
+      <Card className="mb-8 flex flex-row items-center justify-between">
+        <div className="md:w-1/4">
           <h1 className="text-lg font-semibold text-heading">
-            {t('common:sidebar-nav-item-users')}
+            {t('form:text-staff')}
           </h1>
         </div>
 
-        <div className="ms-auto flex w-full items-center md:w-3/4">
-          <Search onSearch={handleSearch} />
-          <LinkButton
-            href={`${Routes.user.create}`}
-            className="ms-4 md:ms-6 h-12"
-          >
-            <span>+ {t('form:button-label-add-user')}</span>
-          </LinkButton>
+        <div className="flex w-3/4 items-center ms-auto xl:w-2/4">
+        {canWrite ? (
+            <LinkButton href={`/${shop}/staffs/create`} className="h-12 ms-auto">
+              <span>+ {t('form:button-label-add-staff')}</span>
+            </LinkButton>
+          ) : null}
         </div>
       </Card>
 
-      {loading ? null : (
-        <StaffList
-          customers={users}
-          paginatorInfo={paginatorInfo}
-          onPagination={handlePagination}
-          onOrder={setOrder}
-          onSort={setColumn}
-        />
-      )}
+      <StaffList
+        staffs={staffs}
+        onPagination={handlePagination}
+        paginatorInfo={paginatorInfo}
+        onOrder={setOrder}
+        onSort={setColumn}
+      />
     </>
   );
 }
-
-Customers.authenticate = {
-  permissions: adminOnly,
+StaffsPage.authenticate = {
+  permissions: adminAndOwnerOnly,
 };
-Customers.Layout = Layout;
+StaffsPage.Layout = ShopLayout;
 
-export const getStaticProps = async ({ locale }: any) => ({
+export const getServerSideProps = async ({ locale }: any) => ({
   props: {
     ...(await serverSideTranslations(locale, ['table', 'common', 'form'])),
   },

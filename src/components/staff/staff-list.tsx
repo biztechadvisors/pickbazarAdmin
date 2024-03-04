@@ -35,7 +35,6 @@ const StaffList = ({
 }: IProps) => {
   const { t } = useTranslation();
   const { alignLeft } = useIsRTL();
-
   const [getPermission,_]=useAtom(newPermission)
   const { permissions } = getAuthCredentials();
   const canWrite =  permissions.includes('super_admin')
@@ -44,7 +43,6 @@ const StaffList = ({
     (permission) => permission.type === 'sidebar-nav-item-users'
   )?.write;
 
-  console.log("userssssss",customers)
   const [sortingObj, setSortingObj] = useState<{
     sort: SortOrder;
     column: any | null;
