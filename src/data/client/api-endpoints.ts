@@ -69,5 +69,6 @@ export const API_ENDPOINTS = {
   STORE_NOTICE_GET_STORE_NOTICE_TYPE: 'store-notices/getStoreNoticeType',
   STORE_NOTICES_USER_OR_SHOP_LIST: 'store-notices/getUsersToNotify',
   PERMISSION: 'permission',
-  CART:'carts'
+  CART:'carts',
+  STOCK: '/stocks',
 };

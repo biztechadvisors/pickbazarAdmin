@@ -101,6 +101,9 @@ export const Routes = {
   staff: {
     ...routesFactory('/staffs'),
   },
+  stock: {
+    ...routesFactory('/stocks'),
+  },
   refund: {
     ...routesFactory('/refunds'),
   },
