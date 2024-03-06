@@ -179,7 +179,7 @@ const CustomerCreateForm = () => {
         </Button>
 
         <Button loading={loading} disabled={loading}>
-          {t('form:form-title-create-user')}
+          {t('form:button-label-create-customer')}
         </Button>
       </div>
     </form>

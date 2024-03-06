@@ -3,8 +3,7 @@ import AddToCartBtn from '@/components/cart/add-to-cart/add-to-cart-btn';
 import { cartAnimation } from '@/utils/cart-animation';
 import { useCart } from '@/contexts/quick-cart/cart.context';
 import { generateCartItem } from '@/contexts/quick-cart/generate-cart-item';
-import { number } from 'yup';
-import { addItemToCartApi } from '../cartApi';
+
 
 interface Props {
   data: any;

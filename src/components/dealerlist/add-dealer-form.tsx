@@ -71,7 +71,7 @@ function SelectCategory({
   defaultValue,
   control,
   errors,
-}: {
+} : {
   register: UseFormRegister<FormValues>;
   control: Control<FormValues>;
   defaultValue: any;

@@ -13,6 +13,7 @@ import Label from '@/components/ui/label';
 import { adminOnly, getAuthCredentials, hasAccess } from '@/utils/auth-utils';
 import { useUpdateDealerMutation } from '@/data/dealer';
 
+
 type FormValues = {
   name: string;
   profile: {
@@ -28,9 +29,9 @@ type FormValues = {
       email: string;
       enable: boolean;
     };
-    gst: string;
-    pan: string;
   };
+  gst: string;
+  pan: string;
 };
 
 export default function ProfileUpdate({ me }: any) {
@@ -40,6 +41,9 @@ export default function ProfileUpdate({ me }: any) {
   const { permissions } = getAuthCredentials();
 
   let permission = hasAccess(adminOnly, permissions);
+  console.log("permission", permissions[0])
+  let identify = permissions[0]
+  const matching: any = 'dealer'
   const {
     register,
     handleSubmit,
@@ -55,12 +59,14 @@ export default function ProfileUpdate({ me }: any) {
           'profile.avatar',
           'profile.notifications.email',
           'profile.notifications.enable',
+          'gst',
+          'pan',
         ])),
     },
   });
 
   async function onSubmit(values: FormValues) {
-    const { name, profile } = values;
+    const { name, profile, gst, pan } = values;
     const { notifications } = profile;
     const input = {
       id: me?.id,
@@ -79,9 +85,13 @@ export default function ProfileUpdate({ me }: any) {
             ...notifications,
           },
         },
+        gst: gst,
+        pan: pan,
       },
     };
+    console.log("inputs", input)
     updateUser({ ...input });
+    // updateDealer({  })
   }
 
   return (
@@ -97,7 +107,7 @@ export default function ProfileUpdate({ me }: any) {
           <FileInput name="profile.avatar" control={control} multiple={false} />
         </Card>
       </div>
-      {permission ? (
+      {permission && identify === matching ? (
         <div className="my-5 flex flex-wrap border-b border-dashed border-border-base pb-8 sm:my-8">
           <Description
             title={t('form:form-notification-title')}
@@ -124,11 +134,17 @@ export default function ProfileUpdate({ me }: any) {
               </Label>
             </div>
           </Card>
-          {/* <Card className="mb-5 w-full sm:w-8/12 md:w-2/3">
+
+          <Description
+            title={t('form:form-gst-title')}
+            details={t('form:form-gst-description')}
+            className="w-full px-0 pb-5 sm:w-4/12 sm:py-8 sm:pe-4 md:w-1/3 md:pe-5"
+          />
+          <Card className="mb-5 w-full sm:w-8/12 md:w-2/3">
             <Input
               label={t('GST')}
               {...register('gst')}
-              error={t(errors?.gst.message!)}
+              error={t(errors?.gst?.message!)}
               variant="outline"
               className="mb-5"
              
@@ -136,13 +152,41 @@ export default function ProfileUpdate({ me }: any) {
              <Input
               label={t('PAN')}
               {...register('pan')}
-              error={t(errors?.pan.message!)}
+              error={t(errors?.pan?.message!)}
               variant="outline"
               className="mb-5"
              
             />
-          </Card> */}
+          </Card>
         </div>
+      ) : permission ? (
+        <div className="my-5 flex flex-wrap border-b border-dashed border-border-base pb-8 sm:my-8">
+        <Description
+          title={t('form:form-notification-title')}
+          details={t('form:form-notification-description')}
+          className="w-full px-0 pb-5 sm:w-4/12 sm:py-8 sm:pe-4 md:w-1/3 md:pe-5"
+        />
+
+        <Card className="mb-5 w-full sm:w-8/12 md:w-2/3">
+          <Input
+            label={t('form:input-notification-email')}
+            {...register('profile.notifications.email')}
+            error={t(errors?.profile?.notifications?.email?.message!)}
+            variant="outline"
+            className="mb-5"
+            type="email"
+          />
+          <div className="flex items-center gap-x-4">
+            <SwitchInput
+              name="profile.notifications.enable"
+              control={control}
+            />
+            <Label className="mb-0">
+              {t('form:input-enable-notification')}
+            </Label>
+          </div>
+        </Card>
+      </div>
       ) : (
         ''
       )}

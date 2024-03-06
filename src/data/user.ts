@@ -118,6 +118,7 @@ export const useRegisterMutation = () => {
   const router = useRouter();
   const queryClient = useQueryClient();
   const { t } = useTranslation();
+  // console.log(t, queryClient)
 
   return useMutation(userClient.register, {
     onSuccess: () => {
@@ -316,3 +317,21 @@ export const useAdminsQuery = (params: Partial<QueryOptionsType>) => {
     error,
   };
 };
+
+
+//  profile update function
+export const useUpdateProfileMutation = () => {
+
+  const { t } = useTranslation();
+  const queryClient = useQueryClient();
+  return useMutation(userClient.update, {
+    onSuccess: () => {
+      toast.success(t('common:successfully-updated'));
+    },
+    // Always refetch after error or success:
+    onSettled: () => {
+      queryClient.invalidateQueries(API_ENDPOINTS.ME);
+      queryClient.invalidateQueries(API_ENDPOINTS.PROFILE_UPDATE);
+    },
+  })
+}
