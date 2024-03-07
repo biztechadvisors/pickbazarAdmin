@@ -32,6 +32,7 @@
     "STORE_NOTICE": "sidebar-nav-item-store-notice",
     "REVIEWS": "sidebar-nav-item-reviews",
     "SETTINGS": "sidebar-nav-item-settings",
-    "STAFFS": "sidebar-nav-item-staffs"
+    "STAFFS": "sidebar-nav-item-staffs",
+    "STOCK": "sidebar-nav-item-stocks"
   }
 }
