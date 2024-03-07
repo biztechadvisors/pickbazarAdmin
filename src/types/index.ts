@@ -1676,7 +1676,6 @@ export interface SettingsQueryOptions extends QueryOptions { }
 
 export interface CreateStocks {
   id: any;
-  quantity: any;
-  product: Product;
+  products: ConnectProductOrderPivot[];
   dealer: any;
 }
