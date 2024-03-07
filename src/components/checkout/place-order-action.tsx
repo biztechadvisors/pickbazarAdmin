@@ -18,6 +18,7 @@ import { useLogout, useUser } from '@/framework/rest/user';
 import { PaymentGateway } from '@/types';
 import { useMeQuery } from '@/data/user';
 import { useSettings } from '@/framework/rest/settings';
+import { dealerAddress } from '@/utils/atoms';
 
 export const PlaceOrderAction: React.FC<{
   className?: string;
@@ -28,8 +29,7 @@ export const PlaceOrderAction: React.FC<{
   const { createOrder, isLoading } = useCreateOrder();
   const { items } = useCart();
   const { me } = useUser();
-
-
+  const [selectedAddress] = useAtom(dealerAddress);
 
   const [
     {
@@ -45,7 +45,7 @@ export const PlaceOrderAction: React.FC<{
       payment_sub_gateway,
       note,
       token,
-      payable_amount
+      payable_amount,
     },
   ] = useAtom(checkoutAtom);
   const [discount] = useAtom(discountAtom);
@@ -85,8 +85,11 @@ export const PlaceOrderAction: React.FC<{
       return;
     }
 
-    const isFullWalletPayment = (use_wallet_points && payable_amount == 0) ? true : false;
-    const gateWay = isFullWalletPayment ? PaymentGateway.FULL_WALLET_PAYMENT : payment_gateway;
+    const isFullWalletPayment =
+      use_wallet_points && payable_amount == 0 ? true : false;
+    const gateWay = isFullWalletPayment
+      ? PaymentGateway.FULL_WALLET_PAYMENT
+      : payment_gateway;
 
     let input = {
       //@ts-ignore
@@ -101,8 +104,8 @@ export const PlaceOrderAction: React.FC<{
       dealerId,
       delivery_time: delivery_time?.title,
       customer,
-      customer_id:customer?.id,
-      customerId:customer?.id,
+      customer_id: customer?.id,
+      customerId: customer?.id,
       customer_contact,
       customer_name,
       note,
@@ -116,6 +119,7 @@ export const PlaceOrderAction: React.FC<{
       shipping_address: {
         ...(shipping_address?.address && shipping_address.address),
       },
+      saleBy: selectedAddress,
     };
     // if (payment_gateway === "STRIPE") {
     //   //@ts-ignore
@@ -124,7 +128,7 @@ export const PlaceOrderAction: React.FC<{
 
     // delete input.billing_address.__typename;
     // delete input.shipping_address.__typename;
-    
+
     createOrder(input);
   };
   const isDigitalCheckout = available_items.find((item) =>
@@ -134,13 +138,13 @@ export const PlaceOrderAction: React.FC<{
   let formatRequiredFields = isDigitalCheckout
     ? [customer_contact, payment_gateway, available_items]
     : [
-      customer_contact,
-      payment_gateway,
-      billing_address,
-      shipping_address,
-      delivery_time,
-      available_items,
-    ];
+        customer_contact,
+        payment_gateway,
+        billing_address,
+        shipping_address,
+        delivery_time,
+        available_items,
+      ];
   // if (!isDigitalCheckout && !me) {
   //   formatRequiredFields.push(customer_name);
   // }

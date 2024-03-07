@@ -31,6 +31,8 @@ export const orderClient = {
   },
 
   downloadInvoice: (input: GenerateInvoiceDownloadUrlInput) => {
+
+    console.log("input", input)
     return HttpClient.post<string>(
       `${API_ENDPOINTS.ORDER_INVOICE_DOWNLOAD}`,
       input

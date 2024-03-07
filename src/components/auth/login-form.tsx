@@ -41,7 +41,8 @@ const LoginForm = () => {
   // export { matchedLinksState as matchedLinks };
 
   function onSubmit({ email, password }: LoginInput) {
-    login({email,password,},
+    login(
+      { email, password },
       {
         onSuccess: (data) => {
           if (data?.token) {
@@ -52,7 +53,7 @@ const LoginForm = () => {
                 data?.permissions,
                 data?.type_name
               );
-              console.log("data****permission", data)
+              console.log('data****permission', data);
               Router.push(Routes.dashboard);
               return;
             }
@@ -61,7 +62,7 @@ const LoginForm = () => {
             setErrorMessage('form:error-credential-wrong');
           }
         },
-        onError: () => { },
+        onError: () => {},
       }
     );
   }
