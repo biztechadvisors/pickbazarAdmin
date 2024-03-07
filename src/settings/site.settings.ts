@@ -159,6 +159,11 @@ export const siteSettings = {
         icon: 'UsersIcon',
       },
       {
+        href: Routes.stock.list,
+        label: 'sidebar-nav-item-staffs',
+        icon: 'UsersIcon',
+      },
+      {
         href: Routes.question.list,
         label: 'sidebar-nav-item-questions',
         icon: 'QuestionIcon',

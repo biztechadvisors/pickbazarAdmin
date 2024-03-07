@@ -118,6 +118,7 @@ export const useRegisterMutation = () => {
   const router = useRouter();
   const queryClient = useQueryClient();
   const { t } = useTranslation();
+  // console.log(t, queryClient)
 
   return useMutation(userClient.register, {
     onSuccess: () => {

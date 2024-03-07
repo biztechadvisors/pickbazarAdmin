@@ -1094,13 +1094,19 @@ export interface Tax {
   id?: string;
   name?: string;
   rate?: number;
-  is_global?: boolean;
-  country?: string;
-  state?: string;
-  zip?: string;
-  city?: string;
-  priority?: number;
-  on_shipping?: boolean;
+  hsn_no?:number;
+  cgst?:number;
+  sgst?:number;
+  gst_Name?:string;
+  sac_no?:number;
+  compensation_Cess?:number;
+  // is_global?: boolean;
+  // country?: string;
+  // state?: string;
+  // zip?: string;
+  // city?: string;
+  // priority?: number;
+  // on_shipping?: boolean;
 }
 
 export interface TaxInput {
@@ -1312,6 +1318,8 @@ export interface RegisterInput {
   UsrBy: string;
   shop_id?: number;
   permission: Permission;
+  contact: string;
+  UsrBy: any;
 }
 
 export interface ChangePasswordInput {

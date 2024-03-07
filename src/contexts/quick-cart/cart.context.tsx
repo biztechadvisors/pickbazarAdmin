@@ -5,9 +5,10 @@ import { useLocalStorage } from '@/utils/use-local-storage';
 import { CART_KEY } from '@/utils/constants';
 import { useAtom } from 'jotai';
 import { verifiedResponseAtom } from '@/contexts/checkout';
+import { useCartsMutation } from '@/data/cart';
 interface CartProviderState extends State {
   addItemToCart: (item: Item, quantity: number, customerId:number, email:string, phone:string) => void;
-  removeItemFromCart: (id: Item['id']) => void;
+  removeItemFromCart: (id: Item['id'],item: Item, quantity: number, customerId:number, email:string, phone:string) => void;
   clearItemFromCart: (id: Item['id']) => void;
   getItemFromCart: (id: Item['id']) => any | undefined;
   isInCart: (id: Item['id']) => boolean;
@@ -45,6 +46,7 @@ export const CartProvider: React.FC<{ children?: React.ReactNode }> = (props) =>
 
 
   const [, emptyVerifiedResponse] = useAtom(verifiedResponseAtom);
+  const { mutate: createCart, isLoading: creating } = useCartsMutation();
 
 
   React.useEffect(() => {
@@ -55,6 +57,16 @@ export const CartProvider: React.FC<{ children?: React.ReactNode }> = (props) =>
 
   React.useEffect(() => {
     saveCart(JSON.stringify(state));
+    const data = {
+      customerId: state.customerId,
+      email:state.email,
+      phone:state.phone,
+      cartData:{
+          ...state.items
+      },
+    }
+    console.log("myState",state)
+    createCart(data)
   }, [state, saveCart]);
 
 
@@ -63,8 +75,8 @@ export const CartProvider: React.FC<{ children?: React.ReactNode }> = (props) =>
     dispatch({ type: 'ADD_ITEM_WITH_QUANTITY', item, quantity, customerId, email, phone });
 
 
-  const removeItemFromCart = (id: Item['id']) =>
-    dispatch({ type: 'REMOVE_ITEM_OR_QUANTITY', id });
+  const removeItemFromCart = (id: Item['id'],item: Item, quantity: number, customerId:number, email:string, phone:string) =>
+    dispatch({ type: 'REMOVE_ITEM_OR_QUANTITY', id, item, quantity, customerId, email, phone});
 
 
 
