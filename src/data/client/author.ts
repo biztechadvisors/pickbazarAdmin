@@ -16,13 +16,12 @@ export const AuthorClient = {
   paginated: ({
     type,
     name,
-    is_approved,
     ...params
   }: Partial<AuthorQueryOptions>) => {
     return HttpClient.get<AuthorPaginator>(API_ENDPOINTS.AUTHORS, {
       searchJoin: 'and',
       ...params,
-      search: HttpClient.formatSearchParams({ type, name, is_approved }),
+      search: HttpClient.formatSearchParams({ type, name }),
     });
   },
 };

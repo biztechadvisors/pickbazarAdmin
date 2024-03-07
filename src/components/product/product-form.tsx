@@ -164,13 +164,11 @@ export default function CreateOrUpdateProductForm({
     };
 
     try {
-      console.log("try-product-add-update")
 
       if (
         !initialValues ||
         !initialValues.translated_languages.includes(router.locale!)
       ) {
-        console.log("createProduct")
         //@ts-ignore
         createProduct({
           ...inputValues,
@@ -179,7 +177,6 @@ export default function CreateOrUpdateProductForm({
         });
       } else {
 
-        console.log("updateProduct")
         //@ts-ignore
         updateProduct({
           ...inputValues,
@@ -419,7 +416,7 @@ export default function CreateOrUpdateProductForm({
                 error={t((errors?.type as any)?.message)}
               />
               <ProductCategoryInput control={control} setValue={setValue} />
-              <ProductAuthorInput control={control} />
+              <ProductAuthorInput control={control} setValue={setValue} />
               <ProductManufacturerInput control={control} setValue={setValue} />
               <ProductTagInput control={control} setValue={setValue} />
             </Card>

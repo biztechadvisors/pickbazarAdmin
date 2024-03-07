@@ -13,8 +13,6 @@ import {
   calculateTotal,
 } from '@/contexts/quick-cart/cart.utils';
 import { useTranslation } from 'next-i18next';
-import { useRouter } from 'next/router';
-import { useLogout, useUser } from '@/framework/rest/user';
 import { PaymentGateway } from '@/types';
 import { useMeQuery } from '@/data/user';
 import { useSettings } from '@/framework/rest/settings';
@@ -52,7 +50,7 @@ export const PlaceOrderAction: React.FC<{
   const [use_wallet_points] = useAtom(walletAtom);
 
   const { data: meData } = useMeQuery();
-  const dealerId = meData?.dealer?.id;
+  const dealerId = meData?.id;
 
   useEffect(() => {
     setErrorMessage(null);
@@ -121,6 +119,7 @@ export const PlaceOrderAction: React.FC<{
       },
       saleBy: selectedAddress,
     };
+    console.log("placeOrder", input)
     // if (payment_gateway === "STRIPE") {
     //   //@ts-ignore
     //   input.token = token;

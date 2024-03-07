@@ -29,6 +29,12 @@ export const productClient = {
     shop_id,
     ...params
   }: Partial<ProductQueryOptions>) => {
+    console.log("product data param",type,
+    name,
+    slug,
+    categories,
+    shop_id,
+    params)
     return HttpClient.get<ProductPaginator>(API_ENDPOINTS.PRODUCTS, {
       searchJoin: 'and',
       with: 'shop;type',
@@ -53,9 +59,7 @@ export const productClient = {
   generateDescription: (data: GenerateDescriptionInput) => {
     return HttpClient.post<any>(API_ENDPOINTS.GENERATE_DESCRIPTION, data);
   },
-
-  updateQuantity: (data: any) => {
+  updateQuantity: (data:any) => {
     return HttpClient.post<any>(`${API_ENDPOINTS.PRODUCTS}/${data.id}`, data);
   },
-
 };

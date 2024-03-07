@@ -11,8 +11,6 @@ import {
   SUPER_ADMIN,
   TOKEN,
 } from './constants';
-import { useEffect } from 'react';
-import { string } from 'yup';
 
 let type_names;
 export const allowedRoles = [SUPER_ADMIN, STORE_OWNER, STAFF, DEALER, ADMIN];

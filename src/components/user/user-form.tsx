@@ -12,7 +12,8 @@ import { Permission } from '@/types';
 import Select from '../ui/select/select';
 import Label from '../ui/label';
 import { useRouter } from 'next/router';
-import { ViewPermission, usePermissionData } from '@/data/permission';
+import { usePermissionData } from '@/data/permission';
+import { getAuthCredentials } from '@/utils/auth-utils';
 
 type FormValues = {
   name: string;
@@ -49,21 +50,26 @@ const CustomerCreateForm = () => {
   });
 
   const permissionData = usePermissionData();
-
-  // console.log('permissionData', permissionData)
+  const { permissions } = getAuthCredentials();
 
   const permissionNames =
-    permissionData?.data?.map((permission) => permission) ?? [];
+    permissionData?.data?.map((permission: { permission_name: any; }) => permission.permission_name) ?? [];
+    var permissionOptions:any;
+    if (permissions[0] !== 'dealer') {
+      permissionOptions = [
+        ...permissionNames.map((name:any) => ({
+          value: name,
+          label: name,
+        }))
+      ];
+    } else {
+      permissionOptions = [
+        { value: 'customer', label: 'customer' },
+        { value: 'staff', label: 'staff' },
+      ];
+    }
 
-  // console.log('permissionNames', permissionNames)
-
-  const permissionOptions = [
-    ...permissionNames.map((name) => ({
-      value: name,
-      label: name.type_name,
-    })),
-    { value: ['Customer'], label: 'Customer' },
-  ];
+  console.log("permissionOption", permissionOptions)
 
   // console.log("permissionOptions", permissionOptions )
 

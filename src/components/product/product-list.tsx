@@ -45,7 +45,6 @@ const ProductList = ({
   onSort,
   onOrder,
 }: IProps) => {
-
   const router = useRouter();
   const { t } = useTranslation();
   const { alignLeft, alignRight } = useIsRTL();
@@ -70,7 +69,6 @@ const ProductList = ({
         currentSortDirection === SortOrder.Desc ? SortOrder.Asc : SortOrder.Desc
       );
       onOrder(column!);
-
       setSortingObj({
         sort:
           sortingObj.sort === SortOrder.Desc ? SortOrder.Asc : SortOrder.Desc,
@@ -89,7 +87,8 @@ const ProductList = ({
       render: (image: any, { name }: { name: string }) => (
         <div className="relative flex h-[42px] w-[42px] items-center">
           <Image
-            src={image?.thumbnail ?? siteSettings.product.placeholder}
+            // src={image?.thumbnail ?? siteSettings.product.placeholder}
+            src={`${process?.env?.NEXT_PUBLIC_REST_API_ENDPOINT}/${image?.thumbnail}`}
             alt={name}
             fill
             sizes="(max-width: 768px) 100vw"
@@ -188,6 +187,7 @@ const ProductList = ({
         );
       },
     },
+
     {
       title: (
         <TitleWithSort
@@ -213,10 +213,8 @@ const ProductList = ({
           setEditMode(true);
         };
 
-
         const handleEditQuantity = async () => {
           // Handle logic to save edited quantity
-          console.log(`Edited Quantity: ${editedQuantity}`);
           const data = {
             id: id.id,
             quantity: editedQuantity,
@@ -251,6 +249,7 @@ const ProductList = ({
         );
       },
     },
+    
     {
       title: t('table:table-item-status'),
       dataIndex: 'status',

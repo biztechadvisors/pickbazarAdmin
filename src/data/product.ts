@@ -72,20 +72,20 @@ export const useUpdateProductMutation = () => {
   });
 };
 
-export const useUpdateQuantity = () => {
-  const queryClient = useQueryClient();
-  const { t } = useTranslation('common');
-  return useMutation(productClient.updateQuantity, {
-    onSuccess: () => {
-      toast.success(t('Quantity Updated'));
-    },
-    // Always refetch after error or success:
-    onSettled: (data) => {
-      queryClient.refetchQueries(API_ENDPOINTS.GENERATE_DESCRIPTION);
-      data;
-    },
-  });
-};
+// export const useUpdateQuantity = () => {
+//   const queryClient = useQueryClient();
+//   const { t } = useTranslation('common');
+//   return useMutation(productClient.updateQuantity, {
+//     onSuccess: () => {
+//       toast.success(t('Quantity Updated'));
+//     },
+//     // Always refetch after error or success:
+//     onSettled: (data) => {
+//       queryClient.refetchQueries(API_ENDPOINTS.GENERATE_DESCRIPTION);
+//       data;
+//     },
+//   });
+// };
 
 export const useDeleteProductMutation = () => {
   const queryClient = useQueryClient();
@@ -142,6 +142,21 @@ export const useGenerateDescriptionMutation = () => {
   return useMutation(productClient.generateDescription, {
     onSuccess: () => {
       toast.success(t('Generated...'));
+    },
+    // Always refetch after error or success:
+    onSettled: (data) => {
+      queryClient.refetchQueries(API_ENDPOINTS.GENERATE_DESCRIPTION);
+      data;
+    },
+  });
+};
+
+export const useUpdateQuantity = () => {
+  const queryClient = useQueryClient();
+  const { t } = useTranslation('common');
+  return useMutation(productClient.updateQuantity, {
+    onSuccess: () => {
+      toast.success(t('Quantity Updated'));
     },
     // Always refetch after error or success:
     onSettled: (data) => {
