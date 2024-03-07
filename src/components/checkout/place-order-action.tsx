@@ -25,9 +25,7 @@ export const PlaceOrderAction: React.FC<{
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const { createOrder, isLoading } = useCreateOrder();
   const { items } = useCart();
-
-
-
+  
   const [
     {
       billing_address,

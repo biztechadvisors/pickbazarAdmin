@@ -135,7 +135,6 @@ export type QueryOptionsType = {
   limit?: number;
   orderBy?: string;
   sortedBy?: SortOrder;
-  type?: string
 };
 
 export enum OrderStatus {
@@ -879,8 +878,9 @@ export interface CreateOrderStatusInput {
 
 export interface CreateOrderInput {
   tracking_number?: string;
-  customer_id: number;
-  customerId:number;
+  customer_id: string,
+  customerId: string,
+  dealerId: string,
   order_status?: string;
   products: ConnectProductOrderPivot[];
   amount: number;
@@ -896,6 +896,11 @@ export interface CreateOrderInput {
   card?: CardInput;
   billing_address?: UserAddressInput;
   shipping_address?: UserAddressInput;
+}
+
+export interface CreateStockInput {
+  user_id: number;
+  products: ConnectProductOrderPivot[];
 }
 
 export interface CreateManufacturerInput {
@@ -1303,8 +1308,8 @@ export interface RegisterInput {
   email: string;
   password: string;
   name: string;
-  contact:string;
-  UsrBy:string;
+  contact: string;
+  UsrBy: string;
   shop_id?: number;
   permission: Permission;
 }
@@ -1347,16 +1352,6 @@ export declare type AddStaffInput = {
   password: string;
   name: string;
   shop_id: number;
-};
-
-export declare type AddDealerInput = {
-  user: AddDealerInput | null | undefined;
-  // dealerProductMargins: AddDealerInput | null | undefined;
-  // dealerCategoryMargins: AddDealerInput | null | undefined;
-  // product:AddDealerInput | null | undefined;
-  id: string;
-  translated_languages: any;
-  name: string;
 };
 
 export declare type ApproveShopInput = {
@@ -1676,3 +1671,12 @@ export interface ConversionPaginator extends PaginatorInfo<Conversations> { }
 export interface MessagePaginator extends PaginatorInfo<Message> { }
 
 export interface SettingsQueryOptions extends QueryOptions { }
+
+// Stocks TypeScript
+
+export interface CreateStocks {
+  id: any;
+  quantity: any;
+  product: Product;
+  dealer: any;
+}
