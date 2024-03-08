@@ -5,6 +5,7 @@ import { HttpClient } from './http-client';
 export const stockClient = {
   
   getbyId: (id: any) => {
-    return HttpClient.get<any>(`${API_ENDPOINTS.STOCK}/?${id}`);
+    console.log("idStock", id)
+    return HttpClient.get<any>(`${API_ENDPOINTS.STOCK}/${id}`);
   },
 };

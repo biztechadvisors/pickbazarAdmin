@@ -76,24 +76,6 @@ const StockList = ({
   });
 
   let columns = [
-    // {
-    //   title: t('table:table-item-image'),
-    //   dataIndex: 'image',
-    //   key: 'image',
-    //   align: alignLeft,
-    //   width: 74,
-    //   render: (image: any, { name }: { name: string }) => (
-    //     <div className="relative flex h-[42px] w-[42px] items-center">
-    //       <Image
-    //         src={image?.thumbnail ?? siteSettings.product.placeholder}
-    //         alt={name}
-    //         fill
-    //         sizes="(max-width: 768px) 100vw"
-    //         className="overflow-hidden rounded object-fill"
-    //       />
-    //     </div>
-    //   ),
-    // },
     {
       title: (
         <TitleWithSort
@@ -120,7 +102,7 @@ const StockList = ({
     {
       title: (
         <TitleWithSort
-          title={t('table:table-item-stock')}
+          title={t('table:table-item-quantity')}
           ascending={
             sortingObj.sort === SortOrder.Asc &&
             sortingObj.column === 'quantity'
