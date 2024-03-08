@@ -15,6 +15,7 @@ import { siteSettings } from '@/settings/site.settings';
 import { usePermissionData } from '@/data/permission';
 import { useUpdateCart } from '@/data/cart';
 import { useMeQuery } from '@/data/user';
+import { date } from 'yup';
 export default function Permission() {
   const { t } = useTranslation();
   const [searchTerm, setSearchTerm] = useState('');
@@ -40,7 +41,7 @@ export default function Permission() {
     data: permissionData,
     refetch,
   } = usePermissionData(id);
-
+  console.log("============",id)
   function handleSearch({ searchText }: { searchText: string }) {
     setSearchTerm(searchText);
   }
