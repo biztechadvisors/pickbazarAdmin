@@ -24,6 +24,7 @@ import { getAuthCredentials } from '@/utils/auth-utils';
 import { useUpdateQuantity } from '@/data/product';
 import Input from '../ui/input';
 import Button from '../ui/button';
+import { AlignType } from 'rc-table/lib/interface';
 
 export type IProps = {
   products: Product[] | undefined;
@@ -61,6 +62,8 @@ const StockList = ({
     column: null,
   });
 
+  console.log("stockss", products)
+
   const onHeaderClick = (column: string | null) => ({
     onClick: () => {
       onSort((currentSortDirection: SortOrder) =>
@@ -76,6 +79,17 @@ const StockList = ({
   });
 
   let columns = [
+
+    {
+      title: 'S.No',
+      dataIndex: 'id',
+      key: 'id',
+      align: 'center' as AlignType,
+      width: 64,
+      render: (text: string, record: any, index: number) => (
+        <span>{index + 1}</span>
+      ),
+    },
     {
       title: (
         <TitleWithSort
@@ -97,6 +111,16 @@ const StockList = ({
         <span>{text.name}</span>
       ),
 
+    },
+
+    {
+      title: t('Stock Available'),
+      dataIndex: 'inStock',
+      key: 'inStock',
+      align: alignLeft,
+      render: (inStock: boolean) => (
+        <Badge text={t(inStock ? "In Stock":'Out Of Stock')} color={inStock? 'bg-accent' : 'bg-red-500'} />
+      ),
     },
 
     {

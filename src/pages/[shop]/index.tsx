@@ -115,7 +115,7 @@ export default function ShopPage() {
           <div className="relative mb-5 h-36 w-36 rounded-full">
             <div className="relative flex h-full w-full items-center justify-center overflow-hidden rounded-full border border-gray-100">
               <Image
-                src={`https://localhost:5050/api/${logo?.thumbnail ?? '/avatar-placeholder.svg'}`}
+                src={`https://localhost:5000/api/${logo?.thumbnail ?? '/avatar-placeholder.svg'}`}
                 fill
                 sizes="(max-width: 768px) 100vw"
                 alt={String(name)}
@@ -178,7 +178,8 @@ export default function ShopPage() {
       {/* Cover Photo */}
       <div className="relative order-1 col-span-12 h-full min-h-[400px] overflow-hidden rounded bg-light xl:order-2 xl:col-span-8 3xl:col-span-9">
         <Image
-          src={`https://localhost:5050/api/${cover_image?.original ?? '/product-placeholder-borderless.svg'}`}
+          // src={`https://localhost:5000/api/${cover_image?.original ?? '/product-placeholder-borderless.svg'}`}
+          src={`${process?.env?.NEXT_PUBLIC_REST_API_ENDPOINT}/${cover_image?.original ?? '/product-placeholder-borderless.svg'}`}
           fill
           sizes="(max-width: 768px) 100vw"
           alt={Object(name)}

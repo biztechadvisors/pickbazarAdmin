@@ -84,6 +84,7 @@ import type {
   StoreNotice,
   //@ts-ignore
   ShopMapLocation,
+  CreateStocks,
 } from '@/types';
 import { API_ENDPOINTS } from './api-endpoints';
 import { HttpClient } from './http-client';
@@ -344,6 +345,15 @@ class Client {
         recall_gateway,
       }),
   };
+
+  // Stock-----------
+  stocks = {
+
+    create: (input: any) =>
+      HttpClient.post<CreateStocks>(`${API_ENDPOINTS.STOCKS}`, input)
+
+  }
+
   users = {
     me: (params: { username: any; sub: any; }) => HttpClient.get<User>(`${API_ENDPOINTS.USERS_ME}?username=${params.username}&sub=${params.sub}`),
     update: (user: UpdateUserInput) =>

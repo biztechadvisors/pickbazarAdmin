@@ -2,6 +2,7 @@ import {
   CreateOrderInput,
   CreateOrderPaymentInput,
   CreateRefundInput,
+  CreateStockInput,
   DownloadableFilePaginator,
   Order,
   OrderPaginator,
@@ -228,16 +229,15 @@ export function useCreateOrder() {
   const { t } = useTranslation();
   // Get user details from UserService
   const { username, sub } = UserService.getUserDetails();
-  const { mutate: createOrder, isLoading } = useMutation(client.orders.create, {
-    onSuccess: (response) => {
-      const { id, payment_gateway, payment_intent } = response;
 
+  const { mutate: createOrder, isLoading: orderLoading } = useMutation(client.orders.create, {
+    onSuccess: async (response) => {
+      const { id, payment_gateway, payment_intent } = response;
       if (id) {
         let idStr = '';
         if (id) {
           idStr = id.toString();
         }
-
         if (
           [
             PaymentGateway.COD,
@@ -245,19 +245,16 @@ export function useCreateOrder() {
             PaymentGateway.FULL_WALLET_PAYMENT,
           ].includes(payment_gateway as PaymentGateway)
         ) {
-          return router.push(Routes.orders(idStr));
-        }
-
-        if (payment_intent?.payment_intent_info?.is_redirect) {
-          return router.push(
+          router.push(Routes.orders(idStr));
+        } else if (payment_intent?.payment_intent_info?.is_redirect) {
+          router.push(
             payment_intent?.payment_intent_info?.redirect_url as string
           );
         } else {
-          return router.push(`${Routes.orders(idStr)}/payment`);
+          router.push(`${Routes.orders(idStr)}/payment`);
         }
       }
     },
-
     onError: (error) => {
       const {
         response: { data },
@@ -266,12 +263,41 @@ export function useCreateOrder() {
     },
   });
 
+  console.log("stock----266")
+  const { mutate: createStock, isLoading: stockLoading } = useMutation(client.stocks.create, {
+    onSuccess: (response) => {
+      const { id } = response;
+      console.log("Success-Stock: ", id);
+    },
+    onError: (error) => {
+      const {
+        response: { data },
+      }: any = error ?? {};
+      toast.error(data?.message);
+    },
+  });
+
+  console.log("stock----280")
+
+  async function checkAndCreateStocks(input: CreateOrderInput) {
+    // Check if sub and input.customer_id are equal
+    console.log("checkAndCreateStocks--267", input.dealerId, " &&&& ", input.customer_id)
+    if (input.dealerId === input.customer_id) {
+      console.log(input.dealerId === input.customer_id)
+      const stockInput: CreateStockInput = {
+        user_id: parseInt(input.dealerId),
+        products: input.products
+      };
+      await createStock(stockInput);
+    }
+  }
+
   function formatOrderInput(input: CreateOrderInput) {
     const formattedInputs = {
       ...input,
       language: locale,
-      customerId: sub,
-      customer: username,
+      dealer: input.dealerId,
+      dealerEmail: username,
       invoice_translated_text: {
         subtotal: t('order-sub-total'),
         discount: t('order-discount'),
@@ -285,12 +311,12 @@ export function useCreateOrder() {
       },
     };
     createOrder(formattedInputs);
+    checkAndCreateStocks(formattedInputs); // Call checkAndCreateStocks function after formatting the order input
   }
 
   return {
     createOrder: formatOrderInput,
-    isLoading,
-    // isPaymentIntentLoading
+    isLoading: orderLoading || stockLoading,
   };
 }
 

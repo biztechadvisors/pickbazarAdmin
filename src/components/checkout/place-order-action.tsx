@@ -25,9 +25,7 @@ export const PlaceOrderAction: React.FC<{
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const { createOrder, isLoading } = useCreateOrder();
   const { items } = useCart();
-
-
-
+  
   const [
     {
       billing_address,
@@ -49,7 +47,7 @@ export const PlaceOrderAction: React.FC<{
   const [use_wallet_points] = useAtom(walletAtom);
 
   const { data: meData } = useMeQuery();
-  const dealerId = meData?.dealer?.id;
+  const dealerId = meData?.id;
 
   useEffect(() => {
     setErrorMessage(null);
@@ -98,8 +96,8 @@ export const PlaceOrderAction: React.FC<{
       dealerId,
       delivery_time: delivery_time?.title,
       customer,
-      customer_id:customer?.id,
-      customerId:customer?.id,
+      customer_id: customer?.id,
+      customerId: customer?.id,
       customer_contact,
       customer_name,
       note,
@@ -114,7 +112,7 @@ export const PlaceOrderAction: React.FC<{
         ...(shipping_address?.address && shipping_address.address),
       },
     };
-    console.log("placeOrder",input)
+    console.log("placeOrder", input)
     // if (payment_gateway === "STRIPE") {
     //   //@ts-ignore
     //   input.token = token;
@@ -122,7 +120,7 @@ export const PlaceOrderAction: React.FC<{
 
     // delete input.billing_address.__typename;
     // delete input.shipping_address.__typename;
-    
+
     createOrder(input);
   };
   const isDigitalCheckout = available_items.find((item) =>

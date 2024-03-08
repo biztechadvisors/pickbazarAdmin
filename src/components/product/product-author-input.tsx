@@ -7,6 +7,7 @@ import { useRouter } from 'next/router';
 
 interface Props {
   control: Control<any>;
+  setValue: any;
 }
 
 const ProductAuthorInput = ({ control }: Props) => {
@@ -18,7 +19,7 @@ const ProductAuthorInput = ({ control }: Props) => {
     is_approved: true,
     language: locale,
   });
-
+console.log("get Available author", authors)
   return (
     <div className="mb-5">
       <Label>{t('common:text-authors')}</Label>
