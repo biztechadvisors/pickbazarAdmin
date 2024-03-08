@@ -16,8 +16,6 @@ export default function ProfilePage() {
   const { data, isLoading: loading, error } = useMeQuery();
   const userAddressSelectionRef = useRef(null);
 
-
-
   useEffect(() => {
     if (data && userAddressSelectionRef.current) {
       userAddressSelectionRef.current.scrollIntoView({
@@ -29,9 +27,6 @@ export default function ProfilePage() {
   if (loading) return <Loader text={t('common:text-loading')} />;
   if (error) return <ErrorMessage message={error.message} />;
   
-
-
-
 
   return (
     <>
