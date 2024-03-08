@@ -35,7 +35,7 @@ export const siteSettings = {
       labelTransKey: 'authorized-nav-item-logout',
     },
   ],
-  currencyCode: 'USD',
+  currencyCode: 'IN',
   sidebarLinks: {
     admin: [
       {
@@ -160,8 +160,8 @@ export const siteSettings = {
       },
       {
         href: Routes.stock.list,
-        label: 'sidebar-nav-item-staffs',
-        icon: 'UsersIcon',
+        label: 'sidebar-nav-item-stocks',
+        icon: 'ProductsIcon',
       },
       {
         href: Routes.question.list,

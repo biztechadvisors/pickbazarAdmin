@@ -389,6 +389,8 @@
   "form-notification-description": "Set your email notification for messaging feature",
   "input-notification-email": "Notification email",
   "input-enable-notification": "Enable Notification",
+  "form-gst-title": "GST & PAN",
+  "form-gst-description": "Set your GST and PAN numbers",
   "input-label-use-google-map-service": "Enable Google Map Address",
   "input-label-product-for-review": "Enable product review system before publish ?",
   "input-label-use-must-verify-email": "Enable Must Verify Email",

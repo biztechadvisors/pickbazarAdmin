@@ -24,7 +24,7 @@ type FormValues = {
   password: string;
   permission: Permission;
   contact:string;
-  // UsrBy:string
+  UsrBy:string
 };
 const registrationFormSchema = yup.object().shape({
   name: yup.string().required('form:error-name-required'),
