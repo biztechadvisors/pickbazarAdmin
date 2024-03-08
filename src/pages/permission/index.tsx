@@ -41,7 +41,7 @@ export default function Permission() {
     data: permissionData,
     refetch,
   } = usePermissionData(id);
-  console.log("============",id)
+
   function handleSearch({ searchText }: { searchText: string }) {
     setSearchTerm(searchText);
   }
