@@ -17,6 +17,8 @@ import { PaymentGateway } from '@/types';
 import { useMeQuery } from '@/data/user';
 import { useSettings } from '@/framework/rest/settings';
 import { dealerAddress } from '@/utils/atoms';
+import { useUser } from '@/framework/rest/user';
+import { useRouter } from 'next/router';
 
 export const PlaceOrderAction: React.FC<{
   className?: string;
@@ -28,6 +30,9 @@ export const PlaceOrderAction: React.FC<{
   const { items } = useCart();
   const { me } = useUser();
   const [selectedAddress] = useAtom(dealerAddress);
+  const router = useRouter();
+
+  console.log("selectedAddress*********", selectedAddress)
 
   const [
     {
@@ -151,6 +156,13 @@ export const PlaceOrderAction: React.FC<{
   const isAllRequiredFieldSelected = formatRequiredFields.every(
     (item) => !isEmpty(item)
   );
+
+
+  useEffect(() => {
+    if (!selectedAddress) {
+      router.push('/profile-update');
+    }
+  }, [selectedAddress]);
 
   return (
     <>

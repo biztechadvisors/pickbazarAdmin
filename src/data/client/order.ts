@@ -12,7 +12,6 @@ import { crudFactory } from './curd-factory';
 import { HttpClient } from './http-client';
 
 export const orderClient = {
-
   ...crudFactory<Order, QueryOptions, CreateOrderInput>(API_ENDPOINTS.ORDERS),
 
   get: ({ id, language }: { id: string; language: string }) => {
@@ -30,11 +29,10 @@ export const orderClient = {
   },
 
   downloadInvoice: (input: GenerateInvoiceDownloadUrlInput) => {
-    console.log("downloadInvoice***", input)
+    console.log('downloadInvoice***', input);
     return HttpClient.post<string>(
       `${API_ENDPOINTS.ORDER_INVOICE_DOWNLOAD}`,
       input
     );
   },
-
 };

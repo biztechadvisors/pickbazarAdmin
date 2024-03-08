@@ -9,12 +9,29 @@ import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import EmailUpdateForm from '@/components/auth/email-update-form';
 import { AddressType } from '@/types';
 import UserAddressSelection from '@/components/UserAddressSelection';
+import { useEffect, useRef } from 'react';
 
 export default function ProfilePage() {
   const { t } = useTranslation();
   const { data, isLoading: loading, error } = useMeQuery();
+  const userAddressSelectionRef = useRef(null);
+
+
+
+  useEffect(() => {
+    if (data && userAddressSelectionRef.current) {
+      userAddressSelectionRef.current.scrollIntoView({
+        behavior: 'smooth',
+        block: 'start',
+      });
+    }
+  }, [data]);
   if (loading) return <Loader text={t('common:text-loading')} />;
   if (error) return <ErrorMessage message={error.message} />;
+  
+
+
+
 
   return (
     <>
@@ -29,11 +46,13 @@ export default function ProfilePage() {
       <ChangePasswordForm />
 
       {data?.dealer?.id && (
-        <UserAddressSelection
-          addresses={data.address}
-          dealerId={data.id}
-          type={AddressType.Billing}
-        />
+        <div ref={userAddressSelectionRef}>
+          <UserAddressSelection
+            addresses={data.address}
+            dealerId={data.id}
+            type={AddressType.Billing}
+          />
+        </div>
       )}
     </>
   );
