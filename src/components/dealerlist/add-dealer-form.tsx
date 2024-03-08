@@ -40,6 +40,8 @@ type FormValues = {
     product: any; 
     margin: string; 
   }[];
+  gst?: string | null;
+  pan?: string | null;
 };
 
 enum SubscriptionType {
@@ -69,7 +71,7 @@ function SelectCategory({
   defaultValue,
   control,
   errors,
-}: {
+} : {
   register: UseFormRegister<FormValues>;
   control: Control<FormValues>;
   defaultValue: any;
@@ -305,6 +307,8 @@ export default function CreateOrUpdateDealerForm({ initialValues, id }: IProps) 
       user: user!,
       dealerCategoryMargins: values.dealerCategoryMargins,
       dealerProductMargins: values.dealerProductMargins,
+      gst: values.gst,
+      pan: values.pan,
     };
 
 
@@ -363,6 +367,24 @@ export default function CreateOrUpdateDealerForm({ initialValues, id }: IProps) 
             label={t('Wallet Balance')}
             {...register('walletBalance')}
             error={t(errors.walletBalance?.message!)}
+            variant="outline"
+            className="mt-5"
+          // disabled={[].includes(Config.defaultLanguage)}
+          />
+
+          <Input
+            label={t('GST')}
+            {...register('gst')}
+            error={t(errors.gst?.message!)}
+            variant="outline"
+            className="mt-5"
+          // disabled={[].includes(Config.defaultLanguage)}
+          />
+
+           <Input
+            label={t('PAN')}
+            {...register('pan')}
+            error={t(errors.pan?.message!)}
             variant="outline"
             className="mt-5"
           // disabled={[].includes(Config.defaultLanguage)}
