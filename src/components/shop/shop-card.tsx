@@ -2,6 +2,9 @@ import Image from 'next/image';
 import { useTranslation } from 'next-i18next';
 import Link from '@/components/ui/link';
 import Badge from '@/components/ui/badge/badge';
+import { useAtom } from 'jotai';
+import { useState } from 'react';
+import { shopIdAtom } from '@/utils/atoms';
 
 type ShopCardProps = {
   shop: any;
@@ -11,6 +14,7 @@ const ShopCard: React.FC<ShopCardProps> = ({ shop }) => {
   const { t } = useTranslation();
 
   const isNew = false;
+
 
   return (
     <Link href={`/${shop?.slug}`}>

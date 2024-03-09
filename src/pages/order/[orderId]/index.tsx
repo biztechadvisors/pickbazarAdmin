@@ -30,6 +30,8 @@ import Image from 'next/image';
 import { useRouter } from 'next/router';
 import { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
+// import { jsPDF } from 'jspdf';
+// import 'jspdf-autotable';
 
 type FormValues = {
   order_status: any;
@@ -65,7 +67,6 @@ export default function OrderDetailsPage() {
   const {
     handleSubmit,
     control,
-
     formState: { errors },
   } = useForm<FormValues>({
     defaultValues: { order_status: order?.order_status ?? '' },
@@ -125,6 +126,8 @@ export default function OrderDetailsPage() {
   async function handleDownloadInvoice() {
     const { data } = await refetch();
 
+    console.log("Data****Invoice", data)
+
     if (data) {
       const a = document.createElement('a');
       a.href = data;
@@ -132,6 +135,7 @@ export default function OrderDetailsPage() {
       a.click();
     }
   }
+
 
   const columns = [
     {

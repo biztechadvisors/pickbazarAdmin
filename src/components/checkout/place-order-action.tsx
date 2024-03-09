@@ -16,6 +16,9 @@ import { useTranslation } from 'next-i18next';
 import { PaymentGateway } from '@/types';
 import { useMeQuery } from '@/data/user';
 import { useSettings } from '@/framework/rest/settings';
+import { dealerAddress } from '@/utils/atoms';
+import { useUser } from '@/framework/rest/user';
+import { useRouter } from 'next/router';
 
 export const PlaceOrderAction: React.FC<{
   className?: string;
@@ -25,7 +28,12 @@ export const PlaceOrderAction: React.FC<{
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const { createOrder, isLoading } = useCreateOrder();
   const { items } = useCart();
-  
+  const { me } = useUser();
+  const [selectedAddress] = useAtom(dealerAddress);
+  const router = useRouter();
+
+  console.log("selectedAddress*********", selectedAddress)
+
   const [
     {
       billing_address,
@@ -40,7 +48,7 @@ export const PlaceOrderAction: React.FC<{
       payment_sub_gateway,
       note,
       token,
-      payable_amount
+      payable_amount,
     },
   ] = useAtom(checkoutAtom);
   const [discount] = useAtom(discountAtom);
@@ -80,8 +88,11 @@ export const PlaceOrderAction: React.FC<{
       return;
     }
 
-    const isFullWalletPayment = (use_wallet_points && payable_amount == 0) ? true : false;
-    const gateWay = isFullWalletPayment ? PaymentGateway.FULL_WALLET_PAYMENT : payment_gateway;
+    const isFullWalletPayment =
+      use_wallet_points && payable_amount == 0 ? true : false;
+    const gateWay = isFullWalletPayment
+      ? PaymentGateway.FULL_WALLET_PAYMENT
+      : payment_gateway;
 
     let input = {
       //@ts-ignore
@@ -111,6 +122,7 @@ export const PlaceOrderAction: React.FC<{
       shipping_address: {
         ...(shipping_address?.address && shipping_address.address),
       },
+      saleBy: selectedAddress.address,
     };
     console.log("placeOrder", input)
     // if (payment_gateway === "STRIPE") {
@@ -144,6 +156,13 @@ export const PlaceOrderAction: React.FC<{
   const isAllRequiredFieldSelected = formatRequiredFields.every(
     (item) => !isEmpty(item)
   );
+
+
+  useEffect(() => {
+    if (!selectedAddress) {
+      router.push('/profile-update');
+    }
+  }, [selectedAddress]);
 
   return (
     <>
