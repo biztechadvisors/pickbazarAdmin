@@ -62,11 +62,11 @@ const AdminLayout: React.FC<{ children?: React.ReactNode }> = ({
         label: 'sidebar-nav-item-products',
         icon: 'ProductsIcon',
       },
-      {
-        href: Routes.order.list,
-        label: 'sidebar-nav-item-orders',
-        icon: 'OrdersIcon',
-      },
+      // {
+      //   href: Routes.order.list,
+      //   label: 'sidebar-nav-item-orders',
+      //   icon: 'OrdersIcon',
+      // },
       {
         href: Routes.refund.list,
         label: 'sidebar-nav-item-refunds',
@@ -97,7 +97,7 @@ const AdminLayout: React.FC<{ children?: React.ReactNode }> = ({
           Routes.type.list,
           // Routes.settings,
           Routes.product.list,
-          Routes.order.list,
+          // Routes.order.list,
           Routes.refund.list,
           Routes.reviews.list,
           Routes.category.list,
@@ -113,6 +113,7 @@ const AdminLayout: React.FC<{ children?: React.ReactNode }> = ({
       ))}
     </Fragment>
   );
+
 
   return (
     <div
