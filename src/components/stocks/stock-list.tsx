@@ -24,6 +24,7 @@ import { getAuthCredentials } from '@/utils/auth-utils';
 import { useUpdateQuantity } from '@/data/product';
 import Input from '../ui/input';
 import Button from '../ui/button';
+import { AlignType } from 'rc-table/lib/interface';
 
 export type IProps = {
   products: Product[] | undefined;
@@ -61,6 +62,8 @@ const StockList = ({
     column: null,
   });
 
+  console.log("stockss", products)
+
   const onHeaderClick = (column: string | null) => ({
     onClick: () => {
       onSort((currentSortDirection: SortOrder) =>
@@ -76,24 +79,17 @@ const StockList = ({
   });
 
   let columns = [
-    // {
-    //   title: t('table:table-item-image'),
-    //   dataIndex: 'image',
-    //   key: 'image',
-    //   align: alignLeft,
-    //   width: 74,
-    //   render: (image: any, { name }: { name: string }) => (
-    //     <div className="relative flex h-[42px] w-[42px] items-center">
-    //       <Image
-    //         src={image?.thumbnail ?? siteSettings.product.placeholder}
-    //         alt={name}
-    //         fill
-    //         sizes="(max-width: 768px) 100vw"
-    //         className="overflow-hidden rounded object-fill"
-    //       />
-    //     </div>
-    //   ),
-    // },
+
+    {
+      title: 'S.No',
+      dataIndex: 'id',
+      key: 'id',
+      align: 'center' as AlignType,
+      width: 64,
+      render: (text: string, record: any, index: number) => (
+        <span>{index + 1}</span>
+      ),
+    },
     {
       title: (
         <TitleWithSort
@@ -118,9 +114,19 @@ const StockList = ({
     },
 
     {
+      title: t('Stock Available'),
+      dataIndex: 'inStock',
+      key: 'inStock',
+      align: alignLeft,
+      render: (inStock: boolean) => (
+        <Badge text={t(inStock ? "In Stock":'Out Of Stock')} color={inStock? 'bg-accent' : 'bg-red-500'} />
+      ),
+    },
+
+    {
       title: (
         <TitleWithSort
-          title={t('table:table-item-stock')}
+          title={t('table:table-item-quantity')}
           ascending={
             sortingObj.sort === SortOrder.Asc &&
             sortingObj.column === 'quantity'

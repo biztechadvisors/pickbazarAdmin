@@ -14,11 +14,7 @@ const UserAddressSelection = ({ addresses, count, dealerId, type }) => {
     setSelectedAddress(address);
   };
 
-  if (!addresses) {
-    return <div>Loading...</div>;
-  }
-
-  if (!dealerId) {
+  if (!addresses || !dealerId) {
     return <div>Loading...</div>;
   }
 
@@ -50,32 +46,40 @@ const UserAddressSelection = ({ addresses, count, dealerId, type }) => {
             </button>
           </div>
           <div className="grid grid-cols-1 gap-2 md:gap-4">
-            {displayedAddresses.map((address, index) => (
-              <div
-                key={index}
-                className={`cursor-pointer rounded border border-gray-200 p-3 hover:bg-gray-50 md:p-4 ${
-                  selectedAddress === address ? 'border-green-500' : ''
-                }`}
-                onClick={() => handleAddressSelection(address)}
-              >
-                <h3 className="text-base font-normal">
-                  {address.address.street_address}
-                </h3>
-              </div>
-            ))}
-            <button
-              className="flex items-center text-sm font-semibold text-accent transition-colors duration-200 hover:text-accent-hover focus:text-accent-hover focus:outline-none"
-              onClick={() => setShowAllAddresses(!showAllAddresses)}
-            >
-              {showAllAddresses ? (
-                <MinusIcon className="h-4 w-4 stroke-2 me-0.5" />
-              ) : (
-                <PlusIcon className="h-4 w-4 stroke-2 me-0.5" />
-              )}
-              <span className="text-teal-600">
-                {showAllAddresses ? 'Show Less' : 'Show More'}
+            {displayedAddresses.length > 0 ? (
+              displayedAddresses.map((address, index) => (
+                <div
+                  key={index}
+                  className={`cursor-pointer rounded border border-gray-200 p-3 hover:bg-gray-50 md:p-4 ${
+                    selectedAddress === address ? 'border-green-500' : ''
+                  }`}
+                  onClick={() => handleAddressSelection(address)}
+                >
+                  <h3 className="text-base font-normal">
+                    {address.address.street_address}
+                  </h3>
+                </div>
+              ))
+            ) : (
+              <span className="relative rounded border border-border-200 bg-gray-100 px-5 py-6 text-center text-base">
+                No Address Available
               </span>
-            </button>
+            )}
+            {addresses.length > 0 && (
+              <button
+                className="flex items-center text-sm font-semibold text-accent transition-colors duration-200 hover:text-accent-hover focus:text-accent-hover focus:outline-none"
+                onClick={() => setShowAllAddresses(!showAllAddresses)}
+              >
+                {showAllAddresses ? (
+                  <MinusIcon className="h-4 w-4 stroke-2 me-0.5" />
+                ) : (
+                  <PlusIcon className="h-4 w-4 stroke-2 me-0.5" />
+                )}
+                <span className="text-teal-600">
+                  {showAllAddresses ? 'Show Less' : 'Show More'}
+                </span>
+              </button>
+            )}
           </div>
         </div>
       </div>

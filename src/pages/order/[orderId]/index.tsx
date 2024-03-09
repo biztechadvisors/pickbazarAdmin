@@ -30,8 +30,8 @@ import Image from 'next/image';
 import { useRouter } from 'next/router';
 import { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
-import { jsPDF } from 'jspdf';
-import 'jspdf-autotable';
+// import { jsPDF } from 'jspdf';
+// import 'jspdf-autotable';
 
 type FormValues = {
   order_status: any;
@@ -67,7 +67,6 @@ export default function OrderDetailsPage() {
   const {
     handleSubmit,
     control,
-
     formState: { errors },
   } = useForm<FormValues>({
     defaultValues: { order_status: order?.order_status ?? '' },

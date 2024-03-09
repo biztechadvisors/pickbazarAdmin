@@ -17,6 +17,8 @@ import { PaymentGateway } from '@/types';
 import { useMeQuery } from '@/data/user';
 import { useSettings } from '@/framework/rest/settings';
 import { dealerAddress } from '@/utils/atoms';
+import { useUser } from '@/framework/rest/user';
+import { useRouter } from 'next/router';
 
 export const PlaceOrderAction: React.FC<{
   className?: string;
@@ -28,6 +30,9 @@ export const PlaceOrderAction: React.FC<{
   const { items } = useCart();
   const { me } = useUser();
   const [selectedAddress] = useAtom(dealerAddress);
+  const router = useRouter();
+
+  console.log("selectedAddress*********", selectedAddress)
 
   const [
     {
@@ -117,7 +122,7 @@ export const PlaceOrderAction: React.FC<{
       shipping_address: {
         ...(shipping_address?.address && shipping_address.address),
       },
-      saleBy: selectedAddress,
+      saleBy: selectedAddress.address,
     };
     console.log("placeOrder", input)
     // if (payment_gateway === "STRIPE") {
@@ -137,13 +142,13 @@ export const PlaceOrderAction: React.FC<{
   let formatRequiredFields = isDigitalCheckout
     ? [customer_contact, payment_gateway, available_items]
     : [
-        customer_contact,
-        payment_gateway,
-        billing_address,
-        shipping_address,
-        delivery_time,
-        available_items,
-      ];
+      customer_contact,
+      payment_gateway,
+      billing_address,
+      shipping_address,
+      delivery_time,
+      available_items,
+    ];
   // if (!isDigitalCheckout && !me) {
   //   formatRequiredFields.push(customer_name);
   // }
@@ -151,6 +156,13 @@ export const PlaceOrderAction: React.FC<{
   const isAllRequiredFieldSelected = formatRequiredFields.every(
     (item) => !isEmpty(item)
   );
+
+
+  useEffect(() => {
+    if (!selectedAddress) {
+      router.push('/profile-update');
+    }
+  }, [selectedAddress]);
 
   return (
     <>
