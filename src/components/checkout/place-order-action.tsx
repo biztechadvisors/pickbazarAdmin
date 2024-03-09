@@ -122,7 +122,7 @@ export const PlaceOrderAction: React.FC<{
       shipping_address: {
         ...(shipping_address?.address && shipping_address.address),
       },
-      saleBy: selectedAddress,
+      saleBy: selectedAddress.address,
     };
     console.log("placeOrder", input)
     // if (payment_gateway === "STRIPE") {
