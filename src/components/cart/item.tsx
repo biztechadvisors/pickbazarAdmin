@@ -72,7 +72,8 @@ const CartItem = ({ item, id, email, phone }: CartItemProps) => {
 
       <div className="relative mx-4 flex h-10 w-10 flex-shrink-0 items-center justify-center overflow-hidden bg-gray-100 sm:h-16 sm:w-16">
         <Image
-          src={item?.image ?? '/'}
+          // src={item?.image ?? '/'}\
+          src={`${process?.env?.NEXT_PUBLIC_REST_API_ENDPOINT}/${item?.image ?? '/'}`}
           alt={item.name}
           fill
           sizes="(max-width: 768px) 100vw"

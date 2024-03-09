@@ -41,7 +41,8 @@ const LoginForm = () => {
   // export { matchedLinksState as matchedLinks };
 
   function onSubmit({ email, password }: LoginInput) {
-    login({email,password,},
+    login(
+      { email, password },
       {
         onSuccess: (data) => {
           if (data?.token) {
@@ -60,7 +61,7 @@ const LoginForm = () => {
             setErrorMessage('form:error-credential-wrong');
           }
         },
-        onError: () => { },
+        onError: () => {},
       }
     );
   }
