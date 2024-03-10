@@ -7,6 +7,7 @@ import { useMeQuery } from '@/data/user';
 import { useTranslation } from 'next-i18next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import EmailUpdateForm from '@/components/auth/email-update-form';
+import CreateOrUpdateDealerForm from '@/components/dealerlist/add-dealer-form';
 import { AddressType } from '@/types';
 import UserAddressSelection from '@/components/UserAddressSelection';
 import { useEffect, useRef } from 'react';
@@ -26,7 +27,6 @@ export default function ProfilePage() {
   }, [data]);
   if (loading) return <Loader text={t('common:text-loading')} />;
   if (error) return <ErrorMessage message={error.message} />;
-  
 
   return (
     <>
@@ -36,7 +36,6 @@ export default function ProfilePage() {
         </h1>
       </div>
       <EmailUpdateForm me={data} />
-
       <ProfileUpdateFrom me={data} />
       <ChangePasswordForm />
 

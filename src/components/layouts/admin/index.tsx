@@ -67,11 +67,11 @@ const AdminLayout: React.FC<{ children?: React.ReactNode }> = ({
       //   label: 'sidebar-nav-item-orders',
       //   icon: 'OrdersIcon',
       // },
-      {
-        href: Routes.refund.list,
-        label: 'sidebar-nav-item-refunds',
-        icon: 'RefundsIcon',
-      },
+      // {
+      //   href: Routes.refund.list,
+      //   label: 'sidebar-nav-item-refunds',
+      //   icon: 'RefundsIcon',
+      // },
       {
         href: Routes.reviews.list,
         label: 'sidebar-nav-item-reviews',
@@ -98,10 +98,12 @@ const AdminLayout: React.FC<{ children?: React.ReactNode }> = ({
           // Routes.settings,
           Routes.product.list,
           // Routes.order.list,
-          Routes.refund.list,
+          // Routes.refund.list,
           Routes.reviews.list,
           Routes.category.list,
-          Routes.tag.list
+          // Routes.sales,
+          // Routes.createSales,
+          Routes.tag.list,
         ].includes(link.href)
     );
   }
@@ -114,6 +116,9 @@ const AdminLayout: React.FC<{ children?: React.ReactNode }> = ({
     </Fragment>
   );
 
+  console.log('matchedLinks********', matchedLinks);
+
+  console.log('permissions ***********', permissions);
 
   return (
     <div

@@ -19,6 +19,7 @@ export const adminOwnerAndStaffOnly = [SUPER_ADMIN, STORE_OWNER, STAFF];
 export const superAdminOnly = [SUPER_ADMIN];
 export const adminOnly = [SUPER_ADMIN, ADMIN, DEALER];
 export const ownerOnly = [STORE_OWNER];
+export const dealerOnly = [DEALER];
 export const ownerAndStaffOnly = [STORE_OWNER, STAFF];
 
 export function setAuthCredentials(

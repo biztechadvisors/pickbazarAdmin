@@ -14,6 +14,8 @@ export const Routes = {
   profileUpdate: '/profile-update',
   checkout: '/orders/checkout',
   verifyEmail: '/verify-email',
+  sales: '/sales',
+  createSales: '/sales/create',
   shops: (slug: string) => `/shops/${encodeURIComponent(slug)}`,
   // orders: '/orders',
   orders: (tracking_number: string) =>
@@ -100,6 +102,9 @@ export const Routes = {
   },
   staff: {
     ...routesFactory('/staffs'),
+  },
+  stock: {
+    ...routesFactory('/stocks'),
   },
   refund: {
     ...routesFactory('/refunds'),

@@ -161,7 +161,7 @@ const UserMessageView = ({
         >
           <ArrowDown height="14" width="14" className="m-auto" />
         </div>
-         {/* render loader */}
+        {/*  render loader */}
         {children}
         {/* render content */}
         {isSuccess ? (
