@@ -26,4 +26,6 @@ export { ChatIcon } from '@/components/icons/sidebar/chat';
 export { DealerListIcon } from '@/components/icons/sidebar/dealerlist';
 export {TotalSaleIcon} from '@/components/icons/sidebar/total-sale';
 export { StoreNoticeIcon } from '@/components/icons/sidebar/store-notice';
-export { UploadIcon } from '@/components/icons/upload-icon'
+export { OrderListIcon } from '@/components/icons/sidebar/order-list';
+export { SalesIcon } from '@/components/icons/sidebar/sales';
+export { UploadIcon } from '@/components/icons/upload-icon';
