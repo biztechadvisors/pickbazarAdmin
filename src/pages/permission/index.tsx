@@ -27,13 +27,11 @@ export default function Permission() {
   const { data: meData } = useMeQuery();
   const id = meData?.id;
 
-  console.log("id", id)
-
   const canWrite = permissions.includes('super_admin')
     ? siteSettings.sidebarLinks
     : getPermission?.find(
-      (permission) => permission.type === 'sidebar-nav-item-permissions'
-    )?.write;
+        (permission) => permission.type === 'sidebar-nav-item-permissions'
+      )?.write;
 
   const {
     isLoading,
@@ -91,19 +89,19 @@ export default function Permission() {
                   <td className="border p-2">
                     {e.permissions.length > 0
                       ? e.permissions.slice(0, 3).map((permission, i) => (
-                        <React.Fragment key={i}>
-                          <li>
-                            {permission.type
-                              .replace('sidebar-nav-item-', '')
-                              .charAt(0)
-                              .toUpperCase() +
-                              permission.type
+                          <React.Fragment key={i}>
+                            <li>
+                              {permission.type
                                 .replace('sidebar-nav-item-', '')
-                                .slice(1)}
-                          </li>
-                          {i !== e.permissions.length - 1 && ' '}
-                        </React.Fragment>
-                      ))
+                                .charAt(0)
+                                .toUpperCase() +
+                                permission.type
+                                  .replace('sidebar-nav-item-', '')
+                                  .slice(1)}
+                            </li>
+                            {i !== e.permissions.length - 1 && ' '}
+                          </React.Fragment>
+                        ))
                       : ''}
                   </td>
                   {canWrite ? (

@@ -2,8 +2,6 @@ import { adminAndOwnerOnly, adminOwnerAndStaffOnly } from '@/utils/auth-utils';
 import { Routes } from '@/config/routes';
 import { dealerOnly, getAuthCredentials, hasAccess } from '@/utils/auth-utils';
 
-
-
 const Type = {
   Dealer: 'dealer',
   Admin: 'admin',
@@ -12,12 +10,11 @@ const Type = {
 };
 const { permissions } = getAuthCredentials();
 let permission = hasAccess(dealerOnly, permissions);
-let identify = permissions
-const matching: any = 'dealer'
+let identify = permissions;
+const matching: any = 'dealer';
 
-console.log("fetched items", permission, "working permissoin", permissions)
+// console.log("fetched items", permission, "working permissoin", permissions)
 export const siteSettings = {
-
   name: 'PickBazar',
   description: '',
   logo: {
@@ -62,6 +59,7 @@ export const siteSettings = {
         label: 'sidebar-nav-item-my-shops',
         icon: 'MyShopIcon',
       },
+
       {
         href: Routes.product.list,
         label: 'sidebar-nav-item-products',
@@ -179,16 +177,28 @@ export const siteSettings = {
       //   label: 'sidebar-nav-item-settings',
       //   icon: 'SettingsIcon',
       // },
-      { 
-        ...(permission && identify == matching) ? {
-        href: Routes.stock.list,
-        label: 'sidebar-nav-item-stocks',
-        icon: 'ProductsIcon',
-      } : {
-        href: Routes.settings,
-        label: 'sidebar-nav-item-settings',
-        icon: 'SettingsIcon',
-      }
+      {
+        ...(permission && identify == matching
+          ? {
+              href: Routes.stock.list,
+              label: 'sidebar-nav-item-stocks',
+              icon: 'ProductsIcon',
+            }
+          : {
+              href: Routes.settings,
+              label: 'sidebar-nav-item-settings',
+              icon: 'SettingsIcon',
+            }),
+      },
+      {
+        href: Routes.sales,
+        label: 'sidebar-nav-item-sales',
+        icon: 'MyShopIcon',
+      },
+      {
+        href: Routes.createSales,
+        label: 'sidebar-nav-item-create-sales',
+        icon: 'MyShopIcon',
       },
 
       // {
@@ -201,7 +211,6 @@ export const siteSettings = {
       //   label: 'sidebar-nav-item-store-notice',
       //   icon: 'StoreNoticeIcon',
       // },
-     
     ],
     shop: [
       {

@@ -7,15 +7,10 @@ import { useMeQuery } from '@/data/user';
 import { useTranslation } from 'next-i18next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import EmailUpdateForm from '@/components/auth/email-update-form';
-<<<<<<< HEAD
 import CreateOrUpdateDealerForm from '@/components/dealerlist/add-dealer-form';
 import { AddressType } from '@/types';
 import UserAddressSelection from '@/components/UserAddressSelection';
-=======
-import { AddressType } from '@/types';
-import UserAddressSelection from '@/components/UserAddressSelection';
 import { useEffect, useRef } from 'react';
->>>>>>> 1f34e3463bdf25cad0a6b9bce38a2d77dfa3704b
 
 export default function ProfilePage() {
   const { t } = useTranslation();
@@ -32,7 +27,6 @@ export default function ProfilePage() {
   }, [data]);
   if (loading) return <Loader text={t('common:text-loading')} />;
   if (error) return <ErrorMessage message={error.message} />;
-  
 
   return (
     <>

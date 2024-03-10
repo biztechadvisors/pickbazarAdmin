@@ -44,6 +44,8 @@
   "pixel": "Pixel",
   "text-loading": "Loading...",
   "sidebar-nav-item-dashboard": "Dashboard",
+  "sidebar-nav-item-create-sales": "Create Sales",
+  "sidebar-nav-item-sales": "Sales",
   "sidebar-nav-item-inventory-dashboard": "Account Details",
   "sidebar-nav-item-products": "Products",
   "sidebar-nav-item-attributes": "Attributes",

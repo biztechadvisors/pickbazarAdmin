@@ -118,11 +118,7 @@ export const useProductQuery = ({ slug, userId, language }: GetParams) => {
 };
 
 export const useProductsQuery = (params: Partial<ProductQueryOptions>, options: any = {}) => {
-  const { data, error, isLoading } = useQuery<ProductPaginator, Error>(
-    [API_ENDPOINTS.PRODUCTS, params],
-    ({ queryKey, pageParam }) =>
-      productClient.paginated(Object.assign({}, queryKey[1], pageParam)),
-    {
+  const { data, error, isLoading } = useQuery<ProductPaginator, Error>([API_ENDPOINTS.PRODUCTS, params],({ queryKey, pageParam }) =>productClient.paginated(Object.assign({}, queryKey[1], pageParam)),{
       keepPreviousData: true,
       ...options,
     }

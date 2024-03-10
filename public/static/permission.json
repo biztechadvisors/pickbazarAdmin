@@ -33,6 +33,8 @@
     "REVIEWS": "sidebar-nav-item-reviews",
     "SETTINGS": "sidebar-nav-item-settings",
     "STAFFS": "sidebar-nav-item-staffs",
-    "STOCK": "sidebar-nav-item-stocks"
+    "STOCK": "sidebar-nav-item-stocks",
+    "SALES": "sidebar-nav-item-sales",
+    "CREATE_SALES": "sidebar-nav-item-create-sales"
   }
 }

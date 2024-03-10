@@ -94,7 +94,6 @@ export function useOrder({ tracking_number }: { tracking_number: string }) {
   };
 }
 
-
 export function useRefunds(options: Pick<QueryOptions, 'limit'>) {
   const { locale } = useRouter();
 
@@ -230,63 +229,74 @@ export function useCreateOrder() {
   // Get user details from UserService
   const { username, sub } = UserService.getUserDetails();
 
-  const { mutate: createOrder, isLoading: orderLoading } = useMutation(client.orders.create, {
-    onSuccess: async (response) => {
-      const { id, payment_gateway, payment_intent } = response;
-      if (id) {
-        let idStr = '';
+  const { mutate: createOrder, isLoading: orderLoading } = useMutation(
+    client.orders.create,
+    {
+      onSuccess: async (response) => {
+        const { id, payment_gateway, payment_intent } = response;
         if (id) {
-          idStr = id.toString();
+          let idStr = '';
+          if (id) {
+            idStr = id.toString();
+          }
+          if (
+            [
+              PaymentGateway.COD,
+              PaymentGateway.CASH,
+              PaymentGateway.FULL_WALLET_PAYMENT,
+            ].includes(payment_gateway as PaymentGateway)
+          ) {
+            router.push(Routes.orders(idStr));
+          } else if (payment_intent?.payment_intent_info?.is_redirect) {
+            router.push(
+              payment_intent?.payment_intent_info?.redirect_url as string
+            );
+          } else {
+            router.push(`${Routes.orders(idStr)}/payment`);
+          }
         }
-        if (
-          [
-            PaymentGateway.COD,
-            PaymentGateway.CASH,
-            PaymentGateway.FULL_WALLET_PAYMENT,
-          ].includes(payment_gateway as PaymentGateway)
-        ) {
-          router.push(Routes.orders(idStr));
-        } else if (payment_intent?.payment_intent_info?.is_redirect) {
-          router.push(
-            payment_intent?.payment_intent_info?.redirect_url as string
-          );
-        } else {
-          router.push(`${Routes.orders(idStr)}/payment`);
-        }
-      }
-    },
-    onError: (error) => {
-      const {
-        response: { data },
-      }: any = error ?? {};
-      toast.error(data?.message);
-    },
-  });
+      },
+      onError: (error) => {
+        const {
+          response: { data },
+        }: any = error ?? {};
+        toast.error(data?.message);
+      },
+    }
+  );
 
-  console.log("stock----266")
-  const { mutate: createStock, isLoading: stockLoading } = useMutation(client.stocks.create, {
-    onSuccess: (response) => {
-      const { id } = response;
-      console.log("Success-Stock: ", id);
-    },
-    onError: (error) => {
-      const {
-        response: { data },
-      }: any = error ?? {};
-      toast.error(data?.message);
-    },
-  });
+  console.log('stock----266');
+  const { mutate: createStock, isLoading: stockLoading } = useMutation(
+    client.stocks.create,
+    {
+      onSuccess: (response) => {
+        const { id } = response;
+        console.log('Success-Stock: ', id);
+      },
+      onError: (error) => {
+        const {
+          response: { data },
+        }: any = error ?? {};
+        toast.error(data?.message);
+      },
+    }
+  );
 
-  console.log("stock----280")
+  console.log('stock----280');
 
   async function checkAndCreateStocks(input: CreateOrderInput) {
     // Check if sub and input.customer_id are equal
-    console.log("checkAndCreateStocks--267", input.dealerId, " &&&& ", input.customer_id)
+    console.log(
+      'checkAndCreateStocks--267',
+      input.dealerId,
+      ' &&&& ',
+      input.customer_id
+    );
     if (input.dealerId === input.customer_id) {
-      console.log(input.dealerId === input.customer_id)
+      console.log(input.dealerId === input.customer_id);
       const stockInput: CreateStockInput = {
         user_id: parseInt(input.dealerId),
-        products: input.products
+        products: input.products,
       };
       await createStock(stockInput);
     }
@@ -319,7 +329,6 @@ export function useCreateOrder() {
     isLoading: orderLoading || stockLoading,
   };
 }
-
 
 export function useGenerateDownloadableUrl() {
   const { mutate: getDownloadableUrl } = useMutation(
