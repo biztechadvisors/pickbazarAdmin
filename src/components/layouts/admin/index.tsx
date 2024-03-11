@@ -47,11 +47,11 @@ const AdminLayout: React.FC<{ children?: React.ReactNode }> = ({
         label: 'sidebar-nav-item-attributes',
         icon: 'AttributeIcon',
       },
-      {
-        href: Routes.type.list,
-        label: 'sidebar-nav-item-groups',
-        icon: 'TypesIcon',
-      },
+      // {
+      //   href: Routes.type.list,
+      //   label: 'sidebar-nav-item-groups',
+      //   icon: 'TypesIcon',
+      // },
       {
         href: Routes.category.list,
         label: 'sidebar-nav-item-categories',
@@ -94,7 +94,7 @@ const AdminLayout: React.FC<{ children?: React.ReactNode }> = ({
       (link) =>
         ![
           Routes.attribute.list,
-          Routes.type.list,
+          // Routes.type.list,
           // Routes.settings,
           Routes.product.list,
           // Routes.order.list,
