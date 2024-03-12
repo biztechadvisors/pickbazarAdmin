@@ -385,14 +385,14 @@ export default function CreateOrUpdateTypeForm({ initialValues }: IProps) {
 
       <div className="mb-4 text-end">
         {/* {initialValues && ( */}
-          <Button
-            variant="outline"
-            onClick={router.back}
-            className="me-4"
-            type="button"
-          >
-            {t('form:button-label-back')}
-          </Button>
+        <Button
+          variant="outline"
+          onClick={router.back}
+          className="me-4"
+          type="button"
+        >
+          {t('form:button-label-back')}
+        </Button>
         {/* )} */}
 
         <Button loading={creating || updating}>
