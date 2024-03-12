@@ -32,6 +32,7 @@ import { useTypesQuery } from '@/data/type';
 import { useSettingsQuery } from '@/data/settings';
 import { useModalAction } from '../ui/modal/modal.context';
 import OpenAIButton from '../openAI/openAI.button';
+import { useMeQuery } from '@/data/user';
 
 export const chatbotAutoSuggestion = ({ name }: { name: string }) => {
   return [
@@ -216,6 +217,10 @@ export default function CreateOrUpdateCategoriesForm({
     resolver: yupResolver(categoryValidationSchema),
   });
 
+  const {data:meData}=useMeQuery()
+
+  console.log("meData", meData)
+
   const { openModal } = useModalAction();
   const { locale } = router;
   const {
@@ -267,14 +272,18 @@ export default function CreateOrUpdateCategoriesForm({
       createCategory({
         ...input,
         ...(initialValues?.slug && { slug: initialValues.slug }),
+        shop_id: meData?.shops?.[0]?.id || initialValues?.shop_id,
       });
     } else {
       updateCategory({
         ...input,
         id: initialValues.id!,
+        shop_id: meData?.shops?.[0]?.id
       });
     }
   };
+
+  console.log("shop_id", meData?.shops?.[0]?.id)
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
