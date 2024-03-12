@@ -20,6 +20,7 @@ import TextArea from '@/components/ui/text-area';
 import RadioCard from '@/components/ui/radio-card/radio-card';
 import Checkbox from '@/components/ui/checkbox/checkbox';
 import { useCreateTypeMutation, useUpdateTypeMutation } from '@/data/type';
+import { useMeQuery } from '@/data/user';
 
 export const updatedIcons = typeIconList.map((item: any) => {
   item.label = (
@@ -149,6 +150,8 @@ export default function CreateOrUpdateTypeForm({ initialValues }: IProps) {
     control,
     name: 'banners',
   });
+
+  const { data: meData } = useMeQuery();
   const layoutType = watch('settings.layoutType');
 
   const { mutate: createType, isLoading: creating } = useCreateTypeMutation();
@@ -187,11 +190,13 @@ export default function CreateOrUpdateTypeForm({ initialValues }: IProps) {
       createType({
         ...input,
         ...(initialValues?.slug && { slug: initialValues.slug }),
+        shop_id: meData?.shops?.[0]?.id || initialValues?.shop_id,
       });
     } else {
       updateType({
         ...input,
         id: initialValues.id!,
+        shop_id: meData?.shops?.[0]?.id,
       });
     }
   };
