@@ -10,19 +10,14 @@ import { stockClient } from './client/stocks';
 //   });
 // };
 
-
 export const useGetStock = (id: any) => {
-  return useQuery<any, Error>(
-    [API_ENDPOINTS.STOCK, id],
-    async () => {
-      try {
-        const response = await stockClient.getById(id);
-        console.log("res", response);
-        return response;
-      } catch (error) {
-        throw new Error(error.message);
-      }
+  return useQuery<any, Error>([API_ENDPOINTS.STOCK, id], async () => {
+    try {
+      const response = await stockClient.getById(id);
+      console.log('res', response);
+      return response;
+    } catch (error) {
+      throw new Error(error.message);
     }
-  );
+  });
 };
-
