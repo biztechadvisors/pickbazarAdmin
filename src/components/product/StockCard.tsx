@@ -64,14 +64,14 @@ const StockCard = ({ item, isChecked, id, email, phone, inStock }: Props) => {
     return openModal('SELECT_PRODUCT_VARIATION', slug);
   }
 
-  console.log("email", email)
-
   return (
     <div className="cart-type-neon h-full overflow-hidden rounded border border-border-200 bg-light shadow-sm transition-all duration-200 hover:shadow-md">
       <div className="relative flex h-48 w-auto items-center justify-center sm:h-64">
         <span className="sr-only">{t('text-product-image')}</span>
         <Image
-          src={`${process?.env?.NEXT_PUBLIC_REST_API_ENDPOINT}/${image?.original ?? 'productPlaceholder'}`}
+          src={`${process?.env?.NEXT_PUBLIC_REST_API_ENDPOINT}/${
+            image?.original ?? 'productPlaceholder'
+          }`}
           alt={name}
           fill
           sizes="(max-width: 768px) 100vw"
@@ -160,4 +160,3 @@ const StockCard = ({ item, isChecked, id, email, phone, inStock }: Props) => {
 };
 
 export default StockCard;
-
