@@ -1,10 +1,7 @@
-import Pagination from '@/components/ui/pagination';
-import Image from 'next/image';
 import { Table } from '@/components/ui/table';
 import { siteSettings } from '@/settings/site.settings';
-import usePrice from '@/utils/use-price';
 import Badge from '@/components/ui/badge/badge';
-import { Router, useRouter } from 'next/router';
+import { useRouter } from 'next/router';
 import { useTranslation } from 'next-i18next';
 import {
   Product,
@@ -13,17 +10,17 @@ import {
 import { useIsRTL } from '@/utils/locals';
 import { useState } from 'react';
 import TitleWithSort from '@/components/ui/title-with-sort';
-import { newPermission} from '@/contexts/permission/storepermission';
+import { newPermission } from '@/contexts/permission/storepermission';
 import { useAtom } from 'jotai';
 import { getAuthCredentials } from '@/utils/auth-utils';
 import { AlignType } from 'rc-table/lib/interface';
 import Input from '../ui/input';
 import Button from '../ui/button';
-import { useUpdateStockQuantity } from '@/data/stock';
+import { useGetStock, useUpdateStockQuantity } from '@/data/stock';
+import Checkbox from '../ui/checkbox/checkbox';
 
 export type IProps = {
-  products: Product[] | undefined;
-  me:any;
+  me: any;
   onPagination: (current: number) => void;
   onSort: (current: any) => void;
   onOrder: (current: string) => void;
@@ -35,7 +32,6 @@ type SortingObjType = {
 };
 
 const StockList = ({
-  products,
   me,
   onSort,
   onOrder,
@@ -46,6 +42,7 @@ const StockList = ({
   const { mutate: updateQuantity, isLoading: updating } = useUpdateStockQuantity();
   const { permissions } = getAuthCredentials();
   const [getPermission, _] = useAtom(newPermission)
+  const { data: stocks, isLoading: loading, error } = useGetStock(me?.id);
   const canWrite = permissions.includes('super_admin')
     ? siteSettings.sidebarLinks.admin
     : getPermission?.find(
@@ -99,7 +96,7 @@ const StockList = ({
       width: 300,
       ellipsis: true,
       onHeaderCell: () => onHeaderClick('name'),
-      render: (text:any) => (
+      render: (text: any) => (
         <span>{text.name}</span>
       ),
     },
@@ -108,41 +105,19 @@ const StockList = ({
       title: t('Stock Available'),
       dataIndex: 'inStock',
       key: 'inStock',
-      align: alignLeft,
+      align: 'center',
       render: (inStock: boolean) => (
-        <Badge text={t(inStock ? "In Stock":'Out Of Stock')} color={inStock? 'bg-accent' : 'bg-red-500'} />
+        <Badge text={t(inStock ? "In Stock" : 'Out Of Stock')} color={inStock ? 'bg-accent' : 'bg-red-500'} />
       ),
     },
 
     // {
-    //   title: t('table:table-item-status'),
+    //   title: t('Status'),
     //   dataIndex: 'status',
     //   key: 'status',
-    //   align: 'left',
-    //   width: 180,
-    //   render: (status: string, record: any) => (
-    //     <div
-    //       className={`flex justify-start ${record?.quantity > 0 && record?.quantity < 10
-    //         ? 'flex-col items-baseline space-y-3 3xl:flex-row 3xl:space-x-3 3xl:space-y-0 rtl:3xl:space-x-reverse'
-    //         : 'items-center space-x-3 rtl:space-x-reverse'
-    //         }`}
-    //     >
-    //       <Badge
-    //         text={status}
-    //         color={
-    //           status
-    //             ? 'bg-yellow-400'
-    //             : 'bg-accent'
-    //         }
-    //       />
-    //       {record?.quantity > 0 && record?.quantity < 10 && (
-    //         <Badge
-    //           text={t('common:text-low-quantity')}
-    //           color="bg-red-600"
-    //           animate={true}
-    //         />
-    //       )}
-    //     </div>
+    //   align: 'center',
+    //   render: (status: boolean) => (
+    //     <span>{status ? "true" : "false"}</span>
     //   ),
     // },
 
@@ -150,22 +125,87 @@ const StockList = ({
       title: t('Status'),
       dataIndex: 'status',
       key: 'status',
-      align: alignLeft,
-      render: (status: boolean) => (
-        <span>{status? "Active":"Inactive"}</span>
-        // <Badge text={t(status ? "In Stock":'Out Of Stock')} color={status? 'bg-accent' : 'bg-red-500'} />
-      ),
+      align: 'center',
+      render: (status: boolean, record: any) => {
+        const handleStatusChange = (key: any, checked: boolean): void => {
+        };
+    
+        return (
+          <>
+            <Checkbox
+              type="checkbox"
+              // checked={status}
+              onChange={(e) => handleStatusChange(record.id, e.target.checked)} 
+              name={'status'}            />
+            {/* You might need to replace `record.key` with the appropriate value */}
+          </>
+        );
+      }
     },
+    
 
     {
-      title: t('Pending Quantity'),
+      title: (
+        <TitleWithSort
+          title={t('Pending Quantity')}
+          ascending={
+            sortingObj.sort === SortOrder.Asc &&
+            sortingObj.column === 'quantity'
+          }
+          isActive={sortingObj.column === 'quantity'}
+        />
+      ),
+      className: 'cursor-pointer',
       dataIndex: 'ordPendQuant',
       key: 'ordPendQuant',
       align: 'center',
-      width: 160,
-      render: function renderQuantity(ordPendQuant: any) {
-        return <span>{ordPendQuant}</span>;
-      },
+      width: 150,
+      onHeaderCell: () => onHeaderClick('quantity'),
+      render: (quantity: number, record: any) => {
+        const [editMode, setEditMode] = useState(false);
+        const [editedQuantity, setEditedQuantity] = useState(quantity);
+        const [updatedQuantity, setUpdatedQuantity] = useState(quantity);
+        const handleShowQuantity = () => {
+          setEditMode(true);
+        };
+
+        const handleEditQuantity = async () => {
+          // Handle logic to save edited quantity
+          const data = {
+            user_id: me?.id,
+            quantity: record.quantity,
+            status: record.status,
+            inStock: record.inStock,
+            ordPendQuant: editedQuantity,
+            product: record.product.id,
+          };
+          updateQuantity(data);
+          setUpdatedQuantity(editedQuantity);
+          setEditMode(false);
+        };
+
+        return (
+          <div>
+            {editMode ? (
+              <>
+                <Input
+                  type="number"
+                  defaultValue={quantity}
+                  onChange={(e) => setEditedQuantity(Number(e.target.value))} name={''} />
+                <Button onClick={handleEditQuantity}
+                  size='small'
+                  className='mt-2'
+                >Update</Button>
+              </>
+            ) : (
+              <>
+                {/* <Button onClick={handleShowQuantity}>Show</Button> */}
+                <span onClick={handleShowQuantity} className='font-semibold text-accent underline transition-colors duration-200 ms-1 hover:text-accent-hover hover:no-underline focus:text-accent-700 focus:no-underline focus:outline-none'>{updatedQuantity}</span>
+              </>
+            )}
+          </div>
+        );
+      }
     },
 
     {
@@ -197,17 +237,16 @@ const StockList = ({
           // Handle logic to save edited quantity
           const data = {
             user_id: me?.id,
-            quantity:record.ordPendQuant === 0 && record.quantity || editedQuantity,
-            status:record.status,
-            inStock:record.inStock,
-            ordPendQuant: Math.max(record.ordPendQuant - editedQuantity, 0),
-            product:record.product.id,
+            quantity: editedQuantity,
+            status: record.status,
+            inStock: record.quantity === 0 && false || true,
+            ordPendQuant: record.ordPendQuant,
+            product: record.product.id,
           };
           updateQuantity(data);
           setUpdatedQuantity(editedQuantity);
           setEditMode(false);
         };
-
 
         return (
           <div>
@@ -216,8 +255,7 @@ const StockList = ({
                 <Input
                   type="number"
                   defaultValue={quantity}
-                  onChange={(e) => setEditedQuantity(Number(e.target.value))}
-                />
+                  onChange={(e) => setEditedQuantity(Number(e.target.value))} name={''} />
                 <Button onClick={handleEditQuantity}
                   size='small'
                   className='mt-2'
@@ -239,8 +277,6 @@ const StockList = ({
     columns = columns?.filter((column) => column?.key !== 'shop');
   }
 
-  console.log("productsss", products);
-
   return (
     <>
       <div className="mb-6 overflow-hidden rounded shadow">
@@ -248,7 +284,7 @@ const StockList = ({
           /* @ts-ignore */
           columns={columns}
           emptyText={t('table:empty-table-data')}
-          data={products}
+          data={stocks}
           rowKey="id"
           scroll={{ x: 900 }}
         />

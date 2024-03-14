@@ -50,7 +50,7 @@ export const AddToCart = ({
     isInCart,
   } = useCart();
   const item = generateCartItem(data, variation);
-  const customerData: CustomerData = {
+  const customerData: any = {
     customerId: id,
     email: email,
     phone: phone? phone : '',

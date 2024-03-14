@@ -11,8 +11,6 @@ import {
   calculateTotalItems,
   calculateTotal,
 } from './cart.utils';
-import { cartsClient } from '@/data/client/carts';
-import { toast } from 'react-toastify';
 
 interface Metadata {
   [key: string]: any;
@@ -27,6 +25,7 @@ type Action =
   | { type: 'RESET_CART' };
 
 export interface State {
+  customerId: any;
   items: Item[];
   isEmpty: boolean;
   totalItems: number;

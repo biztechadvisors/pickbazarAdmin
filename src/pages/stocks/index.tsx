@@ -30,9 +30,8 @@ export default function StockPage() {
   const toggleVisible = () => {
     setVisible((v) => !v);
   };
-  const {data:user} = useMeQuery()
-
-  const { data, isLoading, error } = useGetStock(user?.id);
+  
+  const {data:user,isLoading,error} = useMeQuery()
 
   if (isLoading) return <Loader text={t('common:text-loading')} />;
   if (error) return <ErrorMessage message={error.message} />;
@@ -62,7 +61,7 @@ export default function StockPage() {
         </div>
       </Card>
       <StockList
-        products={data}
+        // products={data}
         // paginatorInfo={paginatorInfo}
         me={user}
         onPagination={handlePagination}
