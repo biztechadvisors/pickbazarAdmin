@@ -293,6 +293,8 @@ class Client {
     create: (input: CreateOrderInput) =>
       HttpClient.post<Order>(API_ENDPOINTS.ORDERS, input),
 
+    orderByStock:(input:CreateOrderInput)=>HttpClient.post<Order>(API_ENDPOINTS.ORDER_BY_STOCK,input),  
+
     savePaymentId: (input: any) =>
       HttpClient.post(API_ENDPOINTS.SAVE_PAYMENTID, input),
 

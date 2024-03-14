@@ -83,8 +83,7 @@ const AdminLayout: React.FC<{ children?: React.ReactNode }> = ({
         icon: 'TagIcon',
       },
     ];
-  } 
-  else if (router.pathname === Routes.type.list) {
+  } else if (router.pathname === Routes.type.list) {
     matchedLinks = [
       {
         href: Routes.attribute.list,
@@ -127,11 +126,10 @@ const AdminLayout: React.FC<{ children?: React.ReactNode }> = ({
         icon: 'TagIcon',
       },
     ];
-  } 
-  else if (router.pathname === Routes.attribute.list) {
+  } else if (router.pathname === Routes.attribute.list) {
     matchedLinks = [
       {
-        href:`${Routes.dashboard}`,
+        href: `${Routes.dashboard}`,
         label: 'sidebar-nav-item-inventory-dashboard',
         icon: 'DashboardIcon',
       },
@@ -176,11 +174,10 @@ const AdminLayout: React.FC<{ children?: React.ReactNode }> = ({
         icon: 'TagIcon',
       },
     ];
-  } 
-  else if (router.pathname === Routes.category.list) {
+  } else if (router.pathname === Routes.category.list) {
     matchedLinks = [
       {
-        href:`${Routes.dashboard}`,
+        href: `${Routes.dashboard}`,
         label: 'sidebar-nav-item-inventory-dashboard',
         icon: 'DashboardIcon',
       },
@@ -225,11 +222,10 @@ const AdminLayout: React.FC<{ children?: React.ReactNode }> = ({
         icon: 'TagIcon',
       },
     ];
-  } 
-  else if (router.pathname === Routes.product.list) {
+  } else if (router.pathname === Routes.product.list) {
     matchedLinks = [
       {
-        href:`${Routes.dashboard}`,
+        href: `${Routes.dashboard}`,
         label: 'sidebar-nav-item-inventory-dashboard',
         icon: 'DashboardIcon',
       },
@@ -274,11 +270,10 @@ const AdminLayout: React.FC<{ children?: React.ReactNode }> = ({
         icon: 'TagIcon',
       },
     ];
-  } 
-  else if (router.pathname === Routes.reviews.list) {
+  } else if (router.pathname === Routes.reviews.list) {
     matchedLinks = [
       {
-        href:`${Routes.dashboard}`,
+        href: `${Routes.dashboard}`,
         label: 'sidebar-nav-item-inventory-dashboard',
         icon: 'DashboardIcon',
       },
@@ -323,11 +318,10 @@ const AdminLayout: React.FC<{ children?: React.ReactNode }> = ({
         icon: 'TagIcon',
       },
     ];
-  } 
-  else if (router.pathname === Routes.tag.list) {
+  } else if (router.pathname === Routes.tag.list) {
     matchedLinks = [
       {
-        href:`${Routes.dashboard}`,
+        href: `${Routes.dashboard}`,
         label: 'sidebar-nav-item-inventory-dashboard',
         icon: 'DashboardIcon',
       },
@@ -372,8 +366,7 @@ const AdminLayout: React.FC<{ children?: React.ReactNode }> = ({
         icon: 'TagIcon',
       },
     ];
-  } 
-  else {
+  } else {
     matchedLinks = permissions.includes('super_admin')
       ? siteSettings.sidebarLinks.admin
       : siteSettings.sidebarLinks.admin.filter((link) =>

@@ -18,6 +18,8 @@ import { Config } from '@/config';
 import { newPermission } from '@/contexts/permission/storepermission';
 import { useAtom } from 'jotai';
 import { siteSettings } from '@/settings/site.settings';
+import { useQuery } from 'react-query';
+import { useMeQuery } from '@/data/user';
 
 export default function Categories() {
   const { locale } = useRouter();
@@ -27,6 +29,11 @@ export default function Categories() {
   const { t } = useTranslation();
   const [orderBy, setOrder] = useState('created_at');
   const [sortedBy, setColumn] = useState<SortOrder>(SortOrder.Desc);
+  const {data:meData}=useMeQuery()
+
+  const shop: string | undefined = meData?.shops?.[0]?.id;
+  
+ 
   const { categories, paginatorInfo, loading, error } = useCategoriesQuery({
     limit: 20,
     page,
@@ -36,7 +43,9 @@ export default function Categories() {
     sortedBy,
     parent: null,
     language: locale,
+    shop
   });
+  
 
   const [getPermission,_]=useAtom(newPermission)
   const { permissions } = getAuthCredentials();
@@ -45,6 +54,8 @@ export default function Categories() {
    :getPermission?.find(
     (permission) => permission.type === 'sidebar-nav-item-categories'
   )?.write;
+
+  
 
   if (loading) return <Loader text={t('common:text-loading')} />;
   if (error) return <ErrorMessage message={error.message} />;

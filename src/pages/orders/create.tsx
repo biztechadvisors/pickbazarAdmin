@@ -42,11 +42,11 @@ export default function ProductsPage() {
     setVisible((v) => !v);
   };
 
-  const { data: meData, } = useMeQuery();
+  const { data: meData } = useMeQuery();
 
   const { id, email, contact } = meData || {};
 
-  console.log("Datadfsdf", id, email, contact)
+  console.log('Datadfsdf', id, email, contact);
 
   const userId = meData?.dealer?.id;
 
@@ -63,15 +63,15 @@ export default function ProductsPage() {
     userId,
   });
 
-  console.log("products******", products)
+  console.log('products******', products);
 
-  const [getPermission, _] = useAtom(newPermission)
+  const [getPermission, _] = useAtom(newPermission);
   const { permissions } = getAuthCredentials();
   const canWrite = permissions.includes('super_admin')
     ? siteSettings.sidebarLinks
     : getPermission?.find(
-      (permission) => permission.type === 'sidebar-nav-item-create-order'
-    )?.write;
+        (permission) => permission.type === 'sidebar-nav-item-create-order'
+      )?.write;
 
   if (loading) return <Loader text={t('common:text-loading')} />;
   if (error) return <ErrorMessage message={error.message} />;
@@ -84,7 +84,7 @@ export default function ProductsPage() {
     setPage(current);
   }
 
-return (
+  return (
     <>
       <Card className="mb-8 flex flex-col">
         <div className="flex w-full flex-col items-center md:flex-row">

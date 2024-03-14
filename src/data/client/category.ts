@@ -14,6 +14,7 @@ export const categoryClient = {
     API_ENDPOINTS.CATEGORIES
   ),
   paginated: ({ type, name, ...params }: Partial<CategoryQueryOptions>) => {
+    console.log("params", params)
     return HttpClient.get<CategoryPaginator>(API_ENDPOINTS.CATEGORIES, {
       searchJoin: 'and',
       ...params,

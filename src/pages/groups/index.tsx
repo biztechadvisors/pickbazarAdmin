@@ -18,6 +18,7 @@ import { Config } from '@/config';
 import { useAtom } from 'jotai';
 import { newPermission } from '@/contexts/permission/storepermission';
 import { siteSettings } from '@/settings/site.settings';
+import { useMeQuery } from '@/data/user';
 
 export default function TypesPage() {
   const { locale } = useRouter();
@@ -25,11 +26,15 @@ export default function TypesPage() {
   const [orderBy, setOrder] = useState('created_at');
   const [sortedBy, setColumn] = useState<SortOrder>(SortOrder.Desc);
   const [searchTerm, setSearchTerm] = useState('');
+  const {data:meData}=useMeQuery()
+
+  const shop: string | undefined = meData?.shops?.[0]?.id;
   const { types, loading, error } = useTypesQuery({
     name: searchTerm,
     language: locale,
     orderBy,
     sortedBy,
+    shop
   });
   const [getPermission, _] = useAtom(newPermission);
   const { permissions } = getAuthCredentials();
@@ -45,7 +50,6 @@ export default function TypesPage() {
   function handleSearch({ searchText }: { searchText: string }) {
     setSearchTerm(searchText);
   }
-
   return (
     <>
       <Card className="mb-8 flex flex-col items-center xl:flex-row">

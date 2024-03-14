@@ -12,6 +12,7 @@ import {
   calculateTotal,
 } from './cart.utils';
 import { cartsClient } from '@/data/client/carts';
+import { stat } from 'fs';
 import { toast } from 'react-toastify';
 
 interface Metadata {
@@ -46,6 +47,8 @@ export const initialState: State = {
 let updateCartTimeout: NodeJS.Timeout | null = null;
 
 export function cartReducer(state: State, action: Action): State {
+  console.log('state', state);
+  console.log('action', action);
   switch (action.type) {
     case 'ADD_ITEM_WITH_QUANTITY': {
       const items = addItemWithQuantity(
@@ -56,8 +59,7 @@ export function cartReducer(state: State, action: Action): State {
       if (updateCartTimeout) {
         clearTimeout(updateCartTimeout);
       }
-      
-      return generateFinalState(state,action, items);
+      return generateFinalState(state, action, items);
     }
     case 'REMOVE_ITEM_OR_QUANTITY': {
       const items = removeItemOrQuantity(
@@ -65,19 +67,19 @@ export function cartReducer(state: State, action: Action): State {
         action.id,
         (action.quantity = 1)
       );
-      return generateFinalState(state,action, items);
+      return generateFinalState(state, action, items);
     }
     case 'ADD_ITEM': {
       const items = addItem(state.items, action.item);
-      return generateFinalState(state,action, items);
+      return generateFinalState(state, action, items);
     }
     case 'REMOVE_ITEM': {
       const items = removeItem(state.items, action.id);
-      return generateFinalState(state,action, items);
+      return generateFinalState(state, action, items);
     }
     case 'UPDATE_ITEM': {
       const items = updateItem(state.items, action.id, action.item);
-      return generateFinalState(state,action, items);
+      return generateFinalState(state, action, items);
     }
     case 'RESET_CART':
       return initialState;
@@ -86,14 +88,14 @@ export function cartReducer(state: State, action: Action): State {
   }
 }
 
-const generateFinalState = (state: State,action: Action, items: Item[]) => {
+const generateFinalState = (state: State, action: Action, items: Item[]) => {
   const totalUniqueItems = calculateUniqueItems(items);
   return {
     ...state,
     items: calculateItemTotals(items),
-    customerId: action.customerId, 
-    email:action.email, 
-    phone:action.phone,
+    customerId: action.customerId,
+    email: action.email,
+    phone: action.phone,
     totalItems: calculateTotalItems(items),
     totalUniqueItems,
     total: calculateTotal(items),
