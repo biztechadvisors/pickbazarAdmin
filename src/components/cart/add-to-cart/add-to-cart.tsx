@@ -57,6 +57,8 @@ export const AddToCart = ({
     cartData: item,
   };
 
+  console.log("custData",customerData)
+
   const handleAddClick = (
     e: React.MouseEvent<HTMLButtonElement | MouseEvent>
   ) => {
