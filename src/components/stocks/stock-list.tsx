@@ -8,27 +8,22 @@ import { Router, useRouter } from 'next/router';
 import { useTranslation } from 'next-i18next';
 import {
   Product,
-  MappedPaginatorInfo,
-  ProductType,
-  Shop,
   SortOrder,
 } from '@/types';
 import { useIsRTL } from '@/utils/locals';
 import { useState } from 'react';
 import TitleWithSort from '@/components/ui/title-with-sort';
-import { Routes } from '@/config/routes';
-import LanguageSwitcher from '@/components/ui/lang-action/action';
-import { newPermission, permissionAtom } from '@/contexts/permission/storepermission';
+import { newPermission} from '@/contexts/permission/storepermission';
 import { useAtom } from 'jotai';
 import { getAuthCredentials } from '@/utils/auth-utils';
-import { useUpdateQuantity } from '@/data/product';
+import { AlignType } from 'rc-table/lib/interface';
 import Input from '../ui/input';
 import Button from '../ui/button';
-import { AlignType } from 'rc-table/lib/interface';
+import { useUpdateStockQuantity } from '@/data/stock';
 
 export type IProps = {
   products: Product[] | undefined;
-  // paginatorInfo: MappedPaginatorInfo | null;
+  me:any;
   onPagination: (current: number) => void;
   onSort: (current: any) => void;
   onOrder: (current: string) => void;
@@ -41,14 +36,14 @@ type SortingObjType = {
 
 const StockList = ({
   products,
-  // paginatorInfo,
-  onPagination,
+  me,
   onSort,
   onOrder,
 }: IProps) => {
   const router = useRouter();
   const { t } = useTranslation();
   const { alignLeft, alignRight } = useIsRTL();
+  const { mutate: updateQuantity, isLoading: updating } = useUpdateStockQuantity();
   const { permissions } = getAuthCredentials();
   const [getPermission, _] = useAtom(newPermission)
   const canWrite = permissions.includes('super_admin')
@@ -61,8 +56,6 @@ const StockList = ({
     sort: SortOrder.Desc,
     column: null,
   });
-
-  console.log("stockss", products)
 
   const onHeaderClick = (column: string | null) => ({
     onClick: () => {
@@ -79,7 +72,6 @@ const StockList = ({
   });
 
   let columns = [
-
     {
       title: 'S.No',
       dataIndex: 'id',
@@ -110,7 +102,6 @@ const StockList = ({
       render: (text:any) => (
         <span>{text.name}</span>
       ),
-
     },
 
     {
@@ -121,6 +112,60 @@ const StockList = ({
       render: (inStock: boolean) => (
         <Badge text={t(inStock ? "In Stock":'Out Of Stock')} color={inStock? 'bg-accent' : 'bg-red-500'} />
       ),
+    },
+
+    // {
+    //   title: t('table:table-item-status'),
+    //   dataIndex: 'status',
+    //   key: 'status',
+    //   align: 'left',
+    //   width: 180,
+    //   render: (status: string, record: any) => (
+    //     <div
+    //       className={`flex justify-start ${record?.quantity > 0 && record?.quantity < 10
+    //         ? 'flex-col items-baseline space-y-3 3xl:flex-row 3xl:space-x-3 3xl:space-y-0 rtl:3xl:space-x-reverse'
+    //         : 'items-center space-x-3 rtl:space-x-reverse'
+    //         }`}
+    //     >
+    //       <Badge
+    //         text={status}
+    //         color={
+    //           status
+    //             ? 'bg-yellow-400'
+    //             : 'bg-accent'
+    //         }
+    //       />
+    //       {record?.quantity > 0 && record?.quantity < 10 && (
+    //         <Badge
+    //           text={t('common:text-low-quantity')}
+    //           color="bg-red-600"
+    //           animate={true}
+    //         />
+    //       )}
+    //     </div>
+    //   ),
+    // },
+
+    {
+      title: t('Status'),
+      dataIndex: 'status',
+      key: 'status',
+      align: alignLeft,
+      render: (status: boolean) => (
+        <span>{status? "Active":"Inactive"}</span>
+        // <Badge text={t(status ? "In Stock":'Out Of Stock')} color={status? 'bg-accent' : 'bg-red-500'} />
+      ),
+    },
+
+    {
+      title: t('Pending Quantity'),
+      dataIndex: 'ordPendQuant',
+      key: 'ordPendQuant',
+      align: 'center',
+      width: 160,
+      render: function renderQuantity(ordPendQuant: any) {
+        return <span>{ordPendQuant}</span>;
+      },
     },
 
     {
@@ -140,6 +185,53 @@ const StockList = ({
       align: 'center',
       width: 150,
       onHeaderCell: () => onHeaderClick('quantity'),
+      render: (quantity: number, record: any) => {
+        const [editMode, setEditMode] = useState(false);
+        const [editedQuantity, setEditedQuantity] = useState(quantity);
+        const [updatedQuantity, setUpdatedQuantity] = useState(quantity);
+        const handleShowQuantity = () => {
+          setEditMode(true);
+        };
+
+        const handleEditQuantity = async () => {
+          // Handle logic to save edited quantity
+          const data = {
+            user_id: me?.id,
+            quantity:record.ordPendQuant === 0 && record.quantity || editedQuantity,
+            status:record.status,
+            inStock:record.inStock,
+            ordPendQuant: Math.max(record.ordPendQuant - editedQuantity, 0),
+            product:record.product.id,
+          };
+          updateQuantity(data);
+          setUpdatedQuantity(editedQuantity);
+          setEditMode(false);
+        };
+
+
+        return (
+          <div>
+            {editMode ? (
+              <>
+                <Input
+                  type="number"
+                  defaultValue={quantity}
+                  onChange={(e) => setEditedQuantity(Number(e.target.value))}
+                />
+                <Button onClick={handleEditQuantity}
+                  size='small'
+                  className='mt-2'
+                >Update</Button>
+              </>
+            ) : (
+              <>
+                {/* <Button onClick={handleShowQuantity}>Show</Button> */}
+                <span onClick={handleShowQuantity} className='font-semibold text-accent underline transition-colors duration-200 ms-1 hover:text-accent-hover hover:no-underline focus:text-accent-700 focus:no-underline focus:outline-none'>{updatedQuantity}</span>
+              </>
+            )}
+          </div>
+        );
+      },
     },
   ];
 
@@ -161,18 +253,6 @@ const StockList = ({
           scroll={{ x: 900 }}
         />
       </div>
-
-      {/* {!!paginatorInfo?.total && (
-        <div className="flex items-center justify-end">
-          <Pagination
-            total={paginatorInfo.total}
-            current={paginatorInfo.currentPage}
-            pageSize={paginatorInfo.perPage}
-            onChange={onPagination}
-            showLessItems
-          />
-        </div>
-      )} */}
     </>
   );
 };
