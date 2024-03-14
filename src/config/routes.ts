@@ -16,6 +16,7 @@ export const Routes = {
   verifyEmail: '/verify-email',
   sales: '/sales',
   createSales: '/sales/create',
+  groups:'/groups',
   shops: (slug: string) => `/shops/${encodeURIComponent(slug)}`,
   // orders: '/orders',
   orders: (tracking_number: string) =>

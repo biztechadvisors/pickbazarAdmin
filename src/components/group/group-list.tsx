@@ -24,14 +24,13 @@ export type IProps = {
 const TypeList = ({ types, onSort, onOrder }: IProps) => {
   const { t } = useTranslation();
   const { alignLeft, alignRight } = useIsRTL();
-  const [getPermission,_]=useAtom(newPermission) 
+  const [getPermission, _] = useAtom(newPermission);
   const { permissions } = getAuthCredentials();
-   const canWrite =  permissions.includes('super_admin')
-   ? siteSettings.sidebarLinks
-   :getPermission?.find(
-    (permission) => permission.type === 'sidebar-nav-item-groups'
-  )?.write;
- 
+  const canWrite = permissions.includes('super_admin')
+    ? siteSettings.sidebarLinks
+    : getPermission?.find(
+        (permission) => permission.type === 'sidebar-nav-item-groups'
+      )?.write;
 
   const [sortingObj, setSortingObj] = useState<{
     sort: SortOrder;
@@ -99,26 +98,24 @@ const TypeList = ({ types, onSort, onOrder }: IProps) => {
         );
       },
     },
-    {      
+    {
       ...(canWrite
         ? {
-          title: t('table:table-item-actions'),
-          dataIndex: 'slug',
-          key: 'actions',
-          align: alignRight,
-          render: (slug: string, record: Type) =>  (
-            <LanguageSwitcher
-              slug={slug}
-              record={record}
-              deleteModalView="DELETE_TYPE"
-              routes={Routes?.type}
-            />
+            title: t('table:table-item-actions'),
+            dataIndex: 'slug',
+            key: 'actions',
+            align: alignRight,
+            render: (slug: string, record: Type) => (
+              <LanguageSwitcher
+                slug={slug}
+                record={record}
+                deleteModalView="DELETE_TYPE"
+                routes={Routes?.type}
+              />
             ),
-        }
-        
+          }
         : null),
-    },  
-    
+    },
   ];
 
   return (

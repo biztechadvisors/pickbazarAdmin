@@ -83,7 +83,297 @@ const AdminLayout: React.FC<{ children?: React.ReactNode }> = ({
         icon: 'TagIcon',
       },
     ];
-  } else {
+  } 
+  else if (router.pathname === Routes.type.list) {
+    matchedLinks = [
+      {
+        href: Routes.attribute.list,
+        label: 'sidebar-nav-item-attributes',
+        icon: 'AttributeIcon',
+      },
+      {
+        href: Routes.type.list,
+        label: 'sidebar-nav-item-groups',
+        icon: 'TypesIcon',
+      },
+      {
+        href: Routes.category.list,
+        label: 'sidebar-nav-item-categories',
+        icon: 'CategoriesIcon',
+      },
+      {
+        href: Routes.product.list,
+        label: 'sidebar-nav-item-products',
+        icon: 'ProductsIcon',
+      },
+      // {
+      //   href: Routes.order.list,
+      //   label: 'sidebar-nav-item-orders',
+      //   icon: 'OrdersIcon',
+      // },
+      // {
+      //   href: Routes.refund.list,
+      //   label: 'sidebar-nav-item-refunds',
+      //   icon: 'RefundsIcon',
+      // },
+      {
+        href: Routes.reviews.list,
+        label: 'sidebar-nav-item-reviews',
+        icon: 'ReviewIcon',
+      },
+      {
+        href: Routes.tag.list,
+        label: 'sidebar-nav-item-tags',
+        icon: 'TagIcon',
+      },
+    ];
+  } 
+  else if (router.pathname === Routes.attribute.list) {
+    matchedLinks = [
+      {
+        href:`${Routes.dashboard}`,
+        label: 'sidebar-nav-item-inventory-dashboard',
+        icon: 'DashboardIcon',
+      },
+      {
+        href: Routes.attribute.list,
+        label: 'sidebar-nav-item-attributes',
+        icon: 'AttributeIcon',
+      },
+      {
+        href: Routes.type.list,
+        label: 'sidebar-nav-item-groups',
+        icon: 'TypesIcon',
+      },
+      {
+        href: Routes.category.list,
+        label: 'sidebar-nav-item-categories',
+        icon: 'CategoriesIcon',
+      },
+      {
+        href: Routes.product.list,
+        label: 'sidebar-nav-item-products',
+        icon: 'ProductsIcon',
+      },
+      // {
+      //   href: Routes.order.list,
+      //   label: 'sidebar-nav-item-orders',
+      //   icon: 'OrdersIcon',
+      // },
+      // {
+      //   href: Routes.refund.list,
+      //   label: 'sidebar-nav-item-refunds',
+      //   icon: 'RefundsIcon',
+      // },
+      {
+        href: Routes.reviews.list,
+        label: 'sidebar-nav-item-reviews',
+        icon: 'ReviewIcon',
+      },
+      {
+        href: Routes.tag.list,
+        label: 'sidebar-nav-item-tags',
+        icon: 'TagIcon',
+      },
+    ];
+  } 
+  else if (router.pathname === Routes.category.list) {
+    matchedLinks = [
+      {
+        href:`${Routes.dashboard}`,
+        label: 'sidebar-nav-item-inventory-dashboard',
+        icon: 'DashboardIcon',
+      },
+      {
+        href: Routes.attribute.list,
+        label: 'sidebar-nav-item-attributes',
+        icon: 'AttributeIcon',
+      },
+      {
+        href: Routes.type.list,
+        label: 'sidebar-nav-item-groups',
+        icon: 'TypesIcon',
+      },
+      {
+        href: Routes.category.list,
+        label: 'sidebar-nav-item-categories',
+        icon: 'CategoriesIcon',
+      },
+      {
+        href: Routes.product.list,
+        label: 'sidebar-nav-item-products',
+        icon: 'ProductsIcon',
+      },
+      // {
+      //   href: Routes.order.list,
+      //   label: 'sidebar-nav-item-orders',
+      //   icon: 'OrdersIcon',
+      // },
+      // {
+      //   href: Routes.refund.list,
+      //   label: 'sidebar-nav-item-refunds',
+      //   icon: 'RefundsIcon',
+      // },
+      {
+        href: Routes.reviews.list,
+        label: 'sidebar-nav-item-reviews',
+        icon: 'ReviewIcon',
+      },
+      {
+        href: Routes.tag.list,
+        label: 'sidebar-nav-item-tags',
+        icon: 'TagIcon',
+      },
+    ];
+  } 
+  else if (router.pathname === Routes.product.list) {
+    matchedLinks = [
+      {
+        href:`${Routes.dashboard}`,
+        label: 'sidebar-nav-item-inventory-dashboard',
+        icon: 'DashboardIcon',
+      },
+      {
+        href: Routes.attribute.list,
+        label: 'sidebar-nav-item-attributes',
+        icon: 'AttributeIcon',
+      },
+      {
+        href: Routes.type.list,
+        label: 'sidebar-nav-item-groups',
+        icon: 'TypesIcon',
+      },
+      {
+        href: Routes.category.list,
+        label: 'sidebar-nav-item-categories',
+        icon: 'CategoriesIcon',
+      },
+      {
+        href: Routes.product.list,
+        label: 'sidebar-nav-item-products',
+        icon: 'ProductsIcon',
+      },
+      // {
+      //   href: Routes.order.list,
+      //   label: 'sidebar-nav-item-orders',
+      //   icon: 'OrdersIcon',
+      // },
+      // {
+      //   href: Routes.refund.list,
+      //   label: 'sidebar-nav-item-refunds',
+      //   icon: 'RefundsIcon',
+      // },
+      {
+        href: Routes.reviews.list,
+        label: 'sidebar-nav-item-reviews',
+        icon: 'ReviewIcon',
+      },
+      {
+        href: Routes.tag.list,
+        label: 'sidebar-nav-item-tags',
+        icon: 'TagIcon',
+      },
+    ];
+  } 
+  else if (router.pathname === Routes.reviews.list) {
+    matchedLinks = [
+      {
+        href:`${Routes.dashboard}`,
+        label: 'sidebar-nav-item-inventory-dashboard',
+        icon: 'DashboardIcon',
+      },
+      {
+        href: Routes.attribute.list,
+        label: 'sidebar-nav-item-attributes',
+        icon: 'AttributeIcon',
+      },
+      {
+        href: Routes.type.list,
+        label: 'sidebar-nav-item-groups',
+        icon: 'TypesIcon',
+      },
+      {
+        href: Routes.category.list,
+        label: 'sidebar-nav-item-categories',
+        icon: 'CategoriesIcon',
+      },
+      {
+        href: Routes.product.list,
+        label: 'sidebar-nav-item-products',
+        icon: 'ProductsIcon',
+      },
+      // {
+      //   href: Routes.order.list,
+      //   label: 'sidebar-nav-item-orders',
+      //   icon: 'OrdersIcon',
+      // },
+      // {
+      //   href: Routes.refund.list,
+      //   label: 'sidebar-nav-item-refunds',
+      //   icon: 'RefundsIcon',
+      // },
+      {
+        href: Routes.reviews.list,
+        label: 'sidebar-nav-item-reviews',
+        icon: 'ReviewIcon',
+      },
+      {
+        href: Routes.tag.list,
+        label: 'sidebar-nav-item-tags',
+        icon: 'TagIcon',
+      },
+    ];
+  } 
+  else if (router.pathname === Routes.tag.list) {
+    matchedLinks = [
+      {
+        href:`${Routes.dashboard}`,
+        label: 'sidebar-nav-item-inventory-dashboard',
+        icon: 'DashboardIcon',
+      },
+      {
+        href: Routes.attribute.list,
+        label: 'sidebar-nav-item-attributes',
+        icon: 'AttributeIcon',
+      },
+      {
+        href: Routes.type.list,
+        label: 'sidebar-nav-item-groups',
+        icon: 'TypesIcon',
+      },
+      {
+        href: Routes.category.list,
+        label: 'sidebar-nav-item-categories',
+        icon: 'CategoriesIcon',
+      },
+      {
+        href: Routes.product.list,
+        label: 'sidebar-nav-item-products',
+        icon: 'ProductsIcon',
+      },
+      // {
+      //   href: Routes.order.list,
+      //   label: 'sidebar-nav-item-orders',
+      //   icon: 'OrdersIcon',
+      // },
+      // {
+      //   href: Routes.refund.list,
+      //   label: 'sidebar-nav-item-refunds',
+      //   icon: 'RefundsIcon',
+      // },
+      {
+        href: Routes.reviews.list,
+        label: 'sidebar-nav-item-reviews',
+        icon: 'ReviewIcon',
+      },
+      {
+        href: Routes.tag.list,
+        label: 'sidebar-nav-item-tags',
+        icon: 'TagIcon',
+      },
+    ];
+  } 
+  else {
     matchedLinks = permissions.includes('super_admin')
       ? siteSettings.sidebarLinks.admin
       : siteSettings.sidebarLinks.admin.filter((link) =>
@@ -115,10 +405,6 @@ const AdminLayout: React.FC<{ children?: React.ReactNode }> = ({
       ))}
     </Fragment>
   );
-
-  console.log('matchedLinks********', matchedLinks);
-
-  console.log('permissions ***********', permissions);
 
   return (
     <div

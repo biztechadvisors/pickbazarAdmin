@@ -31,14 +31,13 @@ export default function TypesPage() {
     orderBy,
     sortedBy,
   });
-  const [getPermission,_]=useAtom(newPermission) 
+  const [getPermission, _] = useAtom(newPermission);
   const { permissions } = getAuthCredentials();
-   const canWrite =  permissions.includes('super_admin')
-   ? siteSettings.sidebarLinks
-   : getPermission?.find(
-    (permission) => permission.type === 'sidebar-nav-item-groups'
-  )?.write;
-  
+  const canWrite = permissions.includes('super_admin')
+    ? siteSettings.sidebarLinks
+    : getPermission?.find(
+        (permission) => permission.type === 'sidebar-nav-item-groups'
+      )?.write;
 
   if (loading) return <Loader text={t('common:text-loading')} />;
   if (error) return <ErrorMessage message={error.message} />;
@@ -58,7 +57,7 @@ export default function TypesPage() {
 
         <div className="flex w-full flex-col items-center space-y-4 ms-auto md:flex-row md:space-y-0 xl:w-1/2">
           <Search onSearch={handleSearch} />
-    
+
           {/* {locale === Config.defaultLanguage && (
             <LinkButton
               href={Routes.type.create}
@@ -73,19 +72,18 @@ export default function TypesPage() {
             </LinkButton>
           )} */}
           {canWrite && locale === Config.defaultLanguage && (
-              <LinkButton
-                href={Routes.type.create}
-                className="h-12 w-full md:w-auto md:ms-6"
-              >
-                <span className="block md:hidden xl:block">
-                  + {t('form:button-label-add-group')}
-                </span>
-                <span className="hidden md:block xl:hidden">
-                  + {t('form:button-label-add')}
-                </span>
-              </LinkButton>
-            )}
-
+            <LinkButton
+              href={Routes.type.create}
+              className="h-12 w-full md:w-auto md:ms-6"
+            >
+              <span className="block md:hidden xl:block">
+                + {t('form:button-label-add-group')}
+              </span>
+              <span className="hidden md:block xl:hidden">
+                + {t('form:button-label-add')}
+              </span>
+            </LinkButton>
+          )}
         </div>
       </Card>
       <TypeList types={types} onOrder={setOrder} onSort={setColumn} />
