@@ -17,7 +17,7 @@ import { AlignType } from 'rc-table/lib/interface';
 import Input from '../ui/input';
 import Button from '../ui/button';
 import { useGetStock, useUpdateStockQuantity } from '@/data/stock';
-import Checkbox from '../ui/checkbox/checkbox';
+import Select from '../ui/select/select';
 
 export type IProps = {
   me: any;
@@ -127,22 +127,41 @@ const StockList = ({
       key: 'status',
       align: 'center',
       render: (status: boolean, record: any) => {
-        const handleStatusChange = (key: any, checked: boolean): void => {
+        const options = [
+          { value: true, label: 'True' },
+          { value: false, label: 'False' }
+        ];
+        // const [getstatus, setStatus] = useState(status);
+
+        const onOrderChange = (selectedOption: any) => {
+          console.log('Selected option:', selectedOption);
+          const data = {
+            user_id: me?.id,
+            quantity: record.quantity,
+            status: selectedOption.value,
+            inStock: record.inStock,
+            ordPendQuant: record.ordPendQuant,
+            product: record.product.id,
+          };
+          updateQuantity(data);
         };
-    
+
         return (
           <>
-            <Checkbox
-              type="checkbox"
-              // checked={status}
-              onChange={(e) => handleStatusChange(record.id, e.target.checked)} 
-              name={'status'}            />
-            {/* You might need to replace `record.key` with the appropriate value */}
+            <div>
+              <Select
+                options={options}
+                onChange={onOrderChange}
+                defaultValue={options.find(option => option.value === status)}
+                name="status"
+                placeholder={t('select')}
+              />
+            </div>
           </>
         );
       }
     },
-    
+
 
     {
       title: (
