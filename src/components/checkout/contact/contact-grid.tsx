@@ -31,7 +31,7 @@ const ContactGrid = ({ contact, label, count, className }: ContactProps) => {
   return (
     <div className={className}>
       <div className="mb-5 flex items-center justify-between md:mb-8">
-        <div className="space-s-3 md:space-s-4 flex items-center">
+        <div className="flex items-center space-s-3 md:space-s-4">
           {count && (
             <span className="flex h-8 w-8 items-center justify-center rounded-full bg-accent text-base text-light lg:text-xl">
               {count}
@@ -44,7 +44,7 @@ const ContactGrid = ({ contact, label, count, className }: ContactProps) => {
           className="flex items-center text-sm font-semibold text-accent transition-colors duration-200 hover:text-accent-hover focus:text-accent-hover focus:outline-none"
           onClick={onAddOrChange}
         >
-          <PlusIcon className="me-0.5 h-4 w-4 stroke-2" />
+          <PlusIcon className="h-4 w-4 stroke-2 me-0.5" />
           {contactNumber ? t('text-update') : t('text-add')}
         </button>
       </div>
@@ -66,9 +66,3 @@ const ContactGrid = ({ contact, label, count, className }: ContactProps) => {
 };
 
 export default ContactGrid;
-
-
-
-
-
-

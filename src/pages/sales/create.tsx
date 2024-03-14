@@ -28,8 +28,9 @@ import { useAtom } from 'jotai';
 import { siteSettings } from '@/settings/site.settings';
 import { toggleAtom } from '@/utils/atoms';
 import { useMeQuery } from '@/data/user';
+import { useGetStock } from '@/data/stocks';
 
-export default function ProductsPage() {
+export default function SalesPage() {
   const { locale } = useRouter();
   const { t } = useTranslation();
   const [searchTerm, setSearchTerm] = useState('');
@@ -42,36 +43,21 @@ export default function ProductsPage() {
     setVisible((v) => !v);
   };
 
-  const { data: meData, } = useMeQuery();
-
-  const { id, email, contact } = meData || {};
-
-  console.log("Datadfsdf", id, email, contact)
-
-  const userId = meData?.dealer?.id;
+  const { data: meData } = useMeQuery();
 
   const [isChecked] = useAtom(toggleAtom);
 
-  const { products, loading, paginatorInfo, error } = useProductsQuery({
-    limit: 18,
-    language: locale,
-    status: ProductStatus.Publish,
-    name: searchTerm,
-    page,
-    type,
-    categories: category,
-    userId,
-  });
+  const { data: stockData, loading, error } = useGetStock(meData?.id);
 
-  console.log("products******", products)
+  console.log('stockData', stockData);
 
-  const [getPermission, _] = useAtom(newPermission)
+  const [getPermission, _] = useAtom(newPermission);
   const { permissions } = getAuthCredentials();
   const canWrite = permissions.includes('super_admin')
     ? siteSettings.sidebarLinks
     : getPermission?.find(
-      (permission) => permission.type === 'sidebar-nav-item-create-order'
-    )?.write;
+        (permission) => permission.type === 'sidebar-nav-item-create-order'
+      )?.write;
 
   if (loading) return <Loader text={t('common:text-loading')} />;
   if (error) return <ErrorMessage message={error.message} />;
@@ -84,14 +70,12 @@ export default function ProductsPage() {
     setPage(current);
   }
 
-return (
+  return (
     <>
       <Card className="mb-8 flex flex-col">
         <div className="flex w-full flex-col items-center md:flex-row">
           <div className="mb-4 md:mb-0 md:w-1/4">
-            <h1 className="text-lg font-semibold text-heading">
-              {t('form:input-label-create-order')}
-            </h1>
+            <h1 className="text-lg font-semibold text-heading">Create Sales</h1>
           </div>
 
           <div className="flex w-full flex-col items-center ms-auto md:w-3/4">
@@ -136,22 +120,15 @@ return (
       {/* <Card> */}
       <div className="flex space-x-5">
         <div className="grid w-full grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-2 xl:grid-cols-4 3xl:grid-cols-6">
-          {products?.map((product: Product) => (
-            <ProductCard
-              key={product.id}
-              item={product}
-              isChecked={isChecked}
-              id={id}
-              email={email}
-              phone={contact}
-            />
+          {stockData?.map((e: Product) => (
+            <ProductCard key={e.id} item={e.product} isChecked={isChecked} />
           ))}
         </div>
       </div>
-      {!products?.length ? (
+      {!stockData?.length ? (
         <NotFound text="text-not-found" className="mx-auto w-7/12" />
       ) : null}
-      <div className="mt-8 flex w-full justify-center">
+      {/* <div className="mt-8 flex w-full justify-center">
         {!!paginatorInfo?.total && (
           <div className="flex items-center justify-end">
             <Pagination
@@ -163,7 +140,7 @@ return (
             />
           </div>
         )}
-      </div>
+      </div> */}
       {canWrite ? <CartCounterButton /> : null}
       <Drawer
         open={displayCartSidebar}
@@ -177,10 +154,10 @@ return (
     </>
   );
 }
-ProductsPage.authenticate = {
+SalesPage.authenticate = {
   permissions: adminOnly,
 };
-ProductsPage.Layout = Layout;
+SalesPage.Layout = Layout;
 
 export const getStaticProps = async ({ locale }: any) => ({
   props: {

@@ -5,7 +5,7 @@ export const Routes = {
   register: '/register',
   forgotPassword: '/forgot-password',
   resetPassword: '/reset-password',
-  adminMyShops: '/my-shops',
+  adminMyShops: getAdminMyShopsRoute(),
   profile: '/profile',
   verifyCoupons: '/coupons/verify',
   settings: '/settings',
@@ -14,18 +14,20 @@ export const Routes = {
   profileUpdate: '/profile-update',
   checkout: '/orders/checkout',
   verifyEmail: '/verify-email',
+  sales: '/sales',
+  createSales: '/sales/create',
   shops: (slug: string) => `/shops/${encodeURIComponent(slug)}`,
   // orders: '/orders',
   orders: (tracking_number: string) =>
     `/orders/${encodeURIComponent(tracking_number)}`,
 
-    singleorder:'/order',
-    products: (slug: string) => {
-      // if (asPath) {
-      //   return `/products/${encodeURIComponent(slug)}?type=${asPath}`;
-      // }
-      return `/productsshop/${encodeURIComponent(slug)}`;
-    },
+  singleorder: '/order',
+  products: (slug: string) => {
+    // if (asPath) {
+    //   return `/products/${encodeURIComponent(slug)}?type=${asPath}`;
+    // }
+    return `/productsshop/${encodeURIComponent(slug)}`;
+  },
   user: {
     ...routesFactory('/users'),
   },
@@ -124,7 +126,7 @@ export const Routes = {
   },
   storeNoticeRead: {
     ...routesFactory('/store-notices/read'),
-  }
+  },
 };
 
 function routesFactory(endpoint: string) {
@@ -148,4 +150,13 @@ function routesFactory(endpoint: string) {
     },
     details: (slug: string) => `${endpoint}/${slug}`,
   };
+}
+
+function getAdminMyShopsRoute() {
+  if (typeof window !== 'undefined') {
+    const shopSlug = localStorage.getItem('shopSlug');
+    if (shopSlug) {
+      return `/${encodeURIComponent(shopSlug)}`;
+    }
+  }
 }
