@@ -22,13 +22,14 @@ export const Routes = {
   // orders: '/orders',
   orders: (tracking_number: string) =>
     `/orders/${encodeURIComponent(tracking_number)}`,
-    sale:(tracking_number: string)=>`/sale/${encodeURIComponent(tracking_number)}`,
+  sale: (tracking_number: string) =>
+    `/sale/${encodeURIComponent(tracking_number)}`,
 
   stocks: (tracking_number: string) =>
     `stocks/${encodeURIComponent(tracking_number)}`,
 
   singleorder: '/order',
-  singleSaleOrder:'api/stocks/ord',
+  singleSaleOrder: 'api/stocks/ord',
   products: (slug: string) => {
     // if (asPath) {
     //   return `/products/${encodeURIComponent(slug)}?type=${asPath}`;

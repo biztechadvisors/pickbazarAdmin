@@ -122,11 +122,10 @@ export default function OrderDetailsPage() {
   if (loading) return <Loader text={t('common:text-loading')} />;
   if (error) return <ErrorMessage message={error.message} />;
 
-
   async function handleDownloadInvoice() {
     const { data } = await refetch();
 
-    console.log("Data****Invoice", data)
+    console.log('Data****Invoice', data);
 
     if (data) {
       const a = document.createElement('a');
@@ -135,7 +134,6 @@ export default function OrderDetailsPage() {
       a.click();
     }
   }
-
 
   const columns = [
     {
