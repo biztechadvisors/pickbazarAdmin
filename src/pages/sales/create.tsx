@@ -31,6 +31,8 @@ import { useMeQuery } from '@/data/user';
 import { useGetStock } from '@/data/stocks';
 import StockCard from '@/components/product/StockCard';
 import Card from '@/components/common/card';
+import StockCounterButton from '@/components/stock/stock-counter-btn';
+import Stock from '@/components/stock/Stock';
 
 export default function SalesPage() {
   const { locale } = useRouter();
@@ -47,8 +49,8 @@ export default function SalesPage() {
 
   const { data: meData } = useMeQuery();
   const [isChecked] = useAtom(toggleAtom);
-  const { data: stockData, isLoading, error } = useGetStock(meData?.id);
 
+  const { data: stockData, isLoading, error } = useGetStock(meData?.id);
   const [getPermission, _] = useAtom(newPermission);
   const { permissions } = getAuthCredentials();
   const canWrite = permissions.includes('super_admin')
@@ -134,14 +136,14 @@ export default function SalesPage() {
         </>
       )}
 
-      {canWrite ? <CartCounterButton /> : null}
+      {canWrite ? <StockCounterButton /> : null}
       <Drawer
         open={displayCartSidebar}
         onClose={closeCartSidebar}
         variant="right"
       >
         <DrawerWrapper hideTopBar={true}>
-          <Cart />
+          <Stock />
         </DrawerWrapper>
       </Drawer>
     </>

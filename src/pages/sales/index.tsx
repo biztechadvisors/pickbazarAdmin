@@ -17,6 +17,8 @@ import { useShopQuery } from '@/data/shop';
 import { Menu, Transition } from '@headlessui/react';
 import classNames from 'classnames';
 import { DownloadIcon } from '@/components/icons/download-icon';
+import { useOrdersSalesQuery } from '@/data/stocks';
+import StockList from '@/components/stock/StockList';
 
 export default function Sales() {
   const router = useRouter();
@@ -48,7 +50,7 @@ export default function Sales() {
     }
   );
   const shopId = shopData?.id!;
-  const { orders, loading, paginatorInfo, error } = useOrdersQuery({
+  const { orders, loading, paginatorInfo, error } = useOrdersSalesQuery({
     language: locale,
     limit: 20,
     page,
@@ -131,13 +133,13 @@ export default function Sales() {
         </Menu>
       </Card>
 
-      {/* <OrderList
+      <StockList
         orders={orders}
         paginatorInfo={paginatorInfo}
         onPagination={handlePagination}
         onOrder={setOrder}
         onSort={setColumn}
-      /> */}
+      />
     </>
   );
 }

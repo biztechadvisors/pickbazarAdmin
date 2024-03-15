@@ -11,6 +11,7 @@ import { useAtom } from 'jotai';
 import { newPermission } from '@/contexts/permission/storepermission';
 import { getAuthCredentials } from '@/utils/auth-utils';
 import { siteSettings } from '@/settings/site.settings';
+import { AddToStock } from '../stock/add-to-stock';
 
 interface Props {
   item: Product;
@@ -21,7 +22,7 @@ interface Props {
   inStock: boolean;
 }
 
-const StockCard = ({ item, isChecked, id, email, phone, inStock }: Props) => {
+const StockCard = ({ item, isChecked, inStock }: Props) => {
   const { t } = useTranslation();
   const {
     slug,
@@ -138,13 +139,7 @@ const StockCard = ({ item, isChecked, id, email, phone, inStock }: Props) => {
             canWrite && (
               <>
                 {Number(quantity) > 0 && (
-                  <AddToCart
-                    variant="neon"
-                    data={item}
-                    id={id}
-                    email={email}
-                    phone={phone}
-                  />
+                  <AddToStock variant="neon" data={item} />
                 )}
               </>
             )

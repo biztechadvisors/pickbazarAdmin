@@ -338,7 +338,7 @@ export function useCreateOrderByStock() {
   const { username, sub } = UserService.getUserDetails();
 
   const { mutate: createOrderFromStock, isLoading: orderLoading } = useMutation(
-    client.orders.orderByStock,
+    client.stocks.orderByStock,
     {
       onSuccess: async (response) => {
         const { id, payment_gateway, payment_intent } = response;
@@ -354,13 +354,13 @@ export function useCreateOrderByStock() {
               PaymentGateway.FULL_WALLET_PAYMENT,
             ].includes(payment_gateway as PaymentGateway)
           ) {
-            router.push(Routes.orders(idStr));
+            router.push(Routes.sale(idStr));
           } else if (payment_intent?.payment_intent_info?.is_redirect) {
             router.push(
               payment_intent?.payment_intent_info?.redirect_url as string
             );
           } else {
-            router.push(`${Routes.orders(idStr)}/payment`);
+            router.push(`${Routes.sale(idStr)}/payment`);
           }
         }
       },

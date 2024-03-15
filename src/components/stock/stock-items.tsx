@@ -7,6 +7,7 @@ import { useTranslation } from 'next-i18next';
 import { useCart } from '@/contexts/quick-cart/cart.context';
 import usePrice from '@/utils/use-price';
 import { CustomerData } from './add-to-cart/add-to-cart';
+import { useStock } from '@/contexts/quick-cart/stock.context';
 
 interface CartItemProps {
   item: any;
@@ -15,10 +16,10 @@ interface CartItemProps {
   phone: string;
 }
 
-const CartItem = ({ item, id, email, phone }: CartItemProps) => {
+const StockItem = ({ item, id, email, phone }: CartItemProps) => {
   const { t } = useTranslation('common');
-  const { isInStock, clearItemFromCart, addItemToCart, removeItemFromCart } =
-    useCart();
+  const { isInStock, clearItemFromCart, addItemToStock, removeItemFromStock } =
+    useStock();
 
   const { price } = usePrice({
     amount: item.price,
@@ -37,7 +38,7 @@ const CartItem = ({ item, id, email, phone }: CartItemProps) => {
   function handleIncrement(e: any) {
     e.stopPropagation();
 
-    addItemToCart(
+    addItemToStock(
       customerData,
       1,
       customerData.customerId,
@@ -48,7 +49,7 @@ const CartItem = ({ item, id, email, phone }: CartItemProps) => {
 
   const handleRemoveClick = (e: any) => {
     e.stopPropagation();
-    removeItemFromCart(
+    removeItemFromStock(
       item.id,
       customerData,
       1,
@@ -109,4 +110,4 @@ const CartItem = ({ item, id, email, phone }: CartItemProps) => {
   );
 };
 
-export default CartItem;
+export default StockItem;

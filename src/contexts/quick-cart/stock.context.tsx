@@ -1,20 +1,21 @@
-import React, { useCallback } from 'react';
-import { cartReducer, State, initialState } from './cart.reducer';
-import { Item, getItem, inStock } from './cart.utils';
+import React, { useCallback, useEffect } from 'react';
+import { stockReducer, State, initState } from './stock.reducer';
+import { Item, getItem, inStock } from './stock.utils';
 import { useLocalStorage } from '@/utils/use-local-storage';
-import { CART_KEY } from '@/utils/constants';
+import { STOCK_KEY } from '@/utils/constants';
 import { useAtom } from 'jotai';
 import { verifiedResponseAtom } from '@/contexts/checkout';
 import { useCartsMutation } from '@/data/cart';
-interface CartProviderState extends State {
-  addItemToCart: (
+
+interface StockProviderState extends State {
+  addItemToStock: (
     item: Item,
     quantity: number,
     customerId: number,
     email: string,
     phone: string
   ) => void;
-  removeItemFromCart: (
+  removeItemFromStock: (
     id: Item['id'],
     item: Item,
     quantity: number,
@@ -22,64 +23,66 @@ interface CartProviderState extends State {
     email: string,
     phone: string
   ) => void;
-  clearItemFromCart: (id: Item['id']) => void;
-  getItemFromCart: (id: Item['id']) => any | undefined;
+  clearItemFromStock: (id: Item['id']) => void;
+  getItemFromStock: (id: Item['id']) => any | undefined;
   isInCart: (id: Item['id']) => boolean;
   isInStock: (id: Item['id']) => boolean;
-  resetCart: () => void;
+  resetStock: () => void;
 }
 
-export const cartContext = React.createContext<CartProviderState | undefined>(
+export const stockContext = React.createContext<StockProviderState | undefined>(
   undefined
 );
 
-cartContext.displayName = 'CartContext';
+stockContext.displayName = 'StockContext';
 
-export const useCart = () => {
-  const context = React.useContext(cartContext);
+export const useStock = () => {
+  const context = React.useContext(stockContext);
   if (context === undefined) {
-    throw new Error(`useCart must be used within a CartProvider`);
+    throw new Error(`useStock must be used within a StockProvider`);
   }
   return context;
 };
 
-export const CartProvider: React.FC<{ children?: React.ReactNode }> = (
+export const StockProvider: React.FC<{ children?: React.ReactNode }> = (
   props
 ) => {
-  const [savedCart, saveCart] = useLocalStorage(
-    CART_KEY,
-    JSON.stringify(initialState)
-  );
-
-  const [state, dispatch] = React.useReducer(
-    cartReducer,
-    JSON.parse(savedCart!)
-  );
+    const [savedStock, saveStock] = useLocalStorage(
+        STOCK_KEY,
+        JSON.stringify(initState)
+      );
+      
+      const [state, dispatch] = React.useReducer(
+        stockReducer,
+        JSON.parse(savedStock ?? JSON.stringify(initState))
+      );
 
   const [, emptyVerifiedResponse] = useAtom(verifiedResponseAtom);
-  const { mutate: createCart, isLoading: creating } = useCartsMutation();
+  const { mutate: createStock, isLoading: creating } = useCartsMutation();
 
-  React.useEffect(() => {
+  useEffect(() => {
     emptyVerifiedResponse(null);
   }, [emptyVerifiedResponse, state]);
 
-  React.useEffect(() => {
+  useEffect(() => {
+    saveStock(JSON.stringify(state));
+  }, [state, saveStock]);
+
+  useEffect(() => {
     if (state.customerId) {
-      //  it will only proceed if customerId will present
-      saveCart(JSON.stringify(state));
       const data = {
         customerId: state.customerId,
         email: state.email,
         phone: state.phone,
-        cartData: {
+        stockData: {
           ...state.items,
         },
       };
-      createCart(data);
+      createStock(data);
     }
-  }, [state, saveCart, createCart]);
+  }, [state, createStock]);
 
-  const addItemToCart = (
+  const addItemToStock = (
     item: Item,
     quantity: number,
     customerId: number,
@@ -87,7 +90,7 @@ export const CartProvider: React.FC<{ children?: React.ReactNode }> = (
     phone: string
   ) =>
     dispatch({
-      type: 'ADD_ITEM_WITH_QUANTITY',
+      type: 'ADD_ITEM_WITH_QUANT',
       item,
       quantity,
       customerId,
@@ -95,7 +98,7 @@ export const CartProvider: React.FC<{ children?: React.ReactNode }> = (
       phone,
     });
 
-  const removeItemFromCart = (
+  const removeItemFromStock = (
     id: Item['id'],
     item: Item,
     quantity: number,
@@ -113,7 +116,7 @@ export const CartProvider: React.FC<{ children?: React.ReactNode }> = (
       phone,
     });
 
-  const clearItemFromCart = (id: Item['id']) =>
+  const clearItemFromStock = (id: Item['id']) =>
     dispatch({ type: 'REMOVE_ITEM', id });
 
   const isInCart = useCallback(
@@ -121,27 +124,31 @@ export const CartProvider: React.FC<{ children?: React.ReactNode }> = (
     [state.items]
   );
 
-  const getItemFromCart = useCallback(
+  const getItemFromStock = useCallback(
     (id: Item['id']) => getItem(state.items, id),
     [state.items]
   );
+
   const isInStock = useCallback(
     (id: Item['id']) => inStock(state.items, id),
     [state.items]
   );
-  const resetCart = () => dispatch({ type: 'RESET_CART' });
+
+  const resetStock = () => dispatch({ type: 'RESET_STOCK' });
+
   const value = React.useMemo(
     () => ({
       ...state,
-      addItemToCart,
-      removeItemFromCart,
-      clearItemFromCart,
-      getItemFromCart,
+      addItemToStock,
+      removeItemFromStock,
+      clearItemFromStock,
+      getItemFromStock,
       isInCart,
       isInStock,
-      resetCart,
+      resetStock,
     }),
-    [getItemFromCart, isInCart, isInStock, state]
+    [getItemFromStock, isInCart, isInStock, state]
   );
-  return <cartContext.Provider value={value} {...props} />;
+
+  return <stockContext.Provider value={value} {...props} />;
 };

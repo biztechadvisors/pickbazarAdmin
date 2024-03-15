@@ -34,7 +34,7 @@ type IProps = {
   onOrder: (current: string) => void;
 };
 
-const OrderList = ({
+const StockList = ({
   orders,
   paginatorInfo,
   onPagination,
@@ -218,8 +218,7 @@ const OrderList = ({
   ];
 
   // console.log("newrouter",router.asPath)
-
-  console.log("ordersordersorders", orders)
+  console.log('orders', orders);
 
   return (
     <>
@@ -252,4 +251,4 @@ const OrderList = ({
   );
 };
 
-export default OrderList;
+export default StockList;

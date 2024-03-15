@@ -14,13 +14,14 @@ import {
 import { cartsClient } from '@/data/client/carts';
 import { stat } from 'fs';
 import { toast } from 'react-toastify';
+import { addItemWithQuant } from './stock.utils';
 
 interface Metadata {
   [key: string]: any;
 }
 
 type Action =
-  | { type: 'ADD_ITEM_WITH_QUANTITY'; item: Item; quantity: number }
+  | { type: 'ADD_ITEM_WITH_QUANT'; item: Item; quantity: number }
   | { type: 'REMOVE_ITEM_OR_QUANTITY'; id: Item['id']; quantity?: number }
   | { type: 'ADD_ITEM'; id: Item['id']; item: Item }
   | { type: 'UPDATE_ITEM'; id: Item['id']; item: UpdateItemInput }
@@ -35,7 +36,7 @@ export interface State {
   total: number;
   meta?: Metadata | null;
 }
-export const initialState: State = {
+export const initState: State = {
   items: [],
   isEmpty: true,
   totalItems: 0,
@@ -46,10 +47,12 @@ export const initialState: State = {
 
 let updateCartTimeout: NodeJS.Timeout | null = null;
 
-export function cartReducer(state: State, action: Action): State {
+export function stockReducer(state: State, action: Action): State {
+  console.log('state', state);
+  console.log('action', action);
   switch (action.type) {
-    case 'ADD_ITEM_WITH_QUANTITY': {
-      const items = addItemWithQuantity(
+    case 'ADD_ITEM_WITH_QUANT': {
+      const items = addItemWithQuant(
         state.items,
         action.item.cartData,
         action.quantity
@@ -80,7 +83,7 @@ export function cartReducer(state: State, action: Action): State {
       return generateFinalState(state, action, items);
     }
     case 'RESET_CART':
-      return initialState;
+      return initState;
     default:
       return state;
   }

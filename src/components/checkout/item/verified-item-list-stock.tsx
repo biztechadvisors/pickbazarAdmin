@@ -24,13 +24,15 @@ import Wallet from '@/components/checkout/wallet/wallet';
 import { CouponType } from '@/types';
 import { useSettingsQuery } from '@/data/settings';
 import { useRouter } from 'next/router';
+import { useStock } from '@/contexts/quick-cart/stock.context';
+import { PlaceOrderActionStock } from '../place-order-stock.action';
 interface Props {
   className?: string;
 }
-const VerifiedItemList: React.FC<Props> = ({ className }) => {
+const VerifiedItemListStock: React.FC<Props> = ({ className }) => {
   const { t } = useTranslation('common');
   const { locale } = useRouter();
-  const { items, isEmpty: isEmptyCart } = useCart();
+  const { items, isEmpty: isEmptyCart } = useStock();
   const [verifiedResponse] = useAtom(verifiedResponseAtom);
   const [coupon, setCoupon] = useAtom(couponAtom);
   const [discount] = useAtom(discountAtom);
@@ -187,9 +189,9 @@ const VerifiedItemList: React.FC<Props> = ({ className }) => {
       {use_wallet && !Boolean(payableAmount) ? null : (
         <PaymentGrid className="mt-10 border border-gray-200 bg-light p-5" />
       )}
-      <PlaceOrderAction>{t('text-place-order')}</PlaceOrderAction>
+      <PlaceOrderActionStock>{t('text-place-order')}</PlaceOrderActionStock>
     </div>
   );
 };
 
-export default VerifiedItemList;
+export default VerifiedItemListStock;
