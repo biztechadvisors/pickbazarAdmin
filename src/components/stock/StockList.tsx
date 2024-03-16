@@ -208,7 +208,7 @@ const StockList = ({
             )}
             <ActionButtons
               id={id}
-              detailsUrl={`${Routes.singleorder}/${id}`}
+              detailsUrl={`${Routes.singleSaleOrder}/${id}`}
               customLocale={order.language}
             />
           </>

@@ -37,7 +37,6 @@ export const useOrdersSalesQuery = (
   };
 };
 
-
 export const useOrderSaleQuery = ({
   id,
   language,
@@ -56,7 +55,6 @@ export const useOrderSaleQuery = ({
     isLoading,
   };
 };
-
 
 export const useOrderSalesQuery = ({
   id,
