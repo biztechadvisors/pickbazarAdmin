@@ -218,7 +218,6 @@ const StockList = ({
   ];
 
   // console.log("newrouter",router.asPath)
-  console.log('orders', orders);
 
   return (
     <>
