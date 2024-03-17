@@ -1,8 +1,13 @@
 import React, { useState } from 'react';
 import { ChevronDownIcon } from '@heroicons/react/solid';
+import { dealerOnly, getAuthCredentials, hasAccess } from '@/utils/auth-utils';
 
 const Dropdown = () => {
   const [isOpen, setIsOpen] = useState(false);
+  const { permissions } = getAuthCredentials();
+  let permission = hasAccess(dealerOnly, permissions);
+  let identify = permissions;
+  const matching: any = 'dealer';
 
   const toggleMenu = () => {
     setIsOpen(!isOpen);
@@ -35,9 +40,8 @@ const Dropdown = () => {
             </span> */}
           <h3>Orders</h3>
           <ChevronDownIcon
-            className={`h-3.5 w-3.5 shrink-0 opacity-75 transition-transform duration-300 ${
-              isOpen ? 'rotate-90' : ''
-            }`}
+            className={`h-3.5 w-3.5 shrink-0 opacity-75 transition-transform duration-300 ${isOpen ? 'rotate-90' : ''
+              }`}
           />
         </div>
       </a>
@@ -62,15 +66,17 @@ const Dropdown = () => {
               <span>Self Order</span>
             </a>
           </div>
-          <div>
-            <a
-              title="Inactive/New shops"
-              className='relative flex w-full cursor-pointer items-center rounded-lg py-2 px-5 text-sm text-body-dark text-start before:absolute before:-left-0.5 before:top-[18px] before:h-px before:w-3 before:border-t before:border-dashed before:border-gray-300 before:content-[""] hover:text-accent focus:text-accent focus:text-accent'
-              href="/sales"
-            >
-              <span>Sales</span>
-            </a>
-          </div>
+          {permission && identify == matching &&
+            <div>
+              <a
+                title="Inactive/New shops"
+                className='relative flex w-full cursor-pointer items-center rounded-lg py-2 px-5 text-sm text-body-dark text-start before:absolute before:-left-0.5 before:top-[18px] before:h-px before:w-3 before:border-t before:border-dashed before:border-gray-300 before:content-[""] hover:text-accent focus:text-accent focus:text-accent'
+                href="/sales"
+              >
+                <span>Sales</span>
+              </a>
+            </div>
+          }
         </div>
         {/* </div> */}
       </div>

@@ -32,8 +32,6 @@ import Dropdown from './Dropdown';
 // Import your Dropdown component here
 
 const SidebarItem = ({ href, icon, label }: any) => {
-  console.log('label', label);
-
   const { closeSidebar } = useUI();
 
   // Check if the label is "Orders" and render the Dropdown component if true
@@ -45,7 +43,7 @@ const SidebarItem = ({ href, icon, label }: any) => {
           iconName: icon,
           className: 'w-5 h-5 me-4',
         })}
-        <Dropdown /> {/* Render the Dropdown component */}
+        <Dropdown />
       </div>
     );
   }

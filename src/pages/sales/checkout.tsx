@@ -19,10 +19,11 @@ import { PlusIcon } from '@/components/icons/plus-icon';
 import AddCustomerSlider from './AddCustomerSlider';
 import { checkoutCustAtom, shopIdAtom } from '@/utils/atoms';
 import UserAddressSelection from '@/components/UserAddressSelection';
+import CustomerEmail from '@/components/checkout/customer/CustomerEmail';
 
-const CustomerEmail = dynamic(
-  () => import('@/components/checkout/customer/customerEmail')
-);
+// const CustomerEmail = dynamic(
+//   () => import('@/components/checkout/customer/customerEmail')
+// );
 
 const ScheduleGrid = dynamic(
   () => import('@/components/checkout/schedule/schedule-grid')
