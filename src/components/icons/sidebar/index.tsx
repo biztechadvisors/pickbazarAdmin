@@ -1,3 +1,4 @@
+
 export { AttributeIcon } from '@/components/icons/sidebar/attribute';
 export { AttributeValueIcon } from '@/components/icons/sidebar/attribute-value';
 export { CategoriesIcon } from '@/components/icons/sidebar/categories';
@@ -22,7 +23,9 @@ export { CalendarScheduleIcon } from '@/components/icons/sidebar/calendar-schedu
 export { ReviewIcon } from '@/components/icons/sidebar/review';
 export { QuestionIcon } from '@/components/icons/sidebar/question';
 export { ChatIcon } from '@/components/icons/sidebar/chat';
-export {DealerListIcon} from '@/components/icons/sidebar/dealerlist';
+export { DealerListIcon } from '@/components/icons/sidebar/dealerlist';
 export {TotalSaleIcon} from '@/components/icons/sidebar/total-sale';
 export { StoreNoticeIcon } from '@/components/icons/sidebar/store-notice';
-export { UploadIcon } from '@/components/icons/upload-icon'
+export { OrderListIcon } from '@/components/icons/sidebar/order-list';
+export { SalesIcon } from '@/components/icons/sidebar/sales';
+export { UploadIcon } from '@/components/icons/upload-icon';

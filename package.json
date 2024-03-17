@@ -3,9 +3,9 @@
   "version": "10.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev -p 3003",
+    "dev": "next dev -p 3002",
     "build": "next build",
-    "start": "next start -p 3003",
+    "start": "next start -p 3002",
     "lint": "next lint"
   },
   "dependencies": {
@@ -27,6 +27,8 @@
     "jotai": "2.0.3",
     "js-cookie": "3.0.1",
     "json-server": "^1.0.0-alpha.21",
+    "jspdf": "^2.5.1",
+    "jspdf-autotable": "^3.8.2",
     "lodash": "4.17.21",
     "next": "^13.2.3",
     "next-i18next": "13.2.1",
@@ -73,6 +75,7 @@
     "eslint": "8.35.0",
     "eslint-config-next": "13.2.3",
     "eslint-config-prettier": "8.7.0",
+    "json-server": "^1.0.0-alpha.22",
     "postcss": "8.4.21",
     "prettier": "2.8.4",
     "prettier-plugin-tailwindcss": "0.2.4",

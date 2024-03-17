@@ -32,14 +32,13 @@ const ShopList = ({
 }: IProps) => {
   const { t } = useTranslation();
   const { alignLeft, alignRight } = useIsRTL();
-  const [getPermission,_]=useAtom(newPermission)
+  const [getPermission, _] = useAtom(newPermission)
   const { permissions } = getAuthCredentials();
-  const canWrite =  permissions.includes('super_admin')
-  ? siteSettings.sidebarLinks
-  :getPermission?.find(
-    (permission) => permission.type === 'sidebar-nav-item-shops'
-  )?.write;
-
+  const canWrite = permissions.includes('super_admin')
+    ? siteSettings.sidebarLinks
+    : getPermission?.find(
+      (permission) => permission.type === 'sidebar-nav-item-shops'
+    )?.write;
 
   const [sortingObj, setSortingObj] = useState<{
     sort: SortOrder;
@@ -73,7 +72,8 @@ const ShopList = ({
       width: 74,
       render: (logo: any, record: any) => (
         <Image
-          src={logo?.thumbnail ?? siteSettings.product.placeholder ? logo?.thumbnail ?? siteSettings.product.placeholder : ''}
+          // src={logo?.thumbnail ?? siteSettings.product.placeholder ? logo?.thumbnail ?? siteSettings.product.placeholder : ''}
+          src={`${process?.env?.NEXT_PUBLIC_REST_API_ENDPOINT}/${logo?.thumbnail ?? siteSettings.product.placeholder ? logo?.thumbnail ?? siteSettings.product.placeholder : ''}`}
           alt={record?.name}
           width={42}
           height={42}
@@ -168,23 +168,23 @@ const ShopList = ({
     },
     {
       ...(canWrite
-      ?{
-      title: t('table:table-item-actions'),
-      dataIndex: 'id',
-      key: 'actions',
-      align: alignRight,
-      render: (id: string, { slug, is_active }: any) => {
-        return (
-          <ActionButtons
-            id={id}
-            approveButton={true}
-            detailsUrl={`/${slug}`}
-            isShopActive={is_active}
-          />
-        );
-      },
-    }: null),
-  },
+        ? {
+          title: t('table:table-item-actions'),
+          dataIndex: 'id',
+          key: 'actions',
+          align: alignRight,
+          render: (id: string, { slug, is_active }: any) => {
+            return (
+              <ActionButtons
+                id={id}
+                approveButton={true}
+                detailsUrl={`/${slug}`}
+                isShopActive={is_active}
+              />
+            );
+          },
+        } : null),
+    },
   ];
 
   return (

@@ -1,15 +1,17 @@
 import Navbar from '@/components/layouts/navigation/top-navbar';
 import { Fragment, useState } from 'react';
 import MobileNavigation from '@/components/layouts/navigation/mobile-navigation';
-import { siteSettings} from '@/settings/site.settings';
+import { siteSettings } from '@/settings/site.settings';
 import { useTranslation } from 'next-i18next';
 import SidebarItem from '@/components/layouts/navigation/sidebar-item';
 import { useRouter } from 'next/router';
-import { useEffect,   } from 'react';
-import { newPermission} from '@/contexts/permission/storepermission';
+import { useEffect } from 'react';
+import { newPermission } from '@/contexts/permission/storepermission';
 import { useAtom } from 'jotai';
 import { getAuthCredentials } from '@/utils/auth-utils';
 import { useMeQuery } from '@/data/user';
+import { Routes } from '@/config/routes';
+import { shopSlugAtom } from '@/utils/atoms';
 
 const AdminLayout: React.FC<{ children?: React.ReactNode }> = ({
   children,
@@ -17,18 +19,94 @@ const AdminLayout: React.FC<{ children?: React.ReactNode }> = ({
   const { t } = useTranslation();
   const { locale } = useRouter();
 
-  const router=useRouter()
+  const router = useRouter();
   const dir = locale === 'ar' || locale === 'he' ? 'rtl' : 'ltr';
-  
-  
-  const [matched,_]=useAtom(newPermission)
-  const { permissions } = getAuthCredentials(); 
 
-  const matchedLinks = permissions.includes('super_admin')
-    ? siteSettings.sidebarLinks.admin
-    : siteSettings.sidebarLinks.admin.filter(link =>
-        matched.some(newItem => newItem.type === link.label)
-      );
+  const [matched, _] = useAtom(newPermission);
+
+  const { permissions } = getAuthCredentials();
+
+  const { data, isLoading: loading, error } = useMeQuery();
+
+  const [shopSlug, setShopSlug] = useAtom(shopSlugAtom);
+
+  useEffect(() => {
+    if (data && data.shops && data.shops.length > 0) {
+      const newShopSlug = data.shops[0].slug;
+      setShopSlug(newShopSlug);
+      localStorage.setItem('shopSlug', newShopSlug);
+    }
+  }, [data]);
+
+  let matchedLinks = [];
+
+  if (router.pathname === Routes.adminMyShops) {
+    matchedLinks = [
+      {
+        href: Routes.attribute.list,
+        label: 'sidebar-nav-item-attributes',
+        icon: 'AttributeIcon',
+      },
+      {
+        href: Routes.type.list,
+        label: 'sidebar-nav-item-groups',
+        icon: 'TypesIcon',
+      },
+      {
+        href: Routes.category.list,
+        label: 'sidebar-nav-item-categories',
+        icon: 'CategoriesIcon',
+      },
+      {
+        href: Routes.product.list,
+        label: 'sidebar-nav-item-products',
+        icon: 'ProductsIcon',
+      },
+      // {
+      //   href: Routes.order.list,
+      //   label: 'sidebar-nav-item-orders',
+      //   icon: 'OrdersIcon',
+      // },
+      // {
+      //   href: Routes.refund.list,
+      //   label: 'sidebar-nav-item-refunds',
+      //   icon: 'RefundsIcon',
+      // },
+      {
+        href: Routes.reviews.list,
+        label: 'sidebar-nav-item-reviews',
+        icon: 'ReviewIcon',
+      },
+      {
+        href: Routes.tag.list,
+        label: 'sidebar-nav-item-tags',
+        icon: 'TagIcon',
+      },
+    ];
+  } else {
+    matchedLinks = permissions.includes('super_admin')
+      ? siteSettings.sidebarLinks.admin
+      : siteSettings.sidebarLinks.admin.filter((link) =>
+          matched.some((newItem) => newItem.type === link.label)
+        );
+
+    matchedLinks = matchedLinks.filter(
+      (link) =>
+        ![
+          Routes.attribute.list,
+          Routes.type.list,
+          // Routes.settings,
+          Routes.product.list,
+          // Routes.order.list,
+          // Routes.refund.list,
+          Routes.reviews.list,
+          Routes.category.list,
+          // Routes.sales,
+          // Routes.createSales,
+          Routes.tag.list,
+        ].includes(link.href)
+    );
+  }
 
   const SidebarItemMap = () => (
     <Fragment>
@@ -37,6 +115,11 @@ const AdminLayout: React.FC<{ children?: React.ReactNode }> = ({
       ))}
     </Fragment>
   );
+
+  console.log('matchedLinks********', matchedLinks);
+
+  console.log('permissions ***********', permissions);
+
   return (
     <div
       className="flex min-h-screen flex-col bg-gray-100 transition-colors duration-150"
@@ -60,4 +143,5 @@ const AdminLayout: React.FC<{ children?: React.ReactNode }> = ({
     </div>
   );
 };
+
 export default AdminLayout;

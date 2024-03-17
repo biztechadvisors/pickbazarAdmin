@@ -98,7 +98,6 @@ const OwnerShopLayout = () => {
 const OwnerDashboard = () => {
   const { permissions } = getAuthCredentials();
   let permission = hasAccess(adminOnly, permissions);
-
   return permission ? <ShopList /> : <OwnerShopLayout />;
 };
 

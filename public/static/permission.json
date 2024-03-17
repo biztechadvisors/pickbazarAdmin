@@ -1,68 +1,40 @@
 {
   "type_name": {
-
     "SUPER_ADMIN": "super_admin",
-
     "STORE_OWNER": "store_owner",
-
     "ADMIN": "admin",
-
     "DEALER": "dealer",
-
     "STAFF": "staff"
   },
-
-  "Menus":{
-    "DASHBOARD":"sidebar-nav-item-dashboard",
-
-    "SHOPS":"sidebar-nav-item-shops",
-
-    "MY_SHOPS":"sidebar-nav-item-my-shops",
-
-    "PRODUCTS":"sidebar-nav-item-products",
-
-    "ATTRIBUTES":"sidebar-nav-item-attributes",
-
-    "GROUPS":"sidebar-nav-item-groups",
-
-    "CATEGORIES":"sidebar-nav-item-categories",
-
-    "TAGS":"sidebar-nav-item-tags",
-
-    "MANUFACTURERS":"sidebar-nav-item-manufacturers",
-
-    "PERMISSIONS":"sidebar-nav-item-permissions",
-
-    "DEALER":"sidebar-nav-item-dealerlist",
-
-    "AUTHORS":"sidebar-nav-item-authors",
-
-    "ORDERS":"sidebar-nav-item-orders",
-
-    "CREATE_ORDERS":"sidebar-nav-item-create-order",
-
-    "USERS":"sidebar-nav-item-users",
-
-    "COUPONS":"sidebar-nav-item-coupons",
-
-    "TAXES":"sidebar-nav-item-taxes",
-
-    "SHIPPINGS":"sidebar-nav-item-shippings",
-
-    "WITHDRAWS":"sidebar-nav-item-withdraws",
-
-    "MESSAGE":"sidebar-nav-item-message",
-
-    "REFUNDS":"sidebar-nav-item-refunds",
-
-    "QUESTIONS":"sidebar-nav-item-questions",
-
-    "STORE_NOTICE":"sidebar-nav-item-store-notice",
-
-    "REVIEWS":"sidebar-nav-item-reviews",
-
-    "SETTINGS":"sidebar-nav-item-settings",
-
-    "STAFFS":"sidebar-nav-item-staffs"
+  "Menus": {
+    "DASHBOARD": "sidebar-nav-item-dashboard",
+    "SHOPS": "sidebar-nav-item-shops",
+    "MY_SHOPS": "sidebar-nav-item-my-shops",
+    "PRODUCTS": "sidebar-nav-item-products",
+    "ATTRIBUTES": "sidebar-nav-item-attributes",
+    "GROUPS": "sidebar-nav-item-groups",
+    "CATEGORIES": "sidebar-nav-item-categories",
+    "TAGS": "sidebar-nav-item-tags",
+    "MANUFACTURERS": "sidebar-nav-item-manufacturers",
+    "PERMISSIONS": "sidebar-nav-item-permissions",
+    "DEALER": "sidebar-nav-item-dealerlist",
+    "AUTHORS": "sidebar-nav-item-authors",
+    "ORDERS": "sidebar-nav-item-orders",
+    "CREATE_ORDERS": "sidebar-nav-item-create-order",
+    "USERS": "sidebar-nav-item-users",
+    "COUPONS": "sidebar-nav-item-coupons",
+    "TAXES": "sidebar-nav-item-taxes",
+    "SHIPPINGS": "sidebar-nav-item-shippings",
+    "WITHDRAWS": "sidebar-nav-item-withdraws",
+    "MESSAGE": "sidebar-nav-item-message",
+    "REFUNDS": "sidebar-nav-item-refunds",
+    "QUESTIONS": "sidebar-nav-item-questions",
+    "STORE_NOTICE": "sidebar-nav-item-store-notice",
+    "REVIEWS": "sidebar-nav-item-reviews",
+    "SETTINGS": "sidebar-nav-item-settings",
+    "STAFFS": "sidebar-nav-item-staffs",
+    "STOCK": "sidebar-nav-item-stocks",
+    "SALES": "sidebar-nav-item-sales",
+    "CREATE_SALES": "sidebar-nav-item-create-sales"
   }
 }

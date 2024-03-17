@@ -6,7 +6,7 @@ import LinkButton from '@/components/ui/link-button';
 import { useState } from 'react';
 import ErrorMessage from '@/components/ui/error-message';
 import Loader from '@/components/ui/loader/loader';
-import { useUsersQuery } from '@/data/user';
+import { useMeQuery, useUsersQuery } from '@/data/user';
 import { useTranslation } from 'next-i18next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import { Routes } from '@/config/routes';
@@ -23,9 +23,11 @@ export default function Customers() {
 
   const [orderBy, setOrder] = useState('created_at');
   const [sortedBy, setColumn] = useState<SortOrder>(SortOrder.Desc);
+  const { data } = useMeQuery();
 
   const { users, paginatorInfo, loading, error } = useUsersQuery({
     limit: 20,
+    usrById: data?.id,
     page,
     name: searchTerm,
     orderBy,

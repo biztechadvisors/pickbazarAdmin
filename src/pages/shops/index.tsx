@@ -18,6 +18,7 @@ export default function AllShopPage() {
   const [page, setPage] = useState(1);
   const [orderBy, setOrder] = useState('created_at');
   const [sortedBy, setColumn] = useState<SortOrder>(SortOrder.Desc);
+
   const { shops, paginatorInfo, loading, error } = useShopsQuery({
     name: searchTerm,
     limit: 10,

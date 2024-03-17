@@ -5,7 +5,7 @@ import { useUI } from '@/contexts/ui.context';
 import { fadeInOut } from '@/utils/motion/fade-in-out';
 import axios from 'axios';
 
-const CheckoutForm = ({handleAddCustomer}) => {
+const CheckoutForm = ({ }) => {
   const { t } = useTranslation('common');
   const { closeCartSidebar } = useUI();
 
@@ -24,20 +24,20 @@ const CheckoutForm = ({handleAddCustomer}) => {
       email: e.target.elements['email'].value,
       contact: e.target.elements['phone'].value
     };
-  
+
     try {
       // Make a POST request to the API endpoint
-      const response = await axios.post('http://localhost:5000/api/dealers/customer', formData);
+      const response = await axios.post('http://localhost:5050/api/dealers/customer', formData);
       // console.log('Response:', response.data);
-  
+
       // Close the cart sidebar after form submission
-      closeCartSidebar();
+    closeCartSidebar();
     } catch (error) {
       console.error('Error submitting form:', error.message);
       // Handle any errors that occur during form submission
     }
   };
-  
+
 
   return (
     <motion.div

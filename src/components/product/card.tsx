@@ -17,9 +17,10 @@ interface Props {
   isChecked: boolean;
   id:Number;
   email:string
+  phone:string
 }
 
-const ProductCard = ({ item, isChecked, id, email }: Props) => {
+const ProductCard = ({ item, isChecked, id, email, phone }: Props) => {
   const { t } = useTranslation();
   const {
     slug,
@@ -69,7 +70,8 @@ const ProductCard = ({ item, isChecked, id, email }: Props) => {
       <div className="relative flex h-48 w-auto items-center justify-center sm:h-64">
         <span className="sr-only">{t('text-product-image')}</span>
         <Image
-          src={image?.original ?? productPlaceholder}
+          // src={image?.original ?? productPlaceholder}
+          src={`${process?.env?.NEXT_PUBLIC_REST_API_ENDPOINT}/${image?.original ?? 'productPlaceholder'}`}
           alt={name}
           fill
           sizes="(max-width: 768px) 100vw"
@@ -135,7 +137,7 @@ const ProductCard = ({ item, isChecked, id, email }: Props) => {
         ) : (
           canWrite && (
             <>
-              {Number(quantity) > 0 && <AddToCart variant="neon" data={item} id={id} email={email} />}
+              {Number(quantity) > 0 && <AddToCart variant="neon" data={item} id={id} email={email} phone={phone}/>}
             </>
           )
         )}

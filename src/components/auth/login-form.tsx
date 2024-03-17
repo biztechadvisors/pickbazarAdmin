@@ -42,10 +42,7 @@ const LoginForm = () => {
 
   function onSubmit({ email, password }: LoginInput) {
     login(
-      {
-        email,
-        password,
-      },
+      { email, password },
       {
         onSuccess: (data) => {
           if (data?.token) {

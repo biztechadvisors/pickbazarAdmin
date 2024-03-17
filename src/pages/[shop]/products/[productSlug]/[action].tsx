@@ -34,6 +34,7 @@ export default function UpdateProductPage() {
     error,
   } = useProductQuery({
     slug: query.productSlug as string,
+    userId: me?.id,
     language:
       query.action!.toString() === 'edit' ? locale! : Config.defaultLanguage,
   });

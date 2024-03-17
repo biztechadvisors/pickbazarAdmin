@@ -9,8 +9,13 @@ import { useModalState } from '@/components/ui/modal/modal.context';
 import { Form } from '@/components/ui/form/form';
 import { AddressType, GoogleMapLocation } from '@/types';
 import { useSettings } from '@/contexts/settings.context';
-import { Controller } from 'react-hook-form';
+import { Control, Controller, FieldErrors, UseFormGetValues } from 'react-hook-form';
 import GooglePlacesAutocomplete from '@/components/form/google-places-autocomplete';
+import ValidationError from '../ui/validation-error';
+import Select from '../ui/select/select';
+import SelectInput from '../ui/select-input';
+import { useState } from 'react';
+import { error } from 'console';
 
 type FormValues = {
   title: string;
@@ -34,11 +39,45 @@ const addressSchema = yup.object().shape({
   address: yup.object().shape({
     country: yup.string().required('error-country-required'),
     city: yup.string().required('error-city-required'),
-    state: yup.string().required('error-state-required'),
+    // state: yup.string().required('error-state-required'),
+    state: yup.object().shape({
+      value: yup.string().required('error-state-name-required'),
+    }).required('error-state-required'),
     zip: yup.string().required('error-zip-required'),
     street_address: yup.string().required('error-street-required'),
   }),
 });
+
+const optionRegion = [
+  { value: "Andhra Pradesh", label: "Andhra Pradesh" },
+  { value: "Arunachal Pradesh", label: "Arunachal Pradesh" },
+  { value: "Assam", label: "Assam" },
+  { value: "Bihar", label: "Bihar" },
+  { value: "Chhattisgarh", label: "Chhattisgarh" },
+  { value: "Goa", label: "Goa" },
+  { value: "Gujarat", label: "Gujarat" },
+  { value: "Haryana", label: "Haryana" },
+  { value: "Himachal Pradesh", label: "Himachal Pradesh" },
+  { value: "Jharkhand", label: "Jharkhand" },
+  { value: "Karnataka", label: "Karnataka" },
+  { value: "Kerala", label: "Kerala" },
+  { value: "Madhya Pradesh", label: "Madhya Pradesh" },
+  { value: "Maharashtra", label: "Maharashtra" },
+  { value: "Manipur", label: "Manipur" },
+  { value: "Meghalaya", label: "Meghalaya" },
+  { value: "Mizoram", label: "Mizoram" },
+  { value: "Nagaland", label: "Nagaland" },
+  { value: "Odisha", label: "Odisha" },
+  { value: "Punjab", label: "Punjab" },
+  { value: "Rajasthan", label: "Rajasthan" },
+  { value: "Sikkim", label: "Sikkim" },
+  { value: "Tamil Nadu", label: "Tamil Nadu" },
+  { value: "Telangana", label: "Telangana" },
+  { value: "Tripura", label: "Tripura" },
+  { value: "Uttar Pradesh", label: "Uttar Pradesh" },
+  { value: "Uttarakhand", label: "Uttarakhand" },
+  { value: "West Bengal", label: "West Bengal" }
+];
 
 const AddressForm: React.FC<any> = ({ onSubmit }) => {
   const { t } = useTranslation('common');
@@ -46,13 +85,34 @@ const AddressForm: React.FC<any> = ({ onSubmit }) => {
   const {
     data: { address, type },
   } = useModalState();
+
+  const [getState, setState] = useState(address?.address?.state)
+  console.log("myState", getState)
+
+
   return (
     <div className="min-h-screen p-5 bg-light sm:p-8 md:min-h-0 md:rounded-xl">
       <h1 className="mb-4 text-lg font-semibold text-center text-heading sm:mb-6">
         {address ? t('text-update') : t('text-add-new')} {t('text-address')}
       </h1>
       <Form<FormValues>
-        onSubmit={onSubmit}
+        onSubmit={(data) => {
+          const dataji = {
+            title: data.title,
+            type: data.type,
+            address: {
+              country: data.address.country,
+              city: data.address.city,
+              state: data.address.state.value,
+              zip: data.address.zip,
+              street_address: data.address.street_address,
+            },
+            location: data?.address?.location
+          }
+          console.log("StateData", dataji)
+          onSubmit(dataji);
+        }}
+
         className="grid h-full grid-cols-2 gap-5"
         //@ts-ignore
         validationSchema={addressSchema}
@@ -155,12 +215,18 @@ const AddressForm: React.FC<any> = ({ onSubmit }) => {
               variant="outline"
             />
 
-            <Input
-              label={t('text-state')}
-              {...register('address.state')}
-              error={t(errors.address?.state?.message!)}
-              variant="outline"
-            />
+            <div>
+              <Label>{t('text-state')}</Label>
+              <SelectInput
+                options={optionRegion}
+                placeholder={t('Select')}
+                getOptionLabel={(option: any) => `${option?.label}`}
+                getOptionValue={(option: any) => option}
+                control={control} 
+                name={'address.state'} 
+                defaultValue={[]}              />
+              <ValidationError message={errors.address?.state?.message} />
+            </div>
 
             <Input
               label={t('text-zip')}

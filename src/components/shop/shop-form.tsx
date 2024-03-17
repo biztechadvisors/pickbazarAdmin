@@ -233,7 +233,7 @@ const ShopForm = ({ initialValues }: { initialValues?: any }) => {
     name: 'settings.socials',
   });
   function onSubmit(values: FormValues) {
-    console.log("FormValues", values)
+
     const settings = {
       ...values?.settings,
       location: { ...omit(values?.settings?.location, '__typename') },

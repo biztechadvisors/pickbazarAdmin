@@ -14,6 +14,8 @@ import { useAtom } from 'jotai';
 import { siteSettings } from '@/settings/site.settings';
 import { usePermissionData } from '@/data/permission';
 import { useUpdateCart } from '@/data/cart';
+import { useMeQuery } from '@/data/user';
+import { date } from 'yup';
 export default function Permission() {
   const { t } = useTranslation();
   const [searchTerm, setSearchTerm] = useState('');
@@ -21,13 +23,22 @@ export default function Permission() {
   const [orderBy, setOrder] = useState('created_at');
   const [getPermission, _] = useAtom(newPermission);
   const { permissions } = getAuthCredentials();
+
+  const { data: meData } = useMeQuery();
+  const id = meData?.id;
+
   const canWrite = permissions.includes('super_admin')
     ? siteSettings.sidebarLinks
     : getPermission?.find(
-        (permission) => permission.type === 'sidebar-nav-item-permission'
+        (permission) => permission.type === 'sidebar-nav-item-permissions'
       )?.write;
 
-  const { isLoading, error, data: permissionData } = usePermissionData();
+  const {
+    isLoading,
+    error,
+    data: permissionData,
+    refetch,
+  } = usePermissionData(id);
 
   function handleSearch({ searchText }: { searchText: string }) {
     setSearchTerm(searchText);
@@ -38,11 +49,10 @@ export default function Permission() {
   }
 
   if (isLoading) return <Loader text={t('common:text-loading')} />;
-  if (error) return <ErrorMessage message={permissionData.error.message} />;
+  if (error) return <ErrorMessage message={error.message} />;
   if (!permissionData) {
     return <div>No permission data available</div>;
   }
-
   return (
     <>
       <Card className="mb-8 flex flex-col items-center justify-between md:flex-row">
@@ -77,8 +87,8 @@ export default function Permission() {
                   <td className="border p-2">{e.type_name}</td>
                   <td className="border p-2">{e.permission_name}</td>
                   <td className="border p-2">
-                    {e.permission.length > 0
-                      ? e.permission.slice(0, 3).map((permission, i) => (
+                    {e.permissions.length > 0
+                      ? e.permissions.slice(0, 3).map((permission, i) => (
                           <React.Fragment key={i}>
                             <li>
                               {permission.type
@@ -89,7 +99,7 @@ export default function Permission() {
                                   .replace('sidebar-nav-item-', '')
                                   .slice(1)}
                             </li>
-                            {i !== e.permission.length - 1 && ' '}
+                            {i !== e.permissions.length - 1 && ' '}
                           </React.Fragment>
                         ))
                       : ''}

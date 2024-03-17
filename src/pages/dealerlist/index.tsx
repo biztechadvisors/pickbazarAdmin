@@ -14,7 +14,7 @@ import { useRouter } from 'next/router';
 import { adminOnly, getAuthCredentials } from '@/utils/auth-utils';
 import { Config } from '@/config';
 import DealerTypeList from '@/components/dealerlist/dealer-list';
-import { useUsersQuery } from '@/data/user';
+import { useMeQuery, useUsersQuery } from '@/data/user';
 import { useDealerQuery, useDealerQueryGet } from '@/data/dealer';
 import { useAtom } from 'jotai';
 import { newPermission } from '@/contexts/permission/storepermission';
@@ -26,21 +26,30 @@ export default function DealerPage() {
   const [orderBy, setOrder] = useState('created_at');
   const [sortedBy, setColumn] = useState<SortOrder>(SortOrder.Desc);
   const [searchTerm, setSearchTerm] = useState('');
+  const { data } = useMeQuery();
   const { users, loading, error } = useUsersQuery({
     type: 'Dealer',
+    usrById: data?.id,
     name: searchTerm,
     // language: locale,
     orderBy,
     sortedBy,
   });
+  
+  const userdealer = users.filter((user)=>user?.type?.type_name==='dealer')
 
   const [getPermission,_]=useAtom(newPermission)
   const { permissions } = getAuthCredentials();
-  const canWrite =  permissions.includes('super_admin')
-  ? siteSettings.sidebarLinks
-  :getPermission?.find(
-    (permission) => permission.type === 'sidebar-nav-item-dealerlist'
-  )?.write;
+  const canWrite = permissions.includes('super_admin')
+    ? siteSettings.sidebarLinks
+    : getPermission?.find(
+      (permission) => permission.type === 'sidebar-nav-item-dealerlist'
+    )?.write;
+
+  // const {
+  //   data,
+  //   isLoading,
+  // } = useDealerQueryAllGet();
 
   if (loading) return <Loader text={t('common:text-loading')} />;
   if (error) return <ErrorMessage message={error.message} />;
@@ -76,7 +85,7 @@ export default function DealerPage() {
           )}
         </div>
       </Card>
-      <DealerTypeList users={users} onOrder={setOrder} onSort={setColumn} />
+      <DealerTypeList users={userdealer} onOrder={setOrder} onSort={setColumn} />
     </>
   );
 }

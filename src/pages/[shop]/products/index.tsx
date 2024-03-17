@@ -36,7 +36,6 @@ export default function ProductsPage() {
   const router = useRouter();
   const { permissions } = getAuthCredentials();
   const { data: me } = useMeQuery();
-  console.log('data-product-check', me)
   const {
     query: { shop },
   } = useRouter();

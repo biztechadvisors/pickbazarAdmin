@@ -33,11 +33,11 @@ export const useCreateProductMutation = () => {
       queryClient.invalidateQueries(API_ENDPOINTS.PRODUCTS);
     },
     onError: (error: any) => {
-      const {data, status} =  error?.response;
+      const { data, status } = error?.response;
       if (status === 422) {
-        const errorMessage:any = Object.values(data).flat();
+        const errorMessage: any = Object.values(data).flat();
         toast.error(errorMessage[0]);
-      }else{
+      } else {
         toast.error(t(`common:${error?.response?.data.message}`));
       }
     },
@@ -72,6 +72,21 @@ export const useUpdateProductMutation = () => {
   });
 };
 
+// export const useUpdateQuantity = () => {
+//   const queryClient = useQueryClient();
+//   const { t } = useTranslation('common');
+//   return useMutation(productClient.updateQuantity, {
+//     onSuccess: () => {
+//       toast.success(t('Quantity Updated'));
+//     },
+//     // Always refetch after error or success:
+//     onSettled: (data) => {
+//       queryClient.refetchQueries(API_ENDPOINTS.GENERATE_DESCRIPTION);
+//       data;
+//     },
+//   });
+// };
+
 export const useDeleteProductMutation = () => {
   const queryClient = useQueryClient();
   const { t } = useTranslation();
@@ -89,10 +104,10 @@ export const useDeleteProductMutation = () => {
   });
 };
 
-export const useProductQuery = ({ slug, language }: GetParams) => {
+export const useProductQuery = ({ slug, userId, language }: GetParams) => {
   const { data, error, isLoading } = useQuery<Product, Error>(
-    [API_ENDPOINTS.PRODUCTS, { slug, language }],
-    () => productClient.get({ slug, language })
+    [API_ENDPOINTS.PRODUCTS, { slug, userId, language }],
+    () => productClient.get({ slug, userId, language })
   );
 
   return {
@@ -102,12 +117,8 @@ export const useProductQuery = ({ slug, language }: GetParams) => {
   };
 };
 
-export const useProductsQuery = (params: Partial<ProductQueryOptions>,options: any = {}) => {
-  const { data, error, isLoading } = useQuery<ProductPaginator, Error>(
-    [API_ENDPOINTS.PRODUCTS, params],
-    ({ queryKey, pageParam }) =>
-      productClient.paginated(Object.assign({}, queryKey[1], pageParam)),
-    {
+export const useProductsQuery = (params: Partial<ProductQueryOptions>, options: any = {}) => {
+  const { data, error, isLoading } = useQuery<ProductPaginator, Error>([API_ENDPOINTS.PRODUCTS, params],({ queryKey, pageParam }) =>productClient.paginated(Object.assign({}, queryKey[1], pageParam)),{
       keepPreviousData: true,
       ...options,
     }
@@ -127,6 +138,21 @@ export const useGenerateDescriptionMutation = () => {
   return useMutation(productClient.generateDescription, {
     onSuccess: () => {
       toast.success(t('Generated...'));
+    },
+    // Always refetch after error or success:
+    onSettled: (data) => {
+      queryClient.refetchQueries(API_ENDPOINTS.GENERATE_DESCRIPTION);
+      data;
+    },
+  });
+};
+
+export const useUpdateQuantity = () => {
+  const queryClient = useQueryClient();
+  const { t } = useTranslation('common');
+  return useMutation(productClient.updateQuantity, {
+    onSuccess: () => {
+      toast.success(t('Quantity Updated'));
     },
     // Always refetch after error or success:
     onSettled: (data) => {

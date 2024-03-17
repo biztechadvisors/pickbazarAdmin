@@ -12,7 +12,8 @@ import { Permission } from '@/types';
 import Select from '../ui/select/select';
 import Label from '../ui/label';
 import { useRouter } from 'next/router';
-import { ViewPermission, usePermissionData } from '@/data/permission';
+import { usePermissionData } from '@/data/permission';
+import { getAuthCredentials } from '@/utils/auth-utils';
 
 type FormValues = {
   name: string;
@@ -21,6 +22,7 @@ type FormValues = {
   contact: string;
   type: { value: string };
   permission: Permission;
+  UsrBy: string;
 };
 
 const defaultValues = {
@@ -48,17 +50,28 @@ const CustomerCreateForm = () => {
   });
 
   const permissionData = usePermissionData();
+  const { permissions } = getAuthCredentials();
 
   const permissionNames =
-    permissionData?.data?.map((permission) => permission.permission_name) ?? [];
+    permissionData?.data?.map((permission: { permission_name: any; }) => permission.permission_name) ?? [];
+    var permissionOptions:any;
+    if (permissions[0] !== 'dealer') {
+      permissionOptions = [
+        ...permissionNames.map((name:any) => ({
+          value: name,
+          label: name,
+        }))
+      ];
+    } else {
+      permissionOptions = [
+        { value: 'customer', label: 'customer' },
+        { value: 'staff', label: 'staff' },
+      ];
+    }
 
-  const permissionOptions = [
-    ...permissionNames.map((name) => ({
-      value: name,
-      label: name,
-    })),
-    { value: ['Customer'], label: 'Customer' },
-  ];
+  console.log("permissionOption", permissionOptions)
+
+  // console.log("permissionOptions", permissionOptions )
 
   async function onSubmit({
     name,
@@ -67,7 +80,6 @@ const CustomerCreateForm = () => {
     contact,
     type,
   }: FormValues) {
-    console.log('type', type);
     registerUser(
       {
         name,
@@ -76,7 +88,8 @@ const CustomerCreateForm = () => {
         contact,
         UsrBy: id,
         type: type?.value,
-        permission: Permission.StoreOwner,
+        // permission: Permission.StoreOwner,
+        // UsrBy: id,
       },
       {
         onError: (error: any) => {
@@ -90,6 +103,8 @@ const CustomerCreateForm = () => {
       }
     );
   }
+
+  // console.log("Permission.StoreOwner", Permission.StoreOwner)
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} noValidate>
@@ -132,7 +147,6 @@ const CustomerCreateForm = () => {
             className="mb-4"
             error={t(errors.contact?.message!)}
           />
-
           <Controller
             name="type"
             control={control}
@@ -141,7 +155,7 @@ const CustomerCreateForm = () => {
                 <Label>{t('form:input-label-type')}</Label>
                 <Select
                   {...field}
-                  getOptionLabel={(option: any) => option.value}
+                  getOptionLabel={(option: any) => option.value.permission_name}
                   getOptionValue={(option: any) => option.value}
                   options={permissionOptions}
                   isClearable={true}
@@ -165,7 +179,7 @@ const CustomerCreateForm = () => {
         </Button>
 
         <Button loading={loading} disabled={loading}>
-          {t('form:form-title-create-user')}
+          {t('form:button-label-create-customer')}
         </Button>
       </div>
     </form>
@@ -173,3 +187,17 @@ const CustomerCreateForm = () => {
 };
 
 export default CustomerCreateForm;
+
+// Json which require to send while registering.
+
+// {
+//   "name": "John Doe",
+//   "email": "john@example.com",
+//   "password": "password123",
+//   "type": "user",
+//   "UsrBy": "Admin",
+//   "contact": "1234567890",
+//   "permission": {
+//   },
+//   "isVerified": false
+// }

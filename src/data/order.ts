@@ -140,6 +140,8 @@ export const useDownloadInvoiceMutation = (
     },
   };
 
+  console.log("formattedInput", formattedInput)
+
   return useQuery<string, Error>(
     [API_ENDPOINTS.ORDER_INVOICE_DOWNLOAD],
     () => orderClient.downloadInvoice(formattedInput),

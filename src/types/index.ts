@@ -32,6 +32,46 @@ export enum StoreNoticeType {
   specific_shop = 'specific_shop',
 }
 
+export interface SearchParamOptions {
+  type: string;
+  name: string;
+  categories: string;
+  tags: string;
+  author: string;
+  price: string;
+  manufacturer: string;
+  status: string;
+  is_active: string;
+  shop_id: string;
+  min_price: string;
+  max_price: string;
+  rating: string;
+  question: string;
+  notice: string;
+}
+
+export interface RegisterUserInput {
+  name: string;
+  email: string;
+  password: string;
+}
+
+export interface ChangePasswordUserInput {
+  id: number;
+  email: string;
+  oldPassword: string;
+  newPassword: string;
+}
+
+export interface OtpLoginInputType {
+  phone_number: string;
+  code: string;
+  otp_id: string;
+  name?: string;
+  email?: string;
+}
+
+
 export enum PaymentGateway {
   STRIPE = 'STRIPE',
   COD = 'CASH_ON_DELIVERY',
@@ -67,6 +107,7 @@ export enum ProductStatus {
   UnPublish = 'unpublish',
   Rejected = 'rejected',
 }
+
 export enum WithdrawStatus {
   Approved = 'APPROVED',
   Pending = 'PENDING',
@@ -88,7 +129,7 @@ export enum AddressType {
 
 export type QueryOptionsType = {
   page?: number;
-  type?:string;
+  type?: string;
   name?: string;
   shop_id?: number;
   limit?: number;
@@ -114,6 +155,7 @@ export enum PaymentStatus {
   FAILED = 'payment-failed',
   REVERSAL = 'payment-reversal',
   COD = 'payment-cash-on-delivery',
+  AWAITING_FOR_APPROVAL = 'payment-awaiting-for-approval',
 }
 
 export interface NameAndValueType {
@@ -131,6 +173,7 @@ export enum Permission {
 
 export interface GetParams {
   slug: string;
+  userId: string;
   language: string;
 }
 
@@ -323,6 +366,15 @@ export interface AttachmentInput {
 
 export interface ConnectTypeBelongsTo {
   connect?: string;
+}
+
+export interface Card {
+  expires: string;
+  network: string;
+  origin: string;
+  owner_name: string;
+  payment_gateway_id: number | string;
+  default_card: number;
 }
 
 export interface Shop {
@@ -615,7 +667,7 @@ export interface Product {
   created_at: string;
   updated_at: string;
   ratings: number;
-  margin:string
+  margin: string
 }
 
 export interface CreateProduct {
@@ -826,7 +878,9 @@ export interface CreateOrderStatusInput {
 
 export interface CreateOrderInput {
   tracking_number?: string;
-  customer_id: number;
+  customer_id: string,
+  customerId: string,
+  dealerId: string,
   order_status?: string;
   products: ConnectProductOrderPivot[];
   amount: number;
@@ -842,6 +896,11 @@ export interface CreateOrderInput {
   card?: CardInput;
   billing_address?: UserAddressInput;
   shipping_address?: UserAddressInput;
+}
+
+export interface CreateStockInput {
+  user_id: number;
+  products: ConnectProductOrderPivot[];
 }
 
 export interface CreateManufacturerInput {
@@ -1035,13 +1094,19 @@ export interface Tax {
   id?: string;
   name?: string;
   rate?: number;
-  is_global?: boolean;
-  country?: string;
-  state?: string;
-  zip?: string;
-  city?: string;
-  priority?: number;
-  on_shipping?: boolean;
+  hsn_no?:number;
+  cgst?:number;
+  sgst?:number;
+  gst_Name?:string;
+  sac_no?:number;
+  compensation_Cess?:number;
+  // is_global?: boolean;
+  // country?: string;
+  // state?: string;
+  // zip?: string;
+  // city?: string;
+  // priority?: number;
+  // on_shipping?: boolean;
 }
 
 export interface TaxInput {
@@ -1249,10 +1314,10 @@ export interface RegisterInput {
   email: string;
   password: string;
   name: string;
-  contact:string;
-  UsrBy:string;
   shop_id?: number;
   permission: Permission;
+  contact: string;
+  UsrBy: any;
 }
 
 export interface ChangePasswordInput {
@@ -1293,16 +1358,6 @@ export declare type AddStaffInput = {
   password: string;
   name: string;
   shop_id: number;
-};
-
-export declare type AddDealerInput = {
-  user: AddDealerInput | null | undefined;
-  // dealerProductMargins: AddDealerInput | null | undefined;
-  // dealerCategoryMargins: AddDealerInput | null | undefined;
-  // product:AddDealerInput | null | undefined;
-  id: string;
-  translated_languages: any;
-  name: string;
 };
 
 export declare type ApproveShopInput = {
@@ -1459,6 +1514,7 @@ export interface TypeQueryOptions extends QueryOptions {
 export interface ProductQueryOptions extends QueryOptions {
   type: string;
   name: string;
+  slug: string;
   categories: string;
   tags: string;
   author: string;
@@ -1475,7 +1531,8 @@ export interface ProductQueryOptions extends QueryOptions {
 }
 
 export interface UserQueryOptions extends QueryOptions {
-  name: string;
+  email: string;
+  usrById: string;
 }
 
 export interface ManufacturerQueryOptions extends QueryOptions {
@@ -1508,6 +1565,7 @@ export interface OrderQueryOptions extends QueryOptions {
   name: string;
   shop_id: string;
   tracking_number: string;
+  customer_id: number;
 }
 
 export interface CouponQueryOptions extends QueryOptions {
@@ -1573,47 +1631,57 @@ export interface DealerQueryOptions extends Omit<QueryOptions, 'language'> {
 }
 
 
-export interface ShopPaginator extends PaginatorInfo<Shop> {}
+export interface ShopPaginator extends PaginatorInfo<Shop> { }
 
-export interface WithdrawPaginator extends PaginatorInfo<Withdraw> {}
+export interface WithdrawPaginator extends PaginatorInfo<Withdraw> { }
 
-export interface UserPaginator extends PaginatorInfo<User> {}
+export interface UserPaginator extends PaginatorInfo<User> { }
 
 export interface QuestionPaginator extends PaginatorInfo<Question> { }
 
-export interface StaffPaginator extends PaginatorInfo<User> {}
+export interface StaffPaginator extends PaginatorInfo<User> { }
 
-export interface DealerPaginator extends PaginatorInfo<AddDealerInput> {}
+export interface DealerPaginator extends PaginatorInfo<AddDealerInput> { }
 
-export interface OrderPaginator extends PaginatorInfo<Order> {}
+export interface OrderPaginator extends PaginatorInfo<Order> { }
 
-export interface CouponPaginator extends PaginatorInfo<Coupon> {}
+export interface CouponPaginator extends PaginatorInfo<Coupon> { }
 
-export interface StoreNoticePaginator extends PaginatorInfo<StoreNotice> {}
+export interface StoreNoticePaginator extends PaginatorInfo<StoreNotice> { }
 
-export interface ProductPaginator extends PaginatorInfo<Product> {}
+export interface ProductPaginator extends PaginatorInfo<Product> { }
 
-export interface CategoryPaginator extends PaginatorInfo<Category> {}
+export interface CategoryPaginator extends PaginatorInfo<Category> { }
 
-export interface TaxPaginator extends PaginatorInfo<Tax> {}
+export interface TaxPaginator extends PaginatorInfo<Tax> { }
 
-export interface ReviewPaginator extends PaginatorInfo<Review> {}
+export interface ReviewPaginator extends PaginatorInfo<Review> { }
 
-export interface TagPaginator extends PaginatorInfo<Tag> {}
+export interface TagPaginator extends PaginatorInfo<Tag> { }
 
-export interface AttributePaginator extends PaginatorInfo<Attribute> {}
+export interface AttributePaginator extends PaginatorInfo<Attribute> { }
 
 export interface AttributeValuePaginator
-  extends PaginatorInfo<AttributeValue> {}
+  extends PaginatorInfo<AttributeValue> { }
 
-export interface ShippingPaginator extends PaginatorInfo<Shipping> {}
+export interface ShippingPaginator extends PaginatorInfo<Shipping> { }
 
-export interface AuthorPaginator extends PaginatorInfo<Author> {}
+export interface AuthorPaginator extends PaginatorInfo<Author> { }
 
-export interface ManufacturerPaginator extends PaginatorInfo<Manufacturer> {}
+export interface ManufacturerPaginator extends PaginatorInfo<Manufacturer> { }
 
-export interface OrderStatusPaginator extends PaginatorInfo<OrderStatus> {}
+export interface OrderStatusPaginator extends PaginatorInfo<OrderStatus> { }
 
-export interface ConversionPaginator extends PaginatorInfo<Conversations> {}
+export interface ConversionPaginator extends PaginatorInfo<Conversations> { }
 
-export interface MessagePaginator extends PaginatorInfo<Message> {}
+export interface MessagePaginator extends PaginatorInfo<Message> { }
+
+export interface SettingsQueryOptions extends QueryOptions { }
+
+// Stocks TypeScript
+
+export interface CreateStocks {
+  id: any;
+  products: ConnectProductOrderPivot[];
+  dealer: any;
+}

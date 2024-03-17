@@ -23,6 +23,8 @@ type FormValues = {
   email: string;
   password: string;
   permission: Permission;
+  contact:string;
+  UsrBy:string
 };
 const registrationFormSchema = yup.object().shape({
   name: yup.string().required('form:error-name-required'),
@@ -51,17 +53,21 @@ const RegistrationForm = () => {
   const router = useRouter();
   const { t } = useTranslation();
 
-  async function onSubmit({ name, email, password, permission }: FormValues) {
+  async function onSubmit({ name, email, password, permission,contact,UsrBy}: FormValues) {
+    console.log(name, email, password, permission,contact)
     registerUser(
       {
         name,
         email,
         password,
         permission,
+        contact: '',
+        UsrBy: ''
       },
 
       {
         onSuccess: (data) => {
+          console.log('data = ', data)
           if (data?.token) {
             if (hasAccess(allowedRoles, data?.permissions)) {
               setAuthCredentials(data?.token, data?.permissions);
@@ -88,6 +94,7 @@ const RegistrationForm = () => {
   return (
     <>
       <form onSubmit={handleSubmit(onSubmit)} noValidate>
+        
         <Input
           label={t('form:input-label-name')}
           {...register('name')}
@@ -109,6 +116,14 @@ const RegistrationForm = () => {
           error={t(errors?.password?.message!)}
           variant="outline"
           className="mb-4"
+        />
+        <Input
+          label={t('form:input-label-contact')}
+          {...register('contact')}
+          type="number"
+          variant="outline"
+          className="mb-4"
+          error={t(errors?.contact?.message!)}
         />
         <Button className="w-full" loading={loading} disabled={loading}>
           {t('form:text-register')}

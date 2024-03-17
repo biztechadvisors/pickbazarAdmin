@@ -15,31 +15,60 @@ import { ShopIcon } from '@/components/icons/sidebar';
 import { DollarIcon } from '@/components/icons/shops/dollar';
 import { useAnalyticsQuery, usePopularProductsQuery } from '@/data/dashboard';
 import { useRouter } from 'next/router';
+import { useMeQuery } from '@/data/user';
+import { useAtom } from 'jotai';
+import { newPermission } from '@/contexts/permission/storepermission';
+import { getAuthCredentials } from '@/utils/auth-utils';
+import { siteSettings } from '@/settings/site.settings';
+import { CustomerIcon } from '../icons/sidebar/customer';
 
 export default function Dashboard() {
   const { t } = useTranslation();
   const { locale } = useRouter();
-  const { data, isLoading: loading } = useAnalyticsQuery();
+
+  const [getPermission,_]=useAtom(newPermission)
+  const { permissions } = getAuthCredentials();
+  const canWrite =  permissions.includes('super_admin')
+  ? siteSettings.sidebarLinks
+  :getPermission?.find(
+    (permission) => permission.type === 'sidebar-nav-item-dealerlist'
+  )?.write;
+
+
+
+  const { data: useMe } = useMeQuery();
+  const customerId = useMe?.id ?? ''
+
+  const query = {
+    customerId: parseInt(customerId),
+    state: '',
+  };
+
+  const { data, isLoading: loading } = useAnalyticsQuery(query);
   const { price: total_revenue } = usePrice(
     data && {
       amount: data?.totalRevenue!,
     }
   );
+
   const { price: todays_revenue } = usePrice(
     data && {
       amount: data?.todaysRevenue!,
     }
   );
+
   const {
     error: orderError,
     orders: orderData,
     loading: orderLoading,
     paginatorInfo,
   } = useOrdersQuery({
+    customer_id: parseInt(customerId),
     language: locale,
     limit: 10,
     page: 1,
   });
+
   const {
     data: popularProductData,
     isLoading: popularProductLoading,
@@ -66,6 +95,9 @@ export default function Dashboard() {
       item.total.toFixed(2)
     );
   }
+
+  // console.log("data----analytics", data)
+
   return (
     <>
       <div className="mb-6 grid w-full grid-cols-1 gap-5 sm:grid-cols-2 xl:grid-cols-4">
@@ -93,14 +125,22 @@ export default function Dashboard() {
             price={todays_revenue}
           />
         </div>
-        <div className="w-full ">
+        {canWrite ? (<div className="w-full ">
           <StickerCard
             titleTransKey="sticker-card-title-total-shops"
             icon={<ShopIcon className="w-6" color="#1D4ED8" />}
             iconBgStyle={{ backgroundColor: '#93C5FD' }}
             price={data?.totalShops}
           />
-        </div>
+        </div>) :
+        <div className="w-full ">
+          <StickerCard
+            titleTransKey="sticker-card-title-total-cutomer"
+            icon={<CustomerIcon className="w-6" color="#1D4ED8" />}
+            iconBgStyle={{ backgroundColor: '#93C5FD' }}
+            price={data?.totalShops}
+          />
+        </div>}
       </div>
 
       <div className="mb-6 flex w-full flex-wrap md:flex-nowrap">
