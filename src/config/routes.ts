@@ -13,16 +13,23 @@ export const Routes = {
   storeKeepers: '/vendor/store_keepers',
   profileUpdate: '/profile-update',
   checkout: '/orders/checkout',
+  checkouts: '/sales/checkout',
   verifyEmail: '/verify-email',
   sales: '/sales',
   createSales: '/sales/create',
-  groups:'/groups',
+  groups: '/groups',
   shops: (slug: string) => `/shops/${encodeURIComponent(slug)}`,
   // orders: '/orders',
   orders: (tracking_number: string) =>
     `/orders/${encodeURIComponent(tracking_number)}`,
+  sale: (tracking_number: string) =>
+    `/sale/${encodeURIComponent(tracking_number)}`,
+
+  stocks: (tracking_number: string) =>
+    `stocks/${encodeURIComponent(tracking_number)}`,
 
   singleorder: '/order',
+  singleSaleOrder: 'sale',
   products: (slug: string) => {
     // if (asPath) {
     //   return `/products/${encodeURIComponent(slug)}?type=${asPath}`;

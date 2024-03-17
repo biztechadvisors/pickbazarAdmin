@@ -11,11 +11,13 @@ import SelectInput from '@/components/ui/select-input';
 import { Table } from '@/components/ui/table';
 import { clearCheckoutAtom } from '@/contexts/checkout';
 import { useCart } from '@/contexts/quick-cart/cart.context';
+import { useStock } from '@/contexts/quick-cart/stock.context';
 import {
   useDownloadInvoiceMutation,
   useOrderQuery,
   useUpdateOrderMutation,
 } from '@/data/order';
+import { useOrderSalesQuery } from '@/data/stocks';
 import { siteSettings } from '@/settings/site.settings';
 import { Attachment, OrderStatus, PaymentStatus } from '@/types';
 import { formatAddress } from '@/utils/format-address';
@@ -40,21 +42,21 @@ export default function OrderDetailsPage() {
   const { t } = useTranslation();
   const { query, locale } = useRouter();
   const { alignLeft, alignRight, isRTL } = useIsRTL();
-  const { resetCart } = useCart();
+  const { resetStock } = useStock();
   const [, resetCheckout] = useAtom(clearCheckoutAtom);
 
   useEffect(() => {
-    resetCart();
+    resetStock();
     // @ts-ignore
     resetCheckout();
-  }, [resetCart, resetCheckout]);
+  }, [resetStock, resetCheckout]);
 
   const { mutate: updateOrder, isLoading: updating } = useUpdateOrderMutation();
   const {
     order,
     isLoading: loading,
     error,
-  } = useOrderQuery({ id: query.orderId as string, language: locale! });
+  } = useOrderSalesQuery({ id: query.orderId as string, language: locale! });
   const { refetch } = useDownloadInvoiceMutation(
     {
       order_id: query.orderId as string,

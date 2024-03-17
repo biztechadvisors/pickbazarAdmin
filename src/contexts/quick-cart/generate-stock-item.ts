@@ -1,4 +1,5 @@
 import isEmpty from 'lodash/isEmpty';
+
 interface Item {
   id: string | number;
   name: string;
@@ -12,6 +13,7 @@ interface Item {
   quantity?: number;
   [key: string]: unknown;
 }
+
 interface Variation {
   id: string | number;
   title: string;
@@ -20,7 +22,11 @@ interface Variation {
   quantity: number;
   [key: string]: unknown;
 }
-export function generateCartItem(item: Item, variation: Variation) {
+
+export function generateStockItem(
+  item: Item,
+  variation: Variation | undefined
+) {
   const {
     id,
     name,
@@ -33,6 +39,7 @@ export function generateCartItem(item: Item, variation: Variation) {
     is_digital,
     margin,
   } = item;
+
   if (!isEmpty(variation)) {
     return {
       id: `${id}.${variation.id}`,
@@ -42,21 +49,26 @@ export function generateCartItem(item: Item, variation: Variation) {
       unit,
       is_digital,
       stock: variation.quantity,
-      price: variation.sale_price ? variation.sale_price : variation.price,
+      price:
+        variation.sale_price !== undefined
+          ? variation.sale_price
+          : variation.price,
       image: image?.thumbnail,
       variationId: variation.id,
       margin: variation.margin,
     };
   }
+
   return {
     id,
+    productId: id,
     name,
     slug,
     unit,
     is_digital,
+    stock: quantity || 0,
+    price: sale_price !== undefined ? sale_price : price,
     image: image?.thumbnail,
-    stock: quantity,
-    price: sale_price ? sale_price : price,
     margin,
   };
 }

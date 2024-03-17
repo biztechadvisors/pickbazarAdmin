@@ -19,20 +19,19 @@ import { useSettings } from '@/framework/rest/settings';
 import { dealerAddress } from '@/utils/atoms';
 import { useUser } from '@/framework/rest/user';
 import { useRouter } from 'next/router';
+import { useStock } from '@/contexts/quick-cart/stock.context';
 
-export const PlaceOrderAction: React.FC<{
+export const PlaceOrderActionStock: React.FC<{
   className?: string;
   children?: React.ReactNode;
 }> = (props) => {
   const { t } = useTranslation('common');
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
-  const { createOrder, isLoading } = useCreateOrder();
-  const { items } = useCart();
+  const { createOrderFromStock, isLoading } = useCreateOrderByStock();
+  const { items } = useStock();
   const { me } = useUser();
   const [selectedAddress] = useAtom(dealerAddress);
   const router = useRouter();
-
-  console.log('selectedAddress*********', selectedAddress);
 
   const [
     {
@@ -124,9 +123,7 @@ export const PlaceOrderAction: React.FC<{
       },
       saleBy: selectedAddress.address,
     };
-    console.log('placeOrder', input);
-
-    createOrder(input);
+    createOrderFromStock(input);
   };
   const isDigitalCheckout = available_items.find((item) =>
     Boolean(item.is_digital)
