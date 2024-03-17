@@ -34,7 +34,7 @@ type IProps = {
   onOrder: (current: string) => void;
 };
 
-const OrderList = ({
+const StockList = ({
   orders,
   paginatorInfo,
   onPagination,
@@ -208,7 +208,7 @@ const OrderList = ({
             )}
             <ActionButtons
               id={id}
-              detailsUrl={`${Routes.singleorder}/${id}`}
+              detailsUrl={`${Routes.singleSaleOrder}/${id}`}
               customLocale={order.language}
             />
           </>
@@ -218,8 +218,6 @@ const OrderList = ({
   ];
 
   // console.log("newrouter",router.asPath)
-
-  console.log("ordersordersorders", orders)
 
   return (
     <>
@@ -252,4 +250,4 @@ const OrderList = ({
   );
 };
 
-export default OrderList;
+export default StockList;

@@ -3,6 +3,8 @@ import AddToCartBtn from '@/components/cart/add-to-cart/add-to-cart-btn';
 import { cartAnimation } from '@/utils/cart-animation';
 import { useCart } from '@/contexts/quick-cart/cart.context';
 import { generateCartItem } from '@/contexts/quick-cart/generate-cart-item';
+import { useStock } from '@/contexts/quick-cart/stock.context';
+import { generateStockItem } from '@/contexts/quick-cart/generate-stock-item';
 
 interface Props {
   data: any;
@@ -30,7 +32,7 @@ export interface CustomerData {
   quantity: number;
 }
 
-export const AddToCart = ({
+export const AddToStock = ({
   data,
   variant = 'helium',
   counterVariant,
@@ -42,13 +44,13 @@ export const AddToCart = ({
   phone,
 }: Props) => {
   const {
-    addItemToCart,
-    removeItemFromCart,
+    addItemToStock,
+    removeItemFromStock,
     isInStock,
-    getItemFromCart,
+    getItemFromStock,
     isInCart,
-  } = useCart();
-  const item = generateCartItem(data, variation);
+  } = useStock();
+  const item = generateStockItem(data, variation);
   const customerData: CustomerData = {
     customerId: id,
     email: email,
@@ -60,7 +62,7 @@ export const AddToCart = ({
     e: React.MouseEvent<HTMLButtonElement | MouseEvent>
   ) => {
     e.stopPropagation();
-    addItemToCart(
+    addItemToStock(
       customerData,
       1,
       customerData.customerId,
@@ -75,7 +77,7 @@ export const AddToCart = ({
 
   const handleRemoveClick = (e: any) => {
     e.stopPropagation();
-    removeItemFromCart(
+    removeItemFromStock(
       item.id,
       customerData,
       1,
@@ -95,7 +97,7 @@ export const AddToCart = ({
   ) : (
     <>
       <Counter
-        value={getItemFromCart(item.id).quantity}
+        value={getItemFromStock(item.id).quantity}
         onDecrement={handleRemoveClick}
         onIncrement={handleAddClick}
         variant={counterVariant || variant}

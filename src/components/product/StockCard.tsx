@@ -11,16 +11,18 @@ import { useAtom } from 'jotai';
 import { newPermission } from '@/contexts/permission/storepermission';
 import { getAuthCredentials } from '@/utils/auth-utils';
 import { siteSettings } from '@/settings/site.settings';
+import { AddToStock } from '../stock/add-to-stock';
 
 interface Props {
   item: Product;
   isChecked: boolean;
-  id: Number;
+  id: number;
   email: string;
   phone: string;
+  inStock: boolean;
 }
 
-const ProductCard = ({ item, isChecked, id, email, phone }: Props) => {
+const StockCard = ({ item, isChecked, inStock }: Props) => {
   const { t } = useTranslation();
   const {
     slug,
@@ -65,12 +67,9 @@ const ProductCard = ({ item, isChecked, id, email, phone }: Props) => {
 
   return (
     <div className="cart-type-neon h-full overflow-hidden rounded border border-border-200 bg-light shadow-sm transition-all duration-200 hover:shadow-md">
-      {/* <h3>{name}</h3> */}
-
       <div className="relative flex h-48 w-auto items-center justify-center sm:h-64">
         <span className="sr-only">{t('text-product-image')}</span>
         <Image
-          // src={image?.original ?? productPlaceholder}
           src={`${process?.env?.NEXT_PUBLIC_REST_API_ENDPOINT}/${
             image?.original ?? 'productPlaceholder'
           }`}
@@ -84,7 +83,6 @@ const ProductCard = ({ item, isChecked, id, email, phone }: Props) => {
           <div className="absolute top-2 right-2">
             <div className="flex items-center space-x-2 rounded-md bg-green-600 p-2 text-light">
               <span className="text-xs md:text-sm">${margin}</span>
-              {/* <span className="text-xs md:text-sm">$25</span> */}
             </div>
           </div>
         )}
@@ -122,39 +120,33 @@ const ProductCard = ({ item, isChecked, id, email, phone }: Props) => {
 
         <h3 className="mb-4 truncate text-xs text-body md:text-sm">{name}</h3>
 
-        {product_type === ProductType.Variable ? (
-          <>
-            {Number(quantity) > 0 && (
-              <button
-                onClick={handleVariableProduct}
-                className="group flex h-7 w-full items-center justify-between rounded bg-gray-100 text-xs text-body-dark transition-colors hover:border-accent hover:bg-accent hover:text-light focus:border-accent focus:bg-accent focus:text-light focus:outline-none md:h-9 md:text-sm"
-              >
-                <span className="flex-1">{t('text-add')}</span>
-                <span className="grid h-7 w-7 place-items-center bg-gray-200 transition-colors duration-200 rounded-te rounded-be group-hover:bg-accent-600 group-focus:bg-accent-600 md:h-9 md:w-9">
-                  <PlusIcon className="h-4 w-4 stroke-2" />
-                </span>
-              </button>
-            )}
-          </>
-        ) : (
-          canWrite && (
+        {inStock ? (
+          product_type === ProductType.Variable ? (
             <>
               {Number(quantity) > 0 && (
-                <AddToCart
-                  variant="neon"
-                  data={item}
-                  id={id}
-                  email={email}
-                  phone={phone}
-                />
+                <button
+                  onClick={handleVariableProduct}
+                  className="group flex h-7 w-full items-center justify-between rounded bg-gray-100 text-xs text-body-dark transition-colors hover:border-accent hover:bg-accent hover:text-light focus:border-accent focus:bg-accent focus:text-light focus:outline-none md:h-9 md:text-sm"
+                >
+                  <span className="flex-1">{t('text-add')}</span>
+                  <span className="grid h-7 w-7 place-items-center bg-gray-200 transition-colors duration-200 rounded-te rounded-be group-hover:bg-accent-600 group-focus:bg-accent-600 md:h-9 md:w-9">
+                    <PlusIcon className="h-4 w-4 stroke-2" />
+                  </span>
+                </button>
               )}
             </>
+          ) : (
+            canWrite && (
+              <>
+                {Number(quantity) > 0 && (
+                  <AddToStock variant="neon" data={item} />
+                )}
+              </>
+            )
           )
-        )}
-
-        {Number(quantity) <= 0 && (
+        ) : (
           <div className="rounded bg-red-500 px-2 py-1 text-xs text-light">
-            {t('text-out-stock')}
+            Out of Stock
           </div>
         )}
       </header>
@@ -162,4 +154,4 @@ const ProductCard = ({ item, isChecked, id, email, phone }: Props) => {
   );
 };
 
-export default ProductCard;
+export default StockCard;

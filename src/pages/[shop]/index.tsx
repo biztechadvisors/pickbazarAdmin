@@ -45,28 +45,11 @@ export default function ShopPage() {
   const { t } = useTranslation();
   const { permissions } = getAuthCredentials();
   const { data: me } = useMeQuery();
-  const {
-    query: { shop },
-    locale,
-  } = useRouter();
-  const {
-    data,
-    isLoading: loading,
-    error,
-  } = useShopQuery({
-    slug: shop!.toString(),
-  });
+  const {query: { shop },locale,} = useRouter();
+  const {data,isLoading: loading,error,} = useShopQuery({slug: shop!.toString(),});
 
-  const { price: totalEarnings } = usePrice(
-    data && {
-      amount: data?.balance?.total_earnings!,
-    }
-  );
-  const { price: currentBalance } = usePrice(
-    data && {
-      amount: data?.balance?.current_balance!,
-    }
-  );
+  const { price: totalEarnings } = usePrice(data && {amount: data?.balance?.total_earnings!,});
+  const { price: currentBalance } = usePrice(data && {amount: data?.balance?.current_balance!,});
 
   const [getPermission, _] = useAtom(newPermission)
   const canWrite = permissions.includes('super_admin')
@@ -101,6 +84,10 @@ export default function ShopPage() {
   ) {
     router.replace(Routes.dashboard);
   }
+
+  console.log("data******", data)
+  console.log("me***********", me)
+  console.log("shop*********", shop)
 
   return (
     <div className="grid grid-cols-12 gap-6">

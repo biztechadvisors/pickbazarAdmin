@@ -13,11 +13,13 @@ import usePrice from '@/utils/use-price';
 import { useCart } from '@/contexts/quick-cart/cart.context';
 import CheckoutForm from '../checkout/CheckoutForm';
 import { useMeQuery } from '@/data/user';
+import { useStock } from '@/contexts/quick-cart/stock.context';
+import StockItem from './stock-items';
 // import { drawerAtom } from '@store/drawer-atom';
 
-const Cart = () => {
+const Stock = () => {
   const { t } = useTranslation('common');
-  const { items, totalUniqueItems, total } = useCart();
+  const { items, totalUniqueItems, total } = useStock();
   const { closeCartSidebar } = useUI();
 
   // const [_, closeSidebar] = useAtom(drawerAtom);
@@ -26,7 +28,7 @@ const Cart = () => {
   function handleCheckout() {
     // const regularCheckout = items.find((item) => item.is_digital === false);
     // if (regularCheckout) {
-    router.push(Routes.checkout);
+    router.push(Routes.checkouts);
     // } else {
     // router.push(ROUTES.CHECKOUT_DIGITAL);
     // }
@@ -63,7 +65,7 @@ const Cart = () => {
       <motion.div layout className="flex-grow pb-20">
         {items.length > 0 ? (
           items?.map((item) => (
-            <CartItem
+            <StockItem
               item={item}
               key={item.id}
               id={id}
@@ -109,4 +111,4 @@ const Cart = () => {
   );
 };
 
-export default Cart;
+export default Stock;

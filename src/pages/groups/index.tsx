@@ -18,6 +18,7 @@ import { Config } from '@/config';
 import { useAtom } from 'jotai';
 import { newPermission } from '@/contexts/permission/storepermission';
 import { siteSettings } from '@/settings/site.settings';
+import { useMeQuery } from '@/data/user';
 
 export default function TypesPage() {
   const { locale } = useRouter();
@@ -25,20 +26,23 @@ export default function TypesPage() {
   const [orderBy, setOrder] = useState('created_at');
   const [sortedBy, setColumn] = useState<SortOrder>(SortOrder.Desc);
   const [searchTerm, setSearchTerm] = useState('');
+  const { data: meData } = useMeQuery();
+
+  const shop: string | undefined = meData?.shops?.[0]?.id;
   const { types, loading, error } = useTypesQuery({
     name: searchTerm,
     language: locale,
     orderBy,
     sortedBy,
+    shop,
   });
-  const [getPermission,_]=useAtom(newPermission) 
+  const [getPermission, _] = useAtom(newPermission);
   const { permissions } = getAuthCredentials();
-   const canWrite =  permissions.includes('super_admin')
-   ? siteSettings.sidebarLinks
-   : getPermission?.find(
-    (permission) => permission.type === 'sidebar-nav-item-groups'
-  )?.write;
-  
+  const canWrite = permissions.includes('super_admin')
+    ? siteSettings.sidebarLinks
+    : getPermission?.find(
+        (permission) => permission.type === 'sidebar-nav-item-groups'
+      )?.write;
 
   if (loading) return <Loader text={t('common:text-loading')} />;
   if (error) return <ErrorMessage message={error.message} />;
@@ -46,7 +50,6 @@ export default function TypesPage() {
   function handleSearch({ searchText }: { searchText: string }) {
     setSearchTerm(searchText);
   }
-
   return (
     <>
       <Card className="mb-8 flex flex-col items-center xl:flex-row">
@@ -58,7 +61,7 @@ export default function TypesPage() {
 
         <div className="flex w-full flex-col items-center space-y-4 ms-auto md:flex-row md:space-y-0 xl:w-1/2">
           <Search onSearch={handleSearch} />
-    
+
           {/* {locale === Config.defaultLanguage && (
             <LinkButton
               href={Routes.type.create}
@@ -73,19 +76,18 @@ export default function TypesPage() {
             </LinkButton>
           )} */}
           {canWrite && locale === Config.defaultLanguage && (
-              <LinkButton
-                href={Routes.type.create}
-                className="h-12 w-full md:w-auto md:ms-6"
-              >
-                <span className="block md:hidden xl:block">
-                  + {t('form:button-label-add-group')}
-                </span>
-                <span className="hidden md:block xl:hidden">
-                  + {t('form:button-label-add')}
-                </span>
-              </LinkButton>
-            )}
-
+            <LinkButton
+              href={Routes.type.create}
+              className="h-12 w-full md:w-auto md:ms-6"
+            >
+              <span className="block md:hidden xl:block">
+                + {t('form:button-label-add-group')}
+              </span>
+              <span className="hidden md:block xl:hidden">
+                + {t('form:button-label-add')}
+              </span>
+            </LinkButton>
+          )}
         </div>
       </Card>
       <TypeList types={types} onOrder={setOrder} onSort={setColumn} />

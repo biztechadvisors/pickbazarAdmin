@@ -330,6 +330,76 @@ export function useCreateOrder() {
   };
 }
 
+export function useCreateOrderByStock() {
+  const router = useRouter();
+  const { locale } = router;
+  const { t } = useTranslation();
+  // Get user details from UserService
+  const { username, sub } = UserService.getUserDetails();
+
+  const { mutate: createOrderFromStock, isLoading: orderLoading } = useMutation(
+    client.stocks.orderByStock,
+    {
+      onSuccess: async (response) => {
+        const { id, payment_gateway, payment_intent } = response;
+        if (id) {
+          let idStr = '';
+          if (id) {
+            idStr = id.toString();
+          }
+          if (
+            [
+              PaymentGateway.COD,
+              PaymentGateway.CASH,
+              PaymentGateway.FULL_WALLET_PAYMENT,
+            ].includes(payment_gateway as PaymentGateway)
+          ) {
+            router.push(Routes.sale(idStr));
+          } else if (payment_intent?.payment_intent_info?.is_redirect) {
+            router.push(
+              payment_intent?.payment_intent_info?.redirect_url as string
+            );
+          } else {
+            router.push(`${Routes.sale(idStr)}/payment`);
+          }
+        }
+      },
+      onError: (error) => {
+        const {
+          response: { data },
+        }: any = error ?? {};
+        toast.error(data?.message);
+      },
+    }
+  );
+
+  function formatOrderInput(input: CreateOrderInput) {
+    const formattedInputs = {
+      ...input,
+      language: locale,
+      dealer: input.dealerId,
+      dealerEmail: username,
+      invoice_translated_text: {
+        subtotal: t('order-sub-total'),
+        discount: t('order-discount'),
+        tax: t('order-tax'),
+        delivery_fee: t('order-delivery-fee'),
+        total: t('order-total'),
+        products: t('text-products'),
+        quantity: t('text-quantity'),
+        invoice_no: t('text-invoice-no'),
+        date: t('text-date'),
+      },
+    };
+    createOrderFromStock(formattedInputs);
+  }
+
+  return {
+    createOrderFromStock: formatOrderInput,
+    isLoading: orderLoading,
+  };
+}
+
 export function useGenerateDownloadableUrl() {
   const { mutate: getDownloadableUrl } = useMutation(
     client.orders.generateDownloadLink,
