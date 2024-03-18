@@ -52,8 +52,6 @@ export default function CheckoutPage() {
     }
   }, [customer?.id]);
 
-  // if (loading) return <Loader text={t('common:text-loading')} />;
-
   return (
     <div className="bg-gray-100">
       <div className="m-auto flex w-full max-w-5xl flex-col items-center lg:flex-row lg:items-start lg:space-s-8">

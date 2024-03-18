@@ -152,7 +152,10 @@ export const PlaceOrderAction: React.FC<{
 
   useEffect(() => {
     if (!selectedAddress) {
-      router.push('/profile-update');
+      router.push({
+        pathname: '/profile-update',
+        query: { from: 'order-checkout' },
+      });
     }
   }, [selectedAddress]);
 
