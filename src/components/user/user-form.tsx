@@ -53,25 +53,23 @@ const CustomerCreateForm = () => {
   const { permissions } = getAuthCredentials();
 
   const permissionNames =
-    permissionData?.data?.map((permission: { permission_name: any; }) => permission.permission_name) ?? [];
-    var permissionOptions:any;
-    if (permissions[0] !== 'dealer') {
-      permissionOptions = [
-        ...permissionNames.map((name:any) => ({
-          value: name,
-          label: name,
-        }))
-      ];
-    } else {
-      permissionOptions = [
-        { value: 'customer', label: 'customer' },
-        { value: 'staff', label: 'staff' },
-      ];
-    }
-
-  console.log("permissionOption", permissionOptions)
-
-  // console.log("permissionOptions", permissionOptions )
+    permissionData?.data?.map(
+      (permission: { permission_name: any }) => permission.permission_name
+    ) ?? [];
+  var permissionOptions: any;
+  if (permissions[0] !== 'dealer') {
+    permissionOptions = [
+      ...permissionNames.map((name: any) => ({
+        value: name,
+        label: name,
+      })),
+    ];
+  } else {
+    permissionOptions = [
+      { value: 'customer', label: 'customer' },
+      { value: 'staff', label: 'staff' },
+    ];
+  }
 
   async function onSubmit({
     name,

@@ -46,8 +46,6 @@ export default function ProductsPage() {
 
   const { id, email, contact } = meData || {};
 
-  console.log('Datadfsdf', id, email, contact);
-
   const userId = meData?.dealer?.id;
 
   const [isChecked] = useAtom(toggleAtom);
@@ -62,8 +60,6 @@ export default function ProductsPage() {
     categories: category,
     userId,
   });
-
-  console.log('products******', products);
 
   const [getPermission, _] = useAtom(newPermission);
   const { permissions } = getAuthCredentials();

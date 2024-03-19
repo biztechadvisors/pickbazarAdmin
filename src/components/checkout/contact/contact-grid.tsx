@@ -28,8 +28,6 @@ const ContactGrid = ({ contact, label, count, className }: ContactProps) => {
     openModal('ADD_OR_UPDATE_CHECKOUT_CONTACT');
   }
 
-  console.log("customerContactAtom", contactNumber)
-
   return (
     <div className={className}>
       <div className="mb-5 flex items-center justify-between md:mb-8">
