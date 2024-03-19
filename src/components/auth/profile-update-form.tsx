@@ -11,7 +11,7 @@ import pick from 'lodash/pick';
 import SwitchInput from '@/components/ui/switch-input';
 import Label from '@/components/ui/label';
 import { adminOnly, getAuthCredentials, hasAccess } from '@/utils/auth-utils';
-import { useUpdateDealerMutation } from '@/data/dealer';
+import { useDealerQueryGet, useUpdateDealerMutation } from '@/data/dealer';
 
 
 type FormValues = {
@@ -35,7 +35,16 @@ type FormValues = {
 };
 
 export default function ProfileUpdate({ me }: any) {
+  console.log("myDealers", me)
+  const id = me?.id
   const { t } = useTranslation();
+  const {
+    data,
+    isLoading,
+    error,
+  } = useDealerQueryGet({id});
+
+  console.log("DealerGet", data)
   const { mutate: updateUser, isLoading: loading } = useUpdateUserMutation();
   const { mutate: updateDealer, isLoading: updating } = useUpdateDealerMutation();
   const { permissions } = getAuthCredentials();
@@ -59,8 +68,6 @@ export default function ProfileUpdate({ me }: any) {
           'profile.avatar',
           'profile.notifications.email',
           'profile.notifications.enable',
-          'gst',
-          'pan',
         ])),
     },
   });
@@ -85,10 +92,14 @@ export default function ProfileUpdate({ me }: any) {
             ...notifications,
           },
         },
-        gst: gst,
-        pan: pan,
       },
     };
+    const inputGP = {
+      ...data,
+      gst: gst,
+      pan: pan,
+    }
+    updateDealer(inputGP)
     console.log("inputs", input)
     updateUser({ ...input });
     // updateDealer({  })
@@ -147,46 +158,46 @@ export default function ProfileUpdate({ me }: any) {
               error={t(errors?.gst?.message!)}
               variant="outline"
               className="mb-5"
-             
+
             />
-             <Input
+            <Input
               label={t('PAN')}
               {...register('pan')}
               error={t(errors?.pan?.message!)}
               variant="outline"
               className="mb-5"
-             
+
             />
           </Card>
         </div>
       ) : permission ? (
         <div className="my-5 flex flex-wrap border-b border-dashed border-border-base pb-8 sm:my-8">
-        <Description
-          title={t('form:form-notification-title')}
-          details={t('form:form-notification-description')}
-          className="w-full px-0 pb-5 sm:w-4/12 sm:py-8 sm:pe-4 md:w-1/3 md:pe-5"
-        />
-
-        <Card className="mb-5 w-full sm:w-8/12 md:w-2/3">
-          <Input
-            label={t('form:input-notification-email')}
-            {...register('profile.notifications.email')}
-            error={t(errors?.profile?.notifications?.email?.message!)}
-            variant="outline"
-            className="mb-5"
-            type="email"
+          <Description
+            title={t('form:form-notification-title')}
+            details={t('form:form-notification-description')}
+            className="w-full px-0 pb-5 sm:w-4/12 sm:py-8 sm:pe-4 md:w-1/3 md:pe-5"
           />
-          <div className="flex items-center gap-x-4">
-            <SwitchInput
-              name="profile.notifications.enable"
-              control={control}
+
+          <Card className="mb-5 w-full sm:w-8/12 md:w-2/3">
+            <Input
+              label={t('form:input-notification-email')}
+              {...register('profile.notifications.email')}
+              error={t(errors?.profile?.notifications?.email?.message!)}
+              variant="outline"
+              className="mb-5"
+              type="email"
             />
-            <Label className="mb-0">
-              {t('form:input-enable-notification')}
-            </Label>
-          </div>
-        </Card>
-      </div>
+            <div className="flex items-center gap-x-4">
+              <SwitchInput
+                name="profile.notifications.enable"
+                control={control}
+              />
+              <Label className="mb-0">
+                {t('form:input-enable-notification')}
+              </Label>
+            </div>
+          </Card>
+        </div>
       ) : (
         ''
       )}

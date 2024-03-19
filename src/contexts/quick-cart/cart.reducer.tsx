@@ -11,9 +11,6 @@ import {
   calculateTotalItems,
   calculateTotal,
 } from './cart.utils';
-import { cartsClient } from '@/data/client/carts';
-import { stat } from 'fs';
-import { toast } from 'react-toastify';
 
 interface Metadata {
   [key: string]: any;
@@ -28,6 +25,7 @@ type Action =
   | { type: 'RESET_CART' };
 
 export interface State {
+  customerId: any;
   items: Item[];
   isEmpty: boolean;
   totalItems: number;
@@ -47,8 +45,6 @@ export const initialState: State = {
 let updateCartTimeout: NodeJS.Timeout | null = null;
 
 export function cartReducer(state: State, action: Action): State {
-  console.log('state', state);
-  console.log('action', action);
   switch (action.type) {
     case 'ADD_ITEM_WITH_QUANTITY': {
       const items = addItemWithQuantity(

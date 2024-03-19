@@ -26,8 +26,7 @@ export const PlaceOrderAction: React.FC<{
 }> = (props) => {
   const { t } = useTranslation('common');
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
-  // const { createOrder, isLoading } = useCreateOrder();
-  const { createOrderFromStock, isLoading } = useCreateOrderByStock();
+  const { createOrder, isLoading } = useCreateOrder();
   const { items } = useCart();
   const { me } = useUser();
   const [selectedAddress] = useAtom(dealerAddress);
@@ -127,8 +126,7 @@ export const PlaceOrderAction: React.FC<{
     };
     console.log('placeOrder', input);
 
-    // createOrder(input);
-    createOrderFromStock(input);
+    createOrder(input);
   };
   const isDigitalCheckout = available_items.find((item) =>
     Boolean(item.is_digital)

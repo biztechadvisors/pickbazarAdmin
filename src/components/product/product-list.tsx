@@ -266,7 +266,7 @@ const ProductList = ({
           <Badge
             text={status}
             color={
-              status.toLocaleLowerCase() === 'draft'
+              status.toLocaleLowerCase()=== 'draft'
                 ? 'bg-yellow-400'
                 : 'bg-accent'
             }

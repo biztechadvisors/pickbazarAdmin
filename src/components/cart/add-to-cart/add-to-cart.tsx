@@ -4,7 +4,6 @@ import { cartAnimation } from '@/utils/cart-animation';
 import { useCart } from '@/contexts/quick-cart/cart.context';
 import { generateCartItem } from '@/contexts/quick-cart/generate-cart-item';
 
-
 interface Props {
   data: any;
   variant?: 'helium' | 'neon' | 'argon' | 'oganesson' | 'single' | 'big';
@@ -18,9 +17,9 @@ interface Props {
   counterClass?: string;
   variation?: any;
   disabled?: boolean;
-  id?: number;
   email?: string;
-  phone?:string;
+  id?: number;
+  phone?: string;
 }
 
 export interface CustomerData {
@@ -50,12 +49,14 @@ export const AddToCart = ({
     isInCart,
   } = useCart();
   const item = generateCartItem(data, variation);
-  const customerData: CustomerData = {
+  const customerData: any = {
     customerId: id,
     email: email,
-    phone: phone? phone : '',
+    phone: phone ? phone : '',
     cartData: item,
   };
+
+  console.log("custData",customerData)
 
   const handleAddClick = (
     e: React.MouseEvent<HTMLButtonElement | MouseEvent>
@@ -81,9 +82,9 @@ export const AddToCart = ({
       customerData,
       1,
       customerData.customerId,
-      customerData.email, 
-      customerData.phone,
-      );
+      customerData.email,
+      customerData.phone
+    );
   };
 
   const outOfStock = isInCart(item?.id) && !isInStock(item.id);

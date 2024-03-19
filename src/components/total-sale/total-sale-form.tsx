@@ -185,7 +185,7 @@ export default function CreateOrUpdateTotalSaleForm({ initialValues }: IProps) {
       </form>
 
       <h1 className="text-xl font-bold text-heading m-10">
-        {t(`Total Sale :- ${getAnalyticsData && getAnalyticsData?.totalRevenue || "0"}$`)}
+        {t(`Total Sale :- ${getAnalyticsData && getAnalyticsData?.totalRevenue || "0"}₹`)}
       </h1>
 
       <div className="mb-6 flex w-full flex-wrap md:flex-nowrap">
