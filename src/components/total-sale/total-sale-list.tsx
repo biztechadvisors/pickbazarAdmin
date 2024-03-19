@@ -1,14 +1,10 @@
 import { Table } from '@/components/ui/table';
 import { SortOrder, Type } from '@/types';
-import { getIcon } from '@/utils/get-icon';
-import * as typeIcons from '@/components/icons/type';
 import { useTranslation } from 'next-i18next';
 import { useIsRTL } from '@/utils/locals';
 import { useState } from 'react';
 import TitleWithSort from '@/components/ui/title-with-sort';
 import { Routes } from '@/config/routes';
-import { Config } from '@/config';
-import Link from '@/components/ui/link';
 import LanguageSwitcher from '@/components/ui/lang-action/action';
 
 export type IProps = {

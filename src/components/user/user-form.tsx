@@ -14,6 +14,7 @@ import Label from '../ui/label';
 import { useRouter } from 'next/router';
 import { usePermissionData } from '@/data/permission';
 import { getAuthCredentials } from '@/utils/auth-utils';
+import Loader from '../ui/loader/loader';
 
 type FormValues = {
   name: string;
@@ -49,12 +50,17 @@ const CustomerCreateForm = () => {
     resolver: yupResolver(customerValidationSchema),
   });
 
-  const permissionData = usePermissionData();
+  const {data:me,isLoading} = useMeQuery()
+  const userId:any = me?.id
+
+  const{ data:permissionData}= usePermissionData(userId);
   const { permissions } = getAuthCredentials();
 
+  console.log("permissionData", permissionData)
   const permissionNames =
-    permissionData?.data?.map((permission: { permission_name: any; }) => permission.permission_name) ?? [];
+    permissionData?.map((permission: { permission_name: any; }) => permission.permission_name) ?? [];
     var permissionOptions:any;
+    console.log("permissionData2",permissionNames)
     if (permissions[0] !== 'dealer') {
       permissionOptions = [
         ...permissionNames.map((name:any) => ({
@@ -69,8 +75,11 @@ const CustomerCreateForm = () => {
       ];
     }
 
-  console.log("permissionOption", permissionOptions)
+    if (isLoading) {
+      return <Loader text={t('common:text-loading')} />;
+    }
 
+  console.log("permissionOption", permissionOptions)
   // console.log("permissionOptions", permissionOptions )
 
   async function onSubmit({
@@ -155,7 +164,7 @@ const CustomerCreateForm = () => {
                 <Label>{t('form:input-label-type')}</Label>
                 <Select
                   {...field}
-                  getOptionLabel={(option: any) => option.value.permission_name}
+                  getOptionLabel={(option: any) => option.label}
                   getOptionValue={(option: any) => option.value}
                   options={permissionOptions}
                   isClearable={true}

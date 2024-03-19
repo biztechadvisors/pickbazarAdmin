@@ -5,7 +5,7 @@ import Link from '@/components/ui/link';
 
 const Dropdown = () => {
   const [isOpen, setIsOpen] = useState(false);
-  const { permissions } = getAuthCredentials();
+  const { permissions }:any = getAuthCredentials();
   let permission = hasAccess(dealerOnly, permissions);
   let identify = permissions;
   const matching: any = 'dealer';

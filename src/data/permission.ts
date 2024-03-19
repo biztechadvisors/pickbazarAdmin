@@ -14,7 +14,7 @@ export const usePermissionData = (userId: string) => {
     return response;
   });
 
-  return { isLoading, error, data, refetch };
+  return { data,isLoading, error, refetch };
 };
 
 export const useSavePermissionData = () => {
