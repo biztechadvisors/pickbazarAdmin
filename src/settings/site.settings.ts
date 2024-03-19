@@ -145,18 +145,18 @@ export const siteSettings = {
             }),
       },
       {
-        ...(permission && identify == matching &&
-          // ? {
-          //     href: Routes.sales,
-          //     label: 'sidebar-nav-item-sales',
-          //     icon: 'SalesIcon',
-          //   }
-          // : 
+        ...(permission && identify == matching 
+          ? {
+              href: Routes.sales,
+              label: 'sidebar-nav-item-sales',
+              icon: 'SalesIcon',
+            }
+          : 
           {
               href: Routes.tax.list,
               label: 'sidebar-nav-item-taxes',
               icon: 'TaxesIcon',
-            }),
+            })
       },
       {
         href: Routes.shipping.list,
