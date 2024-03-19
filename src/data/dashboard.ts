@@ -5,9 +5,18 @@ import { dashboardClient } from '@/data/client/dashboard';
 import { productClient } from '@/data/client/product';
 
 export function useAnalyticsQuery(query: { customerId: number; state: string }) {
-  // console.log("query********", query);
-  return useQuery([API_ENDPOINTS.ANALYTICS], () => dashboardClient.analytics(query));
+  const { data, error, isLoading } = useQuery([API_ENDPOINTS.ANALYTICS, query], async () => {
+    try {
+      const result = await dashboardClient.analytics(query);
+      return result;
+    } catch (error) {
+      console.error("Error fetching analytics data:", error);
+      throw error;
+    }
+  });
+  return { data, error, isLoading };
 }
+
 
 
 export function usePopularProductsQuery(options: Partial<ProductQueryOptions>) {

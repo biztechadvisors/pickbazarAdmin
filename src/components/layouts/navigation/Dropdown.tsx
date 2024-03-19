@@ -57,6 +57,7 @@ const Dropdown = () => {
               <span>Order</span>
             </a>
           </div>
+          {permission && identify == matching &&
           <div>
             <a
               title="Add new shop"
@@ -66,7 +67,7 @@ const Dropdown = () => {
               <span>Self Order</span>
             </a>
           </div>
-          {permission && identify == matching &&
+          }
             <div>
               <a
                 title="Inactive/New shops"
@@ -76,7 +77,7 @@ const Dropdown = () => {
                 <span>Sales</span>
               </a>
             </div>
-          }
+          
         </div>
         {/* </div> */}
       </div>

@@ -85,12 +85,13 @@ const AdminDashboard = dynamic(() => import('@/components/dashboard/admin'));
 const OwnerDashboard = dynamic(() => import('@/components/dashboard/owner'));
 
 export default function Dashboard({userPermissions,}: {userPermissions: string[];}) {
+ 
   if (
     userPermissions.some(permission =>
       [DEALER, STAFF, STORE_OWNER, SUPER_ADMIN, ADMIN].includes(permission)
     )
   ) {
-    return <AdminDashboard />;
+    return <AdminDashboard/>;
   }
   return <OwnerDashboard />;
 }
