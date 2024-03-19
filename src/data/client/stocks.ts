@@ -21,6 +21,7 @@ export const stockClient = {
   },
 
   paginated: ({ tracking_number, ...params }: Partial<OrderQueryOptions>) => {
+    console.log("track", tracking_number)
     return HttpClient.get<OrderPaginator>(API_ENDPOINTS.STOCK, {
       searchJoin: 'and',
       ...params,

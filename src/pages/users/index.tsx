@@ -28,6 +28,7 @@ export default function Customers() {
   const { users, paginatorInfo, loading, error } = useUsersQuery({
     limit: 20,
     usrById: data?.id,
+    email:searchTerm,
     page,
     name: searchTerm,
     orderBy,
