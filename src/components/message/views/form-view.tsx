@@ -64,7 +64,7 @@ const CreateMessageForm = ({ className, ...rest }: Props) => {
     createMessage(
       {
         message: values?.message,
-        id: query?.id as string,
+        id: query?.id as string
       },
       {
         onError: (error: any) => {
