@@ -168,11 +168,11 @@ export const siteSettings = {
       //   label: 'sidebar-nav-item-withdraws',
       //   icon: 'WithdrawIcon',
       // },
-      // {
-      //   href: Routes.message.list,
-      //   label: 'sidebar-nav-item-message',
-      //   icon: 'ChatIcon',
-      // },
+      {
+        href: Routes.message.list,
+        label: 'sidebar-nav-item-message',
+        icon: 'ChatIcon',
+      },
       {
         href: Routes.refund.list,
         label: 'sidebar-nav-item-refunds',
