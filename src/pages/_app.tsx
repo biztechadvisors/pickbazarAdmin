@@ -21,6 +21,7 @@ import { useRouter } from 'next/router';
 import PrivateRoute from '@/utils/private-route';
 import { Config } from '@/config';
 import 'react-toastify/dist/ReactToastify.css';
+import { StockProvider } from '@/contexts/quick-cart/stock.context';
 
 const Noop: React.FC<{ children?: React.ReactNode }> = ({ children }) => (
   <>{children}</>
@@ -54,6 +55,7 @@ const CustomApp = ({ Component, pageProps }: AppPropsWithLayout) => {
             <UIProvider>
               <ModalProvider>
                 <>
+                <StockProvider>
                   <CartProvider>
                     <DefaultSeo />
                     {authProps ? (
@@ -70,6 +72,7 @@ const CustomApp = ({ Component, pageProps }: AppPropsWithLayout) => {
                     <ToastContainer autoClose={2000} theme="colored" />
                     <ManagedModal />
                   </CartProvider>
+                  </StockProvider>
                 </>
               </ModalProvider>
             </UIProvider>

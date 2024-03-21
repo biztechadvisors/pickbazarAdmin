@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { useAtom } from 'jotai';
 import isEmpty from 'lodash/isEmpty';
 import classNames from 'classnames';
-import { useCreateOrder } from '@/framework/rest/order';
+import { useCreateOrder, useCreateOrderByStock } from '@/framework/rest/order';
 import ValidationError from '@/components/ui/validation-error';
 import Button from '@/components/ui/button';
 import { formatOrderedProduct } from '@/lib/format-ordered-product';
@@ -32,7 +32,7 @@ export const PlaceOrderAction: React.FC<{
   const [selectedAddress] = useAtom(dealerAddress);
   const router = useRouter();
 
-  console.log("selectedAddress*********", selectedAddress)
+  console.log('selectedAddress*********', selectedAddress);
 
   const [
     {
@@ -124,14 +124,7 @@ export const PlaceOrderAction: React.FC<{
       },
       saleBy: selectedAddress.address,
     };
-    console.log("placeOrder", input)
-    // if (payment_gateway === "STRIPE") {
-    //   //@ts-ignore
-    //   input.token = token;
-    // }
-
-    // delete input.billing_address.__typename;
-    // delete input.shipping_address.__typename;
+    console.log('placeOrder', input);
 
     createOrder(input);
   };
@@ -142,13 +135,13 @@ export const PlaceOrderAction: React.FC<{
   let formatRequiredFields = isDigitalCheckout
     ? [customer_contact, payment_gateway, available_items]
     : [
-      customer_contact,
-      payment_gateway,
-      billing_address,
-      shipping_address,
-      delivery_time,
-      available_items,
-    ];
+        customer_contact,
+        payment_gateway,
+        billing_address,
+        shipping_address,
+        delivery_time,
+        available_items,
+      ];
   // if (!isDigitalCheckout && !me) {
   //   formatRequiredFields.push(customer_name);
   // }
@@ -156,7 +149,6 @@ export const PlaceOrderAction: React.FC<{
   const isAllRequiredFieldSelected = formatRequiredFields.every(
     (item) => !isEmpty(item)
   );
-
 
   useEffect(() => {
     if (!selectedAddress) {

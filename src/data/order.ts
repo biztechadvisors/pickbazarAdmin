@@ -119,7 +119,11 @@ export const useUpdateOrderMutation = () => {
 };
 
 export const useDownloadInvoiceMutation = (
-  { order_id, isRTL, language }: { order_id: string, isRTL: boolean, language: string },
+  {
+    order_id,
+    isRTL,
+    language,
+  }: { order_id: string; isRTL: boolean; language: string },
   options: any = {}
 ) => {
   const { t } = useTranslation();
@@ -140,7 +144,7 @@ export const useDownloadInvoiceMutation = (
     },
   };
 
-  console.log("formattedInput", formattedInput)
+  console.log('formattedInput', formattedInput);
 
   return useQuery<string, Error>(
     [API_ENDPOINTS.ORDER_INVOICE_DOWNLOAD],

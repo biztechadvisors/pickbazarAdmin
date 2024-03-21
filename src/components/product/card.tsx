@@ -15,9 +15,9 @@ import { siteSettings } from '@/settings/site.settings';
 interface Props {
   item: Product;
   isChecked: boolean;
-  id:Number;
-  email:string
-  phone:string
+  id: Number;
+  email: string;
+  phone: string;
 }
 
 const ProductCard = ({ item, isChecked, id, email, phone }: Props) => {
@@ -51,13 +51,13 @@ const ProductCard = ({ item, isChecked, id, email, phone }: Props) => {
 
   const { openModal } = useModalAction();
 
-  const [getPermission,_]=useAtom(newPermission)
+  const [getPermission, _] = useAtom(newPermission);
   const { permissions } = getAuthCredentials();
-  const canWrite =  permissions.includes('super_admin')
-  ? siteSettings.sidebarLinks
-  :getPermission?.find(
-    (permission) => permission.type === 'sidebar-nav-item-create-order'
-  )?.write;
+  const canWrite = permissions.includes('super_admin')
+    ? siteSettings.sidebarLinks
+    : getPermission?.find(
+        (permission) => permission.type === 'sidebar-nav-item-create-order'
+      )?.write;
 
   function handleVariableProduct() {
     return openModal('SELECT_PRODUCT_VARIATION', slug);
@@ -71,7 +71,9 @@ const ProductCard = ({ item, isChecked, id, email, phone }: Props) => {
         <span className="sr-only">{t('text-product-image')}</span>
         <Image
           // src={image?.original ?? productPlaceholder}
-          src={`${process?.env?.NEXT_PUBLIC_REST_API_ENDPOINT}/${image?.original ?? 'productPlaceholder'}`}
+          src={`${process?.env?.NEXT_PUBLIC_REST_API_ENDPOINT}/${
+            image?.original ?? 'productPlaceholder'
+          }`}
           alt={name}
           fill
           sizes="(max-width: 768px) 100vw"
@@ -137,7 +139,15 @@ const ProductCard = ({ item, isChecked, id, email, phone }: Props) => {
         ) : (
           canWrite && (
             <>
-              {Number(quantity) > 0 && <AddToCart variant="neon" data={item} id={id} email={email} phone={phone}/>}
+              {Number(quantity) > 0 && (
+                <AddToCart
+                  variant="neon"
+                  data={item}
+                  id={id}
+                  email={email}
+                  phone={phone}
+                />
+              )}
             </>
           )
         )}

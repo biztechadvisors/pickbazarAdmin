@@ -109,6 +109,9 @@ export default function ProductsPage() {
   }
 
 
+  console.log("shopDatashopData", shopData)
+
+
 
 
 

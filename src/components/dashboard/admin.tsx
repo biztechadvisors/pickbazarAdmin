@@ -22,7 +22,7 @@ import { getAuthCredentials } from '@/utils/auth-utils';
 import { siteSettings } from '@/settings/site.settings';
 import { CustomerIcon } from '../icons/sidebar/customer';
 
-export default function Dashboard() {
+export default function Dashboard(user:any) {
   const { t } = useTranslation();
   const { locale } = useRouter();
 
@@ -33,8 +33,6 @@ export default function Dashboard() {
   :getPermission?.find(
     (permission) => permission.type === 'sidebar-nav-item-dealerlist'
   )?.write;
-
-
 
   const { data: useMe } = useMeQuery();
   const customerId = useMe?.id ?? ''
@@ -96,7 +94,7 @@ export default function Dashboard() {
     );
   }
 
-  // console.log("data----analytics", data)
+  console.log("data----analytics", data)
 
   return (
     <>

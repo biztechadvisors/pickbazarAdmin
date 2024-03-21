@@ -1,34 +1,26 @@
-import Pagination from '@/components/ui/pagination';
-import Image from 'next/image';
 import { Table } from '@/components/ui/table';
 import { siteSettings } from '@/settings/site.settings';
-import usePrice from '@/utils/use-price';
 import Badge from '@/components/ui/badge/badge';
-import { Router, useRouter } from 'next/router';
+import { useRouter } from 'next/router';
 import { useTranslation } from 'next-i18next';
 import {
   Product,
-  MappedPaginatorInfo,
-  ProductType,
-  Shop,
   SortOrder,
 } from '@/types';
 import { useIsRTL } from '@/utils/locals';
 import { useState } from 'react';
 import TitleWithSort from '@/components/ui/title-with-sort';
-import { Routes } from '@/config/routes';
-import LanguageSwitcher from '@/components/ui/lang-action/action';
-import { newPermission, permissionAtom } from '@/contexts/permission/storepermission';
+import { newPermission } from '@/contexts/permission/storepermission';
 import { useAtom } from 'jotai';
 import { getAuthCredentials } from '@/utils/auth-utils';
-import { useUpdateQuantity } from '@/data/product';
+import { AlignType } from 'rc-table/lib/interface';
 import Input from '../ui/input';
 import Button from '../ui/button';
-import { AlignType } from 'rc-table/lib/interface';
+import { useGetStock, useUpdateStockQuantity } from '@/data/stock';
+import Select from '../ui/select/select';
 
 export type IProps = {
-  products: Product[] | undefined;
-  // paginatorInfo: MappedPaginatorInfo | null;
+  me: any;
   onPagination: (current: number) => void;
   onSort: (current: any) => void;
   onOrder: (current: string) => void;
@@ -40,17 +32,17 @@ type SortingObjType = {
 };
 
 const StockList = ({
-  products,
-  // paginatorInfo,
-  onPagination,
+  me,
   onSort,
   onOrder,
 }: IProps) => {
   const router = useRouter();
   const { t } = useTranslation();
   const { alignLeft, alignRight } = useIsRTL();
+  const { mutate: updateQuantity, isLoading: updating } = useUpdateStockQuantity();
   const { permissions } = getAuthCredentials();
   const [getPermission, _] = useAtom(newPermission)
+  const { data: stocks, isLoading: loading, error } = useGetStock(me?.id);
   const canWrite = permissions.includes('super_admin')
     ? siteSettings.sidebarLinks.admin
     : getPermission?.find(
@@ -61,8 +53,6 @@ const StockList = ({
     sort: SortOrder.Desc,
     column: null,
   });
-
-  console.log("stockss", products)
 
   const onHeaderClick = (column: string | null) => ({
     onClick: () => {
@@ -79,7 +69,6 @@ const StockList = ({
   });
 
   let columns = [
-
     {
       title: 'S.No',
       dataIndex: 'id',
@@ -107,20 +96,135 @@ const StockList = ({
       width: 300,
       ellipsis: true,
       onHeaderCell: () => onHeaderClick('name'),
-      render: (text:any) => (
+      render: (text: any) => (
         <span>{text.name}</span>
       ),
-
     },
 
     {
       title: t('Stock Available'),
       dataIndex: 'inStock',
       key: 'inStock',
-      align: alignLeft,
+      align: 'center',
       render: (inStock: boolean) => (
-        <Badge text={t(inStock ? "In Stock":'Out Of Stock')} color={inStock? 'bg-accent' : 'bg-red-500'} />
+        <Badge text={t(inStock ? "In Stock" : 'Out Of Stock')} color={inStock ? 'bg-accent' : 'bg-red-500'} />
       ),
+    },
+
+    // {
+    //   title: t('Status'),
+    //   dataIndex: 'status',
+    //   key: 'status',
+    //   align: 'center',
+    //   render: (status: boolean) => (
+    //     <span>{status ? "true" : "false"}</span>
+    //   ),
+    // },
+
+    {
+      title: t('Status'),
+      dataIndex: 'status',
+      key: 'status',
+      align: 'center',
+      render: (status: boolean, record: any) => {
+        const options = [
+          { value: true, label: 'True' },
+          { value: false, label: 'False' }
+        ];
+        // const [getstatus, setStatus] = useState(status);
+
+        const onOrderChange = (selectedOption: any) => {
+          console.log('Selected option:', selectedOption);
+          const data = {
+            user_id: me?.id,
+            quantity: record.quantity,
+            status: selectedOption.value,
+            inStock: record.inStock,
+            ordPendQuant: record.ordPendQuant,
+            product: record.product.id,
+          };
+          updateQuantity(data);
+        };
+
+        return (
+          <>
+            <div>
+              <Select
+                options={options}
+                onChange={onOrderChange}
+                defaultValue={options.find(option => option.value === status)}
+                name="status"
+                placeholder={t('select')}
+              />
+            </div>
+          </>
+        );
+      }
+    },
+
+
+    {
+      title: (
+        <TitleWithSort
+          title={t('Pending Quantity')}
+          ascending={
+            sortingObj.sort === SortOrder.Asc &&
+            sortingObj.column === 'quantity'
+          }
+          isActive={sortingObj.column === 'quantity'}
+        />
+      ),
+      className: 'cursor-pointer',
+      dataIndex: 'ordPendQuant',
+      key: 'ordPendQuant',
+      align: 'center',
+      width: 150,
+      onHeaderCell: () => onHeaderClick('quantity'),
+      render: (quantity: number, record: any) => {
+        const [editMode, setEditMode] = useState(false);
+        const [editedQuantity, setEditedQuantity] = useState(quantity);
+        const [updatedQuantity, setUpdatedQuantity] = useState(quantity);
+        const handleShowQuantity = () => {
+          setEditMode(true);
+        };
+
+        const handleEditQuantity = async () => {
+          // Handle logic to save edited quantity
+          const data = {
+            user_id: me?.id,
+            quantity: record.quantity,
+            status: record.status,
+            inStock: record.inStock,
+            ordPendQuant: editedQuantity,
+            product: record.product.id,
+          };
+          updateQuantity(data);
+          setUpdatedQuantity(editedQuantity);
+          setEditMode(false);
+        };
+
+        return (
+          <div>
+            {editMode ? (
+              <>
+                <Input
+                  type="number"
+                  defaultValue={quantity}
+                  onChange={(e) => setEditedQuantity(Number(e.target.value))} name={''} />
+                <Button onClick={handleEditQuantity}
+                  size='small'
+                  className='mt-2'
+                >Update</Button>
+              </>
+            ) : (
+              <>
+                {/* <Button onClick={handleShowQuantity}>Show</Button> */}
+                <span onClick={handleShowQuantity} className='font-semibold text-accent underline transition-colors duration-200 ms-1 hover:text-accent-hover hover:no-underline focus:text-accent-700 focus:no-underline focus:outline-none'>{updatedQuantity}</span>
+              </>
+            )}
+          </div>
+        );
+      }
     },
 
     {
@@ -140,14 +244,57 @@ const StockList = ({
       align: 'center',
       width: 150,
       onHeaderCell: () => onHeaderClick('quantity'),
+      render: (quantity: number, record: any) => {
+        const [editMode, setEditMode] = useState(false);
+        const [editedQuantity, setEditedQuantity] = useState(quantity);
+        const [updatedQuantity, setUpdatedQuantity] = useState(quantity);
+        const handleShowQuantity = () => {
+          setEditMode(true);
+        };
+
+        const handleEditQuantity = async () => {
+          // Handle logic to save edited quantity
+          const data = {
+            user_id: me?.id,
+            quantity: editedQuantity,
+            status: record.status,
+            inStock: record.quantity === 0 && false || true,
+            ordPendQuant: record.ordPendQuant,
+            product: record.product.id,
+          };
+          updateQuantity(data);
+          setUpdatedQuantity(editedQuantity);
+          setEditMode(false);
+        };
+
+        return (
+          <div>
+            {editMode ? (
+              <>
+                <Input
+                  type="number"
+                  defaultValue={quantity}
+                  onChange={(e) => setEditedQuantity(Number(e.target.value))} name={''} />
+                <Button onClick={handleEditQuantity}
+                  size='small'
+                  className='mt-2'
+                >Update</Button>
+              </>
+            ) : (
+              <>
+                {/* <Button onClick={handleShowQuantity}>Show</Button> */}
+                <span onClick={handleShowQuantity} className='font-semibold text-accent underline transition-colors duration-200 ms-1 hover:text-accent-hover hover:no-underline focus:text-accent-700 focus:no-underline focus:outline-none'>{updatedQuantity}</span>
+              </>
+            )}
+          </div>
+        );
+      },
     },
   ];
 
   if (router?.query?.shop) {
     columns = columns?.filter((column) => column?.key !== 'shop');
   }
-
-  console.log("productsss", products);
 
   return (
     <>
@@ -156,23 +303,11 @@ const StockList = ({
           /* @ts-ignore */
           columns={columns}
           emptyText={t('table:empty-table-data')}
-          data={products}
+          data={stocks}
           rowKey="id"
           scroll={{ x: 900 }}
         />
       </div>
-
-      {/* {!!paginatorInfo?.total && (
-        <div className="flex items-center justify-end">
-          <Pagination
-            total={paginatorInfo.total}
-            current={paginatorInfo.currentPage}
-            pageSize={paginatorInfo.perPage}
-            onChange={onPagination}
-            showLessItems
-          />
-        </div>
-      )} */}
     </>
   );
 };

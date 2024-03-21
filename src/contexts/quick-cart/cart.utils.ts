@@ -6,21 +6,18 @@ export interface Item {
   [key: string]: any;
 }
 
-export interface UpdateItemInput extends Partial<Omit<Item, 'id'>> { }
+export interface UpdateItemInput extends Partial<Omit<Item, 'id'>> {}
 
 export function addItemWithQuantity(
   items: Item[],
   item: Item,
   quantity: number
 ) {
-
-
   if (quantity <= 0)
     throw new Error("cartQuantity can't be zero or less than zero");
   const existingItemIndex = items.findIndex(
     (existingItem) => existingItem.id === item.id
   );
-
 
   if (existingItemIndex > -1) {
     // If the item already exists, update its quantity
@@ -33,8 +30,6 @@ export function addItemWithQuantity(
   }
   return [...items, { ...item, quantity }];
 }
-
-
 
 export function removeItemOrQuantity(
   items: Item[],

@@ -85,12 +85,13 @@ const AdminDashboard = dynamic(() => import('@/components/dashboard/admin'));
 const OwnerDashboard = dynamic(() => import('@/components/dashboard/owner'));
 
 export default function Dashboard({userPermissions,}: {userPermissions: string[];}) {
+ 
   if (
     userPermissions.some(permission =>
       [DEALER, STAFF, STORE_OWNER, SUPER_ADMIN, ADMIN].includes(permission)
     )
   ) {
-    return <AdminDashboard />;
+    return <AdminDashboard/>;
   }
   return <OwnerDashboard />;
 }
@@ -104,7 +105,7 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
     locale !== Config.defaultLanguage
       ? `/${locale}${Routes.login}`
       : Routes.login;
-  const { token, permissions } = getAuthCredentials(ctx);
+  const { token, permissions }:any = getAuthCredentials(ctx);
   if (
     !isAuthenticated({ token, permissions }) ||
     !hasAccess(allowedRoles, permissions)
