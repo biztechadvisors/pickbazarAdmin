@@ -27,4 +27,11 @@ export const stockClient = {
       search: HttpClient.formatSearchParams({ tracking_number }),
     });
   },
+
+  fetchDealerStockData: async (id: any) => {
+    return await HttpClient.get(`${API_ENDPOINTS.STOCK}/all/${id}`);
+  },
+  fetchDealerStockDataById: async (id: any) => {
+    return await HttpClient.get(`${API_ENDPOINTS.STOCK}/${id}`);
+  },
 };

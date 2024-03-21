@@ -17,30 +17,25 @@ import { adminOnly } from '@/utils/auth-utils';
 import StockList from '@/components/stocks/stock-list';
 import { useGetStock } from '@/data/stock';
 import { useMeQuery } from '@/data/user';
-import { useDealerStocks } from '@/data/stocks';
+import { useDealerByIdStocks, useDealerStocks } from '@/data/stocks';
 
-export default function DealerStockList() {
+export default function DealerStockData() {
   const [searchTerm, setSearchTerm] = useState('');
   const [page, setPage] = useState(1);
   const { t } = useTranslation();
 
   const router = useRouter();
+  const { id } = router.query;
 
-  const { data: meData } = useMeQuery();
-  const { id } = meData || {};
 
-  const { data, isLoading, isError } = useDealerStocks(id);
+  const { data } = useDealerByIdStocks(id);
+
+  console.log("data****", data)
+
 
   function handleSearch({ searchText }: { searchText: string }) {
     setSearchTerm(searchText);
     setPage(1);
-  }
-
-  function handleView(item) {
-    router.push({
-      pathname: '/stocks/data',
-      query: { id: item?.user?.id },
-    });
   }
   return (
     <>
@@ -64,24 +59,21 @@ export default function DealerStockList() {
             <tr>
               <th className="px-4 py-2">SL.No</th>
               <th className="px-4 py-2">Name</th>
-              <th className="px-4 py-2">Email</th>
-              <th className="px-4 py-2">Stock</th>
+              <th className="px-4 py-2">Status</th>
+              <th className="px-4 py-2">Quantity</th>
+              <th className="px-4 py-2">Dispatch</th>
+              <th className="px-4 py-2">Pending</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-gray-200 bg-white">
             {data?.map((item, index) => (
               <tr key={index}>
                 <td className="border px-4 py-2">{index + 1}</td>
-                <td className="border px-4 py-2">{item.user.name}</td>
-                <td className="border px-4 py-2">{item.user.email}</td>
-                <td className="border px-4 py-2">
-                  <button
-                    className="text-blue-500"
-                    onClick={() => handleView(item)}
-                  >
-                    {t('common:view')}
-                  </button>
-                </td>
+                <td className="border px-4 py-2">{item?.product?.name}</td>
+                <td className="border px-4 py-2">{item?.status?"In Stock":"Out of Stock"}</td>
+                <td className="border px-4 py-2">{item?.quantity}</td>
+                <td className="border px-4 py-2">{item?.dispatchedQuantity}</td>
+                <td className="border px-4 py-2">{item?.ordPendQuant}</td>
               </tr>
             ))}
           </tbody>
@@ -90,10 +82,10 @@ export default function DealerStockList() {
     </>
   );
 }
-DealerStockList.authenticate = {
+DealerStockData.authenticate = {
   permissions: adminOnly,
 };
-DealerStockList.Layout = Layout;
+DealerStockData.Layout = Layout;
 
 export const getStaticProps = async ({ locale }: any) => ({
   props: {

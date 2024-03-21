@@ -74,3 +74,29 @@ export const useOrderSalesQuery = ({
     isLoading,
   };
 };
+
+
+export const useDealerStocks = (id: any) => {
+  return useQuery(['dealerStockList', id], async () => {
+    try {
+      const data = await stockClient.fetchDealerStockData(id);
+      return data;
+    } catch (error) {
+      throw new Error(error.message);
+    }
+  });
+};
+
+
+export const useDealerByIdStocks = (id: any) => {
+  return useQuery(['dealerStockList', id], async () => {
+    try {
+      const data = await stockClient.fetchDealerStockDataById(id);
+      return data;
+    } catch (error) {
+      throw new Error(error.message);
+    }
+  });
+};
+
+
