@@ -46,6 +46,9 @@ const UserMessageIndex = ({ className, ...rest }: Props) => {
     limit: LIMIT,
   });
 
+
+  console.log("message****", messages)
+
   useEffect(() => {
     if (!hasMore) {
       return;

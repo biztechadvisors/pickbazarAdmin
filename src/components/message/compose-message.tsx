@@ -4,7 +4,7 @@ import ErrorMessage from '@/components/ui/error-message';
 import Select from '@/components/ui/select/select';
 import { useCreateConversations } from '@/data/conversations';
 import { useShopsQuery } from '@/data/shop';
-import { useAdminsQuery } from '@/data/user';
+import { useAdminsQuery, useMeQuery } from '@/data/user';
 import { Shop, SortOrder } from '@/types';
 import { adminOnly, getAuthCredentials, hasAccess } from '@/utils/auth-utils';
 import isEmpty from 'lodash/isEmpty';
@@ -58,6 +58,7 @@ const ComposeMessageModal = () => {
   };
 
   let { shops, loading, error } = useShopsQuery(options);
+  const {data:user}=useMeQuery()
   let {
     admins,
     loading: adminLoading,
@@ -74,7 +75,7 @@ const ComposeMessageModal = () => {
 
   const onTypeFilter = (shop: Shop[] | undefined) => {
     // @ts-ignore
-    setShop(shop?.id);
+    setShop(shop);
     // @ts-ignore
     setIsActive(shop?.is_active);
   };
@@ -82,10 +83,21 @@ const ComposeMessageModal = () => {
     if (shop || !Boolean(active)) {
       createConversations({
         // @ts-ignore
-        shop_id: shop,
+        shop_id: shop?.id,
+        latest_message: { 
+          user_id: user?.id,
+          body:''
+        },
+        shop:shop,
+        user:user,
+        user_id: user?.id,
+        message: '',
+        id: ''
       });
     }
   }
+
+  console.log("lists", lists)
   return (
     <div className="m-auto block max-w-lg rounded bg-light p-6 md:w-[32.5rem]">
       <h2 className="mb-6 text-base font-medium">{t('text-starting-chat')}</h2>

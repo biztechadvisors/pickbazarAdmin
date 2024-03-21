@@ -966,6 +966,8 @@ export interface CreateMessageInput {
   message: string;
   id: string;
   shop_id: string;
+  latest_message:any;
+  user_id:any;
 }
 export interface CreateMessageSeenInput {
   id: string;
