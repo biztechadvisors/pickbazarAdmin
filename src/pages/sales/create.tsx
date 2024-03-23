@@ -1,8 +1,8 @@
-import Card from '@/components/common/card';
 import Layout from '@/components/layouts/admin';
 import Search from '@/components/common/search';
 import ErrorMessage from '@/components/ui/error-message';
 import Loader from '@/components/ui/loader/loader';
+
 import { useState } from 'react';
 import { useTranslation } from 'next-i18next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
@@ -29,6 +29,10 @@ import { siteSettings } from '@/settings/site.settings';
 import { toggleAtom } from '@/utils/atoms';
 import { useMeQuery } from '@/data/user';
 import { useGetStock } from '@/data/stocks';
+import StockCard from '@/components/product/StockCard';
+import Card from '@/components/common/card';
+import StockCounterButton from '@/components/stock/stock-counter-btn';
+import Stock from '@/components/stock/Stock';
 
 export default function SalesPage() {
   const { locale } = useRouter();
@@ -44,13 +48,9 @@ export default function SalesPage() {
   };
 
   const { data: meData } = useMeQuery();
-
   const [isChecked] = useAtom(toggleAtom);
 
-  const { data: stockData, loading, error } = useGetStock(meData?.id);
-
-  console.log('stockData', stockData);
-
+  const { data: stockData, isLoading, error } = useGetStock(meData?.id);
   const [getPermission, _] = useAtom(newPermission);
   const { permissions } = getAuthCredentials();
   const canWrite = permissions.includes('super_admin')
@@ -58,9 +58,6 @@ export default function SalesPage() {
     : getPermission?.find(
         (permission) => permission.type === 'sidebar-nav-item-create-order'
       )?.write;
-
-  if (loading) return <Loader text={t('common:text-loading')} />;
-  if (error) return <ErrorMessage message={error.message} />;
 
   function handleSearch({ searchText }: { searchText: string }) {
     setSearchTerm(searchText);
@@ -117,38 +114,36 @@ export default function SalesPage() {
         </div>
       </Card>
 
-      {/* <Card> */}
-      <div className="flex space-x-5">
-        <div className="grid w-full grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-2 xl:grid-cols-4 3xl:grid-cols-6">
-          {stockData?.map((e: Product) => (
-            <ProductCard key={e.id} item={e.product} isChecked={isChecked} />
-          ))}
-        </div>
-      </div>
-      {!stockData?.length ? (
-        <NotFound text="text-not-found" className="mx-auto w-7/12" />
-      ) : null}
-      {/* <div className="mt-8 flex w-full justify-center">
-        {!!paginatorInfo?.total && (
-          <div className="flex items-center justify-end">
-            <Pagination
-              total={paginatorInfo.total}
-              current={paginatorInfo.currentPage}
-              pageSize={paginatorInfo.perPage}
-              onChange={handlePagination}
-              showLessItems
-            />
+      {isLoading && <Loader text={t('common:text-loading')} />}
+
+      {!isLoading && (
+        <>
+          <div className="flex space-x-5">
+            <div className="grid w-full grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-2 xl:grid-cols-4 3xl:grid-cols-6">
+              {stockData?.map((e: Product) => (
+                <StockCard
+                  key={e.id}
+                  item={e.product}
+                  isChecked={isChecked}
+                  inStock={e.inStock}
+                />
+              ))}
+            </div>
           </div>
-        )}
-      </div> */}
-      {canWrite ? <CartCounterButton /> : null}
+          {!stockData?.length ? (
+            <NotFound text="text-not-found" className="mx-auto w-7/12" />
+          ) : null}
+        </>
+      )}
+
+      {canWrite ? <StockCounterButton /> : null}
       <Drawer
         open={displayCartSidebar}
         onClose={closeCartSidebar}
         variant="right"
       >
         <DrawerWrapper hideTopBar={true}>
-          <Cart />
+          <Stock />
         </DrawerWrapper>
       </Drawer>
     </>

@@ -13,7 +13,7 @@ let permission = hasAccess(dealerOnly, permissions);
 let identify = permissions;
 const matching: any = 'dealer';
 
-console.log('fetched items', permission, 'working permissoin', permissions);
+// console.log('fetched items', permission, 'working permissoin', permissions);
 export const siteSettings = {
   name: 'PickBazar',
   description: '',
@@ -145,13 +145,14 @@ export const siteSettings = {
             }),
       },
       {
-        ...(permission && identify == matching
-          ? {
-              href: Routes.sales,
-              label: 'sidebar-nav-item-sales',
-              icon: 'SalesIcon',
-            }
-          : {
+        ...(permission && identify == matching &&
+          // ? {
+          //     href: Routes.sales,
+          //     label: 'sidebar-nav-item-sales',
+          //     icon: 'SalesIcon',
+          //   }
+          // : 
+          {
               href: Routes.tax.list,
               label: 'sidebar-nav-item-taxes',
               icon: 'TaxesIcon',

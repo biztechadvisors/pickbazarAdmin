@@ -63,7 +63,13 @@ const Cart = () => {
       <motion.div layout className="flex-grow pb-20">
         {items.length > 0 ? (
           items?.map((item) => (
-            <CartItem item={item} key={item.id} id={id} email={email} phone={contact} />
+            <CartItem
+              item={item}
+              key={item.id}
+              id={id}
+              email={email}
+              phone={contact}
+            />
           ))
         ) : (
           <motion.div

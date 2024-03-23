@@ -31,7 +31,7 @@ export function generateCartItem(item: Item, variation: Variation) {
     quantity,
     unit,
     is_digital,
-    margin
+    margin,
   } = item;
   if (!isEmpty(variation)) {
     return {
@@ -45,7 +45,7 @@ export function generateCartItem(item: Item, variation: Variation) {
       price: variation.sale_price ? variation.sale_price : variation.price,
       image: image?.thumbnail,
       variationId: variation.id,
-      margin:variation.margin
+      margin: variation.margin,
     };
   }
   return {
@@ -57,6 +57,6 @@ export function generateCartItem(item: Item, variation: Variation) {
     image: image?.thumbnail,
     stock: quantity,
     price: sale_price ? sale_price : price,
-    margin
+    margin,
   };
 }

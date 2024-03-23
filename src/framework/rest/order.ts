@@ -229,6 +229,9 @@ export function useCreateOrder() {
   // Get user details from UserService
   const { username, sub } = UserService.getUserDetails();
 
+
+  console.log("order--------------")
+
   const { mutate: createOrder, isLoading: orderLoading } = useMutation(
     client.orders.create,
     {
@@ -265,6 +268,8 @@ export function useCreateOrder() {
     }
   );
 
+  console.log("order----------------")
+
   console.log('stock----266');
   const { mutate: createStock, isLoading: stockLoading } = useMutation(
     client.stocks.create,
@@ -284,6 +289,8 @@ export function useCreateOrder() {
 
   console.log('stock----280');
 
+
+
   async function checkAndCreateStocks(input: CreateOrderInput) {
     // Check if sub and input.customer_id are equal
     console.log(
@@ -301,6 +308,8 @@ export function useCreateOrder() {
       await createStock(stockInput);
     }
   }
+
+  console.log('stock----------------')
 
   function formatOrderInput(input: CreateOrderInput) {
     const formattedInputs = {
@@ -320,13 +329,85 @@ export function useCreateOrder() {
         date: t('text-date'),
       },
     };
-    createOrder(formattedInputs);
+    if (input.dealerId !== input.customer_id) {
+      createOrder(formattedInputs); // Call createOrder only if customer_id and dealerId are not equal
+    }
     checkAndCreateStocks(formattedInputs); // Call checkAndCreateStocks function after formatting the order input
   }
 
   return {
     createOrder: formatOrderInput,
     isLoading: orderLoading || stockLoading,
+  };
+}
+
+export function useCreateOrderByStock() {
+  const router = useRouter();
+  const { locale } = router;
+  const { t } = useTranslation();
+  // Get user details from UserService
+  const { username, sub } = UserService.getUserDetails();
+
+  const { mutate: createOrderFromStock, isLoading: orderLoading } = useMutation(
+    client.stocks.orderByStock,
+    {
+      onSuccess: async (response) => {
+        const { id, payment_gateway, payment_intent } = response;
+        if (id) {
+          let idStr = '';
+          if (id) {
+            idStr = id.toString();
+          }
+          if (
+            [
+              PaymentGateway.COD,
+              PaymentGateway.CASH,
+              PaymentGateway.FULL_WALLET_PAYMENT,
+            ].includes(payment_gateway as PaymentGateway)
+          ) {
+            router.push(Routes.sale(idStr));
+          } else if (payment_intent?.payment_intent_info?.is_redirect) {
+            router.push(
+              payment_intent?.payment_intent_info?.redirect_url as string
+            );
+          } else {
+            router.push(`${Routes.sale(idStr)}/payment`);
+          }
+        }
+      },
+      onError: (error) => {
+        const {
+          response: { data },
+        }: any = error ?? {};
+        toast.error(data?.message);
+      },
+    }
+  );
+
+  function formatOrderInput(input: CreateOrderInput) {
+    const formattedInputs = {
+      ...input,
+      language: locale,
+      dealer: input.dealerId,
+      dealerEmail: username,
+      invoice_translated_text: {
+        subtotal: t('order-sub-total'),
+        discount: t('order-discount'),
+        tax: t('order-tax'),
+        delivery_fee: t('order-delivery-fee'),
+        total: t('order-total'),
+        products: t('text-products'),
+        quantity: t('text-quantity'),
+        invoice_no: t('text-invoice-no'),
+        date: t('text-date'),
+      },
+    };
+    createOrderFromStock(formattedInputs);
+  }
+
+  return {
+    createOrderFromStock: formatOrderInput,
+    isLoading: orderLoading,
   };
 }
 

@@ -64,17 +64,20 @@ export const CartProvider: React.FC<{ children?: React.ReactNode }> = (
   }, [emptyVerifiedResponse, state]);
 
   React.useEffect(() => {
-    saveCart(JSON.stringify(state));
-    const data = {
-      customerId: state.customerId,
-      email: state.email,
-      phone: state.phone,
-      cartData: {
-        ...state.items,
-      },
-    };
-    createCart(data);
-  }, [state, saveCart]);
+    if (state.customerId) {
+      //  it will only proceed if customerId will present
+      saveCart(JSON.stringify(state));
+      const data = {
+        customerId: state.customerId,
+        email: state.email,
+        phone: state.phone,
+        cartData: {
+          ...state.items,
+        },
+      };
+      createCart(data);
+    }
+  }, [state, saveCart, createCart]);
 
   const addItemToCart = (
     item: Item,

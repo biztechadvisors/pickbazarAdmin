@@ -18,6 +18,8 @@ import { Config } from '@/config';
 import { newPermission } from '@/contexts/permission/storepermission';
 import { useAtom } from 'jotai';
 import { siteSettings } from '@/settings/site.settings';
+import { useQuery } from 'react-query';
+import { useMeQuery } from '@/data/user';
 
 export default function Categories() {
   const { locale } = useRouter();
@@ -27,6 +29,10 @@ export default function Categories() {
   const { t } = useTranslation();
   const [orderBy, setOrder] = useState('created_at');
   const [sortedBy, setColumn] = useState<SortOrder>(SortOrder.Desc);
+  const { data: meData } = useMeQuery();
+
+  const shop: string | undefined = meData?.shops?.[0]?.id;
+
   const { categories, paginatorInfo, loading, error } = useCategoriesQuery({
     limit: 20,
     page,
@@ -36,15 +42,16 @@ export default function Categories() {
     sortedBy,
     parent: null,
     language: locale,
+    shop,
   });
 
-  const [getPermission,_]=useAtom(newPermission)
+  const [getPermission, _] = useAtom(newPermission);
   const { permissions } = getAuthCredentials();
-   const canWrite =  permissions.includes('super_admin')
-   ? siteSettings.sidebarLinks
-   :getPermission?.find(
-    (permission) => permission.type === 'sidebar-nav-item-categories'
-  )?.write;
+  const canWrite = permissions.includes('super_admin')
+    ? siteSettings.sidebarLinks
+    : getPermission?.find(
+        (permission) => permission.type === 'sidebar-nav-item-categories'
+      )?.write;
 
   if (loading) return <Loader text={t('common:text-loading')} />;
   if (error) return <ErrorMessage message={error.message} />;
@@ -68,7 +75,7 @@ export default function Categories() {
             </h1>
           </div>
 
-          <div className="ms-auto flex w-full flex-col items-center space-y-4 md:flex-row md:space-y-0 xl:w-3/4">
+          <div className="flex w-full flex-col items-center space-y-4 ms-auto md:flex-row md:space-y-0 xl:w-3/4">
             <Search onSearch={handleSearch} />
 
             <TypeFilter
@@ -82,7 +89,7 @@ export default function Categories() {
             {canWrite && locale === Config.defaultLanguage && (
               <LinkButton
                 href={`${Routes.category.create}`}
-                className="md:ms-6 h-12 w-full md:w-auto"
+                className="h-12 w-full md:w-auto md:ms-6"
               >
                 <span className="block md:hidden xl:block">
                   + {t('form:button-label-add-categories')}

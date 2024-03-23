@@ -57,13 +57,13 @@ const OrderList = ({
     sort: SortOrder.Desc,
     column: null,
   });
- 
-  const [getPermission,_]=useAtom(newPermission)  
-  const canWrite =  permissions.includes('super_admin')
-  ? siteSettings.sidebarLinks
-  :getPermission?.find(
-    (permission) => permission.type === 'sidebar-nav-item-orders'
-  )?.write;
+
+  const [getPermission, _] = useAtom(newPermission);
+  const canWrite = permissions.includes('super_admin')
+    ? siteSettings.sidebarLinks
+    : getPermission?.find(
+        (permission) => permission.type === 'sidebar-nav-item-orders'
+      )?.write;
 
   const onSubmit = async (shop_id: string | undefined) => {
     setLoading(shop_id);
@@ -186,7 +186,7 @@ const OrderList = ({
       width: 220,
       render: (id: string, order: Order) => {
         const currentButtonLoading = !!loading && loading === order?.shop_id;
-        return (  canWrite ? (
+        return canWrite ? (
           <>
             {/* @ts-ignore */}
             {order?.children?.length ? (
@@ -212,13 +212,14 @@ const OrderList = ({
               customLocale={order.language}
             />
           </>
-        ) : null
-        );
+        ) : null;
       },
     },
   ];
 
   // console.log("newrouter",router.asPath)
+
+  console.log("ordersordersorders", orders)
 
   return (
     <>

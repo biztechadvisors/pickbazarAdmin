@@ -77,6 +77,9 @@ export default function Orders() {
     }
   }
 
+  const customerOrderList = orders.filter(
+    (order) => order?.customer_id !== order?.dealer?.id
+  );
   return (
     <>
       <Card className="mb-8 flex flex-col items-center justify-between md:flex-row">
@@ -134,7 +137,7 @@ export default function Orders() {
       </Card>
 
       <OrderList
-        orders={orders}
+        orders={customerOrderList}
         paginatorInfo={paginatorInfo}
         onPagination={handlePagination}
         onOrder={setOrder}

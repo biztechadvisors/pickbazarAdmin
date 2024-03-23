@@ -41,7 +41,7 @@ const ActionButtons = ({
   changeRefundStatus = false,
   showMakeAdminButton = false,
   showReplyQuestion = false,
-  customLocale
+  customLocale,
 }: Props) => {
   const { t } = useTranslation();
   const { openModal } = useModalAction();
@@ -83,7 +83,7 @@ const ActionButtons = ({
   }
 
   return (
-    <div className="gap-8 inline-flex w-auto items-center">
+    <div className="inline-flex w-auto items-center gap-8">
       {showReplyQuestion && (
         <button
           onClick={handleReplyQuestion}

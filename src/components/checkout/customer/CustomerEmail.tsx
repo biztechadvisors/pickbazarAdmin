@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useModalAction } from '@/components/ui/modal/modal.context';
 import { customerAtom } from '@/contexts/checkout';
 import { useAtom } from 'jotai';
@@ -21,6 +21,13 @@ const CustomerEmail = ({ count }) => {
   const { data: meData } = useMeQuery();
   const { id, email } = meData || {};
   const usrById = id;
+
+  useEffect(() => {
+    const storedInputValue = localStorage.getItem('inputValue');
+    if (storedInputValue) {
+      setInputValue(storedInputValue);
+    }
+  }, []);
 
   async function fetchEmailSuggestions(inputValue) {
     setLoading(true);
@@ -46,6 +53,7 @@ const CustomerEmail = ({ count }) => {
 
   function handleInputChange(value) {
     setInputValue(value);
+    localStorage.setItem('inputValue', value);
     fetchEmailSuggestions(value);
     setShowAddButton(true);
   }
@@ -56,8 +64,6 @@ const CustomerEmail = ({ count }) => {
 
   function handleAddEmail(e: any) {
     e.preventDefault();
-    // console.log('Add new email:', inputValue);
-    // closeModal();
     router.push('/users/create?from=checkout');
   }
 
@@ -87,20 +93,19 @@ const CustomerEmail = ({ count }) => {
             {t('text-customer')}
           </p>
         </div>
-        {
-          !loading &&
+        {!loading &&
           emailSuggestions.length === 0 &&
           inputValue !== '' &&
-          showAddButton && <button
-            type="button"
-            className="flex items-center text-sm font-semibold text-accent transition-colors duration-200 hover:text-accent-hover focus:text-accent-hover focus:outline-none"
-            onClick={handleAddEmail}
-          >
-            <PlusIcon className="h-4 w-4 stroke-2 me-0.5" />
-            Add
-          </button>
-        }
-
+          showAddButton && (
+            <button
+              type="button"
+              className="flex items-center text-sm font-semibold text-accent transition-colors duration-200 hover:text-accent-hover focus:text-accent-hover focus:outline-none"
+              onClick={handleAddEmail}
+            >
+              <PlusIcon className="h-4 w-4 stroke-2 me-0.5" />
+              Add
+            </button>
+          )}
       </div>
 
       <div className="relative">

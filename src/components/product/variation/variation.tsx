@@ -13,9 +13,12 @@ import { useMeQuery } from '@/data/user';
 
 interface Props {
   product: any;
+  id: any;
+  email: any;
+  contact: any;
 }
 
-const Variation = ({ product }: Props) => {
+const Variation = ({ product, id, email, contact }: Props) => {
   const { attributes } = useAttributes();
   const variations = useMemo(
     () => getVariations(product?.variations),
@@ -48,6 +51,9 @@ const Variation = ({ product }: Props) => {
       </div>
       <AddToCart
         data={product}
+        id={id}
+        email={email}
+        phone={contact}
         variant="big"
         variation={selectedVariation}
         disabled={selectedVariation?.is_disable || !isSelected}
@@ -59,18 +65,20 @@ const Variation = ({ product }: Props) => {
 const ProductVariation = ({ productSlug }: { productSlug: string }) => {
   const { locale } = useRouter();
 
-  const { data } = useMeQuery()
+  const { data }: any = useMeQuery()
   const userId = data?.dealer?.id
   const { product, isLoading: loading } = useProductQuery({
     slug: productSlug,
     userId: userId,
     language: locale!,
-  });
+  })
+
+  const { id, email, contact } = data || {};
 
   if (loading || !product) return <div>Loading</div>;
   return (
     <AttributesProvider>
-      <Variation product={product} />
+      <Variation product={product} id={id} email={email} contact={contact} />
     </AttributesProvider>
   );
 };
