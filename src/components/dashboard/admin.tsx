@@ -26,23 +26,28 @@ export default function Dashboard() {
   const { t } = useTranslation();
   const { locale } = useRouter();
 
-  const [getPermission,_]=useAtom(newPermission)
+  const [getPermission, _] = useAtom(newPermission)
   const { permissions } = getAuthCredentials();
-  const canWrite =  permissions.includes('super_admin')
-  ? siteSettings.sidebarLinks
-  :getPermission?.find(
-    (permission) => permission.type === 'sidebar-nav-item-dealerlist'
-  )?.write;
+  const canWrite = permissions.includes('super_admin')
+    ? siteSettings.sidebarLinks
+    : getPermission?.find(
+      (permission) => permission.type === 'sidebar-nav-item-dealerlist'
+    )?.write;
 
 
+  const { data: useMe, isLoading:userLoading } = useMeQuery();
+  console.log("userData", useMe)
 
-  const { data: useMe } = useMeQuery();
   const customerId = useMe?.id ?? ''
+
+  console.log('customerId', typeof customerId)
 
   const query = {
     customerId: parseInt(customerId),
     state: '',
   };
+
+  console.log("userData", query)
 
   const { data, isLoading: loading } = useAnalyticsQuery(query);
   const { price: total_revenue } = usePrice(
@@ -79,7 +84,7 @@ export default function Dashboard() {
     limit: 10,
   });
 
-  if (loading || orderLoading || popularProductLoading || withdrawLoading) {
+  if (loading || orderLoading || popularProductLoading || withdrawLoading || userLoading ) {
     return <Loader text={t('common:text-loading')} />;
   }
   if (orderError || popularProductError) {
@@ -133,14 +138,14 @@ export default function Dashboard() {
             price={data?.totalShops}
           />
         </div>) :
-        <div className="w-full ">
-          <StickerCard
-            titleTransKey="sticker-card-title-total-cutomer"
-            icon={<CustomerIcon className="w-6" color="#1D4ED8" />}
-            iconBgStyle={{ backgroundColor: '#93C5FD' }}
-            price={data?.totalShops}
-          />
-        </div>}
+          <div className="w-full ">
+            <StickerCard
+              titleTransKey="sticker-card-title-total-cutomer"
+              icon={<CustomerIcon className="w-6" color="#1D4ED8" />}
+              iconBgStyle={{ backgroundColor: '#93C5FD' }}
+              price={data?.totalShops}
+            />
+          </div>}
       </div>
 
       <div className="mb-6 flex w-full flex-wrap md:flex-nowrap">
