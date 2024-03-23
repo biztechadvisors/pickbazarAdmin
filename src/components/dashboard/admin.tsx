@@ -34,7 +34,7 @@ export default function Dashboard(user:any) {
     (permission) => permission.type === 'sidebar-nav-item-dealerlist'
   )?.write;
 
-  const { data: useMe } = useMeQuery();
+  const { data: useMe, isLoading } = useMeQuery();
   const customerId = useMe?.id ?? ''
 
   const query = {
@@ -77,7 +77,7 @@ export default function Dashboard(user:any) {
     limit: 10,
   });
 
-  if (loading || orderLoading || popularProductLoading || withdrawLoading) {
+  if (loading || orderLoading || popularProductLoading || withdrawLoading || isLoading) {
     return <Loader text={t('common:text-loading')} />;
   }
   if (orderError || popularProductError) {

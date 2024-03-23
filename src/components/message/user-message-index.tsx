@@ -31,6 +31,8 @@ const UserMessageIndex = ({ className, ...rest }: Props) => {
   const { data, loading, error } = useConversationQuery({
     id: query.id as string,
   });
+
+  console.log("ShopsDATA",data)
   const { width } = useWindowSize();
   let {
     error: messageError,
@@ -142,7 +144,7 @@ const UserMessageIndex = ({ className, ...rest }: Props) => {
                   {/* @ts-ignore */}
                   {Boolean(data?.shop?.is_active) ? (
                     <>
-                      <CreateMessageForm />
+                      <CreateMessageForm shop={data?.shop}/>
                     </>
                   ) : (
                     <>

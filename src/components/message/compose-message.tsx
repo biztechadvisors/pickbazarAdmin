@@ -84,15 +84,15 @@ const ComposeMessageModal = () => {
       createConversations({
         // @ts-ignore
         shop_id: shop?.id,
-        latest_message: { 
-          user_id: user?.id,
-          body:''
-        },
+        // latest_message: { 
+        //   user_id: user?.id,
+        //   // body:''
+        // },
         shop:shop,
         user:user,
         user_id: user?.id,
-        message: '',
-        id: ''
+        // message: '',
+        // id: ''
       });
     }
   }
