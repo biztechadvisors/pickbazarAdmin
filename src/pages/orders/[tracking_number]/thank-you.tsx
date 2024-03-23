@@ -1,6 +1,7 @@
-import { getLayout } from '@/components/layouts/layout';
-import Order from '@/components/orders/order-view';
-import Seo from '@/components/seo/seo';
+// import { getLayout } from '@/components/layouts/layout';
+import AdminLayout from '@/components/layouts/admin';
+// import Order from '@/components/orders/order-view';
+// import Seo from '@/components/seo/seo';
 import { useEffect, useState } from 'react';
 import { useOrder, useOrderPayment } from '@/framework/rest/order';
 import { useRouter } from 'next/router';
@@ -69,10 +70,10 @@ export default function OrderPage() {
   }
   return (
     <>
-      <Seo noindex={true} nofollow={true} />
-      <Order order={order} loadingStatus={!isLoading && isFetching} />
+      {/* <Seo noindex={true} nofollow={true} />
+      <Order order={order} loadingStatus={!isLoading && isFetching} /> */}
     </>
   );
 }
 
-OrderPage.getLayout = getLayout;
+OrderPage.getLayout = AdminLayout;

@@ -31,6 +31,7 @@ const UserMessageIndex = ({ className, ...rest }: Props) => {
   const { data, loading, error } = useConversationQuery({
     id: query.id as string,
   });
+  console.log("data_____", data)
   const { width } = useWindowSize();
   let {
     error: messageError,
@@ -136,14 +137,13 @@ const UserMessageIndex = ({ className, ...rest }: Props) => {
                 </UserMessageView>
 
                 <div className="relative mx-6">
-                  {/* @ts-ignore */}
+                  
                   {Boolean(data?.shop?.is_active) ? (
                     <>
-                      <CreateMessageForm />
+                      <CreateMessageForm shop={data}/>
                     </>
                   ) : (
                     <>
-                      {/* @ts-ignore */}
                       <BlockedView name={data?.shop?.name} />
                     </>
                   )}

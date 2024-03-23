@@ -21,7 +21,7 @@ import { checkoutCustAtom, shopIdAtom } from '@/utils/atoms';
 import UserAddressSelection from '@/components/UserAddressSelection';
 
 const CustomerEmail = dynamic(
-  () => import('@/components/checkout/customer/customerEmail')
+  () => import('@/components/checkout/customer/CustomerEmail')
 );
 
 const ScheduleGrid = dynamic(

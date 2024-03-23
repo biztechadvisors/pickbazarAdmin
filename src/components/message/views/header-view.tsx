@@ -17,6 +17,7 @@ interface Props {
 }
 
 const HeaderView = ({ className, shop, ...rest }: Props) => {
+  console.log("shop", shop)
   const router = useRouter();
   const { width } = useWindowSize();
   const { permissions } = getAuthCredentials();
