@@ -44,6 +44,7 @@ const UserMessageIndex = ({ className, ...rest }: Props) => {
     isFetching,
   } = useMessagesQuery({
     slug: query?.id as string,
+    conversation:query?.id,
     limit: LIMIT,
   });
 
