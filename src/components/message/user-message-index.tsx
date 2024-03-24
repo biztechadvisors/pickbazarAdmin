@@ -32,7 +32,6 @@ const UserMessageIndex = ({ className, ...rest }: Props) => {
     id: query.id as string,
   });
 
-  console.log("ShopsDATA",data)
   const { width } = useWindowSize();
   let {
     error: messageError,
