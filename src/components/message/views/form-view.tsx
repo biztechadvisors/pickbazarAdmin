@@ -70,13 +70,14 @@ const CreateMessageForm = ({ className, shop, ...rest }: Props) => {
       {
         conversation: {
           message: values?.message,
+          latest_message:{
+            body:values?.message,
+            user_id:user?.id
+          },
           shop_id: shop?.id,
+          user_id:user?.id,
           id: query?.id as string,
-          user_id:user?.id
         },
-        shop_id: shop?.id,
-        id: query?.id as string,
-        user_id:user?.id
       },
       {
         onError: (error: any) => {
