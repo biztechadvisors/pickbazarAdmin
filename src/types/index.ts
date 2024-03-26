@@ -465,6 +465,7 @@ export interface MakeAdminInput {
 }
 
 export interface User {
+  type: any;
   id: string;
   name: string;
   shops: Shop[];

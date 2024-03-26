@@ -99,7 +99,6 @@ export const useCreateConversations = () => {
 };
 
 export const useMessagesQuery = (options: Partial<MessageQueryOptions>) => {
-  console.log("myOption",options)
   const {
     data,
     isLoading,
