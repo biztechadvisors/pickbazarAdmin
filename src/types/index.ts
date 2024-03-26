@@ -1039,6 +1039,7 @@ export interface LatestMessage {
 }
 
 export interface Conversations {
+  dealer: any;
   id: string;
   created_at: string;
   updated_at: string;

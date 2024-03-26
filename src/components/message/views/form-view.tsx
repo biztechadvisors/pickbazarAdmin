@@ -27,7 +27,7 @@ interface Props {
 }
 
 const CreateMessageForm = ({ className, shop,dealer, ...rest }: Props) => {
-  console.log("ShopIdDAta", dealer)
+  console.log("myDataShop",dealer)
   const {
     register,
     handleSubmit,
@@ -76,7 +76,7 @@ const CreateMessageForm = ({ className, shop,dealer, ...rest }: Props) => {
           },
           shop_id: shop?.id,
           dealer_id: dealer?.id,
-          user_id:user?.id,
+          // user_id:user?.id,
           id: query?.id as string,
         },
       },

@@ -109,7 +109,7 @@ const UserMessageIndex = ({ className, ...rest }: Props) => {
                 }}
               >
                 {/* @ts-ignore */}
-                <HeaderView shop={data?.shop} />
+                <HeaderView shop={data?.shop}   dealer={data?.dealer}/>
 
                 <UserMessageView
                   messages={messages}
