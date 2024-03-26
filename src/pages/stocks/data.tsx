@@ -2,10 +2,8 @@ import { useRouter } from 'next/router';
 import Card from '@/components/common/card';
 import Layout from '@/components/layouts/admin';
 import Search from '@/components/common/search';
-import ProductList from '@/components/product/product-list';
 import ErrorMessage from '@/components/ui/error-message';
 import Loader from '@/components/ui/loader/loader';
-import { SortOrder } from '@/types';
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'next-i18next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
@@ -17,26 +15,75 @@ import { adminOnly } from '@/utils/auth-utils';
 import StockList from '@/components/stocks/stock-list';
 import { useGetStock } from '@/data/stock';
 import { useMeQuery } from '@/data/user';
-import { useDealerByIdStocks, useDealerStocks } from '@/data/stocks';
+import {
+  useDealerByIdStocks,
+  useDealerStocks,
+  useUpdateStockData,
+} from '@/data/stocks';
 
 export default function DealerStockData() {
   const [searchTerm, setSearchTerm] = useState('');
   const [page, setPage] = useState(1);
   const { t } = useTranslation();
 
+  const [updatedStocks, setUpdatedStocks] = useState([]);
+
+  const [quant, setQuant] = useState('');
+  const [disQuant, setDisQuant] = useState('');
+  const [pend, setPend] = useState('');
+
   const router = useRouter();
   const { id } = router.query;
 
-
   const { data } = useDealerByIdStocks(id);
-
-  console.log("data****", data)
-
+  const { mutate: updateStockData } = useUpdateStockData(id);
 
   function handleSearch({ searchText }: { searchText: string }) {
     setSearchTerm(searchText);
     setPage(1);
   }
+
+  const handleUpdateStock = (index, field, value) => {
+    const updatedStock = [...updatedStocks];
+    if (updatedStock[index]) {
+      updatedStock[index][field] = value;
+      setUpdatedStocks(updatedStock);
+    } else {
+      const newStock = { ...data[index] };
+      newStock[field] = value;
+      updatedStock[index] = newStock;
+      setUpdatedStocks(updatedStock);
+    }
+  };
+
+  const handleSaveChanges = async (index) => {
+    const stocksData = updatedStocks[index];
+
+    const {
+      quantity: quantityStr,
+      ordPendQuant:ordPendQuantStr,
+      dispatchedQuantity:dispatchedQuantityStr,
+      inStock,
+      status,
+      product,
+    } = stocksData;
+
+    const quantity = parseInt(quantityStr, 10);
+    const ordPendQuant=parseInt(ordPendQuantStr,10)
+    const dispatchedQuantity=parseInt(dispatchedQuantityStr,10)
+
+    const productId = product ? product.id : undefined;
+
+    updateStockData({
+      quantity,
+      ordPendQuant,
+      dispatchedQuantity,
+      inStock,
+      status,
+      product:productId,
+    });
+  };
+
   return (
     <>
       <Card className="mb-8 flex flex-col">
@@ -63,6 +110,7 @@ export default function DealerStockData() {
               <th className="px-4 py-2">Quantity</th>
               <th className="px-4 py-2">Dispatch</th>
               <th className="px-4 py-2">Pending</th>
+              <th className="px-4 py-2">Action</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-gray-200 bg-white">
@@ -70,10 +118,54 @@ export default function DealerStockData() {
               <tr key={index}>
                 <td className="border px-4 py-2">{index + 1}</td>
                 <td className="border px-4 py-2">{item?.product?.name}</td>
-                <td className="border px-4 py-2">{item?.status?"In Stock":"Out of Stock"}</td>
-                <td className="border px-4 py-2">{item?.quantity}</td>
-                <td className="border px-4 py-2">{item?.dispatchedQuantity}</td>
-                <td className="border px-4 py-2">{item?.ordPendQuant}</td>
+                <td className="border px-4 py-2">
+                  {item?.status ? 'In Stock' : 'Out of Stock'}
+                </td>
+                <td className="border px-4 py-2">
+                  <input
+                    type="number"
+                    value={updatedStocks[index]?.quantity || item.quantity}
+                    onChange={(e) =>
+                      handleUpdateStock(index, 'quantity', e.target.value)
+                    }
+                  />
+                </td>
+                <td className="border px-4 py-2">
+                  <input
+                    type="number"
+                    value={
+                      updatedStocks[index]?.dispatchedQuantity ||
+                      item.dispatchedQuantity
+                    }
+                    onChange={(e) =>
+                      handleUpdateStock(
+                        index,
+                        'dispatchedQuantity',
+                        e.target.value
+                      )
+                    }
+                  />
+                </td>
+                <td className="border px-4 py-2">
+                  <input
+                    type="number"
+                    value={
+                      updatedStocks[index]?.ordPendQuant || item.ordPendQuant
+                    }
+                    onChange={(e) =>
+                      handleUpdateStock(index, 'ordPendQuant', e.target.value)
+                    }
+                  />
+                </td>
+
+                <td className="border px-4 py-2">
+                  <button
+                    className="rounded bg-green-500 px-4 py-2 text-white hover:bg-blue-600"
+                    onClick={() => handleSaveChanges(index)}
+                  >
+                    Update
+                  </button>
+                </td>
               </tr>
             ))}
           </tbody>
@@ -82,6 +174,7 @@ export default function DealerStockData() {
     </>
   );
 }
+
 DealerStockData.authenticate = {
   permissions: adminOnly,
 };

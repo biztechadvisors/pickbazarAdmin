@@ -1,9 +1,10 @@
-import { useQuery } from 'react-query';
+import { useMutation, useQuery } from 'react-query';
 import { API_ENDPOINTS } from './client/api-endpoints';
 import { stockClient } from './client/stocks';
 import { Order, OrderPaginator, OrderQueryOptions } from '@/types';
 import { orderClient } from './client/order';
 import { mapPaginatorData } from '@/utils/data-mappers';
+import { toast } from 'react-toastify';
 
 export const useGetStock = (id: any) => {
   return useQuery<any, Error>([API_ENDPOINTS.STOCK, id], async () => {
@@ -98,5 +99,21 @@ export const useDealerByIdStocks = (id: any) => {
     }
   });
 };
+
+
+export const useUpdateStockData = (user_id: any) => {
+  const mutation = useMutation((updatedData: any) => stockClient.updateStockData(user_id, updatedData), {
+    onSuccess: () => {
+      toast.success('Stock data updated successfully');
+    },
+    onError: () => {
+      toast.error('Failed to update stock data');
+    },
+  });
+
+  return mutation;
+};
+
+
 
 
