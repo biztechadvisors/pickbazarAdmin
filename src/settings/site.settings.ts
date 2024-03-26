@@ -12,9 +12,10 @@ const { permissions } = getAuthCredentials();
 let permission = hasAccess(dealerOnly, permissions);
 let identify = permissions;
 const matching: any = 'dealer';
-
+console.log("permissionSite", identify == matching)
 // console.log('fetched items', permission, 'working permissoin', permissions);
 export const siteSettings = {
+  permission:getAuthCredentials(),
   name: 'PickBazar',
   description: '',
   logo: {
@@ -134,29 +135,29 @@ export const siteSettings = {
       {
         ...(permission && identify == matching
           ? {
-              href: Routes.createSales,
-              label: 'sidebar-nav-item-create-sales',
-              icon: 'OrderListIcon',
-            }
+            href: Routes.createSales,
+            label: 'sidebar-nav-item-create-sales',
+            icon: 'OrderListIcon',
+          }
           : {
-              href: Routes.coupon.list,
-              label: 'sidebar-nav-item-coupons',
-              icon: 'CouponsIcon',
-            }),
+            href: Routes.coupon.list,
+            label: 'sidebar-nav-item-coupons',
+            icon: 'CouponsIcon',
+          }),
       },
       {
-        ...(permission && identify == matching 
+        ...(permission && identify == matching
           ? {
-              href: Routes.sales,
-              label: 'sidebar-nav-item-sales',
-              icon: 'SalesIcon',
-            }
-          : 
+            href: Routes.sales,
+            label: 'sidebar-nav-item-sales',
+            icon: 'SalesIcon',
+          }
+          :
           {
-              href: Routes.tax.list,
-              label: 'sidebar-nav-item-taxes',
-              icon: 'TaxesIcon',
-            })
+            href: Routes.tax.list,
+            label: 'sidebar-nav-item-taxes',
+            icon: 'TaxesIcon',
+          })
       },
       {
         href: Routes.shipping.list,
@@ -194,18 +195,24 @@ export const siteSettings = {
       //   icon: 'SettingsIcon',
       // },
       {
+        href: Routes.settings,
+        label: 'sidebar-nav-item-settings',
+        icon: 'SettingsIcon',
+      },
+
+      {
         ...(permission && identify == matching
           ? {
-              href: Routes.stock.list,
-              label: 'sidebar-nav-item-stocks',
-              icon: 'ProductsIcon',
-            }
+            href: `${Routes.stock.list}/dealer`,
+            label: 'sidebar-nav-item-stocks',
+            icon: 'ProductsIcon',
+          }
           : {
-              href: Routes.settings,
-              label: 'sidebar-nav-item-settings',
-              icon: 'SettingsIcon',
-            }),
-      },
+            href: Routes.stock.list,
+            label: 'sidebar-nav-item-stocks',
+            icon: 'ProductsIcon',
+          })
+      }
       // {
       // href: Routes.question.list,
       //   label: 'sidebar-nav-item-questions',

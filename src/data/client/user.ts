@@ -35,7 +35,7 @@ export const userClient = {
     return HttpClient.post<AuthResponse>(API_ENDPOINTS.REGISTER, variables);
   },
   update: ({ id, input }: { id: string; input: UpdateUser }) => {
-    console.log("myUpdateUser", input)
+    // console.log('myUpdateUser', input);
     return HttpClient.put<User>(`${API_ENDPOINTS.USERS}/${id}`, input);
   },
   changePassword: (variables: ChangePasswordInput) => {
@@ -66,6 +66,7 @@ export const userClient = {
     return HttpClient.post<any>(API_ENDPOINTS.ADD_WALLET_POINTS, variables);
   },
   fetchUsers: ({ email, usrById, ...params }: Partial<UserQueryOptions>) => {
+    // console.log('name, ...params*********', email, usrById);
     return HttpClient.get<UserPaginator>(API_ENDPOINTS.USERS, {
       searchJoin: 'and',
       with: 'wallet',

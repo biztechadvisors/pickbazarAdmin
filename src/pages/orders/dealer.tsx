@@ -18,7 +18,7 @@ import { Menu, Transition } from '@headlessui/react';
 import classNames from 'classnames';
 import { DownloadIcon } from '@/components/icons/download-icon';
 
-export default function Orders() {
+export default function DealerOrders() {
   const router = useRouter();
   const { locale } = useRouter();
   const {
@@ -77,16 +77,15 @@ export default function Orders() {
     }
   }
 
-  const customerOrderList = orders.filter(
-    (order) => order?.customer_id !== order?.dealer?.id
+  const selfOrderList = orders.filter(
+    (order) => order?.customer_id === order?.dealer?.id
   );
+
   return (
     <>
       <Card className="mb-8 flex flex-col items-center justify-between md:flex-row">
         <div className="mb-4 md:mb-0 md:w-1/4">
-          <h1 className="text-lg font-semibold text-heading">
-            {t('form:input-label-orders')}
-          </h1>
+          <h1 className="text-lg font-semibold text-heading">Self Orders</h1>
         </div>
 
         <div className="flex w-full flex-col items-center ms-auto md:w-1/2 md:flex-row">
@@ -137,7 +136,7 @@ export default function Orders() {
       </Card>
 
       <OrderList
-        orders={customerOrderList}
+        orders={selfOrderList}
         paginatorInfo={paginatorInfo}
         onPagination={handlePagination}
         onOrder={setOrder}
@@ -147,10 +146,10 @@ export default function Orders() {
   );
 }
 
-Orders.authenticate = {
+DealerOrders.authenticate = {
   permissions: adminOnly,
 };
-Orders.Layout = Layout;
+DealerOrders.Layout = Layout;
 
 export const getStaticProps = async ({ locale }: any) => ({
   props: {

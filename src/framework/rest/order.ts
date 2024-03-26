@@ -229,6 +229,9 @@ export function useCreateOrder() {
   // Get user details from UserService
   const { username, sub } = UserService.getUserDetails();
 
+
+  console.log("order--------------")
+
   const { mutate: createOrder, isLoading: orderLoading } = useMutation(
     client.orders.create,
     {
@@ -265,6 +268,8 @@ export function useCreateOrder() {
     }
   );
 
+  console.log("order----------------")
+
   console.log('stock----266');
   const { mutate: createStock, isLoading: stockLoading } = useMutation(
     client.stocks.create,
@@ -284,6 +289,8 @@ export function useCreateOrder() {
 
   console.log('stock----280');
 
+
+
   async function checkAndCreateStocks(input: CreateOrderInput) {
     // Check if sub and input.customer_id are equal
     console.log(
@@ -301,6 +308,8 @@ export function useCreateOrder() {
       await createStock(stockInput);
     }
   }
+
+  console.log('stock----------------')
 
   function formatOrderInput(input: CreateOrderInput) {
     const formattedInputs = {
@@ -320,7 +329,9 @@ export function useCreateOrder() {
         date: t('text-date'),
       },
     };
-    createOrder(formattedInputs);
+    if (input.dealerId !== input.customer_id) {
+      createOrder(formattedInputs); // Call createOrder only if customer_id and dealerId are not equal
+    }
     checkAndCreateStocks(formattedInputs); // Call checkAndCreateStocks function after formatting the order input
   }
 
