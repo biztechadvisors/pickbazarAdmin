@@ -1,4 +1,4 @@
-import { useConversationsQuery } from '@/data/conversations';
+import { useConversationQuery, useConversationsQuery } from '@/data/conversations';
 import ErrorMessage from '@/components/ui/error-message';
 import Loader from '@/components/ui/loader/loader';
 import React, { useEffect, useRef } from 'react';
@@ -37,7 +37,16 @@ const UserList = ({ className, filterText, permission, ...rest }: Props) => {
     orderBy: 'updated_at',
   });
   let filterTimeout: any;
-  console.log("conversations++++", conversations)
+
+
+  // const { data:conversation } = useConversationQuery({
+  //   id: '36',
+  // });
+
+  // const conversations=[conversation]
+    
+  // console.log("conversationdata",conversations)
+
   useEffect(() => {
     // filter text
     clearTimeout(filterTimeout);

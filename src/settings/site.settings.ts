@@ -8,14 +8,12 @@ const Type = {
   Customer: 'customer',
   Staff: 'staff',
 };
-const { permissions } = getAuthCredentials();
+const { permissions } :any = getAuthCredentials();
 let permission = hasAccess(dealerOnly, permissions);
 let identify = permissions;
 const matching: any = 'dealer';
-console.log("permissionSite", identify == matching)
 // console.log('fetched items', permission, 'working permissoin', permissions);
 export const siteSettings = {
-  permission:getAuthCredentials(),
   name: 'PickBazar',
   description: '',
   logo: {

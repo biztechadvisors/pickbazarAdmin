@@ -2,22 +2,12 @@ import { useRouter } from 'next/router';
 import Card from '@/components/common/card';
 import Layout from '@/components/layouts/admin';
 import Search from '@/components/common/search';
-import ErrorMessage from '@/components/ui/error-message';
-import Loader from '@/components/ui/loader/loader';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { useTranslation } from 'next-i18next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
-import CategoryTypeFilter from '@/components/product/category-type-filter';
-import cn from 'classnames';
-import { ArrowDown } from '@/components/icons/arrow-down';
-import { ArrowUp } from '@/components/icons/arrow-up';
 import { adminOnly } from '@/utils/auth-utils';
-import StockList from '@/components/stocks/stock-list';
-import { useGetStock } from '@/data/stock';
-import { useMeQuery } from '@/data/user';
 import {
   useDealerByIdStocks,
-  useDealerStocks,
   useUpdateStockData,
 } from '@/data/stocks';
 
@@ -61,16 +51,16 @@ export default function DealerStockData() {
 
     const {
       quantity: quantityStr,
-      ordPendQuant:ordPendQuantStr,
-      dispatchedQuantity:dispatchedQuantityStr,
+      ordPendQuant: ordPendQuantStr,
+      dispatchedQuantity: dispatchedQuantityStr,
       inStock,
       status,
       product,
     } = stocksData;
 
     const quantity = parseInt(quantityStr, 10);
-    const ordPendQuant=parseInt(ordPendQuantStr,10)
-    const dispatchedQuantity=parseInt(dispatchedQuantityStr,10)
+    const ordPendQuant = parseInt(ordPendQuantStr, 10)
+    const dispatchedQuantity = parseInt(dispatchedQuantityStr, 10)
 
     const productId = product ? product.id : undefined;
 
@@ -80,7 +70,7 @@ export default function DealerStockData() {
       dispatchedQuantity,
       inStock,
       status,
-      product:productId,
+      product: productId,
     });
   };
 
@@ -100,76 +90,84 @@ export default function DealerStockData() {
         </div>
       </Card>
 
-      <div className="overflow-hidden border-b border-gray-200 shadow sm:rounded-lg">
-        <table className="min-w-full divide-y divide-gray-200">
-          <thead className="bg-gray-50">
-            <tr>
-              <th className="px-4 py-2">SL.No</th>
-              <th className="px-4 py-2">Name</th>
-              <th className="px-4 py-2">Status</th>
-              <th className="px-4 py-2">Quantity</th>
-              <th className="px-4 py-2">Dispatch</th>
-              <th className="px-4 py-2">Pending</th>
-              <th className="px-4 py-2">Action</th>
-            </tr>
-          </thead>
-          <tbody className="divide-y divide-gray-200 bg-white">
-            {data?.map((item, index) => (
-              <tr key={index}>
-                <td className="border px-4 py-2">{index + 1}</td>
-                <td className="border px-4 py-2">{item?.product?.name}</td>
-                <td className="border px-4 py-2">
-                  {item?.status ? 'In Stock' : 'Out of Stock'}
-                </td>
-                <td className="border px-4 py-2">
-                  <input
-                    type="number"
-                    value={updatedStocks[index]?.quantity || item.quantity}
-                    onChange={(e) =>
-                      handleUpdateStock(index, 'quantity', e.target.value)
-                    }
-                  />
-                </td>
-                <td className="border px-4 py-2">
-                  <input
-                    type="number"
-                    value={
-                      updatedStocks[index]?.dispatchedQuantity ||
-                      item.dispatchedQuantity
-                    }
-                    onChange={(e) =>
-                      handleUpdateStock(
-                        index,
-                        'dispatchedQuantity',
-                        e.target.value
-                      )
-                    }
-                  />
-                </td>
-                <td className="border px-4 py-2">
-                  <input
-                    type="number"
-                    value={
-                      updatedStocks[index]?.ordPendQuant || item.ordPendQuant
-                    }
-                    onChange={(e) =>
-                      handleUpdateStock(index, 'ordPendQuant', e.target.value)
-                    }
-                  />
-                </td>
+      {/* <div className="overflow-hidden border-b border-gray-200 shadow sm:rounded-lg">
+        <table className="min-w-full divide-y divide-gray-200"> */}
+      <div className="overflow-x-auto">
+        <div className="sm:-mx-6 lg:-mx-8">
+          <div className="py-2 align-middle inline-block min-w-full sm:px-6 lg:px-8">
+            <div className="shadow overflow-hidden border-b border-gray-200 sm:rounded-lg">
+              <table className="min-w-full divide-y divide-gray-200">
+                <thead className="bg-gray-50">
+                  <tr>
+                    <th className="px-4 py-2">SL.No</th>
+                    <th className="px-4 py-2">Name</th>
+                    <th className="px-4 py-2">Status</th>
+                    <th className="px-4 py-2">Quantity</th>
+                    <th className="px-4 py-2">Dispatch</th>
+                    <th className="px-4 py-2">Pending</th>
+                    <th className="px-4 py-2">Action</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-gray-200 bg-white">
+                  {data?.map((item, index) => (
+                    <tr key={index}>
+                      <td className="border px-4 py-2">{index + 1}</td>
+                      <td className="border px-4 py-2">{item?.product?.name}</td>
+                      <td className="border px-4 py-2">
+                        {item?.status ? 'In Stock' : 'Out of Stock'}
+                      </td>
+                      <td className="border px-4 py-2">
+                        <input
+                          type="number"
+                          value={updatedStocks[index]?.quantity || item.quantity}
+                          onChange={(e) =>
+                            handleUpdateStock(index, 'quantity', e.target.value)
+                          }
+                        />
+                      </td>
+                      <td className="border px-4 py-2">
+                        <input
+                          type="number"
+                          value={
+                            updatedStocks[index]?.dispatchedQuantity ||
+                            item.dispatchedQuantity
+                          }
+                          onChange={(e) =>
+                            handleUpdateStock(
+                              index,
+                              'dispatchedQuantity',
+                              e.target.value
+                            )
+                          }
+                        />
+                      </td>
+                      <td className="border px-4 py-2">
+                        <input
+                          type="number"
+                          value={
+                            updatedStocks[index]?.ordPendQuant || item.ordPendQuant
+                          }
+                          onChange={(e) =>
+                            handleUpdateStock(index, 'ordPendQuant', e.target.value)
+                          }
+                        />
+                      </td>
 
-                <td className="border px-4 py-2">
-                  <button
-                    className="rounded bg-green-500 px-4 py-2 text-white hover:bg-blue-600"
-                    onClick={() => handleSaveChanges(index)}
-                  >
-                    Update
-                  </button>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+                      <td className="border px-4 py-2">
+                        <button
+                          className="rounded bg-green-500 px-4 py-2 text-white hover:bg-blue-600"
+                          onClick={() => handleSaveChanges(index)}
+                        >
+                          Update
+                        </button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
       </div>
     </>
   );
