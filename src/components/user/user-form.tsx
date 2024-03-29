@@ -58,29 +58,23 @@ const CustomerCreateForm = () => {
 
   console.log("permissionData", permissionData)
   const permissionNames =
-    permissionData?.map((permission: { permission_name: any; }) => permission.permission_name) ?? [];
-    var permissionOptions:any;
-    console.log("permissionData2",permissionNames)
-    if (permissions[0] !== 'dealer') {
-      permissionOptions = [
-        ...permissionNames.map((name:any) => ({
-          value: name,
-          label: name,
-        }))
-      ];
-    } else {
-      permissionOptions = [
-        { value: 'customer', label: 'customer' },
-        { value: 'staff', label: 'staff' },
-      ];
-    }
-
-    if (isLoading) {
-      return <Loader text={t('common:text-loading')} />;
-    }
-
-  console.log("permissionOption", permissionOptions)
-  // console.log("permissionOptions", permissionOptions )
+    permissionData?.data?.map(
+      (permission: { permission_name: any }) => permission.permission_name
+    ) ?? [];
+  var permissionOptions: any;
+  if (permissions[0] !== 'dealer') {
+    permissionOptions = [
+      ...permissionNames.map((name: any) => ({
+        value: name,
+        label: name,
+      })),
+    ];
+  } else {
+    permissionOptions = [
+      { value: 'customer', label: 'customer' },
+      { value: 'staff', label: 'staff' },
+    ];
+  }
 
   async function onSubmit({
     name,

@@ -465,6 +465,7 @@ export interface MakeAdminInput {
 }
 
 export interface User {
+  type: any;
   id: string;
   name: string;
   shops: Shop[];
@@ -1038,6 +1039,7 @@ export interface LatestMessage {
 }
 
 export interface Conversations {
+  dealer: any;
   id: string;
   created_at: string;
   updated_at: string;

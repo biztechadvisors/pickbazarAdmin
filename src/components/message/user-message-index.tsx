@@ -48,9 +48,6 @@ const UserMessageIndex = ({ className, ...rest }: Props) => {
     limit: LIMIT,
   });
 
-
-  console.log("message****", messages)
-
   useEffect(() => {
     if (!hasMore) {
       return;
@@ -112,7 +109,7 @@ const UserMessageIndex = ({ className, ...rest }: Props) => {
                 }}
               >
                 {/* @ts-ignore */}
-                <HeaderView shop={data?.shop} />
+                <HeaderView shop={data?.shop}   dealer={data?.dealer}/>
 
                 <UserMessageView
                   messages={messages}
@@ -142,9 +139,9 @@ const UserMessageIndex = ({ className, ...rest }: Props) => {
 
                 <div className="relative mx-6">
                   {/* @ts-ignore */}
-                  {Boolean(data?.shop?.is_active) ? (
+                  {Boolean(data?.shop?.is_active || data?.dealer?.isActive) ? (
                     <>
-                      <CreateMessageForm shop={data?.shop}/>
+                      <CreateMessageForm shop={data?.shop} dealer={data?.dealer}/>
                     </>
                   ) : (
                     <>

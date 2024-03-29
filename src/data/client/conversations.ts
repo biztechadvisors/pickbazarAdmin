@@ -17,7 +17,6 @@ export const conversationsClient = {
     API_ENDPOINTS.CONVERSIONS
   ),
   getMessage({ slug, ...prams }: Partial<MessageQueryOptions>) {
-    console.log("messageDataGet",prams)
     return HttpClient.get<MessagePaginator>(
       `${API_ENDPOINTS.MESSAGE}/${slug}`,
       {

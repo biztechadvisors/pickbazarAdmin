@@ -10,7 +10,6 @@ import { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { isEmpty } from 'lodash';
-import { useState } from 'react';
 import { useMeQuery } from '@/data/user';
 
 type FormValues = {
@@ -24,10 +23,11 @@ const messageSchema = yup.object().shape({
 interface Props {
   className?: string;
   shop?: any;
+  dealer?:any
 }
 
-const CreateMessageForm = ({ className, shop, ...rest }: Props) => {
-  console.log("ShopIdDAta", shop)
+const CreateMessageForm = ({ className, shop,dealer, ...rest }: Props) => {
+  console.log("myDataShop",dealer)
   const {
     register,
     handleSubmit,
@@ -72,10 +72,11 @@ const CreateMessageForm = ({ className, shop, ...rest }: Props) => {
           message: values?.message,
           latest_message:{
             body:values?.message,
-            user_id:user?.id
+            user_id:user?.id,
           },
           shop_id: shop?.id,
-          user_id:user?.id,
+          dealer_id: dealer?.id,
+          // user_id:user?.id,
           id: query?.id as string,
         },
       },

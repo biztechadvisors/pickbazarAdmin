@@ -77,7 +77,6 @@ export const useCreateConversations = () => {
   let permission = hasAccess(adminOnly, permissions);
   return useMutation(conversationsClient.create, {
     onSuccess: (data) => {
-      console.log("data +++++++++++++++++++++", data);
       if (data?.id) {
         const routes = permission
           ? Routes?.message?.details(data?.id)
@@ -99,7 +98,6 @@ export const useCreateConversations = () => {
 };
 
 export const useMessagesQuery = (options: Partial<MessageQueryOptions>) => {
-  console.log("myOption",options)
   const {
     data,
     isLoading,

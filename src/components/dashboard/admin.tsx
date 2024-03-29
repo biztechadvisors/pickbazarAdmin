@@ -26,16 +26,16 @@ export default function Dashboard(user:any) {
   const { t } = useTranslation();
   const { locale } = useRouter();
 
-  const [getPermission,_]=useAtom(newPermission)
+  const [getPermission, _] = useAtom(newPermission);
   const { permissions } = getAuthCredentials();
-  const canWrite =  permissions.includes('super_admin')
-  ? siteSettings.sidebarLinks
-  :getPermission?.find(
-    (permission) => permission.type === 'sidebar-nav-item-dealerlist'
-  )?.write;
+  const canWrite = permissions.includes('super_admin')
+    ? siteSettings.sidebarLinks
+    : getPermission?.find(
+        (permission) => permission.type === 'sidebar-nav-item-dealerlist'
+      )?.write;
 
-  const { data: useMe, isLoading } = useMeQuery();
-  const customerId = useMe?.id ?? ''
+  const { data: useMe } = useMeQuery();
+  const customerId = useMe?.id ?? '';
 
   const query = {
     customerId: parseInt(customerId),
@@ -77,7 +77,7 @@ export default function Dashboard(user:any) {
     limit: 10,
   });
 
-  if (loading || orderLoading || popularProductLoading || withdrawLoading || isLoading) {
+  if (loading || orderLoading || popularProductLoading || withdrawLoading ) {
     return <Loader text={t('common:text-loading')} />;
   }
   if (orderError || popularProductError) {
@@ -123,22 +123,25 @@ export default function Dashboard(user:any) {
             price={todays_revenue}
           />
         </div>
-        {canWrite ? (<div className="w-full ">
-          <StickerCard
-            titleTransKey="sticker-card-title-total-shops"
-            icon={<ShopIcon className="w-6" color="#1D4ED8" />}
-            iconBgStyle={{ backgroundColor: '#93C5FD' }}
-            price={data?.totalShops}
-          />
-        </div>) :
-        <div className="w-full ">
-          <StickerCard
-            titleTransKey="sticker-card-title-total-cutomer"
-            icon={<CustomerIcon className="w-6" color="#1D4ED8" />}
-            iconBgStyle={{ backgroundColor: '#93C5FD' }}
-            price={data?.totalShops}
-          />
-        </div>}
+        {canWrite ? (
+          <div className="w-full ">
+            <StickerCard
+              titleTransKey="sticker-card-title-total-shops"
+              icon={<ShopIcon className="w-6" color="#1D4ED8" />}
+              iconBgStyle={{ backgroundColor: '#93C5FD' }}
+              price={data?.totalShops}
+            />
+          </div>
+        ) : (
+          <div className="w-full ">
+            <StickerCard
+              titleTransKey="sticker-card-title-total-cutomer"
+              icon={<CustomerIcon className="w-6" color="#1D4ED8" />}
+              iconBgStyle={{ backgroundColor: '#93C5FD' }}
+              price={data?.totalShops}
+            />
+          </div>
+        )}
       </div>
 
       <div className="mb-6 flex w-full flex-wrap md:flex-nowrap">

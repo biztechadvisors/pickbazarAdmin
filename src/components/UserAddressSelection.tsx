@@ -4,14 +4,23 @@ import { MinusIcon } from './icons/minus-icon';
 import { useModalAction } from './ui/modal/modal.context';
 import { useAtom } from 'jotai';
 import { dealerAddress } from '@/utils/atoms';
+import { toast } from 'react-toastify';
 
-const UserAddressSelection = ({ addresses, count, dealerId, type }) => {
+const UserAddressSelection = ({
+  addresses,
+  count,
+  dealerId,
+  type,
+  selectedAddress,
+  setSelectedAddress,
+}) => {
   const [showAllAddresses, setShowAllAddresses] = useState(false);
-  const [selectedAddress, setSelectedAddress] = useAtom(dealerAddress);
+
   const { openModal } = useModalAction();
 
   const handleAddressSelection = (address) => {
     setSelectedAddress(address);
+    toast.success('Address selected successfully!');
   };
 
   if (!addresses || !dealerId) {
@@ -64,6 +73,12 @@ const UserAddressSelection = ({ addresses, count, dealerId, type }) => {
               <span className="relative rounded border border-border-200 bg-gray-100 px-5 py-6 text-center text-base">
                 No Address Available
               </span>
+            )}
+
+            {displayedAddresses.length > 0 && !selectedAddress && (
+              <div className="relative rounded border border-border-200 bg-gray-100 px-5 py-6 text-center text-base">
+                Please select an address.
+              </div>
             )}
             {addresses.length > 0 && (
               <button

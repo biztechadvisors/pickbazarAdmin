@@ -4,7 +4,7 @@ import ErrorMessage from '@/components/ui/error-message';
 import Select from '@/components/ui/select/select';
 import { useCreateConversations } from '@/data/conversations';
 import { useShopsQuery } from '@/data/shop';
-import { useAdminsQuery, useMeQuery } from '@/data/user';
+import { useAdminsQuery, useMeQuery, useUsersQuery } from '@/data/user';
 import { Shop, SortOrder } from '@/types';
 import { adminOnly, getAuthCredentials, hasAccess } from '@/utils/auth-utils';
 import isEmpty from 'lodash/isEmpty';
@@ -57,8 +57,17 @@ const ComposeMessageModal = () => {
     sortedBy: SortOrder.Desc as SortOrder,
   };
 
-  let { shops, loading, error } = useShopsQuery(options);
   const {data:user}=useMeQuery()
+
+  let { shops, loading, error } = useShopsQuery(options);
+  const { users, loading:dealer } = useUsersQuery({
+    type: 'Dealer',
+    usrById: user?.id,
+  });
+  
+  const userdealer = users.filter((user)=>user?.type?.type_name==='dealer')
+  const getdealer = userdealer.map((dealer)=> dealer.dealer)
+
   let {
     admins,
     loading: adminLoading,
@@ -70,6 +79,8 @@ const ComposeMessageModal = () => {
   let lists = permission ? shops : admins;
   let loadingState = permission ? loading : adminLoading;
   let errorState = permission ? error : adminError;
+  const mergeList = lists.concat(getdealer)
+  console.log("HiDealer",mergeList)
 
   if (errorState) return <ErrorMessage message={error?.message} />;
 
@@ -77,33 +88,47 @@ const ComposeMessageModal = () => {
     // @ts-ignore
     setShop(shop);
     // @ts-ignore
-    setIsActive(shop?.is_active);
+    setIsActive(shop?.is_active || shop?.isActive);
   };
   async function onSubmit() {
-    if (shop || !Boolean(active)) {
+    if (shop?.is_active) {
       createConversations({
         // @ts-ignore
         shop_id: shop?.id,
         latest_message: { 
           user_id: user?.id,
-          body:''
+          // body:''
         },
         shop:shop,
         user:user,
         user_id: user?.id,
-        message: '',
-        id: ''
+        // message: '',
+        // id: ''
+      });
+    }
+    else if(shop?.isActive){
+      createConversations({
+        // @ts-ignore
+        dealer_id: shop?.id,
+        latest_message: { 
+          user_id: user?.id,
+          // body:''
+        },
+        dealer:shop,
+        user:user,
+        user_id: user?.id,
+        // message: '',
+        // id: ''
       });
     }
   }
 
-  console.log("lists", lists)
   return (
     <div className="m-auto block max-w-lg rounded bg-light p-6 md:w-[32.5rem]">
       <h2 className="mb-6 text-base font-medium">{t('text-starting-chat')}</h2>
       <form onSubmit={handleSubmit(onSubmit)}>
         <Select
-          options={lists}
+          options={mergeList}
           isLoading={loadingState}
           getOptionLabel={(option: any) => option.name}
           getOptionValue={(option: any) => option.slug}
