@@ -36,7 +36,7 @@ const UserList = ({ className, filterText, permission, ...rest }: Props) => {
     search:
       filterText?.length >= 3 ? filterText?.trim()?.toLowerCase() ?? '' : null,
     limit: LIMIT,
-    dealer: user?.type.type_name==='dealer'? user?.type.id : '' ,
+    dealer_id: user?.type.type_name==='dealer'? user?.type.id : '' ,
     sortedBy: SortOrder.Desc,
     orderBy: 'updated_at',
   });
