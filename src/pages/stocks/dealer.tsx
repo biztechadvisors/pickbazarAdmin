@@ -31,10 +31,8 @@ export default function StockPage() {
   const toggleVisible = () => {
     setVisible((v) => !v);
   };
-  
-  const {data:user,isLoading,error} = useMeQuery()
 
-
+  const { data: user, isLoading, error } = useMeQuery();
 
   if (isLoading) return <Loader text={t('common:text-loading')} />;
   if (error) return <ErrorMessage message={error.message} />;

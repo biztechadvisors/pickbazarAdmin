@@ -31,6 +31,7 @@ const UserMessageIndex = ({ className, ...rest }: Props) => {
   const { data, loading, error } = useConversationQuery({
     id: query.id as string,
   });
+
   const { width } = useWindowSize();
   let {
     error: messageError,
@@ -43,6 +44,7 @@ const UserMessageIndex = ({ className, ...rest }: Props) => {
     isFetching,
   } = useMessagesQuery({
     slug: query?.id as string,
+    conversation:query?.id,
     limit: LIMIT,
   });
 
@@ -107,7 +109,7 @@ const UserMessageIndex = ({ className, ...rest }: Props) => {
                 }}
               >
                 {/* @ts-ignore */}
-                <HeaderView shop={data?.shop} />
+                <HeaderView shop={data?.shop}   dealer={data?.dealer}/>
 
                 <UserMessageView
                   messages={messages}
@@ -137,9 +139,9 @@ const UserMessageIndex = ({ className, ...rest }: Props) => {
 
                 <div className="relative mx-6">
                   {/* @ts-ignore */}
-                  {Boolean(data?.shop?.is_active) ? (
+                  {Boolean(data?.shop?.is_active || data?.dealer?.isActive) ? (
                     <>
-                      <CreateMessageForm />
+                      <CreateMessageForm shop={data?.shop} dealer={data?.dealer}/>
                     </>
                   ) : (
                     <>

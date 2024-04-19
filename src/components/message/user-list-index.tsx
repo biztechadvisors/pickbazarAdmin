@@ -8,6 +8,8 @@ import { useWindowSize } from '@/utils/use-window-size';
 import { RESPONSIVE_WIDTH } from '@/utils/constants';
 import { useState } from 'react';
 import { adminOnly, getAuthCredentials, hasAccess } from '@/utils/auth-utils';
+import { useRouter } from 'next/router';
+import { useConversationQuery } from '@/data/conversations';
 interface Props {
   className?: string;
 }
@@ -19,6 +21,7 @@ const UserListIndex = ({ className, ...rest }: Props) => {
   const { width } = useWindowSize();
   const { permissions } = getAuthCredentials();
   let adminPermission = hasAccess(adminOnly, permissions);
+
   function handleComposeClick() {
     openModal('COMPOSE_MESSAGE');
   }

@@ -37,7 +37,7 @@ const CustomerList = ({
   const { alignLeft } = useIsRTL();
 
   const [getPermission,_]=useAtom(newPermission)
-  const { permissions } = getAuthCredentials();
+  const { permissions }:any = getAuthCredentials();
   const canWrite =  permissions.includes('super_admin')
   ? siteSettings.sidebarLinks
   :getPermission?.find(

@@ -79,7 +79,7 @@ export default function DealerStockList() {
                     className="text-blue-500"
                     onClick={() => handleView(item)}
                   >
-                    {t('common:view')}
+                    view
                   </button>
                 </td>
               </tr>

@@ -1,10 +1,11 @@
 import React, { useState } from 'react';
 import { ChevronDownIcon } from '@heroicons/react/solid';
 import { dealerOnly, getAuthCredentials, hasAccess } from '@/utils/auth-utils';
+import Link from '@/components/ui/link';
 
 const Dropdown = () => {
   const [isOpen, setIsOpen] = useState(false);
-  const { permissions } = getAuthCredentials();
+  const { permissions }:any = getAuthCredentials();
   let permission = hasAccess(dealerOnly, permissions);
   let identify = permissions;
   const matching: any = 'dealer';
@@ -49,34 +50,32 @@ const Dropdown = () => {
         {/* <div className="pt-2 ltr:pl-5 rtl:pr-5"> */}
         <div className="space-y-1 border-0 border-l border-dashed border-slate-300 ltr:pl-1 rtl:pr-1">
           <div>
-            <a
-              title="All shops"
-              className='relative flex w-full cursor-pointer items-center rounded-lg py-2 px-5 text-sm text-body-dark text-start before:absolute before:-left-0.5 before:top-[18px] before:h-px before:w-3 before:border-t before:border-dashed before:border-gray-300 before:content-[""] hover:text-accent focus:text-accent focus:text-accent'
+            <Link
               href="/orders"
+              className='relative flex w-full cursor-pointer items-center rounded-lg py-2 px-5 text-sm text-body-dark text-start before:absolute before:-left-0.5 before:top-[18px] before:h-px before:w-3 before:border-t before:border-dashed before:border-gray-300 before:content-[""] hover:text-accent focus:text-accent focus:text-accent'
             >
               <span>Order</span>
-            </a>
-          </div>
-          <div>
-            <a
-              title="Add new shop"
-              className='relative flex w-full cursor-pointer items-center rounded-lg py-2 px-5 text-sm text-body-dark text-start before:absolute before:-left-0.5 before:top-[18px] before:h-px before:w-3 before:border-t before:border-dashed before:border-gray-300 before:content-[""] hover:text-accent focus:text-accent focus:text-accent'
-              href="/orders/dealer"
-            >
-              <span>Self Order</span>
-            </a>
+            </Link>
           </div>
           {permission && identify == matching &&
             <div>
-              <a
-                title="Inactive/New shops"
+              <Link
+                href="/shops/create"
                 className='relative flex w-full cursor-pointer items-center rounded-lg py-2 px-5 text-sm text-body-dark text-start before:absolute before:-left-0.5 before:top-[18px] before:h-px before:w-3 before:border-t before:border-dashed before:border-gray-300 before:content-[""] hover:text-accent focus:text-accent focus:text-accent'
-                href="/sales"
               >
-                <span>Sales</span>
-              </a>
+                <span>Self Order</span>
+              </Link>
             </div>
           }
+          <div>
+            <Link
+              href="/sales"
+              className='relative flex w-full cursor-pointer items-center rounded-lg py-2 px-5 text-sm text-body-dark text-start before:absolute before:-left-0.5 before:top-[18px] before:h-px before:w-3 before:border-t before:border-dashed before:border-gray-300 before:content-[""] hover:text-accent focus:text-accent focus:text-accent'
+            >
+              <span>Sales</span>
+            </Link>
+          </div>
+
         </div>
         {/* </div> */}
       </div>

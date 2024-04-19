@@ -79,7 +79,6 @@ export function hasAccess(
       _allowedRoles?.find((aRole) => _userPermissions.includes(aRole))
     );
   }
-
   return false;
 }
 

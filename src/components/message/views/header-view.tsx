@@ -14,9 +14,10 @@ import { RESPONSIVE_WIDTH } from '@/utils/constants';
 interface Props {
   className?: string;
   shop: Shop;
+  dealer: any;
 }
 
-const HeaderView = ({ className, shop, ...rest }: Props) => {
+const HeaderView = ({ className, shop, dealer, ...rest }: Props) => {
   const router = useRouter();
   const { width } = useWindowSize();
   const { permissions } = getAuthCredentials();
@@ -45,9 +46,8 @@ const HeaderView = ({ className, shop, ...rest }: Props) => {
           ''
         )}
         <div
-          className={`flex ${
-            adminPermission ? 'cursor-pointer' : ''
-          } items-center`}
+          className={`flex ${adminPermission ? 'cursor-pointer' : ''
+            } items-center`}
           onClick={() => (adminPermission ? router.push(`/${shop?.slug}`) : '')}
         >
           <Avatar
@@ -56,7 +56,7 @@ const HeaderView = ({ className, shop, ...rest }: Props) => {
             alt={shop?.name}
           />
           <h2 className="ml-2 text-xs font-semibold text-[#64748B]">
-            {shop?.name}
+            {shop?.name || dealer?.name}
           </h2>
         </div>
         {/* {adminPermission ? (

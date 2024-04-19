@@ -10,7 +10,7 @@ import { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { isEmpty } from 'lodash';
-import { useState } from 'react';
+import { useMeQuery } from '@/data/user';
 
 type FormValues = {
   message: string;
@@ -22,9 +22,12 @@ const messageSchema = yup.object().shape({
 
 interface Props {
   className?: string;
+  shop?: any;
+  dealer?:any
 }
 
-const CreateMessageForm = ({ className, ...rest }: Props) => {
+const CreateMessageForm = ({ className, shop,dealer, ...rest }: Props) => {
+  console.log("myDataShop",dealer)
   const {
     register,
     handleSubmit,
@@ -37,6 +40,7 @@ const CreateMessageForm = ({ className, ...rest }: Props) => {
   });
 
   const { t } = useTranslation();
+  const {data:user}= useMeQuery();
   const router = useRouter();
   const { query } = router;
   const { mutate: createMessage, isLoading: creating } = useSendMessage();
@@ -57,14 +61,24 @@ const CreateMessageForm = ({ className, ...rest }: Props) => {
     };
   }, [query?.id]);
   const onSubmit = async (values: FormValues) => {
+    console.log("valueMessagedData", query?.id as string)
     if (isEmpty(values.message)) {
       toast?.error('Message is required');
       return;
     }
     createMessage(
       {
-        message: values?.message,
-        id: query?.id as string,
+        conversation: {
+          message: values?.message,
+          latest_message:{
+            body:values?.message,
+            user_id:user?.id,
+          },
+          shop_id: shop?.id,
+          dealer_id: dealer?.id,
+          // user_id:user?.id,
+          id: query?.id as string,
+        },
       },
       {
         onError: (error: any) => {
