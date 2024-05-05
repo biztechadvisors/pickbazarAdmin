@@ -15,6 +15,7 @@ module.exports = withPWA({
       'via.placeholder.com',
       'res.cloudinary.com',
       's3.amazonaws.com',
+      'server.codenox.tech',
       '18.141.64.26',
       '127.0.0.1',
       '192.168.1.16',

@@ -1,5 +1,5 @@
 import usePrice from '@/lib/use-price';
-import { ThumbsCarousel } from '@/components/ui/thumb-carousel';
+// import { ThumbsCarousel } from '@/components/ui/';
 import { useTranslation } from 'next-i18next';
 import { getVariations } from '@/lib/get-variations';
 import { useEffect, useMemo, useRef } from 'react';
@@ -13,7 +13,7 @@ import type { Product } from '@/types';
 import { useAtom } from 'jotai';
 import VariationGroups from './variation-groups';
 import { isVariationSelected } from '@/lib/is-variation-selected';
-import { stickyShortDetailsAtom } from '@/store/sticky-short-details-atom';
+// import { stickyShortDetailsAtom } from '@/store/sticky-short-details-atom';
 import { useAttributes } from './attributes.context';
 import { AddToCartAlt } from '@/components/products/add-to-cart/add-to-cart-alt';
 import BadgeGroups from './badge-groups';
@@ -50,7 +50,7 @@ const BookDetails: React.FC<Props> = ({ product, isModal = false }) => {
   } = product ?? {};
 
   const { t } = useTranslation('common');
-  const [_, setShowStickyShortDetails] = useAtom(stickyShortDetailsAtom);
+  // const [_, setShowStickyShortDetails] = useAtom(stickyShortDetailsAtom);
 
   const { attributes } = useAttributes();
   const intersectionRef = useRef(null);
@@ -59,16 +59,16 @@ const BookDetails: React.FC<Props> = ({ product, isModal = false }) => {
     rootMargin: '0px',
     threshold: 1,
   });
-  useEffect(() => {
-    if (intersection && intersection.isIntersecting) {
-      setShowStickyShortDetails(false);
-      return;
-    }
-    if (intersection && !intersection.isIntersecting) {
-      setShowStickyShortDetails(true);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [intersection]);
+  // useEffect(() => {
+  //   if (intersection && intersection.isIntersecting) {
+  //     setShowStickyShortDetails(false);
+  //     return;
+  //   }
+  //   if (intersection && !intersection.isIntersecting) {
+  //     setShowStickyShortDetails(true);
+  //   }
+  //   // eslint-disable-next-line react-hooks/exhaustive-deps
+  // }, [intersection]);
   const { price, basePrice, discount } = usePrice({
     amount: product?.sale_price ? product?.sale_price : product?.price,
     baseAmount: product?.price ?? 0,
@@ -109,7 +109,7 @@ const BookDetails: React.FC<Props> = ({ product, isModal = false }) => {
                 : 'py-6 md:py-16'
             }`}
           >
-            <ThumbsCarousel
+            {/* <ThumbsCarousel
               gallery={previewImages}
               video={video}
               hideThumbs={
@@ -118,7 +118,7 @@ const BookDetails: React.FC<Props> = ({ product, isModal = false }) => {
                   : previewImages.length <= 1
               }
               aspectRatio="auto"
-            />
+            /> */}
           </div>
         </div>
 

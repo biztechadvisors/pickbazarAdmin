@@ -417,6 +417,14 @@ export default function CreateOrUpdateProductForm({
               <ProductAuthorInput control={control} setValue={setValue} />
               {/* <ProductManufacturerInput control={control} setValue={setValue} /> */}
               <ProductTagInput control={control} setValue={setValue} />
+              {/* <Input
+                  label={`${t('SubCategory')}`}
+                  {...register('slug')}
+                  value={slugAutoSuggest}
+                  variant="outline"
+                  className="mb-5"
+                  disabled
+                /> */}
             </Card>
           </div>
 

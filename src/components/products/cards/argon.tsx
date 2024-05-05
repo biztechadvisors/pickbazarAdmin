@@ -1,4 +1,4 @@
-import { Image } from '@/components/ui/image';
+import Image from 'next/image';
 import cn from 'classnames';
 import { AddToCart } from '@/components/products/add-to-cart/add-to-cart';
 import usePrice from '@/lib/use-price';
