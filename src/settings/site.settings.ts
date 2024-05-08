@@ -230,6 +230,12 @@ export const siteSettings = {
         permissions: adminOwnerAndStaffOnly,
       },
       {
+        href: (shop: string) => `/${shop}${Routes.attribute.list}`,
+        label: 'sidebar-nav-item-attributes',
+        icon: 'AttributeIcon',
+        permissions: adminOwnerAndStaffOnly,
+      },
+      {
         href: (shop: string) => `${Routes.type.list}`,
         label: 'sidebar-nav-item-groups',
         icon: 'TypesIcon',
@@ -242,9 +248,9 @@ export const siteSettings = {
         permissions: adminOwnerAndStaffOnly,
       },
       {
-        href: (shop: string) => `/${shop}${Routes.attribute.list}`,
-        label: 'sidebar-nav-item-attributes',
-        icon: 'AttributeIcon',
+        href: (shop: string) => `${Routes.subcategory.list}`,
+        label: 'sidebar-nav-item-categories',
+        icon: 'CategoriesIcon',
         permissions: adminOwnerAndStaffOnly,
       },
       {
@@ -293,7 +299,13 @@ export const siteSettings = {
         href: (shop: string) => `/${shop}${Routes.reviews.list}`,
         label: 'sidebar-nav-item-reviews',
         icon: 'ReviewIcon',
-        permissions: adminAndOwnerOnly,
+        permissions: adminOwnerAndStaffOnly,
+      },
+      {
+        href: (shop: string) => `/${shop}${Routes.tag.list}`,
+        label: 'sidebar-nav-item-tags',
+        icon: 'TagIcon',
+        permissions: adminOwnerAndStaffOnly,
       },
       // {
       //   href: (shop: string) => `/${shop}${Routes.question.list}`,

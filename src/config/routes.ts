@@ -45,6 +45,9 @@ export const Routes = {
   category: {
     ...routesFactory('/categories'),
   },
+  subcategory: {
+    ...routesFactory('/subCategories'),
+  },
   attribute: {
     ...routesFactory('/attributes'),
   },

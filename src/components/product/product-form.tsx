@@ -43,6 +43,7 @@ import { useModalAction } from '@/components/ui/modal/modal.context';
 import { useCallback } from 'react';
 import OpenAIButton from '@/components/openAI/openAI.button';
 import { ItemProps } from '@/types';
+import ProductSubCategoryInput from './product-subcategory-input';
 
 export const chatbotAutoSuggestion = ({ name }: { name: string }) => {
   return [
@@ -414,17 +415,10 @@ export default function CreateOrUpdateProductForm({
                 error={t((errors?.type as any)?.message)}
               />
               <ProductCategoryInput control={control} setValue={setValue} />
+              <ProductSubCategoryInput control={control} setValue={setValue} />
               <ProductAuthorInput control={control} setValue={setValue} />
               {/* <ProductManufacturerInput control={control} setValue={setValue} /> */}
               <ProductTagInput control={control} setValue={setValue} />
-              {/* <Input
-                  label={`${t('SubCategory')}`}
-                  {...register('slug')}
-                  value={slugAutoSuggest}
-                  variant="outline"
-                  className="mb-5"
-                  disabled
-                /> */}
             </Card>
           </div>
 
