@@ -17,7 +17,7 @@ export const Routes = {
   verifyEmail: '/verify-email',
   sales: '/sales',
   createSales: '/sales/create',
-  groups: '/groups',
+  // groups: `/${getAdminMyShopsRoute()}/groups`,
   shops: (slug: string) => `/shops/${encodeURIComponent(slug)}`,
   // orders: '/orders',
   orders: (tracking_number: string) =>
@@ -40,7 +40,7 @@ export const Routes = {
     ...routesFactory('/users'),
   },
   type: {
-    ...routesFactory('/groups'),
+    ...routesFactory(`/groups`),
   },
   category: {
     ...routesFactory('/categories'),

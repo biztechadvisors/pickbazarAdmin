@@ -50,17 +50,40 @@ export function getAuthCredentials(context?: any): {
 } {
   let authCred;
   if (context) {
+    console.log('context', context);
     authCred = parseSSRCookie(context)[AUTH_CRED];
+
+    console.log('authCred', authCred);
   } else {
     // console.log('chcek'+Cookie.get(AUTH_CRED))
     // console.log(Cookie.get(AUTH_CRED))
     authCred = Cookie.get(AUTH_CRED);
+
+    console.log('authCred', authCred);
   }
-  if (authCred) {
-    const parsedData = JSON.parse(authCred);
-    type_names = parsedData.type_name;
-    // console.log(parsedData.token)
-    return JSON.parse(authCred);
+  // if (authCred) {
+  //   const parsedData = JSON.parse(authCred);
+
+  //   console.log('parsedData', parsedData);
+  //   type_names = parsedData.type_name;
+
+  //   console.log('type_names', type_names);
+  //   // console.log(parsedData.token)
+  //   return JSON.parse(authCred);
+  // }
+
+  try {
+    if (authCred) {
+      const parsedData = JSON.parse(authCred);
+
+      console.log('parsedData', parsedData);
+      type_names = parsedData.type_name;
+
+      console.log('type_names', type_names);
+      return parsedData; // Return parsed data directly
+    }
+  } catch (error) {
+    console.error('Error parsing authCred:', error);
   }
   return { token: null, permissions: null, type_name: null };
 }
@@ -74,15 +97,16 @@ export function hasAccess(
   _userPermissions: string[] | undefined | null
 ) {
   if (_userPermissions) {
-    _allowedRoles?.find((aRole) => _userPermissions.includes(aRole));
+    _allowedRoles?.find((aRole) => _userPermissions?.includes(aRole));
     return Boolean(
-      _allowedRoles?.find((aRole) => _userPermissions.includes(aRole))
+      _allowedRoles?.find((aRole) => _userPermissions?.includes(aRole))
     );
   }
   return false;
 }
 
 export function isAuthenticated(_cookies: any) {
+  console.log('_cookies', _cookies);
   return (
     !!_cookies[TOKEN] &&
     Array.isArray(_cookies[PERMISSIONS]) &&

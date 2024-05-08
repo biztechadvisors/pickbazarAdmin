@@ -66,7 +66,6 @@
 //   };
 // };
 
-
 import dynamic from 'next/dynamic';
 import type { GetServerSideProps } from 'next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
@@ -76,7 +75,13 @@ import {
   hasAccess,
   isAuthenticated,
 } from '@/utils/auth-utils';
-import { ADMIN, DEALER, STAFF, STORE_OWNER, SUPER_ADMIN } from '@/utils/constants';
+import {
+  ADMIN,
+  DEALER,
+  STAFF,
+  STORE_OWNER,
+  SUPER_ADMIN,
+} from '@/utils/constants';
 import AppLayout from '@/components/layouts/app';
 import { Routes } from '@/config/routes';
 import { Config } from '@/config';
@@ -84,14 +89,17 @@ import { Config } from '@/config';
 const AdminDashboard = dynamic(() => import('@/components/dashboard/admin'));
 const OwnerDashboard = dynamic(() => import('@/components/dashboard/owner'));
 
-export default function Dashboard({userPermissions,}: {userPermissions: string[];}) {
- 
+export default function Dashboard({
+  userPermissions,
+}: {
+  userPermissions: string[];
+}) {
   if (
-    userPermissions.some(permission =>
+    userPermissions.some((permission) =>
       [DEALER, STAFF, STORE_OWNER, SUPER_ADMIN, ADMIN].includes(permission)
     )
   ) {
-    return <AdminDashboard/>;
+    return <AdminDashboard />;
   }
   return <OwnerDashboard />;
 }
@@ -105,7 +113,8 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
     locale !== Config.defaultLanguage
       ? `/${locale}${Routes.login}`
       : Routes.login;
-  const { token, permissions }:any = getAuthCredentials(ctx);
+
+  const { token, permissions }: any = getAuthCredentials(ctx) || {}
   if (
     !isAuthenticated({ token, permissions }) ||
     !hasAccess(allowedRoles, permissions)
@@ -115,8 +124,8 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
         destination: generateRedirectUrl,
         permanent: false,
       },
-    };
-  }
+    }
+  };
   if (locale) {
     return {
       props: {

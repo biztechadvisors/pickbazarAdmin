@@ -156,8 +156,6 @@ export const PlaceOrderAction: React.FC<{
     (item) => !isEmpty(item)
   );
 
-
-
   return (
     <>
       <Button

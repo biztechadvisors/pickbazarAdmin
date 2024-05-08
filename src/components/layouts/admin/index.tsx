@@ -63,16 +63,6 @@ const AdminLayout: React.FC<{ children?: React.ReactNode }> = ({
         label: 'sidebar-nav-item-products',
         icon: 'ProductsIcon',
       },
-      // {
-      //   href: Routes.order.list,
-      //   label: 'sidebar-nav-item-orders',
-      //   icon: 'OrdersIcon',
-      // },
-      // {
-      //   href: Routes.refund.list,
-      //   label: 'sidebar-nav-item-refunds',
-      //   icon: 'RefundsIcon',
-      // },
       {
         href: Routes.reviews.list,
         label: 'sidebar-nav-item-reviews',
@@ -106,16 +96,6 @@ const AdminLayout: React.FC<{ children?: React.ReactNode }> = ({
         label: 'sidebar-nav-item-products',
         icon: 'ProductsIcon',
       },
-      // {
-      //   href: Routes.order.list,
-      //   label: 'sidebar-nav-item-orders',
-      //   icon: 'OrdersIcon',
-      // },
-      // {
-      //   href: Routes.refund.list,
-      //   label: 'sidebar-nav-item-refunds',
-      //   icon: 'RefundsIcon',
-      // },
       {
         href: Routes.reviews.list,
         label: 'sidebar-nav-item-reviews',
@@ -154,16 +134,6 @@ const AdminLayout: React.FC<{ children?: React.ReactNode }> = ({
         label: 'sidebar-nav-item-products',
         icon: 'ProductsIcon',
       },
-      // {
-      //   href: Routes.order.list,
-      //   label: 'sidebar-nav-item-orders',
-      //   icon: 'OrdersIcon',
-      // },
-      // {
-      //   href: Routes.refund.list,
-      //   label: 'sidebar-nav-item-refunds',
-      //   icon: 'RefundsIcon',
-      // },
       {
         href: Routes.reviews.list,
         label: 'sidebar-nav-item-reviews',
@@ -202,16 +172,6 @@ const AdminLayout: React.FC<{ children?: React.ReactNode }> = ({
         label: 'sidebar-nav-item-products',
         icon: 'ProductsIcon',
       },
-      // {
-      //   href: Routes.order.list,
-      //   label: 'sidebar-nav-item-orders',
-      //   icon: 'OrdersIcon',
-      // },
-      // {
-      //   href: Routes.refund.list,
-      //   label: 'sidebar-nav-item-refunds',
-      //   icon: 'RefundsIcon',
-      // },
       {
         href: Routes.reviews.list,
         label: 'sidebar-nav-item-reviews',
@@ -250,16 +210,6 @@ const AdminLayout: React.FC<{ children?: React.ReactNode }> = ({
         label: 'sidebar-nav-item-products',
         icon: 'ProductsIcon',
       },
-      // {
-      //   href: Routes.order.list,
-      //   label: 'sidebar-nav-item-orders',
-      //   icon: 'OrdersIcon',
-      // },
-      // {
-      //   href: Routes.refund.list,
-      //   label: 'sidebar-nav-item-refunds',
-      //   icon: 'RefundsIcon',
-      // },
       {
         href: Routes.reviews.list,
         label: 'sidebar-nav-item-reviews',
@@ -298,16 +248,6 @@ const AdminLayout: React.FC<{ children?: React.ReactNode }> = ({
         label: 'sidebar-nav-item-products',
         icon: 'ProductsIcon',
       },
-      // {
-      //   href: Routes.order.list,
-      //   label: 'sidebar-nav-item-orders',
-      //   icon: 'OrdersIcon',
-      // },
-      // {
-      //   href: Routes.refund.list,
-      //   label: 'sidebar-nav-item-refunds',
-      //   icon: 'RefundsIcon',
-      // },
       {
         href: Routes.reviews.list,
         label: 'sidebar-nav-item-reviews',
@@ -346,16 +286,6 @@ const AdminLayout: React.FC<{ children?: React.ReactNode }> = ({
         label: 'sidebar-nav-item-products',
         icon: 'ProductsIcon',
       },
-      // {
-      //   href: Routes.order.list,
-      //   label: 'sidebar-nav-item-orders',
-      //   icon: 'OrdersIcon',
-      // },
-      // {
-      //   href: Routes.refund.list,
-      //   label: 'sidebar-nav-item-refunds',
-      //   icon: 'RefundsIcon',
-      // },
       {
         href: Routes.reviews.list,
         label: 'sidebar-nav-item-reviews',
@@ -368,7 +298,7 @@ const AdminLayout: React.FC<{ children?: React.ReactNode }> = ({
       },
     ];
   } else {
-    matchedLinks = permissions.includes('super_admin')
+    matchedLinks = permissions?.includes('super_admin')
       ? siteSettings.sidebarLinks.admin
       : siteSettings.sidebarLinks.admin.filter((link) =>
           matched.some((newItem) => newItem.type === link.label)
@@ -379,14 +309,9 @@ const AdminLayout: React.FC<{ children?: React.ReactNode }> = ({
         ![
           Routes.attribute.list,
           Routes.type.list,
-          // Routes.settings,
           Routes.product.list,
-          // Routes.order.list,
-          // Routes.refund.list,
           Routes.reviews.list,
           Routes.category.list,
-          // Routes.sales,
-          // Routes.createSales,
           Routes.tag.list,
         ].includes(link.href)
     );
@@ -400,7 +325,7 @@ const AdminLayout: React.FC<{ children?: React.ReactNode }> = ({
     </Fragment>
   );
 
-  console.log("matchedLinks", matchedLinks)
+  console.log("shopSlug", shopSlug)
 
   return (
     <div

@@ -40,7 +40,7 @@ export default function WithdrawsPage() {
   const shopId = shopData?.id!;
 
   const [getPermission,_]=useAtom(newPermission)  
-  const canWrite =  permissions.includes('super_admin')
+  const canWrite =  permissions?.includes('super_admin')
   ? siteSettings.sidebarLinks
   :getPermission?.find(
    (permission) => permission.type === 'sidebar-nav-item-withdraws'
