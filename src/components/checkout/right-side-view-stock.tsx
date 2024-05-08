@@ -4,7 +4,7 @@ import isEmpty from 'lodash/isEmpty';
 import dynamic from 'next/dynamic';
 
 const UnverifiedItemListStock = dynamic(
-  () => import('@/components/checkout/item/UnverifiedItemListStock')
+  () => import('@/components/checkout/item/unverifiedItemListStock')
 );
 const VerifiedItemListStock = dynamic(
   () => import('@/components/checkout/item/verified-item-list-stock')

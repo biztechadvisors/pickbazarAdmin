@@ -8,7 +8,7 @@ const Type = {
   Customer: 'customer',
   Staff: 'staff',
 };
-const { permissions } :any = getAuthCredentials();
+const { permissions }: any = getAuthCredentials();
 let permission = hasAccess(dealerOnly, permissions);
 let identify = permissions;
 const matching: any = 'dealer';
@@ -133,29 +133,28 @@ export const siteSettings = {
       {
         ...(permission && identify == matching
           ? {
-            href: Routes.createSales,
-            label: 'sidebar-nav-item-create-sales',
-            icon: 'OrderListIcon',
-          }
+              href: Routes.createSales,
+              label: 'sidebar-nav-item-create-sales',
+              icon: 'OrderListIcon',
+            }
           : {
-            href: Routes.coupon.list,
-            label: 'sidebar-nav-item-coupons',
-            icon: 'CouponsIcon',
-          }),
+              href: Routes.coupon.list,
+              label: 'sidebar-nav-item-coupons',
+              icon: 'CouponsIcon',
+            }),
       },
       {
         ...(permission && identify == matching
           ? {
-            href: Routes.sales,
-            label: 'sidebar-nav-item-sales',
-            icon: 'SalesIcon',
-          }
-          :
-          {
-            href: Routes.tax.list,
-            label: 'sidebar-nav-item-taxes',
-            icon: 'TaxesIcon',
-          })
+              href: Routes.sales,
+              label: 'sidebar-nav-item-sales',
+              icon: 'SalesIcon',
+            }
+          : {
+              href: Routes.tax.list,
+              label: 'sidebar-nav-item-taxes',
+              icon: 'TaxesIcon',
+            }),
       },
       {
         href: Routes.shipping.list,
@@ -201,16 +200,16 @@ export const siteSettings = {
       {
         ...(permission && identify == matching
           ? {
-            href: `${Routes.stock.list}/dealer`,
-            label: 'sidebar-nav-item-stocks',
-            icon: 'ProductsIcon',
-          }
+              href: `${Routes.stock.list}/dealer`,
+              label: 'sidebar-nav-item-stocks',
+              icon: 'ProductsIcon',
+            }
           : {
-            href: Routes.stock.list,
-            label: 'sidebar-nav-item-stocks',
-            icon: 'ProductsIcon',
-          })
-      }
+              href: Routes.stock.list,
+              label: 'sidebar-nav-item-stocks',
+              icon: 'ProductsIcon',
+            }),
+      },
       // {
       // href: Routes.question.list,
       //   label: 'sidebar-nav-item-questions',
@@ -230,6 +229,12 @@ export const siteSettings = {
         permissions: adminOwnerAndStaffOnly,
       },
       {
+        href: (shop: string) => `/${shop}${Routes.attribute.list}`,
+        label: 'sidebar-nav-item-attributes',
+        icon: 'AttributeIcon',
+        permissions: adminOwnerAndStaffOnly,
+      },
+      {
         href: (shop: string) => `/${shop}${Routes.type.list}`,
         label: 'sidebar-nav-item-groups',
         icon: 'TypesIcon',
@@ -242,9 +247,9 @@ export const siteSettings = {
         permissions: adminOwnerAndStaffOnly,
       },
       {
-        href: (shop: string) => `/${shop}${Routes.attribute.list}`,
-        label: 'sidebar-nav-item-attributes',
-        icon: 'AttributeIcon',
+        href: (shop: string) => `/${shop}${Routes.subcategory.list}`,
+        label: 'sidebar-nav-item-categories',
+        icon: 'CategoriesIcon',
         permissions: adminOwnerAndStaffOnly,
       },
       {
@@ -293,7 +298,13 @@ export const siteSettings = {
         href: (shop: string) => `/${shop}${Routes.reviews.list}`,
         label: 'sidebar-nav-item-reviews',
         icon: 'ReviewIcon',
-        permissions: adminAndOwnerOnly,
+        permissions: adminOwnerAndStaffOnly,
+      },
+      {
+        href: (shop: string) => `/${shop}${Routes.tag.list}`,
+        label: 'sidebar-nav-item-tags',
+        icon: 'TagIcon',
+        permissions: adminOwnerAndStaffOnly,
       },
       // {
       //   href: (shop: string) => `/${shop}${Routes.question.list}`,

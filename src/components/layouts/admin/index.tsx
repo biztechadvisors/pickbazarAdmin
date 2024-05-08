@@ -59,35 +59,7 @@ const AdminLayout: React.FC<{ children?: React.ReactNode }> = ({
         icon: 'CategoriesIcon',
       },
       {
-        href: Routes.product.list,
-        label: 'sidebar-nav-item-products',
-        icon: 'ProductsIcon',
-      },
-      {
-        href: Routes.reviews.list,
-        label: 'sidebar-nav-item-reviews',
-        icon: 'ReviewIcon',
-      },
-      {
-        href: Routes.tag.list,
-        label: 'sidebar-nav-item-tags',
-        icon: 'TagIcon',
-      },
-    ];
-  } else if (router.pathname === Routes.type.list) {
-    matchedLinks = [
-      {
-        href: Routes.attribute.list,
-        label: 'sidebar-nav-item-attributes',
-        icon: 'AttributeIcon',
-      },
-      {
-        href: Routes.type.list,
-        label: 'sidebar-nav-item-groups',
-        icon: 'TypesIcon',
-      },
-      {
-        href: Routes.category.list,
+        href: Routes.subcategory.list,
         label: 'sidebar-nav-item-categories',
         icon: 'CategoriesIcon',
       },
@@ -130,10 +102,73 @@ const AdminLayout: React.FC<{ children?: React.ReactNode }> = ({
         icon: 'CategoriesIcon',
       },
       {
+        href: Routes.subcategory.list,
+        label: 'sidebar-nav-item-categories',
+        icon: 'CategoriesIcon',
+      },
+      {
         href: Routes.product.list,
         label: 'sidebar-nav-item-products',
         icon: 'ProductsIcon',
       },
+      {
+        href: Routes.reviews.list,
+        label: 'sidebar-nav-item-reviews',
+        icon: 'ReviewIcon',
+      },
+      {
+        href: Routes.tag.list,
+        label: 'sidebar-nav-item-tags',
+        icon: 'TagIcon',
+      },
+    ];
+  } else if (router.pathname === Routes.type.list) {
+    matchedLinks = [
+      {
+        href: `${Routes.dashboard}`,
+        label: 'sidebar-nav-item-inventory-dashboard',
+        icon: 'DashboardIcon',
+      },
+      {
+        href: `${Routes.dashboard}`,
+        label: 'sidebar-nav-item-inventory-dashboard',
+        icon: 'DashboardIcon',
+      },
+      {
+        href: Routes.attribute.list,
+        label: 'sidebar-nav-item-attributes',
+        icon: 'AttributeIcon',
+      },
+      {
+        href: Routes.type.list,
+        label: 'sidebar-nav-item-groups',
+        icon: 'TypesIcon',
+      },
+      {
+        href: Routes.category.list,
+        label: 'sidebar-nav-item-categories',
+        icon: 'CategoriesIcon',
+      },
+      {
+        href: Routes.subcategory.list,
+        label: 'sidebar-nav-item-categories',
+        icon: 'CategoriesIcon',
+      },
+      {
+        href: Routes.product.list,
+        label: 'sidebar-nav-item-products',
+        icon: 'ProductsIcon',
+      },
+      // {
+      //   href: Routes.order.list,
+      //   label: 'sidebar-nav-item-orders',
+      //   icon: 'OrdersIcon',
+      // },
+      // {
+      //   href: Routes.refund.list,
+      //   label: 'sidebar-nav-item-refunds',
+      //   icon: 'RefundsIcon',
+      // },
       {
         href: Routes.reviews.list,
         label: 'sidebar-nav-item-reviews',
@@ -168,10 +203,78 @@ const AdminLayout: React.FC<{ children?: React.ReactNode }> = ({
         icon: 'CategoriesIcon',
       },
       {
+        href: Routes.subcategory.list,
+        label: 'sidebar-nav-item-categories',
+        icon: 'CategoriesIcon',
+      },
+      {
         href: Routes.product.list,
         label: 'sidebar-nav-item-products',
         icon: 'ProductsIcon',
       },
+      // {
+      //   href: Routes.order.list,
+      //   label: 'sidebar-nav-item-orders',
+      //   icon: 'OrdersIcon',
+      // },
+      // {
+      //   href: Routes.refund.list,
+      //   label: 'sidebar-nav-item-refunds',
+      //   icon: 'RefundsIcon',
+      // },
+      {
+        href: Routes.reviews.list,
+        label: 'sidebar-nav-item-reviews',
+        icon: 'ReviewIcon',
+      },
+      {
+        href: Routes.tag.list,
+        label: 'sidebar-nav-item-tags',
+        icon: 'TagIcon',
+      },
+    ];
+  } else if (router.pathname === Routes.subcategory.list) {
+    matchedLinks = [
+      {
+        href: `${Routes.dashboard}`,
+        label: 'sidebar-nav-item-inventory-dashboard',
+        icon: 'DashboardIcon',
+      },
+      {
+        href: Routes.attribute.list,
+        label: 'sidebar-nav-item-attributes',
+        icon: 'AttributeIcon',
+      },
+      {
+        href: Routes.type.list,
+        label: 'sidebar-nav-item-groups',
+        icon: 'TypesIcon',
+      },
+      {
+        href: Routes.category.list,
+        label: 'sidebar-nav-item-categories',
+        icon: 'CategoriesIcon',
+      },
+      {
+        href: Routes.subcategory.list,
+        label: 'sidebar-nav-item-categories',
+        icon: 'CategoriesIcon',
+      },
+      {
+        href: Routes.product.list,
+        label: 'sidebar-nav-item-products',
+        icon: 'ProductsIcon',
+      },
+      // {
+      //   href: Routes.order.list,
+      //   label: 'sidebar-nav-item-orders',
+      //   icon: 'OrdersIcon',
+      // },
+      // {
+      //   href: Routes.refund.list,
+      //   label: 'sidebar-nav-item-refunds',
+      //   icon: 'RefundsIcon',
+      // },
       {
         href: Routes.reviews.list,
         label: 'sidebar-nav-item-reviews',
@@ -202,6 +305,11 @@ const AdminLayout: React.FC<{ children?: React.ReactNode }> = ({
       },
       {
         href: Routes.category.list,
+        label: 'sidebar-nav-item-categories',
+        icon: 'CategoriesIcon',
+      },
+      {
+        href: Routes.subcategory.list,
         label: 'sidebar-nav-item-categories',
         icon: 'CategoriesIcon',
       },
@@ -244,6 +352,11 @@ const AdminLayout: React.FC<{ children?: React.ReactNode }> = ({
         icon: 'CategoriesIcon',
       },
       {
+        href: Routes.subcategory.list,
+        label: 'sidebar-nav-item-categories',
+        icon: 'CategoriesIcon',
+      },
+      {
         href: Routes.product.list,
         label: 'sidebar-nav-item-products',
         icon: 'ProductsIcon',
@@ -282,6 +395,11 @@ const AdminLayout: React.FC<{ children?: React.ReactNode }> = ({
         icon: 'CategoriesIcon',
       },
       {
+        href: Routes.subcategory.list,
+        label: 'sidebar-nav-item-categories',
+        icon: 'CategoriesIcon',
+      },
+      {
         href: Routes.product.list,
         label: 'sidebar-nav-item-products',
         icon: 'ProductsIcon',
@@ -309,9 +427,15 @@ const AdminLayout: React.FC<{ children?: React.ReactNode }> = ({
         ![
           Routes.attribute.list,
           Routes.type.list,
+          // Routes.settings,
+          // Routes.order.list,
+          // Routes.refund.list,
+          Routes.category.list,
+          Routes.subcategory.list,
           Routes.product.list,
           Routes.reviews.list,
-          Routes.category.list,
+          // Routes.sales,
+          // Routes.createSales,
           Routes.tag.list,
         ].includes(link.href)
     );
@@ -325,7 +449,7 @@ const AdminLayout: React.FC<{ children?: React.ReactNode }> = ({
     </Fragment>
   );
 
-  console.log("shopSlug", shopSlug)
+  console.log('shopSlug', shopSlug);
 
   return (
     <div

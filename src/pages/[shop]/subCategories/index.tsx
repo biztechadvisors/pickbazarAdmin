@@ -1,4 +1,4 @@
-import CategoryList from '@/components/category/category-list';
+import SubCategoryList from '@/components/subcategory/subcategory-list';
 import Card from '@/components/common/card';
 import Layout from '@/components/layouts/admin';
 import Search from '@/components/common/search';
@@ -11,8 +11,12 @@ import { useTranslation } from 'next-i18next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import { Routes } from '@/config/routes';
 import TypeFilter from '@/components/category/type-filter';
-import { adminOnly, adminOwnerAndStaffOnly, getAuthCredentials } from '@/utils/auth-utils';
-import { useCategoriesQuery } from '@/data/category';
+import {
+  adminOnly,
+  adminOwnerAndStaffOnly,
+  getAuthCredentials,
+} from '@/utils/auth-utils';
+import { useSubCategoriesQuery } from '@/data/subcategory';
 import { useRouter } from 'next/router';
 import { Config } from '@/config';
 import { newPermission } from '@/contexts/permission/storepermission';
@@ -22,7 +26,7 @@ import { useQuery } from 'react-query';
 import { useMeQuery } from '@/data/user';
 import ShopLayout from '@/components/layouts/shop';
 
-export default function Categories() {
+export default function SubCategories() {
   const { locale } = useRouter();
   const [searchTerm, setSearchTerm] = useState('');
   const [type, setType] = useState('');
@@ -34,18 +38,19 @@ export default function Categories() {
 
   const shop: string | undefined = meData?.shops?.[0]?.id;
 
-  const { categories, paginatorInfo, loading, error } = useCategoriesQuery({
-    limit: 20,
-    page,
-    type,
-    name: searchTerm,
-    orderBy,
-    sortedBy,
-    parent: null,
-    language: locale,
-    shop,
-  });
-
+  const { subcategories, paginatorInfo, loading, error } =
+    useSubCategoriesQuery({
+      limit: 20,
+      page,
+      type,
+      name: searchTerm,
+      orderBy,
+      sortedBy,
+      categoryId: null,
+      language: locale,
+      shopId: shop,
+    });
+  console.log('shopID++++++++++++', shop);
   const [getPermission, _] = useAtom(newPermission);
   const { permissions } = getAuthCredentials();
   const canWrite = permissions?.includes('super_admin')
@@ -89,7 +94,7 @@ export default function Categories() {
 
             {canWrite && locale === Config.defaultLanguage && (
               <LinkButton
-                href={`/${shop}${Routes.category.create}`}
+                href={`${Routes.subcategory.create}`}
                 className="h-12 w-full md:w-auto md:ms-6"
               >
                 <span className="block md:hidden xl:block">
@@ -103,8 +108,8 @@ export default function Categories() {
           </div>
         </div>
       </Card>
-      <CategoryList
-        categories={categories}
+      <SubCategoryList
+        subcategories={subcategories}
         paginatorInfo={paginatorInfo}
         onPagination={handlePagination}
         onOrder={setOrder}
@@ -114,14 +119,14 @@ export default function Categories() {
   );
 }
 
-Categories.authenticate = {
+SubCategories.authenticate = {
   permissions: adminOwnerAndStaffOnly,
 };
-Categories.Layout = ShopLayout;
+SubCategories.Layout = ShopLayout;
 
-// export const getServerSideProps = async ({ locale }: any) => ({
+// export const getStaticProps = async ({ locale }: any) => ({
 //   props: {
-//     ...(await serverSideTranslations(locale, ['table', 'common', 'form'])),
+//     ...(await serverSideTranslations(locale, ['form', 'common', 'table'])),
 //   },
 // });
 
