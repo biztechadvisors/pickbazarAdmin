@@ -37,6 +37,7 @@ export default function SubCategories() {
   const { data: meData } = useMeQuery();
 
   const shop: string | undefined = meData?.shops?.[0]?.id;
+  const shopSlug = meData?.shops?.[0]?.slug;
 
   const { subcategories, paginatorInfo, loading, error } =
     useSubCategoriesQuery({
@@ -94,7 +95,7 @@ export default function SubCategories() {
 
             {canWrite && locale === Config.defaultLanguage && (
               <LinkButton
-                href={`${Routes.subcategory.create}`}
+                href={`/${shopSlug}${Routes.subcategory.create}`}
                 className="h-12 w-full md:w-auto md:ms-6"
               >
                 <span className="block md:hidden xl:block">

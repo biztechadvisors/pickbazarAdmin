@@ -13,7 +13,12 @@ import { GetStaticProps } from 'next';
 import { useTypesQuery } from '@/data/type';
 import { Routes } from '@/config/routes';
 import { useRouter } from 'next/router';
-import { adminOnly, adminOwnerAndStaffOnly, getAuthCredentials, hasAccess } from '@/utils/auth-utils';
+import {
+  adminOnly,
+  adminOwnerAndStaffOnly,
+  getAuthCredentials,
+  hasAccess,
+} from '@/utils/auth-utils';
 import { Config } from '@/config';
 import { useAtom } from 'jotai';
 import { newPermission } from '@/contexts/permission/storepermission';
@@ -41,8 +46,8 @@ export default function TypesPage() {
 
   const shopId = shopData?.id!;
 
-  
   const shop: string | undefined = meData?.shops?.[0]?.id;
+  const shopSlug: string | undefined = meData?.shops?.[0]?.slug;
   const { types, loading, error } = useTypesQuery({
     name: searchTerm,
     language: locale,
@@ -72,6 +77,9 @@ export default function TypesPage() {
   ) {
     router.replace(Routes.dashboard);
   }
+
+  console.log('shoSlug', shopSlug);
+
   return (
     <>
       <Card className="mb-8 flex flex-col items-center xl:flex-row">
@@ -99,7 +107,7 @@ export default function TypesPage() {
           )} */}
           {canWrite && locale === Config.defaultLanguage && (
             <LinkButton
-              href={Routes.type.create}
+              href={`/${shopSlug}${Routes.type.create}`}
               className="h-12 w-full md:w-auto md:ms-6"
             >
               <span className="block md:hidden xl:block">

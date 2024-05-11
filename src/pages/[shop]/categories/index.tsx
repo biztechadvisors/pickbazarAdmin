@@ -11,7 +11,11 @@ import { useTranslation } from 'next-i18next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import { Routes } from '@/config/routes';
 import TypeFilter from '@/components/category/type-filter';
-import { adminOnly, adminOwnerAndStaffOnly, getAuthCredentials } from '@/utils/auth-utils';
+import {
+  adminOnly,
+  adminOwnerAndStaffOnly,
+  getAuthCredentials,
+} from '@/utils/auth-utils';
 import { useCategoriesQuery } from '@/data/category';
 import { useRouter } from 'next/router';
 import { Config } from '@/config';
@@ -33,6 +37,7 @@ export default function Categories() {
   const { data: meData } = useMeQuery();
 
   const shop: string | undefined = meData?.shops?.[0]?.id;
+  const shopSlug = meData?.shops?.[0]?.slug;
 
   const { categories, paginatorInfo, loading, error } = useCategoriesQuery({
     limit: 20,
@@ -89,7 +94,7 @@ export default function Categories() {
 
             {canWrite && locale === Config.defaultLanguage && (
               <LinkButton
-                href={`/${shop}${Routes.category.create}`}
+                href={`/${shopSlug}${Routes.category.create}`}
                 className="h-12 w-full md:w-auto md:ms-6"
               >
                 <span className="block md:hidden xl:block">

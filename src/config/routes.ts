@@ -6,6 +6,7 @@ export const Routes = {
   forgotPassword: '/forgot-password',
   resetPassword: '/reset-password',
   adminMyShops: getAdminMyShopsRoute(),
+  // adminMyShops: '/shops',
   profile: '/profile',
   verifyCoupons: '/coupons/verify',
   settings: '/settings',

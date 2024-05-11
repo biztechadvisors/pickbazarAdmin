@@ -126,7 +126,6 @@ export default function Uploader({
       // const fileType = fileSplitName.pop(); // it will pop the last item from the fileSplitName arr which is the file ext
       // const filename = fileSplitName.join('.'); // it will join the array with dot, which restore the original filename
       // const isImage = file?.thumbnail && imgTypes.includes(fileType); // check if the original filename has the img ext
-
       return (
         <div
           className={`relative mt-2 inline-flex flex-col overflow-hidden rounded me-2 ${
@@ -200,6 +199,9 @@ export default function Uploader({
     },
     [files]
   );
+
+  console.log("value", value)
+  console.log("files", files)
 
   return (
     <section className="upload">

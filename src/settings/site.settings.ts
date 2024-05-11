@@ -248,7 +248,7 @@ export const siteSettings = {
       },
       {
         href: (shop: string) => `/${shop}${Routes.subcategory.list}`,
-        label: 'sidebar-nav-item-categories',
+        label: 'sidebar-nav-item-sub-categories',
         icon: 'CategoriesIcon',
         permissions: adminOwnerAndStaffOnly,
       },

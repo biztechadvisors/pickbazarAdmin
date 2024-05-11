@@ -60,7 +60,7 @@ const AdminLayout: React.FC<{ children?: React.ReactNode }> = ({
       },
       {
         href: Routes.subcategory.list,
-        label: 'sidebar-nav-item-categories',
+        label: 'sidebar-nav-item-sub-categories',
         icon: 'CategoriesIcon',
       },
       {
@@ -103,7 +103,7 @@ const AdminLayout: React.FC<{ children?: React.ReactNode }> = ({
       },
       {
         href: Routes.subcategory.list,
-        label: 'sidebar-nav-item-categories',
+        label: 'sidebar-nav-item-sub-categories',
         icon: 'CategoriesIcon',
       },
       {
@@ -151,7 +151,7 @@ const AdminLayout: React.FC<{ children?: React.ReactNode }> = ({
       },
       {
         href: Routes.subcategory.list,
-        label: 'sidebar-nav-item-categories',
+        label: 'sidebar-nav-item-sub-categories',
         icon: 'CategoriesIcon',
       },
       {
@@ -204,7 +204,7 @@ const AdminLayout: React.FC<{ children?: React.ReactNode }> = ({
       },
       {
         href: Routes.subcategory.list,
-        label: 'sidebar-nav-item-categories',
+        label: 'sidebar-nav-item-sub-categories',
         icon: 'CategoriesIcon',
       },
       {
@@ -257,7 +257,7 @@ const AdminLayout: React.FC<{ children?: React.ReactNode }> = ({
       },
       {
         href: Routes.subcategory.list,
-        label: 'sidebar-nav-item-categories',
+        label: 'sidebar-nav-item-sub-categories',
         icon: 'CategoriesIcon',
       },
       {
@@ -310,7 +310,7 @@ const AdminLayout: React.FC<{ children?: React.ReactNode }> = ({
       },
       {
         href: Routes.subcategory.list,
-        label: 'sidebar-nav-item-categories',
+        label: 'sidebar-nav-item-sub-categories',
         icon: 'CategoriesIcon',
       },
       {
@@ -353,7 +353,7 @@ const AdminLayout: React.FC<{ children?: React.ReactNode }> = ({
       },
       {
         href: Routes.subcategory.list,
-        label: 'sidebar-nav-item-categories',
+        label: 'sidebar-nav-item-sub-categories',
         icon: 'CategoriesIcon',
       },
       {
@@ -396,7 +396,7 @@ const AdminLayout: React.FC<{ children?: React.ReactNode }> = ({
       },
       {
         href: Routes.subcategory.list,
-        label: 'sidebar-nav-item-categories',
+        label: 'sidebar-nav-item-sub-categories',
         icon: 'CategoriesIcon',
       },
       {
