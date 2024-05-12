@@ -3,7 +3,7 @@ import Label from '@/components/ui/label';
 import { Control, useFormState, useWatch } from 'react-hook-form';
 import { useEffect } from 'react';
 import { useTranslation } from 'next-i18next';
-import { useCategoriesQuery } from '@/data/category';
+import { useSubCategoriesQuery } from '@/data/subcategory';
 import { useRouter } from 'next/router';
 
 interface Props {
@@ -23,14 +23,16 @@ const ProductSubCategoryInput = ({ control, setValue }: Props) => {
   });
   useEffect(() => {
     if (type?.slug && dirtyFields?.type) {
-      setValue('categories', []);
+      setValue('subcategories', []);
     }
   }, [type?.slug]);
 
-  const { categories, loading } = useCategoriesQuery({
+  const { subcategories, loading } = useSubCategoriesQuery({
     limit: 999,
     type: type?.slug,
     language: locale,
+    categoryId: 2,
+    shopId: '9',
   });
 
   return (
@@ -43,7 +45,7 @@ const ProductSubCategoryInput = ({ control, setValue }: Props) => {
         getOptionLabel={(option: any) => option.name}
         getOptionValue={(option: any) => option.id}
         // @ts-ignore
-        options={categories}
+        options={subcategories}
         isLoading={loading} defaultValue={[]}      />
     </div>
   );

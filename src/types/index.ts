@@ -176,6 +176,7 @@ export interface GetParams {
   userId: string;
   language: string;
   categoryId : number; //for getting subcategory
+  shopId : number
 }
 
 export interface QueryOptions {
@@ -285,17 +286,18 @@ export interface SubCategory {
   id: string;
   name: string;
   slug: string;
-  translated_languages: string[];
-  categorId?: number;
+  language: string;
+  category_id?: number;
+  // parent?: number;
   children: Category[];
   details?: string;
   image?: Attachment;
   // icon?: string;
   // type: Type;
-  products: Product[];
+  // products: Product[];
   created_at: string;
   updated_at: string;
-  shop_id: string;
+  shop_id?: string;
 }
 
 export interface Attribute {
@@ -824,7 +826,7 @@ export interface CreateCategoryInput {
 
 export interface CreateSubCategoryInput {
   name: string;
-  // type_id?: string;
+  type_id?: string;
   category_id?: number;
   details?: string;
   image?: AttachmentInput;

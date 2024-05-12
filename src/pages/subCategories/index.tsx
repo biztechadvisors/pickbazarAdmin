@@ -44,7 +44,7 @@ export default function SubCategories() {
     language: locale,
     shopId: shop,
   });
-console.log("shopID++++++++++++", shop)
+console.log("shopID++++++++++++", shop, subcategories)
   const [getPermission, _] = useAtom(newPermission);
   const { permissions } = getAuthCredentials();
   const canWrite = permissions?.includes('super_admin')
@@ -78,13 +78,13 @@ console.log("shopID++++++++++++", shop)
           <div className="flex w-full flex-col items-center space-y-4 ms-auto md:flex-row md:space-y-0 xl:w-3/4">
             <Search onSearch={handleSearch} />
 
-            <TypeFilter
+            {/* <TypeFilter
               className="md:ms-6"
               onTypeFilter={({ slug }: { slug: string }) => {
                 setType(slug);
                 setPage(1);
               }}
-            />
+            /> */}
 
             {canWrite && locale === Config.defaultLanguage && (
               <LinkButton

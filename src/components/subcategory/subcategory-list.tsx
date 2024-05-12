@@ -1,7 +1,7 @@
 import Pagination from '@/components/ui/pagination';
 import { Table } from '@/components/ui/table';
 // import { getIcon } from '@/utils/get-icon';
-import * as categoriesIcon from '@/components/icons/category';
+// import * as categoriesIcon from '@/components/icons/category';
 import { SortOrder } from '@/types';
 import Image from 'next/image';
 import { useTranslation } from 'next-i18next';
@@ -160,16 +160,16 @@ const SubCategoryList = ({
     },
     {
       title: t('table:table-item-group'),
-      dataIndex: 'type',
-      key: 'type',
+      dataIndex: 'category',
+      key: 'category',
       align: 'center',
       width: 120,
-      render: (type: any) => (
+      render: (category: any) => (
         <div
           className="overflow-hidden truncate whitespace-nowrap"
-          title={type?.name}
+          title={category?.name}
         >
-          {type?.name}
+          {category?.name}
         </div>
       ),
     },
@@ -185,7 +185,7 @@ const SubCategoryList = ({
             <LanguageSwitcher
               slug={slug}
               record={record}
-              deleteModalView="DELETE_CATEGORY"
+              deleteModalView="DELETE_SUBCATEGORY"
               routes={Routes?.subcategory}
             />
             ) ,

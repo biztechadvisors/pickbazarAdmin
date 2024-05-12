@@ -61,14 +61,15 @@ export const useUpdateSubCategoryMutation = () => {
   });
 };
 
-export const useSubCategoryQuery = ({  slug, language, userId, categoryId }: GetParams) => {
+export const useSubCategoryQuery = ({  slug, language, userId, categoryId, shopId }: GetParams) => {
+ console.log("slug+++++++++++++", slug,  categoryId, shopId)
   const { data, error, isLoading } = useQuery<SubCategory, Error>(
-    [API_ENDPOINTS.SUBCATEGORIES, { slug, language, categoryId, userId }],
-    () => subcategoryClient.get({ slug, language, categoryId, userId })
+    [API_ENDPOINTS.SUBCATEGORIES, { slug, language, categoryId, userId, shopId }],
+    () => subcategoryClient.get({ slug, language, categoryId, userId, shopId })
   );
-
+console.log("slug data", data)
   return {
-    subcategory: data,
+    subcategory: data ?? [],
     error,
     isLoading,
   };
@@ -83,9 +84,10 @@ export const useSubCategoriesQuery = (options: Partial<SubCategoryQueryOptions>)
       keepPreviousData: true,
     }
   );
+  console.log("data of subcategory", data)
 
   return {
-    subcategories: data?.data ?? [],
+    subcategories: data ?? [],
     paginatorInfo: mapPaginatorData(data),
     error,
     loading: isLoading,

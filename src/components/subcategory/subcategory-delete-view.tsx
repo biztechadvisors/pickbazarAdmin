@@ -6,14 +6,14 @@ import {
 import { useDeleteSubCategoryMutation } from '@/data/subcategory';
 
 const SubCategoryDeleteView = () => {
-  const { mutate: deleteCategory, isLoading: loading } =
+  const { mutate: deleteSubCategory, isLoading: loading } =
     useDeleteSubCategoryMutation();
 
   const { data } = useModalState();
   const { closeModal } = useModalAction();
-
+console.log("delete", data)
   function handleDelete() {
-    deleteCategory({
+    deleteSubCategory({
       id: data,
     });
     closeModal();
