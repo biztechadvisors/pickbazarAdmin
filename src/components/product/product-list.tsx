@@ -80,6 +80,8 @@ const ProductList = ({
     },
   });
 
+  console.log("products", products)
+
   let columns = [
     {
       title: t('table:table-item-image'),

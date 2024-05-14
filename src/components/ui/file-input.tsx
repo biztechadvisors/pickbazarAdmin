@@ -28,6 +28,7 @@ const FileInput = ({
       render={({ field: { ref, ...rest } }) => (
         <Uploader
           {...rest}
+          onChange={(e:any) => rest.onChange(parseInt(e.target.value))}
           multiple={multiple}
           acceptFile={acceptFile}
           helperText={helperText}

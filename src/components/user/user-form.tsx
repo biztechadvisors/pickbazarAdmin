@@ -58,7 +58,7 @@ const CustomerCreateForm = () => {
 
   console.log("permissionData", permissionData)
   const permissionNames =
-    permissionData?.data?.map(
+    permissionData?.map(
       (permission: { permission_name: any }) => permission.permission_name
     ) ?? [];
   var permissionOptions: any;
@@ -75,6 +75,8 @@ const CustomerCreateForm = () => {
       { value: 'staff', label: 'staff' },
     ];
   }
+
+  console.log("permissionOptions", permissionOptions)
 
   async function onSubmit({
     name,
