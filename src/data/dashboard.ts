@@ -17,8 +17,6 @@ export function useAnalyticsQuery(query: { customerId: number; state: string }) 
   return { data, error, isLoading };
 }
 
-
-
 export function usePopularProductsQuery(options: Partial<ProductQueryOptions>) {
   return useQuery<Product[], Error>(
     [API_ENDPOINTS.POPULAR_PRODUCTS, options],

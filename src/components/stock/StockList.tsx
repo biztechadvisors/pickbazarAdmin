@@ -59,11 +59,11 @@ const StockList = ({
   });
 
   const [getPermission, _] = useAtom(newPermission);
-  const canWrite = permissions.includes('super_admin')
+  const canWrite = permissions?.includes('super_admin')
     ? siteSettings.sidebarLinks
     : getPermission?.find(
-        (permission) => permission.type === 'sidebar-nav-item-orders'
-      )?.write;
+      (permission) => permission.type === 'sidebar-nav-item-orders'
+    )?.write;
 
   const onSubmit = async (shop_id: string | undefined) => {
     setLoading(shop_id);

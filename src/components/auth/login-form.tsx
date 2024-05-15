@@ -6,9 +6,9 @@ import * as yup from 'yup';
 import Link from '@/components/ui/link';
 import Form from '@/components/ui/forms/form';
 import { Routes } from '@/config/routes';
-import { useLogin, useMeQuery } from '@/data/user';
+import { useLogin } from '@/data/user';
 import type { LoginInput } from '@/types';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import Alert from '@/components/ui/alert';
 import Router from 'next/router';
 import {
@@ -17,12 +17,7 @@ import {
   setAuthCredentials,
 } from '@/utils/auth-utils';
 import { useAtom } from 'jotai';
-import {
-  filterPermission,
-  newPermission,
-  permissionAtom,
-} from '@/contexts/permission/storepermission';
-import { siteSettings } from '@/settings/site.settings';
+import { newPermission } from '@/contexts/permission/storepermission';
 
 const loginFormSchema = yup.object().shape({
   email: yup
@@ -36,9 +31,7 @@ const LoginForm = () => {
   const { t } = useTranslation();
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const { mutate: login, isLoading, error } = useLogin();
-  const [_, setPermissionState] = useAtom(newPermission);
-
-  // export { matchedLinksState as matchedLinks };
+  const [, setPermissionState] = useAtom(newPermission);
 
   function onSubmit({ email, password }: LoginInput) {
     login(
@@ -61,7 +54,9 @@ const LoginForm = () => {
             setErrorMessage('form:error-credential-wrong');
           }
         },
-        onError: () => {},
+        onError: () => {
+          setErrorMessage('form:error-credential-wrong');
+        },
       }
     );
   }
@@ -125,15 +120,3 @@ const LoginForm = () => {
 };
 
 export default LoginForm;
-
-{
-  /* {errorMsg ? (
-          <Alert
-            message={t(errorMsg)}
-            variant="error"
-            closeable={true}
-            className="mt-5"
-            onClose={() => setErrorMsg('')}
-          />
-        ) : null} */
-}

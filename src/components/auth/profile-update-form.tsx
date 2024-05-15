@@ -42,7 +42,7 @@ export default function ProfileUpdate({ me }: any) {
     data,
     isLoading,
     error,
-  } = useDealerQueryGet({id});
+  } = useDealerQueryGet({ id });
 
   console.log("DealerGet", data)
   const { mutate: updateUser, isLoading: loading } = useUpdateUserMutation();
@@ -50,7 +50,7 @@ export default function ProfileUpdate({ me }: any) {
   const { permissions } = getAuthCredentials();
 
   let permission = hasAccess(adminOnly, permissions);
-  console.log("permission", permissions[0])
+  // console.log("permission", permissions[0])
   let identify = permissions[0]
   const matching: any = 'dealer'
   const {

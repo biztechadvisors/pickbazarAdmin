@@ -11,8 +11,9 @@ import {
   SUPER_ADMIN,
   TOKEN,
 } from './constants';
+import { Permissions } from '@/types';
 
-let type_names;
+// Define allowed roles and role-specific access
 export const allowedRoles = [SUPER_ADMIN, STORE_OWNER, STAFF, DEALER, ADMIN];
 export const adminAndOwnerOnly = [SUPER_ADMIN, STORE_OWNER, ADMIN, DEALER];
 export const adminOwnerAndStaffOnly = [SUPER_ADMIN, STORE_OWNER, STAFF];
@@ -22,46 +23,44 @@ export const ownerOnly = [STORE_OWNER];
 export const dealerOnly = [DEALER];
 export const ownerAndStaffOnly = [STORE_OWNER, STAFF];
 
-export function setAuthCredentials(
-  token: string,
-  type_name: string,
-  permissions: any
-) {
-  // Permissions = permissions
+let type_names: string[] | null = null;
+
+export function setAuthCredentials(token: string, type_name: string, permissions: any) {
   Cookie.set(AUTH_CRED, JSON.stringify({ token, permissions, type_name }));
 }
+
 export function setEmailVerified(emailVerified: boolean) {
   Cookie.set(EMAIL_VERIFIED, JSON.stringify({ emailVerified }));
 }
-export function getEmailVerified(): {
-  emailVerified: boolean;
-} {
-  const emailVerified = Cookie.get(EMAIL_VERIFIED);
-  return emailVerified ? JSON.parse(emailVerified) : false;
-}
 
-// let
-// type_names
+export function getEmailVerified(): { emailVerified: boolean } {
+  const emailVerified = Cookie.get(EMAIL_VERIFIED);
+  return emailVerified ? JSON.parse(emailVerified) : { emailVerified: false };
+}
 
 export function getAuthCredentials(context?: any): {
   token: string | null;
   permissions: Permissions[] | null;
   type_name: string[] | null;
 } {
-  let authCred;
+  let authCred: string | undefined;
+
   if (context) {
     authCred = parseSSRCookie(context)[AUTH_CRED];
   } else {
-    // console.log('chcek'+Cookie.get(AUTH_CRED))
-    // console.log(Cookie.get(AUTH_CRED))
     authCred = Cookie.get(AUTH_CRED);
   }
+
   if (authCred) {
     const parsedData = JSON.parse(authCred);
     type_names = parsedData.type_name;
-    // console.log(parsedData.token)
-    return JSON.parse(authCred);
+    return {
+      token: parsedData.token,
+      permissions: parsedData.permissions,
+      type_name: parsedData.type_name,
+    };
   }
+
   return { token: null, permissions: null, type_name: null };
 }
 
@@ -69,24 +68,18 @@ export function parseSSRCookie(context: any) {
   return SSRCookie.parse(context.req.headers.cookie ?? '');
 }
 
-export function hasAccess(
-  _allowedRoles: string[],
-  _userPermissions: string[] | undefined | null
-) {
-  if (_userPermissions) {
-    _allowedRoles?.find((aRole) => _userPermissions.includes(aRole));
-    return Boolean(
-      _allowedRoles?.find((aRole) => _userPermissions.includes(aRole))
-    );
+export function hasAccess(allowedRoles: string[], userPermissions: string[] | undefined | null) {
+  if (userPermissions) {
+    return allowedRoles.some((role) => userPermissions.includes(role));
   }
 
   return false;
 }
 
-export function isAuthenticated(_cookies: any) {
+export function isAuthenticated(cookies: any) {
   return (
-    !!_cookies[TOKEN] &&
-    Array.isArray(_cookies[PERMISSIONS]) &&
-    !!_cookies[PERMISSIONS].length
+    !!cookies[TOKEN] &&
+    Array.isArray(cookies[PERMISSIONS]) &&
+    !!cookies[PERMISSIONS].length
   );
 }

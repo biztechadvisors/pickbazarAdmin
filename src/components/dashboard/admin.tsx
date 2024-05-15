@@ -20,48 +20,37 @@ import { useAtom } from 'jotai';
 import { newPermission } from '@/contexts/permission/storepermission';
 import { getAuthCredentials } from '@/utils/auth-utils';
 import { siteSettings } from '@/settings/site.settings';
-import { CustomerIcon } from '../icons/sidebar/customer';
+import { CustomerIcon } from '@/components/icons/sidebar/customer';
 
-export default function Dashboard(user:any) {
+export default function Dashboard() {
   const { t } = useTranslation();
   const { locale } = useRouter();
 
-  const [getPermission,_]=useAtom(newPermission)
+  const [getPermission] = useAtom(newPermission);
   const { permissions } = getAuthCredentials();
-  const canWrite =  permissions.includes('super_admin')
-  ? siteSettings.sidebarLinks
-  :getPermission?.find(
-    (permission) => permission.type === 'sidebar-nav-item-dealerlist'
-  )?.write;
-
   const { data: useMe } = useMeQuery();
-  const customerId = useMe?.id ?? ''
+
+  const customerId = useMe?.id ?? 0;
+
+  const canWrite = permissions?.includes('super_admin')
+    ? siteSettings.sidebarLinks
+    : getPermission?.find((permission) => permission.type === 'sidebar-nav-item-dealerlist')?.write;
 
   const query = {
     customerId: parseInt(customerId),
     state: '',
   };
 
-  const { data, isLoading: loading } = useAnalyticsQuery(query);
-  const { price: total_revenue } = usePrice(
-    data && {
-      amount: data?.totalRevenue!,
-    }
-  );
-
-  const { price: todays_revenue } = usePrice(
-    data && {
-      amount: data?.todaysRevenue!,
-    }
-  );
+  const { data, isLoading: analyticsLoading, error: analyticsError } = useAnalyticsQuery(query);
+  const { price: total_revenue } = usePrice(data && { amount: data?.totalRevenue ?? 0 });
+  const { price: todays_revenue } = usePrice(data && { amount: data?.todaysRevenue ?? 0 });
 
   const {
-    error: orderError,
     orders: orderData,
+    error: orderError,
     loading: orderLoading,
-    paginatorInfo,
   } = useOrdersQuery({
-    customer_id: parseInt(customerId),
+    customer_id: customerId,
     language: locale,
     limit: 10,
     page: 1,
@@ -77,29 +66,27 @@ export default function Dashboard(user:any) {
     limit: 10,
   });
 
-  if (loading || orderLoading || popularProductLoading || withdrawLoading) {
+  if (analyticsLoading || orderLoading || popularProductLoading || withdrawLoading) {
     return <Loader text={t('common:text-loading')} />;
   }
-  if (orderError || popularProductError) {
+
+  if (orderError || popularProductError || analyticsError) {
     return (
       <ErrorMessage
-        message={orderError?.message || popularProductError?.message}
+        message={orderError?.message || popularProductError?.message || analyticsError?.message}
       />
     );
   }
-  let salesByYear: number[] = Array.from({ length: 12 }, (_) => 0);
-  if (!!data?.totalYearSaleByMonth?.length) {
-    salesByYear = data.totalYearSaleByMonth.map((item: any) =>
-      item.total.toFixed(2)
-    );
-  }
 
-  console.log("data----analytics", data)
+  let salesByYear: number[] = Array.from({ length: 12 }, () => 0);
+  if (data?.totalYearSaleByMonth?.length) {
+    salesByYear = data.totalYearSaleByMonth.map((item: any) => item.total.toFixed(2));
+  }
 
   return (
     <>
       <div className="mb-6 grid w-full grid-cols-1 gap-5 sm:grid-cols-2 xl:grid-cols-4">
-        <div className="w-full ">
+        <div className="w-full">
           <StickerCard
             titleTransKey="sticker-card-title-rev"
             subtitleTransKey="sticker-card-subtitle-rev"
@@ -108,7 +95,7 @@ export default function Dashboard(user:any) {
             price={total_revenue}
           />
         </div>
-        <div className="w-full ">
+        <div className="w-full">
           <StickerCard
             titleTransKey="sticker-card-title-order"
             subtitleTransKey="sticker-card-subtitle-order"
@@ -116,29 +103,32 @@ export default function Dashboard(user:any) {
             price={data?.totalOrders}
           />
         </div>
-        <div className="w-full ">
+        <div className="w-full">
           <StickerCard
             titleTransKey="sticker-card-title-today-rev"
             icon={<CoinIcon />}
             price={todays_revenue}
           />
         </div>
-        {canWrite ? (<div className="w-full ">
-          <StickerCard
-            titleTransKey="sticker-card-title-total-shops"
-            icon={<ShopIcon className="w-6" color="#1D4ED8" />}
-            iconBgStyle={{ backgroundColor: '#93C5FD' }}
-            price={data?.totalShops}
-          />
-        </div>) :
-        <div className="w-full ">
-          <StickerCard
-            titleTransKey="sticker-card-title-total-cutomer"
-            icon={<CustomerIcon className="w-6" color="#1D4ED8" />}
-            iconBgStyle={{ backgroundColor: '#93C5FD' }}
-            price={data?.totalShops}
-          />
-        </div>}
+        {canWrite ? (
+          <div className="w-full">
+            <StickerCard
+              titleTransKey="sticker-card-title-total-shops"
+              icon={<ShopIcon className="w-6" color="#1D4ED8" />}
+              iconBgStyle={{ backgroundColor: '#93C5FD' }}
+              price={data?.totalShops}
+            />
+          </div>
+        ) : (
+          <div className="w-full">
+            <StickerCard
+              titleTransKey="sticker-card-title-total-cutomer"
+              icon={<CustomerIcon className="w-6" color="#1D4ED8" />}
+              iconBgStyle={{ backgroundColor: '#93C5FD' }}
+              price={data?.totalShops}
+            />
+          </div>
+        )}
       </div>
 
       <div className="mb-6 flex w-full flex-wrap md:flex-nowrap">

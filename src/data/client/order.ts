@@ -15,6 +15,7 @@ export const orderClient = {
   ...crudFactory<Order, QueryOptions, CreateOrderInput>(API_ENDPOINTS.ORDERS),
 
   get: ({ id, language }: { id: string; language: string }) => {
+    console.log('first--18')
     return HttpClient.get<Order>(`${API_ENDPOINTS.ORDERS}/${id}`, {
       language,
     });
