@@ -8,7 +8,7 @@ const Type = {
   Customer: 'customer',
   Staff: 'staff',
 };
-const { permissions } :any = getAuthCredentials();
+const { permissions }: any = getAuthCredentials();
 let permission = hasAccess(dealerOnly, permissions);
 let identify = permissions;
 const matching: any = 'dealer';
@@ -68,16 +68,16 @@ export const siteSettings = {
         label: 'sidebar-nav-item-attributes',
         icon: 'AttributeIcon',
       },
-      {
-        href: Routes.type.list,
-        label: 'sidebar-nav-item-groups',
-        icon: 'TypesIcon',
-      },
-      {
-        href: Routes.category.list,
-        label: 'sidebar-nav-item-categories',
-        icon: 'CategoriesIcon',
-      },
+      // {
+      //   href: Routes.type.list,
+      //   label: 'sidebar-nav-item-groups',
+      //   icon: 'TypesIcon',
+      // },
+      // {
+      //   href: Routes.category.list,
+      //   label: 'sidebar-nav-item-categories',
+      //   icon: 'CategoriesIcon',
+      // },
       // {
       //   href: Routes.productsheet.list,
       //   label: 'Product Sheet',
@@ -133,29 +133,28 @@ export const siteSettings = {
       {
         ...(permission && identify == matching
           ? {
-            href: Routes.createSales,
-            label: 'sidebar-nav-item-create-sales',
-            icon: 'OrderListIcon',
-          }
+              href: Routes.createSales,
+              label: 'sidebar-nav-item-create-sales',
+              icon: 'OrderListIcon',
+            }
           : {
-            href: Routes.coupon.list,
-            label: 'sidebar-nav-item-coupons',
-            icon: 'CouponsIcon',
-          }),
+              href: Routes.coupon.list,
+              label: 'sidebar-nav-item-coupons',
+              icon: 'CouponsIcon',
+            }),
       },
       {
         ...(permission && identify == matching
           ? {
-            href: Routes.sales,
-            label: 'sidebar-nav-item-sales',
-            icon: 'SalesIcon',
-          }
-          :
-          {
-            href: Routes.tax.list,
-            label: 'sidebar-nav-item-taxes',
-            icon: 'TaxesIcon',
-          })
+              href: Routes.sales,
+              label: 'sidebar-nav-item-sales',
+              icon: 'SalesIcon',
+            }
+          : {
+              href: Routes.tax.list,
+              label: 'sidebar-nav-item-taxes',
+              icon: 'TaxesIcon',
+            }),
       },
       {
         href: Routes.shipping.list,
@@ -201,16 +200,16 @@ export const siteSettings = {
       {
         ...(permission && identify == matching
           ? {
-            href: `${Routes.stock.list}/dealer`,
-            label: 'sidebar-nav-item-stocks',
-            icon: 'ProductsIcon',
-          }
+              href: `${Routes.stock.list}/dealer`,
+              label: 'sidebar-nav-item-stocks',
+              icon: 'ProductsIcon',
+            }
           : {
-            href: Routes.stock.list,
-            label: 'sidebar-nav-item-stocks',
-            icon: 'ProductsIcon',
-          })
-      }
+              href: Routes.stock.list,
+              label: 'sidebar-nav-item-stocks',
+              icon: 'ProductsIcon',
+            }),
+      },
       // {
       // href: Routes.question.list,
       //   label: 'sidebar-nav-item-questions',
@@ -236,20 +235,20 @@ export const siteSettings = {
         permissions: adminOwnerAndStaffOnly,
       },
       {
-        href: (shop: string) => `${Routes.type.list}`,
+        href: (shop: string) => `/${shop}${Routes.type.list}`,
         label: 'sidebar-nav-item-groups',
         icon: 'TypesIcon',
         permissions: adminOwnerAndStaffOnly,
       },
       {
-        href: (shop: string) => `${Routes.category.list}`,
+        href: (shop: string) => `/${shop}${Routes.category.list}`,
         label: 'sidebar-nav-item-categories',
         icon: 'CategoriesIcon',
         permissions: adminOwnerAndStaffOnly,
       },
       {
-        href: (shop: string) => `${Routes.subcategory.list}`,
-        label: 'sidebar-nav-item-categories',
+        href: (shop: string) => `/${shop}${Routes.subcategory.list}`,
+        label: 'sidebar-nav-item-sub-categories',
         icon: 'CategoriesIcon',
         permissions: adminOwnerAndStaffOnly,
       },

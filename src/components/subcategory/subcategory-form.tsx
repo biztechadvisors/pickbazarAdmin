@@ -155,7 +155,7 @@ function SelectCategories({
   });
   return (
     <div>
-      <Label>{t('form:input-label-parent-category')}</Label>
+      <Label>{t('form:input-label-parent-subcategory')}</Label>
       <SelectInput
         name="category_id"
         control={control}
@@ -314,7 +314,7 @@ console.log("initialvalue+++++++", initialValues)
       <div className="my-5 flex flex-wrap border-b border-dashed border-border-base pb-8 sm:my-8">
         <Description
           title={t('form:input-label-image')}
-          details={t('form:category-image-helper-text')}
+          details={t('form:subcategory-image-helper-text')}
           className="w-full px-0 pb-5 sm:w-4/12 sm:py-8 sm:pe-4 md:w-1/3 md:pe-5"
         />
 
@@ -330,7 +330,7 @@ console.log("initialvalue+++++++", initialValues)
             initialValues
               ? t('form:item-description-edit')
               : t('form:item-description-add')
-          } ${t('form:category-description-helper-text')}`}
+          } ${t('form:subcategory-description-helper-text')}`}
           className="w-full px-0 pb-5 sm:w-4/12 sm:py-8 sm:pe-4 md:w-1/3 md:pe-5 "
         />
 
@@ -415,8 +415,8 @@ console.log("initialvalue+++++++", initialValues)
 
         <Button loading={creating || updating}>
           {initialValues
-            ? t('form:button-label-update-category')
-            : t('form:button-label-add-category')}
+            ? t('form:button-label-update-subcategory')
+            : t('form:button-label-add-subcategory')}
         </Button>
       </div>
     </form>

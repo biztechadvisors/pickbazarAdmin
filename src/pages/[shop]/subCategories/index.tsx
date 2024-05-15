@@ -1,4 +1,4 @@
-import CategoryList from '@/components/category/category-list';
+import SubCategoryList from '@/components/subcategory/subcategory-list';
 import Card from '@/components/common/card';
 import Layout from '@/components/layouts/admin';
 import Search from '@/components/common/search';
@@ -11,8 +11,12 @@ import { useTranslation } from 'next-i18next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import { Routes } from '@/config/routes';
 import TypeFilter from '@/components/category/type-filter';
-import { adminOnly, getAuthCredentials } from '@/utils/auth-utils';
-import { useCategoriesQuery } from '@/data/category';
+import {
+  adminOnly,
+  adminOwnerAndStaffOnly,
+  getAuthCredentials,
+} from '@/utils/auth-utils';
+import { useSubCategoriesQuery } from '@/data/subcategory';
 import { useRouter } from 'next/router';
 import { Config } from '@/config';
 import { newPermission } from '@/contexts/permission/storepermission';
@@ -20,8 +24,9 @@ import { useAtom } from 'jotai';
 import { siteSettings } from '@/settings/site.settings';
 import { useQuery } from 'react-query';
 import { useMeQuery } from '@/data/user';
+import ShopLayout from '@/components/layouts/shop';
 
-export default function Categories() {
+export default function SubCategories() {
   const { locale } = useRouter();
   const [searchTerm, setSearchTerm] = useState('');
   const [type, setType] = useState('');
@@ -32,25 +37,26 @@ export default function Categories() {
   const { data: meData } = useMeQuery();
 
   const shop: string | undefined = meData?.shops?.[0]?.id;
+  const shopSlug = meData?.shops?.[0]?.slug;
 
-  const { categories, paginatorInfo, loading, error } = useCategoriesQuery({
+  const { subcategories, paginatorInfo, loading, error } = useSubCategoriesQuery({
     limit: 20,
     page,
     type,
     name: searchTerm,
     orderBy,
     sortedBy,
-    parent: null,
+    categoryId: null,
     language: locale,
-    shop,
+    shopId: shop,
   });
-
+console.log("shopID++++++++++++", shop, subcategories)
   const [getPermission, _] = useAtom(newPermission);
   const { permissions } = getAuthCredentials();
-  const canWrite = permissions.includes('super_admin')
+  const canWrite = permissions?.includes('super_admin')
     ? siteSettings.sidebarLinks
     : getPermission?.find(
-        (permission) => permission.type === 'sidebar-nav-item-categories'
+        (permission) => permission.type === 'sidebar-nav-item-subcategories'
       )?.write;
 
   if (loading) return <Loader text={t('common:text-loading')} />;
@@ -71,28 +77,28 @@ export default function Categories() {
         <div className="flex w-full flex-col items-center md:flex-row">
           <div className="mb-4 md:mb-0 md:w-1/4">
             <h1 className="text-xl font-semibold text-heading">
-              {t('form:input-label-categories')}
+              {t('form:input-label-subcategories')}
             </h1>
           </div>
 
           <div className="flex w-full flex-col items-center space-y-4 ms-auto md:flex-row md:space-y-0 xl:w-3/4">
             <Search onSearch={handleSearch} />
 
-            <TypeFilter
+            {/* <TypeFilter
               className="md:ms-6"
               onTypeFilter={({ slug }: { slug: string }) => {
                 setType(slug);
                 setPage(1);
               }}
-            />
+            /> */}
 
             {canWrite && locale === Config.defaultLanguage && (
               <LinkButton
-                href={`${Routes.category.create}`}
+                href={`/${shopSlug}${Routes.subcategory.create}`}
                 className="h-12 w-full md:w-auto md:ms-6"
               >
                 <span className="block md:hidden xl:block">
-                  + {t('form:button-label-add-categories')}
+                  + {t('form:button-label-add-subcategories')}
                 </span>
                 <span className="hidden md:block xl:hidden">
                   + {t('form:button-label-add')}
@@ -102,8 +108,8 @@ export default function Categories() {
           </div>
         </div>
       </Card>
-      <CategoryList
-        categories={categories}
+      <SubCategoryList
+        subcategories={subcategories}
         paginatorInfo={paginatorInfo}
         onPagination={handlePagination}
         onOrder={setOrder}
@@ -113,13 +119,19 @@ export default function Categories() {
   );
 }
 
-Categories.authenticate = {
-  permissions: adminOnly,
+SubCategories.authenticate = {
+  permissions: adminOwnerAndStaffOnly,
 };
-Categories.Layout = Layout;
+SubCategories.Layout = ShopLayout;
 
-export const getStaticProps = async ({ locale }: any) => ({
+// export const getStaticProps = async ({ locale }: any) => ({
+//   props: {
+//     ...(await serverSideTranslations(locale, ['form', 'common', 'table'])),
+//   },
+// });
+
+export const getServerSideProps = async ({ locale }: any) => ({
   props: {
-    ...(await serverSideTranslations(locale, ['form', 'common', 'table'])),
+    ...(await serverSideTranslations(locale, ['table', 'common', 'form'])),
   },
 });

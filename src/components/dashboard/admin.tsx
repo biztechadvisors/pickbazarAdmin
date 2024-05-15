@@ -22,20 +22,23 @@ import { getAuthCredentials } from '@/utils/auth-utils';
 import { siteSettings } from '@/settings/site.settings';
 import { CustomerIcon } from '../icons/sidebar/customer';
 
-export default function Dashboard(user:any) {
+export default function Dashboard(user: any) {
   const { t } = useTranslation();
   const { locale } = useRouter();
 
   const [getPermission, _] = useAtom(newPermission);
   const { permissions } = getAuthCredentials();
-  const canWrite = permissions.includes('super_admin')
+  const canWrite = permissions?.includes('super_admin')
     ? siteSettings.sidebarLinks
     : getPermission?.find(
         (permission) => permission.type === 'sidebar-nav-item-dealerlist'
       )?.write;
 
   const { data: useMe } = useMeQuery();
+
   const customerId = useMe?.id ?? '';
+
+  console.log('customerId', customerId);
 
   const query = {
     customerId: parseInt(customerId),
@@ -77,7 +80,7 @@ export default function Dashboard(user:any) {
     limit: 10,
   });
 
-  if (loading || orderLoading || popularProductLoading || withdrawLoading ) {
+  if (loading || orderLoading || popularProductLoading || withdrawLoading) {
     return <Loader text={t('common:text-loading')} />;
   }
   if (orderError || popularProductError) {
@@ -94,7 +97,7 @@ export default function Dashboard(user:any) {
     );
   }
 
-  console.log("data----analytics", data)
+  console.log('data----analytics', data);
 
   return (
     <>

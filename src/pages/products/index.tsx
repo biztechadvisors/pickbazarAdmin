@@ -15,6 +15,7 @@ import cn from 'classnames';
 import { ArrowDown } from '@/components/icons/arrow-down';
 import { ArrowUp } from '@/components/icons/arrow-up';
 import { adminOnly } from '@/utils/auth-utils';
+import { useAtom } from 'jotai';
 
 export default function ProductsPage() {
   const [searchTerm, setSearchTerm] = useState('');

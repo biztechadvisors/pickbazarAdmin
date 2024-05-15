@@ -3,6 +3,7 @@ import Layout from '@/components/layouts/admin';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import CreateOrUpdateTagForm from '@/components/tag/tag-form';
 import { adminOnly } from '@/utils/auth-utils';
+import ShopLayout from '@/components/layouts/shop';
 
 export default function CreateCategoriesPage() {
   const { t } = useTranslation();
@@ -20,10 +21,16 @@ export default function CreateCategoriesPage() {
 CreateCategoriesPage.authenticate = {
   permissions: adminOnly,
 };
-CreateCategoriesPage.Layout = Layout;
+CreateCategoriesPage.Layout = ShopLayout;
 
-export const getStaticProps = async ({ locale }: any) => ({
+// export const getStaticProps = async ({ locale }: any) => ({
+//   props: {
+//     ...(await serverSideTranslations(locale, ['form', 'common'])),
+//   },
+// });
+
+export const getServerSideProps = async ({ locale }: any) => ({
   props: {
-    ...(await serverSideTranslations(locale, ['form', 'common'])),
+    ...(await serverSideTranslations(locale, ['table', 'common', 'form'])),
   },
 });

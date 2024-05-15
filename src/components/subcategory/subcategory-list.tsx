@@ -159,7 +159,7 @@ const SubCategoryList = ({
       ),
     },
     {
-      title: t('table:table-item-group'),
+      title: t('table:table-item-category'),
       dataIndex: 'category',
       key: 'category',
       align: 'center',

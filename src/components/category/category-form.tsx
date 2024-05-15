@@ -266,7 +266,7 @@ export default function CreateOrUpdateCategoriesForm({
     if (
       !initialValues ||
       (initialValues.translated_languages &&
-        !initialValues.translated_languages.includes(router.locale!))
+        !initialValues.translated_languages?.includes(router.locale!))
     ) {
       createCategory({
         ...input,

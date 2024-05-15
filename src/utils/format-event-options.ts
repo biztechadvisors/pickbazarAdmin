@@ -19,6 +19,8 @@ export function formatEventOptions(data: EventOptions[]) {
     customer: {},
   };
 
+  console.log("data", data)
+
   for (const singleData of data) {
     const value = singleData?.value;
     const search = value?.match(/admin|vendor|customer/);
