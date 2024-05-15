@@ -175,6 +175,7 @@ export interface GetParams {
   slug: string;
   userId: string;
   language: string;
+  categoryId : number; //for getting subcategory
 }
 
 export interface QueryOptions {
@@ -241,6 +242,7 @@ export interface Type {
   created_at: string;
   updated_at: string;
   translated_languages: string[];
+ 
 }
 
 export interface CreateTypeInput {
@@ -276,6 +278,24 @@ export interface Category {
   products: Product[];
   created_at: string;
   updated_at: string;
+  shop_id: string;
+}
+
+export interface SubCategory {
+  id: string;
+  name: string;
+  slug: string;
+  translated_languages: string[];
+  categorId?: number;
+  children: Category[];
+  details?: string;
+  image?: Attachment;
+  // icon?: string;
+  // type: Type;
+  products: Product[];
+  created_at: string;
+  updated_at: string;
+  shop_id: string;
 }
 
 export interface Attribute {
@@ -639,6 +659,7 @@ export interface Product {
   max_price?: number;
   min_price?: number;
   categories: Category[];
+  subcategories: SubCategory[];
   variations?: AttributeValue[];
   variation_options?: Variation[];
   digital_file?: DigitalFile;
@@ -798,6 +819,18 @@ export interface CreateCategoryInput {
   details?: string;
   image?: AttachmentInput;
   icon?: string;
+  shop_id?: string;
+}
+
+export interface CreateSubCategoryInput {
+  name: string;
+  // type_id?: string;
+  category_id?: number;
+  details?: string;
+  image?: AttachmentInput;
+  // icon?: string;
+  // language: string;
+  shop_id?: string;
 }
 
 export interface CreateWithdrawInput {
@@ -1397,6 +1430,7 @@ export interface ShopInput {
   address?: UserAddressInput;
   settings?: ShopSettingsInput;
   categories?: Category[];
+  subcategories?: SubCategory[];
   balance?: BalanceInput;
 }
 
@@ -1456,6 +1490,14 @@ export interface CategoryQueryOptions extends QueryOptions {
   type: string;
   name: string;
   parent: number | null;
+  shop: string | null;
+}
+
+export interface SubCategoryQueryOptions extends QueryOptions {
+  type: string;
+  name: string;
+  categoryId: number | null;
+  shopId: string | null;
 }
 
 export interface ConversationQueryOptions extends QueryOptions {
@@ -1656,6 +1698,8 @@ export interface StoreNoticePaginator extends PaginatorInfo<StoreNotice> { }
 export interface ProductPaginator extends PaginatorInfo<Product> { }
 
 export interface CategoryPaginator extends PaginatorInfo<Category> { }
+
+export interface SubCategoryPaginator extends PaginatorInfo<SubCategory> { }
 
 export interface TaxPaginator extends PaginatorInfo<Tax> { }
 

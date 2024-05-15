@@ -13,14 +13,22 @@ import { GetStaticProps } from 'next';
 import { useTypesQuery } from '@/data/type';
 import { Routes } from '@/config/routes';
 import { useRouter } from 'next/router';
-import { adminOnly, getAuthCredentials } from '@/utils/auth-utils';
+import {
+  adminOnly,
+  adminOwnerAndStaffOnly,
+  getAuthCredentials,
+  hasAccess,
+} from '@/utils/auth-utils';
 import { Config } from '@/config';
 import { useAtom } from 'jotai';
 import { newPermission } from '@/contexts/permission/storepermission';
 import { siteSettings } from '@/settings/site.settings';
 import { useMeQuery } from '@/data/user';
+import ShopLayout from '@/components/layouts/shop';
+import { useShopQuery } from '@/data/shop';
 
 export default function TypesPage() {
+  const router = useRouter();
   const { locale } = useRouter();
   const { t } = useTranslation();
   const [orderBy, setOrder] = useState('created_at');
@@ -28,7 +36,18 @@ export default function TypesPage() {
   const [searchTerm, setSearchTerm] = useState('');
   const { data: meData } = useMeQuery();
 
+  const {
+    query: { shops },
+  } = useRouter();
+
+  const { data: shopData, isLoading: fetchingShop } = useShopQuery({
+    slug: shops as string,
+  });
+
+  const shopId = shopData?.id!;
+
   const shop: string | undefined = meData?.shops?.[0]?.id;
+  const shopSlug: string | undefined = meData?.shops?.[0]?.slug;
   const { types, loading, error } = useTypesQuery({
     name: searchTerm,
     language: locale,
@@ -38,7 +57,7 @@ export default function TypesPage() {
   });
   const [getPermission, _] = useAtom(newPermission);
   const { permissions } = getAuthCredentials();
-  const canWrite = permissions.includes('super_admin')
+  const canWrite = permissions?.includes('super_admin')
     ? siteSettings.sidebarLinks
     : getPermission?.find(
         (permission) => permission.type === 'sidebar-nav-item-groups'
@@ -50,6 +69,17 @@ export default function TypesPage() {
   function handleSearch({ searchText }: { searchText: string }) {
     setSearchTerm(searchText);
   }
+
+  if (
+    !hasAccess(adminOnly, permissions) &&
+    !meData?.shops?.map((shop) => shop.id).includes(shopId) &&
+    meData?.managed_shop?.id != shopId
+  ) {
+    router.replace(Routes.dashboard);
+  }
+
+  console.log('shoSlug', shopSlug);
+
   return (
     <>
       <Card className="mb-8 flex flex-col items-center xl:flex-row">
@@ -77,7 +107,7 @@ export default function TypesPage() {
           )} */}
           {canWrite && locale === Config.defaultLanguage && (
             <LinkButton
-              href={Routes.type.create}
+              href={`/${shopSlug}${Routes.type.create}`}
               className="h-12 w-full md:w-auto md:ms-6"
             >
               <span className="block md:hidden xl:block">
@@ -96,13 +126,19 @@ export default function TypesPage() {
 }
 
 TypesPage.authenticate = {
-  permissions: adminOnly,
+  permissions: adminOwnerAndStaffOnly,
 };
 
-TypesPage.Layout = Layout;
+TypesPage.Layout = ShopLayout;
 
-export const getStaticProps: GetStaticProps = async ({ locale }) => ({
+// export const getStaticProps: GetStaticProps = async ({ locale }) => ({
+//   props: {
+//     ...(await serverSideTranslations(locale!, ['table', 'common', 'form'])),
+//   },
+// });
+
+export const getServerSideProps = async ({ locale }: any) => ({
   props: {
-    ...(await serverSideTranslations(locale!, ['table', 'common', 'form'])),
+    ...(await serverSideTranslations(locale, ['table', 'common', 'form'])),
   },
 });

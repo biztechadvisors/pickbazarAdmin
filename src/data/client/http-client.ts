@@ -50,6 +50,7 @@ function formatBooleanSearchParam(key: string, value: boolean) {
 
 interface SearchParamOptions {
   categories: string;
+  subcategories: string;
   slug: string,
   code: string;
   type: string;
@@ -86,7 +87,7 @@ export class HttpClient {
     return Object.entries(params)
       .filter(([, value]) => Boolean(value))
       .map(([k, v]) =>
-        ['type', 'categories', 'tags', 'author', 'manufacturer'].includes(k)
+        ['type', 'categories', 'subcategories', 'tags', 'author', 'manufacturer'].includes(k)
           ? `${k}.slug:${v}`
           : ['is_approved'].includes(k)
             ? formatBooleanSearchParam(k, v as boolean)

@@ -1,5 +1,5 @@
 import Link from '@/components/ui/link';
-import { Image } from '@/components/ui/image';
+import Image from 'next/image';
 import cn from 'classnames';
 import { useTranslation } from 'next-i18next';
 import { Routes } from '@/config/routes';

@@ -24,7 +24,7 @@ export default function Uploader({
   multiple,
   acceptFile,
   helperText,
-  maxSize
+  maxSize,
 }: any) {
   const { t } = useTranslation();
   const [files, setFiles] = useState<Attachment[]>(getPreviewImage(value));
@@ -33,10 +33,10 @@ export default function Uploader({
   const { getRootProps, getInputProps } = useDropzone({
     ...(!acceptFile
       ? {
-        accept: {
-          'image/*': ['.jpg', '.jpeg', '.png', '.webp',],
-        },
-      }
+          accept: {
+            'image/*': ['.jpg', '.jpeg', '.png', '.webp', '.glb'],
+          },
+        }
       : { ...ACCEPTED_FILE_TYPES }),
     multiple,
     onDrop: async (acceptedFiles) => {
@@ -46,6 +46,7 @@ export default function Uploader({
           {
             onSuccess: (data: any) => {
               // Process Digital File Name section
+              console.log('image fetched', data);
               data &&
                 data?.map((file: any, idx: any) => {
                   const splitArray = file?.original?.split('/');
@@ -106,6 +107,7 @@ export default function Uploader({
       'png',
       'eps',
       'raw',
+      'glb',
     ];
     // let filename, fileType, isImage;
     if (file && file.id) {
@@ -124,7 +126,6 @@ export default function Uploader({
       // const fileType = fileSplitName.pop(); // it will pop the last item from the fileSplitName arr which is the file ext
       // const filename = fileSplitName.join('.'); // it will join the array with dot, which restore the original filename
       // const isImage = file?.thumbnail && imgTypes.includes(fileType); // check if the original filename has the img ext
-
       return (
         <div
           className={`relative mt-2 inline-flex flex-col overflow-hidden rounded me-2 ${
@@ -142,7 +143,8 @@ export default function Uploader({
             //     alt="uploaded image"
             //   />
             // </div>
-            <figure className="relative h-16 w-28">
+            // <figure className="relative h-16 w-28">
+            <div className="flex h-16 w-16 min-w-0 items-center justify-center overflow-hidden">
               <Image
                 src={`${process?.env?.NEXT_PUBLIC_REST_API_ENDPOINT}/${file.thumbnail}`}
                 alt={filename}
@@ -150,8 +152,10 @@ export default function Uploader({
                 sizes="(max-width: 768px) 100vw"
                 className="object-contain"
               />
-            </figure>
+            </div>
           ) : (
+            // </figure>
+
             <div className="flex flex-col items-center">
               <div className="flex h-14 w-14 min-w-0 items-center justify-center overflow-hidden">
                 <Image

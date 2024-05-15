@@ -4,7 +4,7 @@ import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import invariant from 'tiny-invariant';
 import client from './client';
 import { dehydrate } from 'react-query/hydration';
-import { API_ENDPOINTS } from '@/framework/client/api-endpoints';
+import { API_ENDPOINTS } from '@/framework/rest/client/api-endpoints';
 import { QueryClient } from 'react-query';
 import { SettingsQueryOptions } from '@/types';
 

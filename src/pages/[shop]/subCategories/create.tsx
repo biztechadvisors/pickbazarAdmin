@@ -1,7 +1,8 @@
 import Layout from '@/components/layouts/admin';
-import CreateOrUpdateCategoriesForm from '@/components/category/category-form';
+import CreateOrUpdateSubCategoriesForm from '@/components/subcategory/subcategory-form';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import { useTranslation } from 'next-i18next';
+import ShopLayout from '@/components/layouts/shop';
 
 export default function CreateCategoriesPage() {
   const { t } = useTranslation();
@@ -12,15 +13,21 @@ export default function CreateCategoriesPage() {
           {t('form:form-title-create-category')}
         </h1>
       </div>
-      <CreateOrUpdateCategoriesForm />
+      <CreateOrUpdateSubCategoriesForm />
     </>
   );
 }
 
-CreateCategoriesPage.Layout = Layout;
+CreateCategoriesPage.Layout = ShopLayout;
 
-export const getStaticProps = async ({ locale }: any) => ({
+// export const getStaticProps = async ({ locale }: any) => ({
+//   props: {
+//     ...(await serverSideTranslations(locale, ['form', 'common'])),
+//   },
+// });
+
+export const getServerSideProps = async ({ locale }: any) => ({
   props: {
-    ...(await serverSideTranslations(locale, ['form', 'common'])),
+    ...(await serverSideTranslations(locale, ['table', 'common', 'form'])),
   },
 });

@@ -1,4 +1,4 @@
-import { Image } from '@/components/ui/image';
+import Image from 'next/image';
 import cn from 'classnames';
 import usePrice from '@/lib/use-price';
 import { AddToCart } from '@/components/products/add-to-cart/add-to-cart';
@@ -6,6 +6,7 @@ import { useTranslation } from 'next-i18next';
 import { PlusIcon } from '@/components/icons/plus-icon';
 import { useModalAction } from '@/components/ui/modal/modal.context';
 import { productPlaceholder } from '@/lib/placeholders';
+import { isPagesAPIRouteMatch } from 'next/dist/server/future/route-matches/pages-api-route-match';
 
 type XenonProps = {
   product: any;

@@ -16,6 +16,10 @@ export const getStaticProps: GetStaticProps = async ({ locale }) => ({
 export default function LoginPage() {
   const router = useRouter();
   const { token, permissions } = getAuthCredentials();
+
+  console.log("Token***********", token)
+
+  console.log("permissions ************", permissions )
   if (isAuthenticated({ token, permissions })) {
     router.replace(Routes.dashboard);
   }

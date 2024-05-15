@@ -22,22 +22,21 @@ import { getAuthCredentials } from '@/utils/auth-utils';
 import { siteSettings } from '@/settings/site.settings';
 import { CustomerIcon } from '../icons/sidebar/customer';
 
-export default function Dashboard(user:any) {
+export default function Dashboard(user: any) {
   const { t } = useTranslation();
   const { locale } = useRouter();
 
   const [getPermission, _] = useAtom(newPermission);
   const { permissions } = getAuthCredentials();
-  const canWrite = permissions.includes('super_admin')
+  const canWrite = permissions?.includes('super_admin')
     ? siteSettings.sidebarLinks
     : getPermission?.find(
         (permission) => permission.type === 'sidebar-nav-item-dealerlist'
       )?.write;
 
   const { data: useMe } = useMeQuery();
-  const customerId = useMe?.id ?? '';
 
-  console.log('customerId', typeof customerId)
+  const customerId = useMe?.id ?? '';
 
   const query = {
     customerId: parseInt(customerId),
@@ -81,7 +80,7 @@ export default function Dashboard(user:any) {
     limit: 10,
   });
 
-  if (loading || orderLoading || popularProductLoading || withdrawLoading ) {
+  if (loading || orderLoading || popularProductLoading || withdrawLoading) {
     return <Loader text={t('common:text-loading')} />;
   }
   if (orderError || popularProductError) {
@@ -98,7 +97,7 @@ export default function Dashboard(user:any) {
     );
   }
 
-  console.log("data----analytics", data)
+  console.log('data----analytics', data);
 
   return (
     <>
@@ -171,19 +170,19 @@ export default function Dashboard(user:any) {
       </div>
 
       <div className="mb-6 flex w-full flex-wrap space-y-6 rtl:space-x-reverse xl:flex-nowrap xl:space-y-0 xl:space-x-5">
-        <div className="w-full xl:w-1/2">
+        <div className="w-full">
           <RecentOrders
             orders={orderData}
             title={t('table:recent-order-table-title')}
           />
         </div>
 
-        <div className="w-full xl:w-1/2">
+        {/* <div className="w-full xl:w-1/2">
           <WithdrawTable
             withdraws={withdraws}
             title={t('table:withdraw-table-title')}
           />
-        </div>
+        </div> */}
       </div>
       <div className="mb-6 w-full xl:mb-0">
         <PopularProductList

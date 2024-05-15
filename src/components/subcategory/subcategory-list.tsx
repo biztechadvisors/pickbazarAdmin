@@ -1,6 +1,6 @@
 import Pagination from '@/components/ui/pagination';
 import { Table } from '@/components/ui/table';
-import { getIcon } from '@/utils/get-icon';
+// import { getIcon } from '@/utils/get-icon';
 import * as categoriesIcon from '@/components/icons/category';
 import { SortOrder } from '@/types';
 import Image from 'next/image';
@@ -8,7 +8,7 @@ import { useTranslation } from 'next-i18next';
 import { useIsRTL } from '@/utils/locals';
 import { useState } from 'react';
 import TitleWithSort from '@/components/ui/title-with-sort';
-import { Category, MappedPaginatorInfo } from '@/types';
+import { SubCategory, MappedPaginatorInfo } from '@/types';
 import { Config } from '@/config';
 import Link from '@/components/ui/link';
 import { Routes } from '@/config/routes';
@@ -19,26 +19,26 @@ import { getAuthCredentials } from '@/utils/auth-utils';
 import { siteSettings } from '@/settings/site.settings';
 
 export type IProps = {
-  categories: Category[] | undefined;
+  subcategories: SubCategory[] | undefined;
   paginatorInfo: MappedPaginatorInfo | null;
   onPagination: (key: number) => void;
   onSort: (current: any) => void;
   onOrder: (current: string) => void;
 };
-const CategoryList = ({
-  categories,
+const SubCategoryList = ({
+  subcategories,
   paginatorInfo,
   onPagination,
   onSort,
   onOrder,
 }: IProps) => {
-  console.log("$$$$$$$",categories)
+  console.log("secound$$$$$$$",subcategories)
   const { t } = useTranslation();
   const rowExpandable = (record: any) => record.children?.length;
   const { alignLeft, alignRight } = useIsRTL();  
   const [getPermission,_]=useAtom(newPermission)
   const { permissions } = getAuthCredentials();
-  const canWrite =  permissions?.includes('super_admin')
+  const canWrite =  permissions.includes('super_admin')
   ? siteSettings.sidebarLinks
   :getPermission?.find(
     (permission) => permission.type === 'sidebar-nav-item-categories'
@@ -124,25 +124,25 @@ const CategoryList = ({
         );
       },
     },
-    {
-      title: t('table:table-item-icon'),
-      dataIndex: 'icon',
-      key: 'icon',
-      align: 'center',
-      width: 120,
-      render: (icon: string) => {
-        if (!icon) return null;
-        return (
-          <span className="flex items-center justify-center">
-            {getIcon({
-              iconList: categoriesIcon,
-              iconName: icon,
-              className: 'w-5 h-5 max-h-full max-w-full',
-            })}
-          </span>
-        );
-      },
-    },
+    // {
+    //   title: t('table:table-item-icon'),
+    //   dataIndex: 'icon',
+    //   key: 'icon',
+    //   align: 'center',
+    //   width: 120,
+    //   render: (icon: string) => {
+    //     if (!icon) return null;
+    //     return (
+    //       <span className="flex items-center justify-center">
+    //         {getIcon({
+    //           iconList: categoriesIcon,
+    //           iconName: icon,
+    //           className: 'w-5 h-5 max-h-full max-w-full',
+    //         })}
+    //       </span>
+    //     );
+    //   },
+    // },
     {
       title: t('table:table-item-slug'),
       dataIndex: 'slug',
@@ -182,12 +182,12 @@ const CategoryList = ({
           key: 'actions',
           align: alignRight,
           width: 290,
-          render: (slug: string, record: Category) =>  (
+          render: (slug: string, record: SubCategory) =>  (
             <LanguageSwitcher
               slug={slug}
               record={record}
               deleteModalView="DELETE_CATEGORY"
-              routes={Routes?.category}
+              routes={Routes?.subcategory}
             />
             ) ,
         }        
@@ -203,7 +203,7 @@ const CategoryList = ({
           //@ts-ignore
           columns={columns}
           emptyText={t('table:empty-table-data')}
-          data={categories}
+          data={subcategories}
           rowKey="id"
           scroll={{ x: 1000 }}
           expandable={{
@@ -227,4 +227,4 @@ const CategoryList = ({
   );
 };
 
-export default CategoryList;
+export default SubCategoryList;

@@ -83,7 +83,6 @@ export const useCategoriesQuery = (options: Partial<CategoryQueryOptions>) => {
       keepPreviousData: true,
     }
   );
-
   return {
     categories: data?.data ?? [],
     paginatorInfo: mapPaginatorData(data),

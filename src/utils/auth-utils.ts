@@ -43,24 +43,44 @@ export function getEmailVerified(): {
 // let
 // type_names
 
-export function getAuthCredentials(context?: any): {
+// export function getAuthCredentials(context?: any): {token: string | null;permissions: Permissions[] | null;type_name: string[] | null;} {
+//   let authCred;
+//   if (context) {
+//     authCred = parseSSRCookie(context)[AUTH_CRED];
+//   } else {
+//     authCred = Cookie.get(AUTH_CRED);
+//   }
+//   if (authCred) {
+//     const parsedData = JSON.parse(authCred);
+//     type_names = parsedData.type_name;
+//     return JSON.parse(authCred);
+//   }
+//   return { token: null, permissions: null, type_name: null };
+// }
+
+// export function parseSSRCookie(context: any) {
+//   return SSRCookie.parse(context.req.headers.cookie ?? '');
+// }
+
+
+
+interface AuthCredentials {
   token: string | null;
   permissions: Permissions[] | null;
   type_name: string[] | null;
-} {
+}
+
+export function getAuthCredentials(context?: any): AuthCredentials {
   let authCred;
   if (context) {
     authCred = parseSSRCookie(context)[AUTH_CRED];
   } else {
-    // console.log('chcek'+Cookie.get(AUTH_CRED))
-    // console.log(Cookie.get(AUTH_CRED))
     authCred = Cookie.get(AUTH_CRED);
   }
   if (authCred) {
     const parsedData = JSON.parse(authCred);
-    type_names = parsedData.type_name;
-    // console.log(parsedData.token)
-    return JSON.parse(authCred);
+    const type_names = parsedData.type_name; // Define type_names here
+    return { ...parsedData, type_name: type_names }; // Return modified data
   }
   return { token: null, permissions: null, type_name: null };
 }
@@ -69,20 +89,22 @@ export function parseSSRCookie(context: any) {
   return SSRCookie.parse(context.req.headers.cookie ?? '');
 }
 
+
 export function hasAccess(
   _allowedRoles: string[],
   _userPermissions: string[] | undefined | null
 ) {
   if (_userPermissions) {
-    _allowedRoles?.find((aRole) => _userPermissions.includes(aRole));
+    _allowedRoles?.find((aRole) => _userPermissions?.includes(aRole));
     return Boolean(
-      _allowedRoles?.find((aRole) => _userPermissions.includes(aRole))
+      _allowedRoles?.find((aRole) => _userPermissions?.includes(aRole))
     );
   }
   return false;
 }
 
 export function isAuthenticated(_cookies: any) {
+  console.log('_cookies', _cookies);
   return (
     !!_cookies[TOKEN] &&
     Array.isArray(_cookies[PERMISSIONS]) &&

@@ -21,14 +21,14 @@ import { siteSettings } from '@/settings/site.settings';
 const Navbar = () => {
   const { t } = useTranslation();
   const { toggleSidebar } = useUI();
- 
-  const [getPermission,_]=useAtom(newPermission)
+
+  const [getPermission, _] = useAtom(newPermission);
   const { permissions } = getAuthCredentials();
-  const canWrite =  permissions.includes('super_admin')
-  ? siteSettings.sidebarLinks
-  :getPermission?.find(
-    (permission) => permission.type === 'sidebar-nav-item-dealerlist'
-  )?.write;
+  const canWrite = permissions?.includes('super_admin')
+    ? siteSettings.sidebarLinks
+    : getPermission?.find(
+        (permission) => permission.type === 'sidebar-nav-item-dealerlist'
+      )?.write;
 
   // const { permissions } = getAuthCredentials();
   // const { permissions } = getAuthCredentials()
@@ -47,11 +47,11 @@ const Navbar = () => {
           <NavbarIcon />
         </motion.button>
 
-        <div className="ms-5 me-auto hidden md:flex">
+        <div className="hidden ms-5 me-auto md:flex">
           <Logo />
         </div>
 
-        <div className="space-s-8 flex items-center">
+        <div className="flex items-center space-s-8">
           {/* {hasAccess(adminAndOwnerOnly, permissions) && ( */}
           {canWrite ? (
             <LinkButton
@@ -61,7 +61,7 @@ const Navbar = () => {
             >
               {t('common:text-create-shop')}
             </LinkButton>
-             ) : null}
+          ) : null}
           {/* )} */}
           {enableMultiLang ? <LanguageSwitcher /> : null}
           <AuthorizedMenu />
