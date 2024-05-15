@@ -24,7 +24,7 @@ export default function Uploader({
   multiple,
   acceptFile,
   helperText,
-  maxSize
+  maxSize,
 }: any) {
   const { t } = useTranslation();
   const [files, setFiles] = useState<Attachment[]>(getPreviewImage(value));
@@ -33,10 +33,10 @@ export default function Uploader({
   const { getRootProps, getInputProps } = useDropzone({
     ...(!acceptFile
       ? {
-        accept: {
-          'image/*': ['.jpg', '.jpeg', '.png', '.webp', '.glb'],
-        },
-      }
+          accept: {
+            'image/*': ['.jpg', '.jpeg', '.png', '.webp', '.glb'],
+          },
+        }
       : { ...ACCEPTED_FILE_TYPES }),
     multiple,
     onDrop: async (acceptedFiles) => {
@@ -46,7 +46,7 @@ export default function Uploader({
           {
             onSuccess: (data: any) => {
               // Process Digital File Name section
-             console.log("image fetched", data) 
+              console.log('image fetched', data);
               data &&
                 data?.map((file: any, idx: any) => {
                   const splitArray = file?.original?.split('/');
@@ -144,7 +144,7 @@ export default function Uploader({
             //   />
             // </div>
             // <figure className="relative h-16 w-28">
-            <div className="flex items-center justify-center w-16 h-16 min-w-0 overflow-hidden">
+            <div className="flex h-16 w-16 min-w-0 items-center justify-center overflow-hidden">
               <Image
                 src={`${process?.env?.NEXT_PUBLIC_REST_API_ENDPOINT}/${file.thumbnail}`}
                 alt={filename}
@@ -152,10 +152,10 @@ export default function Uploader({
                 sizes="(max-width: 768px) 100vw"
                 className="object-contain"
               />
-             </div>
-            // </figure>
-           
+            </div>
           ) : (
+            // </figure>
+
             <div className="flex flex-col items-center">
               <div className="flex h-14 w-14 min-w-0 items-center justify-center overflow-hidden">
                 <Image
@@ -199,9 +199,6 @@ export default function Uploader({
     },
     [files]
   );
-
-  console.log("value", value)
-  console.log("files", files)
 
   return (
     <section className="upload">
