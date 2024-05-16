@@ -31,7 +31,6 @@ const UserMessageIndex = ({ className, ...rest }: Props) => {
   const { data, loading, error } = useConversationQuery({
     id: query.id as string,
   });
-
   const { width } = useWindowSize();
   let {
     error: messageError,
@@ -145,7 +144,6 @@ const UserMessageIndex = ({ className, ...rest }: Props) => {
                     </>
                   ) : (
                     <>
-                      {/* @ts-ignore */}
                       <BlockedView name={data?.shop?.name} />
                     </>
                   )}

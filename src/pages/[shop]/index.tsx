@@ -102,7 +102,8 @@ export default function ShopPage() {
           <div className="relative mb-5 h-36 w-36 rounded-full">
             <div className="relative flex h-full w-full items-center justify-center overflow-hidden rounded-full border border-gray-100">
               <Image
-                src={`https://localhost:5000/api/${logo?.thumbnail ?? '/avatar-placeholder.svg'}`}
+                // src={`https://localhost:5000/api/${logo?.thumbnail ?? '/avatar-placeholder.svg'}`}
+                src={`${process?.env?.NEXT_PUBLIC_REST_API_ENDPOINT}/${logo?.thumbnail ?? '/avatar-placeholder.svg'}`}
                 fill
                 sizes="(max-width: 768px) 100vw"
                 alt={String(name)}

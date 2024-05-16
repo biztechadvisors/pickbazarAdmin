@@ -14,6 +14,7 @@ import { useMeQuery } from '@/data/user';
 
 type FormValues = {
   message: string;
+  shop_id: string
 };
 
 const messageSchema = yup.object().shape({
@@ -43,6 +44,8 @@ const CreateMessageForm = ({ className, shop,dealer, ...rest }: Props) => {
   const {data:user}= useMeQuery();
   const router = useRouter();
   const { query } = router;
+  const {data:me}= useMeQuery();
+  console.log("userData", me)
   const { mutate: createMessage, isLoading: creating } = useSendMessage();
   useEffect(() => {
     const listener = (event: any) => {

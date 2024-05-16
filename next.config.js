@@ -19,7 +19,7 @@ module.exports = withPWA({
       'codenoxtestbucket.s3.ap-south-1.amazonaws.com',
       '18.141.64.26',
       '127.0.0.1',
-      '192.168.1.16',
+      // '192.168.1.16',
       'localhost',
       'picsum.photos',
       'pickbazar-sail.test',
