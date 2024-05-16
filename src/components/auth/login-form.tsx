@@ -26,6 +26,8 @@ import { siteSettings } from '@/settings/site.settings';
 import PageLoader from '../ui/page-loader/page-loader';
 import Loader from '../ui/loader/loader';
 
+
+console.log("permission????????????", permissionAtom)
 const loginFormSchema = yup.object().shape({
   email: yup
     .string()
@@ -55,6 +57,7 @@ const LoginForm = () => {
                 data?.permissions,
                 data?.type_name
               );
+              console.log("data login+++++++", data)
               window.location.reload();
               Router.push(Routes.dashboard);
               return;

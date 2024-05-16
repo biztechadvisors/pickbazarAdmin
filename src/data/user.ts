@@ -53,7 +53,7 @@ export class UserService {
       );
 
       let data = JSON.parse(jsonPayload);
-
+console.log("json stat", data)
       // Extract username and sub
       username = data.username;
       sub = data.sub;
