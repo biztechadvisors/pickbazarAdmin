@@ -94,7 +94,7 @@ console.log("shopID++++++++++++", shop, subcategories)
 
             {canWrite && locale === Config.defaultLanguage && (
               <LinkButton
-                href={`/${shopSlug}${Routes.subcategory.create}`}
+                href={`/${shopSlug}/${Routes.subcategory.create}`}
                 className="h-12 w-full md:w-auto md:ms-6"
               >
                 <span className="block md:hidden xl:block">

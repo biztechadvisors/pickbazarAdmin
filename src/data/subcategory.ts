@@ -84,8 +84,7 @@ export const useSubCategoriesQuery = (options: Partial<SubCategoryQueryOptions>)
       keepPreviousData: true,
     }
   );
-  console.log("data of subcategory", data)
-
+  console.log("Subcategories DATA:", data ?? []);
   return {
     subcategories: data ?? [],
     paginatorInfo: mapPaginatorData(data),

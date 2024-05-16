@@ -428,7 +428,7 @@ const AdminLayout: React.FC<{ children?: React.ReactNode }> = ({
           Routes.attribute.list,
           Routes.type.list,
           // Routes.settings,
-          // Routes.order.list,
+        //    Routes.order.list,
           // Routes.refund.list,
           Routes.category.list,
           Routes.subcategory.list,

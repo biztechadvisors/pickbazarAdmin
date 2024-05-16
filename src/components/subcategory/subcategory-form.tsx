@@ -163,9 +163,9 @@ function SelectCategories({
         getOptionValue={(option: any) => option.id}
         options={categories}
         isClearable={true}
-        isLoading={loading} 
+        isLoading={loading}
         defaultValue={[]}
-        />
+      />
     </div>
   );
 }
@@ -201,8 +201,8 @@ export default function CreateOrUpdateSubCategoriesForm({
   const router = useRouter();
   const { t } = useTranslation();
   const isSlugEditable =
-  router?.query?.action === 'edit' &&
-  router?.locale === Config.defaultLanguage;
+    router?.query?.action === 'edit' &&
+    router?.locale === Config.defaultLanguage;
   const isNewTranslation = router?.query?.action === 'translate';
   const {
     register,
@@ -218,11 +218,11 @@ export default function CreateOrUpdateSubCategoriesForm({
     defaultValues: initialValues
       ? {
           ...initialValues,
-        //   icon: initialValues?.icon
-        //     ? categoryIcons.find(
-        //         (singleIcon) => singleIcon.value === initialValues?.icon!
-        //       )
-        //     : '',
+          //   icon: initialValues?.icon
+          //     ? categoryIcons.find(
+          //         (singleIcon) => singleIcon.value === initialValues?.icon!
+          //       )
+          //     : '',
           ...(isNewTranslation && {
             type: null,
           }),
@@ -234,7 +234,7 @@ export default function CreateOrUpdateSubCategoriesForm({
   const { data: meData } = useMeQuery();
 
   // console.log('meData', meData);
-  const shop = meData?.shops?.[0]?.id
+  const shop = meData?.shops?.[0]?.id;
 
   const { openModal } = useModalAction();
   const slugAutoSuggest = join(split(watch('name'), ' '), '-').toLowerCase();
@@ -265,13 +265,13 @@ export default function CreateOrUpdateSubCategoriesForm({
     useCreateSubCategoryMutation();
   const { mutate: updateSubCategory, isLoading: updating } =
     useUpdateSubCategoryMutation();
-console.log("initialvalue+++++++", initialValues)
+  console.log('initialvalue+++++++', initialValues);
 
   // const categoryvalue = initialValues?.category
   // console.log("category+++++++", categoryvalue)
 
   const onSubmit = async (values: FormValues) => {
-    console.log("inputsss++++++++", values)
+    console.log('inputsss++++++++', values);
     const input = {
       language: router.locale,
       name: values.name,
@@ -284,7 +284,7 @@ console.log("initialvalue+++++++", initialValues)
       // icon: values.icon?.value || '',
       category_id: values.category_id?.id ?? null,
       // type_id: values.type?.id,
-      shop_id:  shop,
+      shop_id: shop,
     };
     if (
       !initialValues ||
@@ -303,10 +303,8 @@ console.log("initialvalue+++++++", initialValues)
         shop_id: meData?.shops?.[0]?.id,
       });
     }
-
-    
   };
- 
+
   console.log('shop_id', meData?.shops?.[0]?.id);
 
   return (
@@ -343,34 +341,34 @@ console.log("initialvalue+++++++", initialValues)
             className="mb-5"
           />
 
-            {isSlugEditable ? (
-                <div className="relative mb-5">
-                  <Input
-                    label={`${t('Slug')}`}
-                    {...register('slug')}
-                    error={t(errors.slug?.message!)}
-                    variant="outline"
-                    disabled={isSlugDisable}
-                  />
-                  <button
-                    className="absolute top-[27px] right-px z-10 flex h-[46px] w-11 items-center justify-center rounded-tr rounded-br border-l border-solid border-border-base bg-white px-2 text-body transition duration-200 hover:text-heading focus:outline-none"
-                    type="button"
-                    title={t('common:text-edit')}
-                    onClick={() => setIsSlugDisable(false)}
-                  >
-                    <EditIcon width={14} />
-                  </button>
-                </div>
-              ) : (
-                <Input
-                  label={`${t('Slug')}`}
-                  {...register('slug')}
-                  value={slugAutoSuggest}
-                  variant="outline"
-                  className="mb-5"
-                  disabled
-                />
-              )}
+          {isSlugEditable ? (
+            <div className="relative mb-5">
+              <Input
+                label={`${t('Slug')}`}
+                {...register('slug')}
+                error={t(errors.slug?.message!)}
+                variant="outline"
+                disabled={isSlugDisable}
+              />
+              <button
+                className="absolute top-[27px] right-px z-10 flex h-[46px] w-11 items-center justify-center rounded-tr rounded-br border-l border-solid border-border-base bg-white px-2 text-body transition duration-200 hover:text-heading focus:outline-none"
+                type="button"
+                title={t('common:text-edit')}
+                onClick={() => setIsSlugDisable(false)}
+              >
+                <EditIcon width={14} />
+              </button>
+            </div>
+          ) : (
+            <Input
+              label={`${t('Slug')}`}
+              {...register('slug')}
+              value={slugAutoSuggest}
+              variant="outline"
+              className="mb-5"
+              disabled
+            />
+          )}
 
           <div className="relative">
             {options?.useAi && (
@@ -397,21 +395,20 @@ console.log("initialvalue+++++++", initialValues)
             />
           </div> */}
           {/* <SelectTypes control={control} errors={errors} /> */}
-           <SelectCategories control={control} setValue={setValue} />
-         
+          <SelectCategories control={control} setValue={setValue} />
         </Card>
       </div>
       <div className="mb-4 text-end">
         {initialValues && (
-        <Button
-          variant="outline"
-          onClick={router.back}
-          className="me-4"
-          type="button"
-        >
-          {t('form:button-label-back')}
-        </Button>
-         )} 
+          <Button
+            variant="outline"
+            onClick={router.back}
+            className="me-4"
+            type="button"
+          >
+            {t('form:button-label-back')}
+          </Button>
+        )}
 
         <Button loading={creating || updating}>
           {initialValues

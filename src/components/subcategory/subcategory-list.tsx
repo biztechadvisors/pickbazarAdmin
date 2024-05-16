@@ -32,6 +32,7 @@ const SubCategoryList = ({
   onSort,
   onOrder,
 }: IProps) => {
+  console.log("secound$$$$$$$",subcategories)
   const { t } = useTranslation();
   const rowExpandable = (record: any) => record.children?.length;
   const { alignLeft, alignRight } = useIsRTL();  

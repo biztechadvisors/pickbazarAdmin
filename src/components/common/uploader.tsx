@@ -146,7 +146,7 @@ export default function Uploader({
             // <figure className="relative h-16 w-28">
             <div className="flex h-16 w-16 min-w-0 items-center justify-center overflow-hidden">
               <Image
-                src={`${process?.env?.NEXT_PUBLIC_REST_API_ENDPOINT}/${file.thumbnail}`}
+                src={`${file.thumbnail}`}
                 alt={filename}
                 fill
                 sizes="(max-width: 768px) 100vw"
@@ -199,6 +199,11 @@ export default function Uploader({
     },
     [files]
   );
+
+  console.log('files', files);
+  console.log('value', value);
+
+  console.log("acceptFile", acceptFile)
 
   return (
     <section className="upload">
