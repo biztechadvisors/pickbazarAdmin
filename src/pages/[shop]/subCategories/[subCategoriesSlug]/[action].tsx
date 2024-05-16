@@ -19,8 +19,8 @@ export default function UpdateSubCategoriesPage() {
     slug: query.subCategoriesSlug as string,
     language:
       query.action!.toString() === 'edit' ? locale! : Config.defaultLanguage,
-    // categoryId: subcategory.category.id,
-    // shopId: subcategory.shop.id,
+    categoryId: 2,
+    shopId: 9,
     });
 console.log("extra data'''''''''''''", subcategory)
   if (loading) return <Loader text={t('common:text-loading')} />;
