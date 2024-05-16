@@ -155,7 +155,7 @@ function SelectCategories({
   });
   return (
     <div>
-      <Label>{t('form:input-label-parent-subcategory')}</Label>
+      <Label>{t('form:input-label-parent-category')}</Label>
       <SelectInput
         name="category_id"
         control={control}

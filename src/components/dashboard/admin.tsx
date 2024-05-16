@@ -38,12 +38,12 @@ export default function Dashboard(user: any) {
 
   const customerId = useMe?.id ?? '';
 
+  console.log('customerId', customerId);
+
   const query = {
     customerId: parseInt(customerId),
     state: '',
   };
-
-  console.log('userData', query);
 
   const { data, isLoading: loading } = useAnalyticsQuery(query);
   const { price: total_revenue } = usePrice(
