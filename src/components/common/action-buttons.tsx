@@ -9,6 +9,7 @@ import { CheckMarkCircle } from '@/components/icons/checkmark-circle';
 import { useModalAction } from '@/components/ui/modal/modal.context';
 import { CloseFillIcon } from '@/components/icons/close-fill';
 import { AdminIcon } from '@/components/icons/admin-icon';
+import { useRouter } from 'next/router';
 
 type Props = {
   id: string;
@@ -81,6 +82,10 @@ const ActionButtons = ({
   function handleReplyQuestion() {
     openModal('REPLY_QUESTION', id);
   }
+
+
+
+ 
 
   return (
     <div className="inline-flex w-auto items-center gap-8">

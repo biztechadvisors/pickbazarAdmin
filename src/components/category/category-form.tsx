@@ -249,6 +249,7 @@ export default function CreateOrUpdateCategoriesForm({
     useUpdateCategoryMutation();
 
   const onSubmit = async (values: FormValues) => {
+    console.log("category on submit function", values)
     const input = {
       language: router.locale,
       name: values.name,

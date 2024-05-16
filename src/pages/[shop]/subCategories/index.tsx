@@ -39,25 +39,24 @@ export default function SubCategories() {
   const shop: string | undefined = meData?.shops?.[0]?.id;
   const shopSlug = meData?.shops?.[0]?.slug;
 
-  const { subcategories, paginatorInfo, loading, error } =
-    useSubCategoriesQuery({
-      limit: 20,
-      page,
-      type,
-      name: searchTerm,
-      orderBy,
-      sortedBy,
-      categoryId: null,
-      language: locale,
-      shopId: shop,
-    });
-  console.log('shopID++++++++++++', shop);
+  const { subcategories, paginatorInfo, loading, error } = useSubCategoriesQuery({
+    limit: 20,
+    page,
+    type,
+    name: searchTerm,
+    orderBy,
+    sortedBy,
+    categoryId: null,
+    language: locale,
+    shopId: shop,
+  });
+console.log("shopID++++++++++++", shop, subcategories)
   const [getPermission, _] = useAtom(newPermission);
   const { permissions } = getAuthCredentials();
   const canWrite = permissions?.includes('super_admin')
     ? siteSettings.sidebarLinks
     : getPermission?.find(
-        (permission) => permission.type === 'sidebar-nav-item-categories'
+        (permission) => permission.type === 'sidebar-nav-item-subcategories'
       )?.write;
 
   if (loading) return <Loader text={t('common:text-loading')} />;
@@ -78,20 +77,20 @@ export default function SubCategories() {
         <div className="flex w-full flex-col items-center md:flex-row">
           <div className="mb-4 md:mb-0 md:w-1/4">
             <h1 className="text-xl font-semibold text-heading">
-              {t('form:input-label-categories')}
+              {t('form:input-label-subcategories')}
             </h1>
           </div>
 
           <div className="flex w-full flex-col items-center space-y-4 ms-auto md:flex-row md:space-y-0 xl:w-3/4">
             <Search onSearch={handleSearch} />
 
-            <TypeFilter
+            {/* <TypeFilter
               className="md:ms-6"
               onTypeFilter={({ slug }: { slug: string }) => {
                 setType(slug);
                 setPage(1);
               }}
-            />
+            /> */}
 
             {canWrite && locale === Config.defaultLanguage && (
               <LinkButton
@@ -99,7 +98,7 @@ export default function SubCategories() {
                 className="h-12 w-full md:w-auto md:ms-6"
               >
                 <span className="block md:hidden xl:block">
-                  + {t('form:button-label-add-categories')}
+                  + {t('form:button-label-add-subcategories')}
                 </span>
                 <span className="hidden md:block xl:hidden">
                   + {t('form:button-label-add')}

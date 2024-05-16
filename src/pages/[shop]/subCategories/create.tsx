@@ -10,7 +10,7 @@ export default function CreateCategoriesPage() {
     <>
       <div className="flex border-b border-dashed border-border-base py-5 sm:py-8">
         <h1 className="text-lg font-semibold text-heading">
-          {t('form:form-title-create-category')}
+          {t('form:form-title-create-subcategory')}
         </h1>
       </div>
       <CreateOrUpdateSubCategoriesForm />

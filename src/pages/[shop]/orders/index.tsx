@@ -50,6 +50,7 @@ export default function Orders() {
       limit: LIMIT,
       page,
       tracking_number: searchTerm,
+      customer_id:searchTerm,
       orderBy,
       sortedBy,
       shop_id: shopId,

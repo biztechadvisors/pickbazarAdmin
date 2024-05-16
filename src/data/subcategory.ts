@@ -61,35 +61,19 @@ export const useUpdateSubCategoryMutation = () => {
   });
 };
 
-export const useSubCategoryQuery = ({  slug, language, userId, categoryId }: GetParams) => {
+export const useSubCategoryQuery = ({  slug, language, userId, categoryId, shopId }: GetParams) => {
+ console.log("slug+++++++++++++", slug,  categoryId, shopId)
   const { data, error, isLoading } = useQuery<SubCategory, Error>(
-    [API_ENDPOINTS.SUBCATEGORIES, { slug, language, categoryId, userId }],
-    () => subcategoryClient.get({ slug, language, categoryId, userId })
+    [API_ENDPOINTS.SUBCATEGORIES, { slug, language, categoryId, userId, shopId }],
+    () => subcategoryClient.get({ slug, language, categoryId, userId, shopId })
   );
+console.log("slug data", data)
   return {
-    subcategory: data,
+    subcategory: data ?? [],
     error,
     isLoading,
   };
 };
-
-// export const useSubCategoriesQuery = (options: Partial<SubCategoryQueryOptions>) => {
-//   const { data, error, isLoading } = useQuery<SubCategoryPaginator, Error>(
-//     [API_ENDPOINTS.SUBCATEGORIES, options],
-//     ({ queryKey, pageParam }) =>
-//       subcategoryClient.paginated(Object.assign({}, queryKey[1], pageParam)),
-//     {
-//       keepPreviousData: true,
-//     }
-//   );
-//   console.log("Subcategories DATA:", data?.data);
-//   return {
-//     subcategories: data?.data ?? [],
-//     paginatorInfo: mapPaginatorData(data),
-//     error,
-//     loading: isLoading,
-//   };
-// };
 
 export const useSubCategoriesQuery = (options: Partial<SubCategoryQueryOptions>) => {
   const { data, error, isLoading } = useQuery<SubCategoryPaginator, Error>(
@@ -100,31 +84,11 @@ export const useSubCategoriesQuery = (options: Partial<SubCategoryQueryOptions>)
       keepPreviousData: true,
     }
   );
-
-  if (isLoading) {
-    return {
-      subcategories: [],
-      paginatorInfo: null,
-      error: null,
-      loading: true,
-    };
-  }
-
-  if (error) {
-    console.error("Error fetching subcategories:", error);
-    return {
-      subcategories: [],
-      paginatorInfo: null,
-      error: error,
-      loading: false,
-    };
-  }
-
-  console.log("Subcategories DATA:", data?.data);
+  console.log("Subcategories DATA:", data ?? []);
   return {
-    subcategories: data?.data ?? [],
+    subcategories: data ?? [],
     paginatorInfo: mapPaginatorData(data),
-    error: null,
-    loading: false,
+    error,
+    loading: isLoading,
   };
 };

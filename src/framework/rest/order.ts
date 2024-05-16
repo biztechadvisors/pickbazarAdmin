@@ -37,7 +37,6 @@ export function useOrders(options?: Partial<OrderQueryOptions>) {
     ...options,
     // language: locale
   };
-
   const {
     data,
     isLoading,
@@ -60,7 +59,6 @@ export function useOrders(options?: Partial<OrderQueryOptions>) {
   function handleLoadMore() {
     fetchNextPage();
   }
-
   return {
     orders: data?.pages?.flatMap((page) => page.data) ?? [],
     paginatorInfo: Array.isArray(data?.pages)
@@ -84,7 +82,6 @@ export function useOrder({ tracking_number }: { tracking_number: string }) {
     () => client.orders.get(tracking_number),
     { refetchOnWindowFocus: false }
   );
-
   return {
     order: data,
     isFetching,
