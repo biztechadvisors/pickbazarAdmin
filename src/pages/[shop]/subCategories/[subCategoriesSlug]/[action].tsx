@@ -19,8 +19,10 @@ export default function UpdateCategoriesPage() {
     slug: query.subCategoriesSlug as string,
     language:
       query.action!.toString() === 'edit' ? locale! : Config.defaultLanguage,
-  });
-
+    // categoryId: subcategory.category.id,
+    // shopId: subcategory.shop.id,
+    });
+console.log("extra data'''''''''''''", subcategory)
   if (loading) return <Loader text={t('common:text-loading')} />;
   if (error) return <ErrorMessage message={error.message} />;
 
