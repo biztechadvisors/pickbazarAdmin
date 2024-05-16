@@ -107,6 +107,8 @@ export default function ProductsPage() {
     router.replace(Routes.dashboard);
   }
 
+  console.log("me", me)
+
   return (
     <>
       <Card className="mb-8 flex flex-col">
