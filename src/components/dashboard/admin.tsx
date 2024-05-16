@@ -43,7 +43,7 @@ export default function Dashboard(user: any) {
     state: '',
   };
 
-  console.log("userData", query)
+  console.log('userData', query);
 
   const { data, isLoading: loading } = useAnalyticsQuery(query);
   const { price: total_revenue } = usePrice(
