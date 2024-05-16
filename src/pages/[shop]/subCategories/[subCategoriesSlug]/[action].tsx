@@ -8,7 +8,7 @@ import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import { useSubCategoryQuery } from '@/data/subcategory';
 import { Config } from '@/config';
 
-export default function UpdateCategoriesPage() {
+export default function UpdateSubCategoriesPage() {
   const { query, locale } = useRouter();
   const { t } = useTranslation();
   const {
@@ -39,7 +39,7 @@ console.log("extra data'''''''''''''", subcategory)
   );
 }
 
-UpdateCategoriesPage.Layout = Layout;
+UpdateSubCategoriesPage.Layout = Layout;
 
 export const getServerSideProps = async ({ locale }: any) => ({
   props: {

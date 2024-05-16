@@ -7,6 +7,7 @@ import { useTranslation } from 'next-i18next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import { useTypeQuery } from '@/data/type';
 import { Config } from '@/config';
+import ShopLayout from '@/components/layouts/shop';
 
 export default function UpdateTypePage() {
   const { query, locale } = useRouter();
@@ -33,7 +34,7 @@ export default function UpdateTypePage() {
     </>
   );
 }
-UpdateTypePage.Layout = Layout;
+UpdateTypePage.Layout = ShopLayout;
 
 export const getServerSideProps = async ({ locale }: any) => ({
   props: {
