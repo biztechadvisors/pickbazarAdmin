@@ -35,15 +35,13 @@ const AttributeList = ({ attributes, onSort, onOrder }: IProps) => {
     column: null,
   });
 
-  const [getPermission, _] = useAtom(newPermission)
-
+  const [getPermission,_]=useAtom(newPermission) 
   const { permissions } = getAuthCredentials();
-
-  const canWrite = permissions.includes('super_admin')
-    ? siteSettings.sidebarLinks
-    : getPermission?.find(
-      (permission) => permission.type === 'sidebar-nav-item-attributes'
-    )?.write;
+   const canWrite =  permissions.includes('super_admin')
+   ? siteSettings.sidebarLinks
+   :getPermission?.find(
+    (permission) => permission.type === 'sidebar-nav-item-attributes'
+  )?.write;
 
   const onHeaderClick = (column: string | null) => ({
     onClick: () => {
@@ -114,26 +112,26 @@ const AttributeList = ({ attributes, onSort, onOrder }: IProps) => {
         );
       },
     },
-    {
+    {      
       ...(canWrite
         ? {
           title: t('table:table-item-actions'),
           dataIndex: 'slug',
           key: 'actions',
           align: alignRight,
-          render: (slug: string, record: Attribute) => (
+          render: (slug: string, record: Attribute) =>  (
             <LanguageSwitcher
               slug={slug}
               record={record}
               deleteModalView="DELETE_ATTRIBUTE"
               routes={Routes?.attribute}
             />
-          ),
+            ),
         }
-
+        
         : null),
-    },
-
+    },    
+    
   ];
 
   if (router?.query?.shop) {

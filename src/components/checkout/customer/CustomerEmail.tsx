@@ -19,7 +19,7 @@ const CustomerEmail = ({ count }) => {
   const router = useRouter();
 
   const { data: meData } = useMeQuery();
-  const { id } = meData || {};
+  const { id, email } = meData || {};
   const usrById = id;
 
   useEffect(() => {

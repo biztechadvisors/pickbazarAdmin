@@ -29,7 +29,7 @@ export const userClient = {
     const result = HttpClient.post<AuthResponse>(API_ENDPOINTS.TOKEN, variables);
     result
       .then(response => {
-        console.log("result*****", response);
+        console.log("result*****");
       })
       .catch(error => {
         console.error("Error during login:", error);

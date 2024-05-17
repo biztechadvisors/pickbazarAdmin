@@ -87,8 +87,7 @@ const ProductList = ({
       render: (image: any, { name }: { name: string }) => (
         <div className="relative flex h-[42px] w-[42px] items-center">
           <Image
-            // src={image?.thumbnail ?? siteSettings.product.placeholder}
-            src={`${process?.env?.NEXT_PUBLIC_REST_API_ENDPOINT}/${image?.thumbnail}`}
+            src={image?.thumbnail ?? siteSettings.product.placeholder}
             alt={name}
             fill
             sizes="(max-width: 768px) 100vw"
@@ -249,7 +248,7 @@ const ProductList = ({
         );
       },
     },
-    
+
     {
       title: t('table:table-item-status'),
       dataIndex: 'status',
@@ -266,7 +265,7 @@ const ProductList = ({
           <Badge
             text={status}
             color={
-              status.toLocaleLowerCase()=== 'draft'
+              status.toLocaleLowerCase() === 'draft'
                 ? 'bg-yellow-400'
                 : 'bg-accent'
             }

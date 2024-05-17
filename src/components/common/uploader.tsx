@@ -42,10 +42,10 @@ export default function Uploader({
     onDrop: async (acceptedFiles) => {
       if (acceptedFiles.length) {
         upload(
-          acceptedFiles, // it will be an array of uploaded attachments
+          acceptedFiles,
           {
             onSuccess: (data: any) => {
-              // Process Digital File Name section
+              console.log('data', data)
               data &&
                 data?.map((file: any, idx: any) => {
                   const splitArray = file?.original?.split('/');
@@ -127,9 +127,8 @@ export default function Uploader({
 
       return (
         <div
-          className={`relative mt-2 inline-flex flex-col overflow-hidden rounded me-2 ${
-            isImage ? 'border border-border-200' : ''
-          }`}
+          className={`relative mt-2 inline-flex flex-col overflow-hidden rounded me-2 ${isImage ? 'border border-border-200' : ''
+            }`}
           key={idx}
         >
           {/* {file?.thumbnail && isImage ? ( */}
@@ -144,7 +143,7 @@ export default function Uploader({
             // </div>
             <figure className="relative h-16 w-28">
               <Image
-                src={`${process?.env?.NEXT_PUBLIC_REST_API_ENDPOINT}/${file.thumbnail}`}
+                src={file.thumbnail}
                 alt={filename}
                 fill
                 sizes="(max-width: 768px) 100vw"

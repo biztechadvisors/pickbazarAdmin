@@ -21,14 +21,14 @@ import { siteSettings } from '@/settings/site.settings';
 const Navbar = () => {
   const { t } = useTranslation();
   const { toggleSidebar } = useUI();
-
-  const [getPermission, _] = useAtom(newPermission)
+ 
+  const [getPermission,_]=useAtom(newPermission)
   const { permissions } = getAuthCredentials();
-  const canWrite = permissions?.includes('super_admin')
-    ? siteSettings.sidebarLinks
-    : getPermission?.find(
-      (permission) => permission.type === 'sidebar-nav-item-dealerlist'
-    )?.write;
+  const canWrite =  permissions.includes('super_admin')
+  ? siteSettings.sidebarLinks
+  :getPermission?.find(
+    (permission) => permission.type === 'sidebar-nav-item-dealerlist'
+  )?.write;
 
   // const { permissions } = getAuthCredentials();
   // const { permissions } = getAuthCredentials()
@@ -61,7 +61,7 @@ const Navbar = () => {
             >
               {t('common:text-create-shop')}
             </LinkButton>
-          ) : null}
+             ) : null}
           {/* )} */}
           {enableMultiLang ? <LanguageSwitcher /> : null}
           <AuthorizedMenu />

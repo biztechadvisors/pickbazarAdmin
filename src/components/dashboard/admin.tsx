@@ -21,18 +21,18 @@ import { newPermission } from '@/contexts/permission/storepermission';
 import { getAuthCredentials } from '@/utils/auth-utils';
 import { siteSettings } from '@/settings/site.settings';
 import { CustomerIcon } from '@/components/icons/sidebar/customer';
+import { SUPER_ADMIN } from '@/utils/constants';
 
 export default function Dashboard() {
   const { t } = useTranslation();
   const { locale } = useRouter();
 
-  const [getPermission] = useAtom(newPermission);
+  const [getPermission, setPermission] = useAtom(newPermission);
   const { permissions } = getAuthCredentials();
   const { data: useMe } = useMeQuery();
 
   const customerId = useMe?.id ?? 0;
-
-  const canWrite = permissions?.includes('super_admin')
+  const canWrite = permissions?.includes(SUPER_ADMIN)
     ? siteSettings.sidebarLinks
     : getPermission?.find((permission) => permission.type === 'sidebar-nav-item-dealerlist')?.write;
 

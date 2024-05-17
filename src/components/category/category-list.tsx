@@ -34,14 +34,14 @@ const CategoryList = ({
 }: IProps) => {
   const { t } = useTranslation();
   const rowExpandable = (record: any) => record.children?.length;
-  const { alignLeft, alignRight } = useIsRTL();  
-  const [getPermission,_]=useAtom(newPermission)
+  const { alignLeft, alignRight } = useIsRTL();
+  const [getPermission, _] = useAtom(newPermission)
   const { permissions } = getAuthCredentials();
-  const canWrite =  permissions.includes('super_admin')
-  ? siteSettings.sidebarLinks
-  :getPermission?.find(
-    (permission) => permission.type === 'sidebar-nav-item-categories'
-  )?.write;
+  const canWrite = permissions.includes('super_admin')
+    ? siteSettings.sidebarLinks
+    : getPermission?.find(
+      (permission) => permission.type === 'sidebar-nav-item-categories'
+    )?.write;
 
   const [sortingObj, setSortingObj] = useState<{
     sort: SortOrder;
@@ -112,7 +112,7 @@ const CategoryList = ({
         return (
           <div className="relative mx-auto h-10 w-10">
             <Image
-              src={image?.thumbnail ? `/${image.thumbnail}` : '/'}
+              src={image?.thumbnail ?? '/'}
               alt={name}
               fill
               sizes="(max-width: 768px) 100vw"
@@ -173,26 +173,26 @@ const CategoryList = ({
         </div>
       ),
     },
-    {      
+    {
       ...(canWrite
-        ?  {
+        ? {
           title: t('table:table-item-actions'),
           dataIndex: 'slug',
           key: 'actions',
           align: alignRight,
           width: 290,
-          render: (slug: string, record: Category) =>  (
+          render: (slug: string, record: Category) => (
             <LanguageSwitcher
               slug={slug}
               record={record}
               deleteModalView="DELETE_CATEGORY"
               routes={Routes?.category}
             />
-            ) ,
-        }        
+          ),
+        }
         : null),
-    }, 
-   
+    },
+
   ];
 
   return (

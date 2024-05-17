@@ -11,6 +11,7 @@ import { User, QueryOptionsType, UserPaginator } from '@/types';
 import { mapPaginatorData } from '@/utils/data-mappers';
 import axios from 'axios';
 import { setEmailVerified } from '@/utils/auth-utils';
+import { useEffect, useMemo, useState } from 'react';
 
 // Get cookie value
 function getCookie(name: string) {
@@ -64,19 +65,30 @@ export class UserService {
 }
 
 export const useMeQuery = () => {
-  const queryClient = useQueryClient();
   const router = useRouter();
+  const queryClient = useQueryClient();
+  const [userDetails, setUserDetails] = useState<{ username: string | null; sub: string | null }>({
+    username: null,
+    sub: null,
+  });
 
-  // Get user details from UserService
-  const { username, sub } = UserService.getUserDetails();
+  useEffect(() => {
+    const user = UserService.getUserDetails();
+    setUserDetails(user);
+  }, []);
 
-  console.log('username', username)
-  console.log('sub', sub)
+  const { username, sub } = userDetails;
 
-  return useQuery<User, Error>(
+  // Use the cached data if available
+  const cachedUserData = queryClient.getQueryData<User>([API_ENDPOINTS.ME, { username, sub }]);
+
+  // Only run the query if username and sub are available
+  const userDataQuery = useQuery<User, Error>(
     [API_ENDPOINTS.ME, { username, sub }],
     () => userClient.me({ username, sub }),
     {
+      enabled: !!username && !!sub,
+      initialData: cachedUserData,
       retry: false,
       onSuccess: () => {
         if (router.pathname === Routes.verifyEmail) {
@@ -84,7 +96,6 @@ export const useMeQuery = () => {
           router.replace(Routes.dashboard);
         }
       },
-
       onError: (err) => {
         if (axios.isAxiosError(err)) {
           if (err.response?.status === 409) {
@@ -98,6 +109,22 @@ export const useMeQuery = () => {
       },
     }
   );
+
+  // Memoize the query to prevent re-fetching on re-renders
+  const memoizedUserDataQuery = useMemo(() => userDataQuery, [userDataQuery]);
+
+  if (!username || !sub) {
+    // Return a placeholder state if username and sub are not available
+    return {
+      data: null,
+      isLoading: false,
+      isError: false,
+      error: null,
+      refetch: () => { }, // Provide a no-op refetch function
+    };
+  }
+
+  return memoizedUserDataQuery;
 };
 
 export function useLogin() {

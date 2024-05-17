@@ -16,20 +16,22 @@ import { siteSettings } from '@/settings/site.settings';
 
 export type IProps = {
   users: any[] | undefined;
+  // allDealer : any[] | undefined;
   onSort: (current: any) => void;
   onOrder: (current: string) => void;
 };
 
 const DealerList = ({ users, onSort, onOrder }: IProps) => {
+
   const { t } = useTranslation();
   const { alignLeft, alignRight } = useIsRTL();
-  const [getPermission, _] = useAtom(newPermission);
+  const [getPermission,_]=useAtom(newPermission)
   const { permissions } = getAuthCredentials();
-  const canWrite = permissions?.includes('super_admin')
-    ? siteSettings.sidebarLinks
-    : getPermission?.find(
-      (permission) => permission.type === 'sidebar-nav-item-dealerlist'
-    )?.write;
+   const canWrite =  permissions.includes('super_admin')
+   ? siteSettings.sidebarLinks
+   :getPermission?.find(
+   (permission) => permission.type === 'sidebar-nav-item-dealerlist'
+ )?.write;
 
   const [sortingObj, setSortingObj] = useState<{
     sort: SortOrder;
@@ -54,6 +56,7 @@ const DealerList = ({ users, onSort, onOrder }: IProps) => {
     },
   });
 
+
   const columns = [
     {
       title: t('table:table-item-id'),
@@ -62,6 +65,7 @@ const DealerList = ({ users, onSort, onOrder }: IProps) => {
       align: 'center',
       width: 60,
     },
+
     {
       title: t('table:table-item-icon'),
       dataIndex: 'icon',
@@ -80,6 +84,7 @@ const DealerList = ({ users, onSort, onOrder }: IProps) => {
         );
       },
     },
+
     {
       title: (
         <TitleWithSort
@@ -87,7 +92,7 @@ const DealerList = ({ users, onSort, onOrder }: IProps) => {
           ascending={
             sortingObj.sort === SortOrder.Asc && sortingObj.column === 'name'
           }
-          isActive={sortingObj.column === 'name'}
+          isActive={sortingObj.column === 'id'}
         />
       ),
       className: 'cursor-pointer',
@@ -97,6 +102,7 @@ const DealerList = ({ users, onSort, onOrder }: IProps) => {
       onHeaderCell: () => onHeaderClick('name'),
       render: (name: any) => <span className="whitespace-nowrap">{name}</span>,
     },
+
     {
       title: (
         <TitleWithSort
@@ -114,14 +120,12 @@ const DealerList = ({ users, onSort, onOrder }: IProps) => {
       onHeaderCell: () => onHeaderClick('email'),
       render: (email: any) => <span className="whitespace-nowrap">{email}</span>,
     },
+
     {
       title: (
         <TitleWithSort
           title={t('table:table-item-walletbalance')}
-          ascending={
-            sortingObj.sort === SortOrder.Asc &&
-            sortingObj.column === 'walletPoints'
-          }
+          ascending={sortingObj.sort === SortOrder.Asc && sortingObj.column === 'walletPoints'}
           isActive={sortingObj.column === 'walletPoints'}
         />
       ),
@@ -130,12 +134,9 @@ const DealerList = ({ users, onSort, onOrder }: IProps) => {
       key: 'dealer',
       align: alignLeft,
       onHeaderCell: () => onHeaderClick('walletPoints'),
-      render: (dealer: any) => (
-        <span className="whitespace-nowrap">
-          {dealer ? dealer.walletBalance : 0}
-        </span>
-      ),
-    },
+      render: (dealer: any) => <span className="whitespace-nowrap">{dealer ? dealer.walletBalance : 0}</span>,
+    }, 
+    
     {
       title: t('table:table-item-permissions'),
       dataIndex: 'permissions',
@@ -149,12 +150,14 @@ const DealerList = ({ users, onSort, onOrder }: IProps) => {
         );
       },
     },
+
     {
       title: (
         <TitleWithSort
           title={t('table:table-item-status')}
           ascending={
-            sortingObj.sort === SortOrder.Asc && sortingObj.column === 'is_active'
+            sortingObj.sort === SortOrder.Asc &&
+            sortingObj.column === 'is_active'
           }
           isActive={sortingObj.column === 'is_active'}
         />
@@ -166,10 +169,8 @@ const DealerList = ({ users, onSort, onOrder }: IProps) => {
       onHeaderCell: () => onHeaderClick('is_active'),
       render: (is_active: boolean) => (is_active ? 'Active' : 'Inactive'),
     },
-  ];
-
-  if (canWrite) {
-    columns.push({
+    
+    {
       title: t('table:table-item-actions'),
       dataIndex: 'slug',
       key: 'actions',
@@ -182,8 +183,8 @@ const DealerList = ({ users, onSort, onOrder }: IProps) => {
           routes={Routes?.dealerlist}
         />
       ),
-    });
-  }
+    },
+  ];
 
   return (
     <div className="mb-8 overflow-hidden rounded shadow">
