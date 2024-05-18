@@ -9,7 +9,6 @@ import { useSubCategoryQuery } from '@/data/subcategory';
 import { Config } from '@/config';
 import ShopLayout from '@/components/layouts/shop';
 
-
 export default function UpdateCategoriesPage() {
   const { query, locale } = useRouter();
   const { t } = useTranslation();
@@ -23,11 +22,10 @@ export default function UpdateCategoriesPage() {
       query.action!.toString() === 'edit' ? locale! : Config.defaultLanguage,
     // categoryId: subcategory.category.id,
     // shopId: subcategory.shop.id,
-    });
-console.log("extra data'''''''''''''", subcategory)
+  });
+  console.log("extra data'''''''''''''", subcategory);
   if (loading) return <Loader text={t('common:text-loading')} />;
   if (error) return <ErrorMessage message={error.message} />;
-
 
   return (
     <>
@@ -37,15 +35,12 @@ console.log("extra data'''''''''''''", subcategory)
         </h1>
       </div>
 
-
       <CreateOrUpdateSubCategoriesForm initialValues={subcategory} />
     </>
   );
 }
 
-
 UpdateCategoriesPage.Layout = ShopLayout;
-
 
 export const getServerSideProps = async ({ locale }: any) => ({
   props: {
