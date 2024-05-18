@@ -24,14 +24,15 @@ import { useIsRTL } from '@/utils/locals';
 import { ORDER_STATUS } from '@/utils/order-status';
 import usePrice from '@/utils/use-price';
 import { useAtom } from 'jotai';
+import jsPDF from 'jspdf';
+import html2canvas from "html2canvas";
 import { useTranslation } from 'next-i18next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import Image from 'next/image';
 import { useRouter } from 'next/router';
 import { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
-// import { jsPDF } from 'jspdf';
-// import 'jspdf-autotable';
+// import html2pdf from 'html2pdf.js'
 
 type FormValues = {
   order_status: any;
@@ -122,20 +123,105 @@ export default function OrderDetailsPage() {
   if (loading) return <Loader text={t('common:text-loading')} />;
   if (error) return <ErrorMessage message={error.message} />;
 
-  async function handleDownloadInvoice() {
-    const { data } = await refetch();
 
-    console.log('Data****Invoice', data);
+  // async function handleDownloadInvoice() {
+  //   try {
+  //     // Fetch the HTML content of the invoice (same as before)
+  //     const response = await refetch();
+  //     const htmlContent = response.data;
+  //     console.log("HTML CONTAIN",htmlContent);
+  
+  //     const doc = new jsPDF('p', 'pt', 'a4', false);
+  //     doc.setFontSize(10);
+    
+      
+  //     // Render HTML content
+  //     doc.html(htmlContent, {
+  //       callback: function () { doc.save('invoice.pdf'); },
+  //       // You can remove the styles object here, as it's not needed for setting font size
+  //     });
+  //   } catch (error) {
+  //     console.error('Error generating PDF:', error);
+  //   }
+  // }
+  
 
-    if (data) {
-      const a = document.createElement('a');
-      a.href = data;
-      a.setAttribute('download', 'order-invoice');
-      a.click();
+//   async function handleDownloadInvoice() {
+//     try {
+//         // Fetch the HTML content of the invoice
+//         const response = await refetch();
+//         const htmlContent = response.data;
+
+//         // Convert HTML content to PDF using html2pdf
+//         html2pdf().from(htmlContent).save('invoice.pdf'); // Use html2pdf() instead of html2pdf.from()
+
+//     } catch (error) {
+//         console.error('Error generating PDF:', error);
+//     }
+// }
+
+// async function handleDownloadInvoice() {
+//   try {
+//     const response = await refetch();
+//     const pdfContent = response.data;
+//     console.log("pdf or not",pdfContent);
+
+//     // Validate PDF content (add checks here)
+//     if (!pdfContent || !pdfContent.length) {
+//       throw new Error('Invalid PDF content received from backend');
+//     }
+
+//     const blob = new Blob([pdfContent], { type: 'application/pdf' });
+//     const link = document.createElement('a');
+//     link.href = window.URL.createObjectURL(blob);
+//     link.download = 'invoice.pdf';
+
+//     document.body.appendChild(link);
+//     link.click();
+
+//     await new Promise(resolve => setTimeout(resolve, 1000));
+//     document.body.removeChild(link);
+//   } catch (error) {
+//     console.error('Error downloading PDF:', error);
+//     // Handle download error (e.g., display a message to the user)
+//   }
+// }
+async function handleDownloadInvoice() {
+  try {
+    const response = await refetch();
+
+    // Check if the response is successful and contains data
+    if (!response || !response.data) {
+      throw new Error('Invalid response received from backend');
     }
-  }
 
-  const columns = [
+    const pdfContent = response.data;
+    console.log("pdfContain",pdfContent)
+
+    if (!pdfContent || pdfContent.length === 0) {
+      throw new Error('Invalid PDF content received from backend');
+    }
+
+     const blob = new Blob([pdfContent], { type: 'application/pdf' });
+  
+     const link = document.createElement('a');
+     link.href = window.URL.createObjectURL(blob);
+     link.download = 'invoice.pdf';
+ 
+     document.body.appendChild(link);
+     link.click();
+ 
+     // Wait for a short delay before removing the link
+     await new Promise(resolve => setTimeout(resolve, 1000));
+
+     document.body.removeChild(link);
+   } catch (error) {
+     console.error('Error downloading PDF:', error);
+   }
+ }
+ 
+
+const columns = [
     {
       dataIndex: 'image',
       key: 'image',
@@ -357,3 +443,7 @@ export const getServerSideProps = async ({ locale }: any) => ({
     ...(await serverSideTranslations(locale, ['common', 'form', 'table'])),
   },
 });
+// function html2pdf() {
+//   throw new Error('Function not implemented.');
+// }
+

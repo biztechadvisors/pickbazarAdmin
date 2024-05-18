@@ -1,4 +1,4 @@
-import { useConversationsQuery } from '@/data/conversations';
+import { useConversationQuery, useConversationsQuery } from '@/data/conversations';
 import ErrorMessage from '@/components/ui/error-message';
 import Loader from '@/components/ui/loader/loader';
 import React, { useEffect, useRef } from 'react';
@@ -10,6 +10,7 @@ import { LIMIT } from '@/utils/constants';
 import UserListNotFound from '@/components/message/views/conversation-not-found';
 import { SortOrder } from '@/types';
 import cn from 'classnames';
+import { useMeQuery } from '@/data/user';
 
 interface Props {
   className?: string;
@@ -20,6 +21,8 @@ interface Props {
 const UserList = ({ className, filterText, permission, ...rest }: Props) => {
   const { t } = useTranslation();
   const loadMoreRef = useRef(null);
+  const { data:user } = useMeQuery();
+  console.log("DEalerUser", user?.type.type_name==='dealer')
   let {
     conversations,
     loading,
@@ -33,10 +36,21 @@ const UserList = ({ className, filterText, permission, ...rest }: Props) => {
     search:
       filterText?.length >= 3 ? filterText?.trim()?.toLowerCase() ?? '' : null,
     limit: LIMIT,
+    dealer_id: user?.type.type_name==='dealer'? user?.type.id : '' ,
     sortedBy: SortOrder.Desc,
     orderBy: 'updated_at',
   });
   let filterTimeout: any;
+
+
+  // const { data:conversation } = useConversationQuery({
+  //   id: '36',
+  // });
+
+  // const conversations=[conversation]
+
+  // console.log("conversationdata",conversations)
+
   useEffect(() => {
     // filter text
     clearTimeout(filterTimeout);

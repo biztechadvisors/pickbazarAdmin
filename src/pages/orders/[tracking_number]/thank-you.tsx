@@ -1,12 +1,13 @@
-import { getLayout } from '@/components/layouts/layout';
-import Order from '@/components/orders/order-view';
-import Seo from '@/components/seo/seo';
+// import { getLayout } from '@/components/layouts/layout';
+import Order from '@/components/order/order-view';
+// import Seo from '@/components/seo/seo';
 import { useEffect, useState } from 'react';
 import { useOrder, useOrderPayment } from '@/framework/rest/order';
 import { useRouter } from 'next/router';
 import { toast } from 'react-toastify';
 import { useTranslation } from 'next-i18next';
 import Spinner from '@/components/ui/loader/spinner/spinner';
+import AdminLayout from '@/components/layouts/admin';
 
 export { getServerSideProps } from '@/framework/rest/order.ssr';
 
@@ -69,10 +70,10 @@ export default function OrderPage() {
   }
   return (
     <>
-      <Seo noindex={true} nofollow={true} />
+      {/* <Seo noindex={true} nofollow={true} /> */}
       <Order order={order} loadingStatus={!isLoading && isFetching} />
     </>
   );
 }
 
-OrderPage.getLayout = getLayout;
+OrderPage.getLayout = AdminLayout;

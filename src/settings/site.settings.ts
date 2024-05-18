@@ -8,11 +8,10 @@ const Type = {
   Customer: 'customer',
   Staff: 'staff',
 };
-const { permissions } = getAuthCredentials();
+const { permissions }: any = getAuthCredentials();
 let permission = hasAccess(dealerOnly, permissions);
 let identify = permissions;
 const matching: any = 'dealer';
-
 // console.log('fetched items', permission, 'working permissoin', permissions);
 export const siteSettings = {
   name: 'PickBazar',
@@ -69,16 +68,16 @@ export const siteSettings = {
         label: 'sidebar-nav-item-attributes',
         icon: 'AttributeIcon',
       },
-      {
-        href: Routes.type.list,
-        label: 'sidebar-nav-item-groups',
-        icon: 'TypesIcon',
-      },
-      {
-        href: Routes.category.list,
-        label: 'sidebar-nav-item-categories',
-        icon: 'CategoriesIcon',
-      },
+      // {
+      //   href: Routes.type.list,
+      //   label: 'sidebar-nav-item-groups',
+      //   icon: 'TypesIcon',
+      // },
+      // {
+      //   href: Routes.category.list,
+      //   label: 'sidebar-nav-item-categories',
+      //   icon: 'CategoriesIcon',
+      // },
       // {
       //   href: Routes.productsheet.list,
       //   label: 'Product Sheet',
@@ -145,18 +144,17 @@ export const siteSettings = {
             }),
       },
       {
-        ...(permission && identify == matching 
+        ...(permission && identify == matching
           ? {
               href: Routes.sales,
               label: 'sidebar-nav-item-sales',
               icon: 'SalesIcon',
             }
-          : 
-          {
+          : {
               href: Routes.tax.list,
               label: 'sidebar-nav-item-taxes',
               icon: 'TaxesIcon',
-            })
+            }),
       },
       {
         href: Routes.shipping.list,
@@ -168,11 +166,11 @@ export const siteSettings = {
       //   label: 'sidebar-nav-item-withdraws',
       //   icon: 'WithdrawIcon',
       // },
-      // {
-      //   href: Routes.message.list,
-      //   label: 'sidebar-nav-item-message',
-      //   icon: 'ChatIcon',
-      // },
+      {
+        href: Routes.message.list,
+        label: 'sidebar-nav-item-message',
+        icon: 'ChatIcon',
+      },
       {
         href: Routes.refund.list,
         label: 'sidebar-nav-item-refunds',
@@ -194,16 +192,22 @@ export const siteSettings = {
       //   icon: 'SettingsIcon',
       // },
       {
+        href: Routes.settings,
+        label: 'sidebar-nav-item-settings',
+        icon: 'SettingsIcon',
+      },
+
+      {
         ...(permission && identify == matching
           ? {
-              href: Routes.stock.list,
+              href: `${Routes.stock.list}/dealer`,
               label: 'sidebar-nav-item-stocks',
               icon: 'ProductsIcon',
             }
           : {
-              href: Routes.settings,
-              label: 'sidebar-nav-item-settings',
-              icon: 'SettingsIcon',
+              href: Routes.stock.list,
+              label: 'sidebar-nav-item-stocks',
+              icon: 'ProductsIcon',
             }),
       },
       // {
@@ -225,21 +229,27 @@ export const siteSettings = {
         permissions: adminOwnerAndStaffOnly,
       },
       {
-        href: (shop: string) => `${Routes.type.list}`,
+        href: (shop: string) => `/${shop}${Routes.attribute.list}`,
+        label: 'sidebar-nav-item-attributes',
+        icon: 'AttributeIcon',
+        permissions: adminOwnerAndStaffOnly,
+      },
+      {
+        href: (shop: string) => `/${shop}${Routes.type.list}`,
         label: 'sidebar-nav-item-groups',
         icon: 'TypesIcon',
         permissions: adminOwnerAndStaffOnly,
       },
       {
-        href: (shop: string) => `${Routes.category.list}`,
+        href: (shop: string) => `/${shop}${Routes.category.list}`,
         label: 'sidebar-nav-item-categories',
         icon: 'CategoriesIcon',
         permissions: adminOwnerAndStaffOnly,
       },
       {
-        href: (shop: string) => `/${shop}${Routes.attribute.list}`,
-        label: 'sidebar-nav-item-attributes',
-        icon: 'AttributeIcon',
+        href: (shop: string) => `/${shop}${Routes.subcategory.list}`,
+        label: 'sidebar-nav-item-sub-categories',
+        icon: 'CategoriesIcon',
         permissions: adminOwnerAndStaffOnly,
       },
       {
@@ -288,7 +298,13 @@ export const siteSettings = {
         href: (shop: string) => `/${shop}${Routes.reviews.list}`,
         label: 'sidebar-nav-item-reviews',
         icon: 'ReviewIcon',
-        permissions: adminAndOwnerOnly,
+        permissions: adminOwnerAndStaffOnly,
+      },
+      {
+        href: (shop: string) => `/${shop}${Routes.tag.list}`,
+        label: 'sidebar-nav-item-tags',
+        icon: 'TagIcon',
+        permissions: adminOwnerAndStaffOnly,
       },
       // {
       //   href: (shop: string) => `/${shop}${Routes.question.list}`,

@@ -32,16 +32,17 @@ const CategoryList = ({
   onSort,
   onOrder,
 }: IProps) => {
+  console.log("$$$$$$$",categories)
   const { t } = useTranslation();
   const rowExpandable = (record: any) => record.children?.length;
   const { alignLeft, alignRight } = useIsRTL();
   const [getPermission, _] = useAtom(newPermission)
   const { permissions } = getAuthCredentials();
-  const canWrite = permissions.includes('super_admin')
-    ? siteSettings.sidebarLinks
-    : getPermission?.find(
-      (permission) => permission.type === 'sidebar-nav-item-categories'
-    )?.write;
+  const canWrite =  permissions?.includes('super_admin')
+  ? siteSettings.sidebarLinks
+  :getPermission?.find(
+    (permission) => permission.type === 'sidebar-nav-item-categories'
+  )?.write;
 
   const [sortingObj, setSortingObj] = useState<{
     sort: SortOrder;

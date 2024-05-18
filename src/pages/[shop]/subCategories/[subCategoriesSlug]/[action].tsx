@@ -1,39 +1,51 @@
 import Layout from '@/components/layouts/admin';
+import CreateOrUpdateSubCategoriesForm from '@/components/subcategory/subcategory-form';
 import { useRouter } from 'next/router';
-import CreateOrUpdateTypeForm from '@/components/group/group-form';
 import ErrorMessage from '@/components/ui/error-message';
 import Loader from '@/components/ui/loader/loader';
 import { useTranslation } from 'next-i18next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
-import { useTypeQuery } from '@/data/type';
+import { useSubCategoryQuery } from '@/data/subcategory';
 import { Config } from '@/config';
+import ShopLayout from '@/components/layouts/shop';
 
-export default function UpdateTypePage() {
+
+export default function UpdateCategoriesPage() {
   const { query, locale } = useRouter();
   const { t } = useTranslation();
   const {
-    data,
+    subcategory,
     isLoading: loading,
     error,
-  } = useTypeQuery({
-    slug: query.groupSlug as string,
+  } = useSubCategoryQuery({
+    slug: query.subCategoriesSlug as string,
     language:
       query.action!.toString() === 'edit' ? locale! : Config.defaultLanguage,
-  });
+    // categoryId: subcategory.category.id,
+    // shopId: subcategory.shop.id,
+    });
+console.log("extra data'''''''''''''", subcategory)
   if (loading) return <Loader text={t('common:text-loading')} />;
   if (error) return <ErrorMessage message={error.message} />;
+
+
   return (
     <>
       <div className="flex border-b border-dashed border-border-base py-5 sm:py-8">
         <h1 className="text-lg font-semibold text-heading">
-          {t('form:form-title-edit-type')}
+          {t('form:form-title-edit-subcategory')}
         </h1>
       </div>
-      <CreateOrUpdateTypeForm initialValues={data} />
+
+
+      <CreateOrUpdateSubCategoriesForm initialValues={subcategory} />
     </>
   );
 }
-UpdateTypePage.Layout = Layout;
+
+
+UpdateCategoriesPage.Layout = ShopLayout;
+
 
 export const getServerSideProps = async ({ locale }: any) => ({
   props: {

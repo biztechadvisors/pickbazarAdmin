@@ -43,6 +43,7 @@ import { useModalAction } from '@/components/ui/modal/modal.context';
 import { useCallback } from 'react';
 import OpenAIButton from '@/components/openAI/openAI.button';
 import { ItemProps } from '@/types';
+import ProductSubCategoryInput from './product-subcategory-input';
 
 export const chatbotAutoSuggestion = ({ name }: { name: string }) => {
   return [
@@ -151,6 +152,10 @@ export default function CreateOrUpdateProductForm({
   } = methods;
 
   const upload_max_filesize = options?.server_info?.upload_max_filesize / 1024;
+
+  console.log('options', options);
+
+  console.log('upload_max_filesize', upload_max_filesize);
 
   const { mutate: createProduct, isLoading: creating } =
     useCreateProductMutation();
@@ -326,11 +331,11 @@ export default function CreateOrUpdateProductForm({
 
             <Card className="w-full sm:w-8/12 md:w-2/3">
               <FileInput name="image" control={control} multiple={false} />
-              {/* {errors.image?.message && (
+              {errors.image?.message && (
                 <p className="my-2 text-xs text-red-500">
                   {t(errors?.image?.message!)}
                 </p>
-              )} */}
+              )}
             </Card>
           </div>
 
@@ -414,8 +419,9 @@ export default function CreateOrUpdateProductForm({
                 error={t((errors?.type as any)?.message)}
               />
               <ProductCategoryInput control={control} setValue={setValue} />
+              <ProductSubCategoryInput control={control} setValue={setValue} />
               <ProductAuthorInput control={control} setValue={setValue} />
-              <ProductManufacturerInput control={control} setValue={setValue} />
+              {/* <ProductManufacturerInput control={control} setValue={setValue} /> */}
               <ProductTagInput control={control} setValue={setValue} />
             </Card>
           </div>

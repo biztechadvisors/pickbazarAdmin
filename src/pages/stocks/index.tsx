@@ -6,7 +6,7 @@ import ProductList from '@/components/product/product-list';
 import ErrorMessage from '@/components/ui/error-message';
 import Loader from '@/components/ui/loader/loader';
 import { SortOrder } from '@/types';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useTranslation } from 'next-i18next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import CategoryTypeFilter from '@/components/product/category-type-filter';
@@ -17,34 +17,31 @@ import { adminOnly } from '@/utils/auth-utils';
 import StockList from '@/components/stocks/stock-list';
 import { useGetStock } from '@/data/stock';
 import { useMeQuery } from '@/data/user';
+import { useDealerStocks } from '@/data/stocks';
 
-export default function StockPage() {
+export default function DealerStockList() {
   const [searchTerm, setSearchTerm] = useState('');
   const [page, setPage] = useState(1);
   const { t } = useTranslation();
-  const { locale } = useRouter();
-  const [orderBy, setOrder] = useState('created_at');
-  const [sortedBy, setColumn] = useState<SortOrder>(SortOrder.Desc);
-  const [visible, setVisible] = useState(false);
 
-  const toggleVisible = () => {
-    setVisible((v) => !v);
-  };
-  
-  const {data:user,isLoading,error} = useMeQuery()
+  const router = useRouter();
 
-  if (isLoading) return <Loader text={t('common:text-loading')} />;
-  if (error) return <ErrorMessage message={error.message} />;
+  const { data: meData } = useMeQuery();
+  const { id } = meData || {};
+
+  const { data, isLoading, isError } = useDealerStocks(id);
 
   function handleSearch({ searchText }: { searchText: string }) {
     setSearchTerm(searchText);
     setPage(1);
   }
 
-  function handlePagination(current: any) {
-    setPage(current);
+  function handleView(item) {
+    router.push({
+      pathname: '/stocks/data',
+      query: { id: item?.user?.id },
+    });
   }
-
   return (
     <>
       <Card className="mb-8 flex flex-col">
@@ -60,21 +57,43 @@ export default function StockPage() {
           </div>
         </div>
       </Card>
-      <StockList
-        // products={data}
-        // paginatorInfo={paginatorInfo}
-        me={user}
-        onPagination={handlePagination}
-        onOrder={setOrder}
-        onSort={setColumn}
-      />
+
+      <div className="overflow-hidden border-b border-gray-200 shadow sm:rounded-lg">
+        <table className="min-w-full divide-y divide-gray-200">
+          <thead className="bg-gray-50">
+            <tr>
+              <th className="px-4 py-2">SL.No</th>
+              <th className="px-4 py-2">Name</th>
+              <th className="px-4 py-2">Email</th>
+              <th className="px-4 py-2">Stock</th>
+            </tr>
+          </thead>
+          <tbody className="divide-y divide-gray-200 bg-white">
+            {data?.map((item, index) => (
+              <tr key={index}>
+                <td className="border px-4 py-2">{index + 1}</td>
+                <td className="border px-4 py-2">{item.user.name}</td>
+                <td className="border px-4 py-2">{item.user.email}</td>
+                <td className="border px-4 py-2">
+                  <button
+                    className="text-blue-500"
+                    onClick={() => handleView(item)}
+                  >
+                    view
+                  </button>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
     </>
   );
 }
-StockPage.authenticate = {
+DealerStockList.authenticate = {
   permissions: adminOnly,
 };
-StockPage.Layout = Layout;
+DealerStockList.Layout = Layout;
 
 export const getStaticProps = async ({ locale }: any) => ({
   props: {

@@ -92,8 +92,10 @@ export const useMeQuery = () => {
       retry: false,
       onSuccess: () => {
         if (router.pathname === Routes.verifyEmail) {
+          console.log("Routes.verifyEmail", Routes.verifyEmail)
           setEmailVerified(true);
           router.replace(Routes.dashboard);
+          
         }
       },
       onError: (err) => {

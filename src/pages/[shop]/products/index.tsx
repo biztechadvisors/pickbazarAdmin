@@ -43,7 +43,6 @@ export default function ProductsPage() {
     slug: shop as string,
   });
 
-  
   const shopId = shopData?.id!;
   const { t } = useTranslation();
   const [searchTerm, setSearchTerm] = useState('');
@@ -56,12 +55,12 @@ export default function ProductsPage() {
   const { openModal } = useModalAction();
   const { locale } = useRouter();
 
-  const [getPermission,_]=useAtom(newPermission)
-  const canWrite =  permissions.includes('super_admin')
-  ? siteSettings.sidebarLinks
-  :getPermission?.find(
-    (permission) => permission.type === 'sidebar-nav-item-products'
-  )?.write;
+  const [getPermission, _] = useAtom(newPermission);
+  const canWrite = permissions.includes('super_admin')
+    ? siteSettings.sidebarLinks
+    : getPermission?.find(
+        (permission) => permission.type === 'sidebar-nav-item-products'
+      )?.write;
 
   const toggleVisible = () => {
     setVisible((v) => !v);
@@ -108,12 +107,7 @@ export default function ProductsPage() {
     router.replace(Routes.dashboard);
   }
 
-
-  console.log("shopDatashopData", shopData)
-
-
-
-
+  console.log("me", me)
 
   return (
     <>
@@ -167,9 +161,7 @@ export default function ProductsPage() {
               onClick={handleImportModal}
               className="hidden h-8 w-8 flex-shrink-0 items-center justify-center rounded-full bg-gray-50 transition duration-300 ms-5 hover:bg-gray-100 md:flex"
             >
-               {canWrite && (
-              <MoreIcon className="w-3.5 text-body" />
-              )}
+              {canWrite && <MoreIcon className="w-3.5 text-body" />}
             </button>
           </div>
         </div>

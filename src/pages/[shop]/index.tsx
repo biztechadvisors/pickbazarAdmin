@@ -52,7 +52,7 @@ export default function ShopPage() {
   const { price: currentBalance } = usePrice(data && { amount: data?.balance?.current_balance!, });
 
   const [getPermission, _] = useAtom(newPermission)
-  const canWrite = permissions.includes('super_admin')
+  const canWrite = permissions?.includes('super_admin')
     ? siteSettings.sidebarLinks
     : getPermission?.find(
       (permission) => permission.type === 'sidebar-nav-item-my-shops'

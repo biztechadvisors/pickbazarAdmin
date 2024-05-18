@@ -2,6 +2,7 @@ import Layout from '@/components/layouts/admin';
 import CreateOrUpdateTypeForm from '@/components/group/group-form';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import { useTranslation } from 'next-i18next';
+import ShopLayout from '@/components/layouts/shop';
 
 export default function CreateTypePage() {
   const { t } = useTranslation();
@@ -16,10 +17,17 @@ export default function CreateTypePage() {
     </>
   );
 }
-CreateTypePage.Layout = Layout;
+CreateTypePage.Layout = ShopLayout;
 
-export const getStaticProps = async ({ locale }: any) => ({
+// export const getStaticProps = async ({ locale }: any) => ({
+//   props: {
+//     ...(await serverSideTranslations(locale, ['form', 'common'])),
+//   },
+// });
+
+export const getServerSideProps = async ({ locale }: any) => ({
   props: {
-    ...(await serverSideTranslations(locale, ['form', 'common'])),
+    ...(await serverSideTranslations(locale, ['table', 'common', 'form'])),
   },
 });
+

@@ -19,6 +19,7 @@ export const useOrdersQuery = (
   params: Partial<OrderQueryOptions>,
   options: any = {}
 ) => {
+  console.log("API Request Parameters:", params);
   const { data, error, isLoading } = useQuery<OrderPaginator, Error>(
     [API_ENDPOINTS.ORDERS, params],
     ({ queryKey, pageParam }) =>
@@ -28,6 +29,7 @@ export const useOrdersQuery = (
       ...options,
     }
   );
+  console.log("DATA%%%5555",data?.data ?? [])
   return {
     orders: data?.data ?? [],
     paginatorInfo: mapPaginatorData(data),
@@ -146,7 +148,7 @@ export const useDownloadInvoiceMutation = (
 
   console.log('formattedInput', formattedInput);
 
-  return useQuery<string, Error>(
+  return useQuery<any, Error>(
     [API_ENDPOINTS.ORDER_INVOICE_DOWNLOAD],
     () => orderClient.downloadInvoice(formattedInput),
     {

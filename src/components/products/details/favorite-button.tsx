@@ -1,9 +1,9 @@
-import { HeartFillIcon } from '@/components/icons/heart-fill';
-import { HeartOutlineIcon } from '@/components/icons/heart-outline';
-import Spinner from '@/components/ui/loaders/spinner/spinner';
+// import { HeartFillIcon } from '@/components/icons/heart-fill';
+// import { HeartOutlineIcon } from '@/components/icons/heart-outline';
+import Spinner from '@/components/ui/loader/spinner/spinner';
 import { useModalAction } from '@/components/ui/modal/modal.context';
-import { useUser } from '@/framework/user';
-import { useInWishlist, useToggleWishlist } from '@/framework/wishlist';
+import { useUser } from '@/framework/rest/user';
+import { useInWishlist, useToggleWishlist } from '@/framework/rest/wishlist';
 import classNames from 'classnames';
 
 function FavoriteButton({
@@ -53,11 +53,11 @@ function FavoriteButton({
       )}
       onClick={toggle}
     >
-      {inWishlist ? (
+      {/* {inWishlist ? (
         <HeartFillIcon className="w-5 h-5 text-accent" />
       ) : (
         <HeartOutlineIcon className="w-5 h-5 text-accent" />
-      )}
+      )} */}
     </button>
   );
 }

@@ -114,8 +114,7 @@ function SelectTypes({
         getOptionLabel={(option: any) => option.name}
         getOptionValue={(option: any) => option.slug}
         options={types!}
-        isLoading={loading}
-      />
+        isLoading={loading} defaultValue={[]}      />
       <ValidationError message={t(errors.type?.message)} />
     </div>
   );
@@ -157,8 +156,7 @@ function SelectCategories({
         getOptionValue={(option: any) => option.id}
         options={categories}
         isClearable={true}
-        isLoading={loading}
-      />
+        isLoading={loading} defaultValue={[]}      />
     </div>
   );
 }
@@ -251,6 +249,7 @@ export default function CreateOrUpdateCategoriesForm({
     useUpdateCategoryMutation();
 
   const onSubmit = async (values: FormValues) => {
+    console.log("category on submit function", values)
     const input = {
       language: router.locale,
       name: values.name,
@@ -267,7 +266,7 @@ export default function CreateOrUpdateCategoriesForm({
     if (
       !initialValues ||
       (initialValues.translated_languages &&
-        !initialValues.translated_languages.includes(router.locale!))
+        !initialValues.translated_languages?.includes(router.locale!))
     ) {
       createCategory({
         ...input,
@@ -340,8 +339,7 @@ export default function CreateOrUpdateCategoriesForm({
               name="icon"
               control={control}
               options={updatedIcons}
-              isClearable={true}
-            />
+              isClearable={true} defaultValue={[]}            />
           </div>
           <SelectTypes control={control} errors={errors} />
           <SelectCategories control={control} setValue={setValue} />

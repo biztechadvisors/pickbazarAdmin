@@ -18,7 +18,10 @@ import { useState } from 'react';
 import TitleWithSort from '@/components/ui/title-with-sort';
 import { Routes } from '@/config/routes';
 import LanguageSwitcher from '@/components/ui/lang-action/action';
-import { newPermission, permissionAtom } from '@/contexts/permission/storepermission';
+import {
+  newPermission,
+  permissionAtom,
+} from '@/contexts/permission/storepermission';
 import { useAtom } from 'jotai';
 import { getAuthCredentials } from '@/utils/auth-utils';
 import { useUpdateQuantity } from '@/data/product';
@@ -49,12 +52,12 @@ const ProductList = ({
   const { t } = useTranslation();
   const { alignLeft, alignRight } = useIsRTL();
   const { permissions } = getAuthCredentials();
-  const [getPermission, _] = useAtom(newPermission)
-  const canWrite = permissions.includes('super_admin')
+  const [getPermission, _] = useAtom(newPermission);
+  const canWrite = permissions?.includes('super_admin')
     ? siteSettings.sidebarLinks.admin
     : getPermission?.find(
-      (permission: any) => permission.type === 'sidebar-nav-item-products'
-    )?.write;
+        (permission: any) => permission.type === 'sidebar-nav-item-products'
+      )?.write;
 
   const [sortingObj, setSortingObj] = useState<SortingObjType>({
     sort: SortOrder.Desc,
@@ -76,6 +79,8 @@ const ProductList = ({
       });
     },
   });
+
+  console.log("products", products)
 
   let columns = [
     {
@@ -223,7 +228,6 @@ const ProductList = ({
           setEditMode(false);
         };
 
-
         return (
           <div>
             {editMode ? (
@@ -233,15 +237,23 @@ const ProductList = ({
                   defaultValue={quantity}
                   onChange={(e) => setEditedQuantity(Number(e.target.value))}
                 />
-                <Button onClick={handleEditQuantity}
-                  size='small'
-                  className='mt-2'
-                >Update</Button>
+                <Button
+                  onClick={handleEditQuantity}
+                  size="small"
+                  className="mt-2"
+                >
+                  Update
+                </Button>
               </>
             ) : (
               <>
                 {/* <Button onClick={handleShowQuantity}>Show</Button> */}
-                <span onClick={handleShowQuantity} className='font-semibold text-accent underline transition-colors duration-200 ms-1 hover:text-accent-hover hover:no-underline focus:text-accent-700 focus:no-underline focus:outline-none'>{updatedQuantity}</span>
+                <span
+                  onClick={handleShowQuantity}
+                  className="font-semibold text-accent underline transition-colors duration-200 ms-1 hover:text-accent-hover hover:no-underline focus:text-accent-700 focus:no-underline focus:outline-none"
+                >
+                  {updatedQuantity}
+                </span>
               </>
             )}
           </div>
@@ -257,10 +269,11 @@ const ProductList = ({
       width: 180,
       render: (status: string, record: any) => (
         <div
-          className={`flex justify-start ${record?.quantity > 0 && record?.quantity < 10
-            ? 'flex-col items-baseline space-y-3 3xl:flex-row 3xl:space-x-3 3xl:space-y-0 rtl:3xl:space-x-reverse'
-            : 'items-center space-x-3 rtl:space-x-reverse'
-            }`}
+          className={`flex justify-start ${
+            record?.quantity > 0 && record?.quantity < 10
+              ? 'flex-col items-baseline space-y-3 3xl:flex-row 3xl:space-x-3 3xl:space-y-0 rtl:3xl:space-x-reverse'
+              : 'items-center space-x-3 rtl:space-x-reverse'
+          }`}
         >
           <Badge
             text={status}
@@ -281,9 +294,7 @@ const ProductList = ({
       ),
     },
     {
-      ...(canWrite
-        &&
-      {
+      ...(canWrite && {
         title: t('table:table-item-actions'),
 
         dataIndex: 'slug',
@@ -300,8 +311,7 @@ const ProductList = ({
             />
           );
         },
-      }
-      ),
+      }),
     },
   ];
 

@@ -32,8 +32,6 @@ export const PlaceOrderAction: React.FC<{
   const [selectedAddress] = useAtom(dealerAddress);
   const router = useRouter();
 
-  console.log('selectedAddress*********', selectedAddress);
-
   const [
     {
       billing_address,
@@ -56,6 +54,15 @@ export const PlaceOrderAction: React.FC<{
 
   const { data: meData } = useMeQuery();
   const dealerId = meData?.id;
+
+  useEffect(() => {
+    if (!selectedAddress) {
+      router.push({
+        pathname: '/profile-update',
+        query: { from: 'order-checkout' },
+      });
+    }
+  }, [selectedAddress]);
 
   useEffect(() => {
     setErrorMessage(null);
@@ -124,7 +131,6 @@ export const PlaceOrderAction: React.FC<{
       },
       saleBy: selectedAddress.address,
     };
-    console.log('placeOrder', input);
 
     createOrder(input);
   };
@@ -149,15 +155,6 @@ export const PlaceOrderAction: React.FC<{
   const isAllRequiredFieldSelected = formatRequiredFields.every(
     (item) => !isEmpty(item)
   );
-
-  useEffect(() => {
-    if (!selectedAddress) {
-      router.push({
-        pathname: '/profile-update',
-        query: { from: 'order-checkout' },
-      });
-    }
-  }, [selectedAddress]);
 
   return (
     <>

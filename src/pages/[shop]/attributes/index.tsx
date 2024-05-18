@@ -61,7 +61,7 @@ export default function AttributePage() {
   );
 
   const [getPermission,_]=useAtom(newPermission)
-  const canWrite =  permissions.includes('super_admin')
+  const canWrite =  permissions?.includes('super_admin')
   ? siteSettings.sidebarLinks
   :getPermission?.find(
     (permission) => permission.type === 'sidebar-nav-item-attributes'

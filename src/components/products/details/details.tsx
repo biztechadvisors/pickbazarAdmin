@@ -1,7 +1,7 @@
-import BackButton from '@/components/ui/back-button';
+// import BackButton from '@/components/ui/back-button';
 import { AddToCart } from '@/components/products/add-to-cart/add-to-cart';
 import usePrice from '@/lib/use-price';
-import { ThumbsCarousel } from '@/components/ui/thumb-carousel';
+// import { ThumbsCarousel } from '@/components/ui/thumb-carousel';
 import { useTranslation } from 'next-i18next';
 import { getVariations } from '@/lib/get-variations';
 import { useEffect, useMemo, useRef } from 'react';
@@ -18,15 +18,15 @@ import { useAtom } from 'jotai';
 import VariationGroups from './variation-groups';
 import { isVariationSelected } from '@/lib/is-variation-selected';
 import { useModalAction } from '@/components/ui/modal/modal.context';
-import { stickyShortDetailsAtom } from '@/store/sticky-short-details-atom';
+// import { stickyShortDetailsAtom } from '@/store/sticky-short-details-atom';
 import { useAttributes } from './attributes.context';
 import classNames from 'classnames';
 import { displayImage } from '@/lib/display-product-preview-images';
-import { HeartOutlineIcon } from '@/components/icons/heart-outline';
-import { HeartFillIcon } from '@/components/icons/heart-fill';
-import Spinner from '@/components/ui/loaders/spinner/spinner';
-import { useUser } from '@/framework/user';
-import { useInWishlist, useToggleWishlist } from '@/framework/wishlist';
+// import { HeartOutlineIcon } from '@/components/icons/heart-outline';
+// import { HeartFillIcon } from '@/components/icons/heart-fill';
+// import Spinner from '@/components/ui/loaders/spinner/spinner';
+// import { useUser } from '@/framework/user';
+// import { useInWishlist, useToggleWishlist } from '@/framework/wishlist';
 import { useIntersection } from 'react-use';
 import { StarIcon } from '@/components/icons/star-icon';
 import dynamic from 'next/dynamic';
@@ -63,7 +63,7 @@ const Details: React.FC<Props> = ({
   } = product ?? {};
 
   const { t } = useTranslation('common');
-  const [_, setShowStickyShortDetails] = useAtom(stickyShortDetailsAtom);
+  // const [_, setShowStickyShortDetails] = useAtom(stickyShortDetailsAtom);
 
   const router = useRouter();
   const { closeModal } = useModalAction();
@@ -133,7 +133,7 @@ const Details: React.FC<Props> = ({
             )}
           </div>
 
-          <div className="product-gallery h-full">
+          {/* <div className="product-gallery h-full">
             <ThumbsCarousel
               gallery={previewImages}
               video={video}
@@ -143,7 +143,7 @@ const Details: React.FC<Props> = ({
                   : previewImages.length <= 1
               }
             />
-          </div>
+          </div> */}
         </div>
 
         <div className="flex flex-col items-start p-5 pt-10 md:w-1/2 lg:p-14 xl:p-16">

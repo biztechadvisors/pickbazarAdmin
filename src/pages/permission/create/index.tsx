@@ -50,7 +50,7 @@ const CreatePermission = () => {
       setTypeName([singlePermissionData.type_name]);
       setPermissionName(singlePermissionData.permissionName);
       const formattedPermissions = singlePermissionData.permission.map(
-        (perm, i) => ({
+        (perm: any, i: any) => ({
           id: perm.id,
           type: perm.type,
           read: perm.read,
@@ -61,17 +61,17 @@ const CreatePermission = () => {
     }
   }, [singlePermissionData]);
 
-  const handleChange = (e) => {
+  const handleChange = (e:any) => {
     setSelectedType(e.target.value);
     setTypeError('');
   };
 
-  const handlePermissionNameChange = (e) => {
+  const handlePermissionNameChange = (e: any) => {
     setPermissionName(e.target.value);
     setPermissionError('');
   };
 
-  const handleCheckboxChange = (menuItem, type, isChecked) => {
+  const handleCheckboxChange = (menuItem: any, type:any, isChecked:any) => {
     const permissionIndex = selectedPermissions.findIndex(
       (p) => p.type === menuItem
     );

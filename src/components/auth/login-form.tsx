@@ -17,7 +17,14 @@ import {
   setAuthCredentials,
 } from '@/utils/auth-utils';
 import { useAtom } from 'jotai';
-import { newPermission } from '@/contexts/permission/storepermission';
+import {
+  filterPermission,
+  newPermission,
+  permissionAtom,
+} from '@/contexts/permission/storepermission';
+import { siteSettings } from '@/settings/site.settings';
+import PageLoader from '../ui/page-loader/page-loader';
+import Loader from '../ui/loader/loader';
 
 const loginFormSchema = yup.object().shape({
   email: yup
@@ -46,6 +53,7 @@ const LoginForm = () => {
                 data?.permissions,
                 data?.type_name
               );
+              window.location.reload();
               Router.push(Routes.dashboard);
               return;
             }
@@ -54,9 +62,7 @@ const LoginForm = () => {
             setErrorMessage('form:error-credential-wrong');
           }
         },
-        onError: () => {
-          setErrorMessage('form:error-credential-wrong');
-        },
+        onError: () => { },
       }
     );
   }

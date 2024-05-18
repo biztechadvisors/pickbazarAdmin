@@ -21,11 +21,12 @@ export const orderClient = {
     });
   },
 
-  paginated: ({ tracking_number, ...params }: Partial<OrderQueryOptions>) => {
+  paginated: ({ tracking_number,customer_id, ...params }: Partial<OrderQueryOptions>) => {
+    console.log("Customer_id", customer_id);
     return HttpClient.get<OrderPaginator>(API_ENDPOINTS.ORDERS, {
       searchJoin: 'and',
       ...params,
-      search: HttpClient.formatSearchParams({ tracking_number }),
+      search: HttpClient.formatSearchParams({ tracking_number, customer_id }),
     });
   },
 
@@ -36,4 +37,11 @@ export const orderClient = {
       input
     );
   },
+  // downloadInvoicee: (input: GenerateInvoiceDownloadUrlInput) => {
+  //   console.log('downloadInvoice***', input);
+  //   return HttpClient.post<string>(
+  //     `${API_ENDPOINTS.INVOICE_DOWNLOAD}`,
+  //     input
+  //   );
+  // },
 };
