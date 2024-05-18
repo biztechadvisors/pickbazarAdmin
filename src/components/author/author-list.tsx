@@ -15,6 +15,7 @@ import LanguageSwitcher from '@/components/ui/lang-action/action';
 import { newPermission } from '@/contexts/permission/storepermission';
 import { useAtom } from 'jotai';
 import { getAuthCredentials } from '@/utils/auth-utils';
+import { AllPermission } from '@/utils/AllPermission';
 
 type IProps = {
   authors: Author[] | undefined;
@@ -34,13 +35,17 @@ const AuthorList = ({
   const { t } = useTranslation();
   const router = useRouter();
 
-  const [getPermission,_]=useAtom(newPermission)
-  const { permissions }:any = getAuthCredentials();
-  const canWrite =  permissions?.includes('super_admin')
-  ? siteSettings.sidebarLinks
-  :getPermission?.find(
-    (permission) => permission.type === 'sidebar-nav-item-authors'
-  )?.write;
+  // const [getPermission,_]=useAtom(newPermission)
+  // const { permissions }:any = getAuthCredentials();
+  // const canWrite =  permissions?.includes('super_admin')
+  // ? siteSettings.sidebarLinks
+  // :getPermission?.find(
+  //   (permission) => permission.type === 'sidebar-nav-item-authors'
+  // )?.write;
+
+  const permissionTypes = AllPermission(); 
+
+  const canWrite = permissionTypes.includes('sidebar-nav-item-authors');
 
   const [sortingObj, setSortingObj] = useState<{
     sort: SortOrder;

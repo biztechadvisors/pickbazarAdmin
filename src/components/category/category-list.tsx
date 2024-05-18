@@ -17,6 +17,7 @@ import { newPermission } from '@/contexts/permission/storepermission';
 import { useAtom } from 'jotai';
 import { getAuthCredentials } from '@/utils/auth-utils';
 import { siteSettings } from '@/settings/site.settings';
+import { AllPermission } from '@/utils/AllPermission';
 
 export type IProps = {
   categories: Category[] | undefined;
@@ -36,13 +37,17 @@ const CategoryList = ({
   const { t } = useTranslation();
   const rowExpandable = (record: any) => record.children?.length;
   const { alignLeft, alignRight } = useIsRTL();  
-  const [getPermission,_]=useAtom(newPermission)
-  const { permissions } = getAuthCredentials();
-  const canWrite =  permissions?.includes('super_admin')
-  ? siteSettings.sidebarLinks
-  :getPermission?.find(
-    (permission) => permission.type === 'sidebar-nav-item-categories'
-  )?.write;
+  // const [getPermission,_]=useAtom(newPermission)
+  // const { permissions } = getAuthCredentials();
+  // const canWrite =  permissions?.includes('super_admin')
+  // ? siteSettings.sidebarLinks
+  // :getPermission?.find(
+  //   (permission) => permission.type === 'sidebar-nav-item-categories'
+  // )?.write;
+
+  const permissionTypes = AllPermission(); 
+
+  const canWrite = permissionTypes.includes('sidebar-nav-item-categories');
 
   const [sortingObj, setSortingObj] = useState<{
     sort: SortOrder;
