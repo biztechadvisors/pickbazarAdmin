@@ -15,9 +15,7 @@ import { useTranslation } from 'next-i18next';
 import { useIsRTL } from '@/utils/locals';
 import { useState } from 'react';
 import TitleWithSort from '@/components/ui/title-with-sort';
-import { useAtom } from 'jotai';
-import { newPermission } from '@/contexts/permission/storepermission';
-import { getAuthCredentials } from '@/utils/auth-utils';
+import { AllPermission } from '@/utils/AllPermission';
 
 type IProps = {
   customers: User[] | undefined;
@@ -36,13 +34,10 @@ const CustomerList = ({
   const { t } = useTranslation();
   const { alignLeft } = useIsRTL();
 
-  const [getPermission,_]=useAtom(newPermission)
-  const { permissions }:any = getAuthCredentials();
-  const canWrite =  permissions.includes('super_admin')
-  ? siteSettings.sidebarLinks
-  :getPermission?.find(
-    (permission) => permission.type === 'sidebar-nav-item-users'
-  )?.write;
+  const permissionTypes = AllPermission(); 
+
+  const canWrite = permissionTypes.includes('sidebar-nav-item-users');
+
 
   console.log("userssssss",customers)
   const [sortingObj, setSortingObj] = useState<{

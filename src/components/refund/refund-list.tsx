@@ -13,10 +13,7 @@ import timezone from 'dayjs/plugin/timezone';
 import { useIsRTL } from '@/utils/locals';
 import usePrice from '@/utils/use-price';
 import { Routes } from '@/config/routes';
-import { newPermission } from '@/contexts/permission/storepermission';
-import { useAtom } from 'jotai';
-import { getAuthCredentials } from '@/utils/auth-utils';
-import { siteSettings } from '@/settings/site.settings';
+import { AllPermission } from '@/utils/AllPermission';
 
 dayjs.extend(relativeTime);
 dayjs.extend(utc);
@@ -33,13 +30,10 @@ const RefundList = ({ refunds, onSort, onOrder, onPagination }: IProps) => {
   const { t } = useTranslation();
   const router = useRouter();
   const { alignLeft } = useIsRTL();
-  const [getPermission,_]=useAtom(newPermission)
-  const { permissions } = getAuthCredentials();
-  const canWrite =  permissions.includes('super_admin')
-  ? siteSettings.sidebarLinks
-  :getPermission?.find(
-    (permission) => permission.type === 'sidebar-nav-item-refunds'
-  )?.write;
+  
+  const permissionTypes = AllPermission(); 
+
+  const canWrite = permissionTypes.includes('sidebar-nav-item-refunds');
 
   const [sortingObj, setSortingObj] = useState<{
     sort: SortOrder;

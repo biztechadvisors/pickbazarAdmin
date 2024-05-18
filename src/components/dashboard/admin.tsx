@@ -20,26 +20,28 @@ import { useAtom } from 'jotai';
 import { newPermission } from '@/contexts/permission/storepermission';
 import { getAuthCredentials } from '@/utils/auth-utils';
 import { siteSettings } from '@/settings/site.settings';
-import { CustomerIcon } from '@/components/icons/sidebar/customer';
-import { SUPER_ADMIN } from '@/utils/constants';
+import { CustomerIcon } from '../icons/sidebar/customer';
+import { AllPermission } from '@/utils/AllPermission';
 
 export default function Dashboard() {
   const { t } = useTranslation();
   const { locale } = useRouter();
 
-  const [getPermission, setPermission] = useAtom(newPermission);
-  const { permissions } = getAuthCredentials();
+  // const [getPermission, _] = useAtom(newPermission);
+  // const { permissions } = getAuthCredentials();
+  // const canWrite = permissions?.includes('super_admin')
+  //   ? siteSettings.sidebarLinks
+  //   : getPermission?.find(
+  //       (permission) => permission.type === 'sidebar-nav-item-dealerlist'
+  //     )?.write;
+
+  const permissionTypes = AllPermission();
+
+  const canWrite = permissionTypes.includes('sidebar-nav-item-dealerlist');
+
   const { data: useMe } = useMeQuery();
 
   const customerId = useMe?.id ?? 0;
-  const canWrite = permissions?.includes(SUPER_ADMIN)
-    ? siteSettings.sidebarLinks
-    : getPermission?.find((permission) => permission.type === 'sidebar-nav-item-dealerlist')?.write;
-
-  const query = {
-    customerId: parseInt(customerId),
-    state: '',
-  };
 
   const { data, isLoading: analyticsLoading, error: analyticsError } = useAnalyticsQuery(query);
   const { price: total_revenue } = usePrice(data && { amount: data?.totalRevenue ?? 0 });
