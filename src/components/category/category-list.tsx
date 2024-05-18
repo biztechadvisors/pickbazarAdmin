@@ -13,10 +13,6 @@ import { Config } from '@/config';
 import Link from '@/components/ui/link';
 import { Routes } from '@/config/routes';
 import LanguageSwitcher from '@/components/ui/lang-action/action';
-import { newPermission } from '@/contexts/permission/storepermission';
-import { useAtom } from 'jotai';
-import { getAuthCredentials } from '@/utils/auth-utils';
-import { siteSettings } from '@/settings/site.settings';
 import { AllPermission } from '@/utils/AllPermission';
 
 export type IProps = {
@@ -36,14 +32,7 @@ const CategoryList = ({
   console.log("$$$$$$$",categories)
   const { t } = useTranslation();
   const rowExpandable = (record: any) => record.children?.length;
-  const { alignLeft, alignRight } = useIsRTL();  
-  // const [getPermission,_]=useAtom(newPermission)
-  // const { permissions } = getAuthCredentials();
-  // const canWrite =  permissions?.includes('super_admin')
-  // ? siteSettings.sidebarLinks
-  // :getPermission?.find(
-  //   (permission) => permission.type === 'sidebar-nav-item-categories'
-  // )?.write;
+  const { alignLeft, alignRight } = useIsRTL();   
 
   const permissionTypes = AllPermission(); 
 

@@ -12,9 +12,6 @@ import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import { Routes } from '@/config/routes';
 import { SortOrder } from '@/types';
 import { adminOnly, getAuthCredentials } from '@/utils/auth-utils';
-import { newPermission } from '@/contexts/permission/storepermission';
-import { useAtom } from 'jotai';
-import { siteSettings } from '@/settings/site.settings';
 import StaffList from '@/components/staff/staff-list';
 import { AllPermission } from '@/utils/AllPermission';
 
@@ -38,26 +35,13 @@ export default function Customers() {
 
 
 
-  // const [getPermission,_]=useAtom(newPermission)
-  // const { permissions } = getAuthCredentials();
-  // const canWrite =  permissions?.includes('super_admin')
-  // ? siteSettings.sidebarLinks
-  // :getPermission?.find(
-  //   (permission) => permission.type === 'sidebar-nav-item-users'
-  // )?.write;
 
+  const { permissions } = getAuthCredentials();
+ 
   const permissionTypes = AllPermission(); 
 
   const canWrite = permissionTypes.includes('sidebar-nav-item-staffs');
 
-    console.log("AllPermission", permissionTypes);
-    console.log("canWrite", canWrite);
- 
-
-
-  // console.log("canWrite", canWrite)
-  // console.log("getPermission",getPermission)
-  // console.log("permissions", permissions)
 
   if (loading) return <Loader text={t('common:text-loading')} />;
   if (error) return <ErrorMessage message={error.message} />;
