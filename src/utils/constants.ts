@@ -1,4 +1,6 @@
 export const LIMIT = 10;
+// export const SERVICE_PROVIDER = 'service_provider';
+export const OWNER = 'owner'
 export const SUPER_ADMIN = 'super_admin';
 export const STORE_OWNER = 'store_owner';
 export const STAFF = 'staff';
