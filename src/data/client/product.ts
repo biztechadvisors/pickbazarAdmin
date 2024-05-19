@@ -15,7 +15,9 @@ export const productClient = {
   ...crudFactory<Product, QueryOptions, CreateProduct>(API_ENDPOINTS.PRODUCTS),
 
   get({ slug, userId, language }: GetParams) {
-    return HttpClient.get<Product>(`${API_ENDPOINTS.PRODUCTS}/${slug}/ ${userId}`, {
+    console.log("slug", slug)
+    console.log("userId", userId)
+    return HttpClient.get<Product>(`${API_ENDPOINTS.PRODUCTS}?${slug}& ${userId}`, {
       language,
       with: 'type;shop;categories;tags;variations.attribute.values;variation_options;author;manufacturer;digital_file',
     });
