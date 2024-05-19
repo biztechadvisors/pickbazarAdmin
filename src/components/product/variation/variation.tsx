@@ -65,13 +65,14 @@ const Variation = ({ product, id, email, contact }: Props) => {
 const ProductVariation = ({ productSlug }: { productSlug: string }) => {
   const { locale } = useRouter();
 
-  const { data }: any = useMeQuery()
-  const userId = data?.dealer?.id
+  const { data }: any = useMeQuery();
+  const userId = data?.dealer?.id;
   const { product, isLoading: loading } = useProductQuery({
     slug: productSlug,
-    userId: userId,
+    userId,
+    shop_id: data?.shop_id,
     language: locale!,
-  })
+  });
 
   const { id, email, contact } = data || {};
 

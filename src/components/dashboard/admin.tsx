@@ -100,6 +100,8 @@ export default function Dashboard(user: any) {
 
   console.log('data----analytics', data);
 
+  console.log("useMe", useMe)
+
   return (
     <>
       <div className="mb-6 grid w-full grid-cols-1 gap-5 sm:grid-cols-2 xl:grid-cols-4">
