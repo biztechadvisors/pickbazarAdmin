@@ -27,13 +27,14 @@ export default function UpdateProductPage() {
   const { data: shopData } = useShopQuery({
     slug: query?.shop as string,
   });
-  const shopId = shopData?.id!;
+  const shop_id = shopData?.id!;
   const {
     product,
     isLoading: loading,
     error,
   } = useProductQuery({
     slug: query.productSlug as string,
+    shop_id,
     id: me?.id,
     language:
       query.action!.toString() === 'edit' ? locale! : Config.defaultLanguage,

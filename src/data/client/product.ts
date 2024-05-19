@@ -30,9 +30,11 @@ export const productClient = {
     slug,
     categories,
     shop_id,
+    dealerId,
     ...params
   }: Partial<ProductQueryOptions>) => {
     return HttpClient.get<ProductPaginator>(API_ENDPOINTS.PRODUCTS, {
+      dealerId,
       shop_id,
       searchJoin: 'and',
       with: 'shop;type',
