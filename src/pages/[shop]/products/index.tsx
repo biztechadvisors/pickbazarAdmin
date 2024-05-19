@@ -54,6 +54,7 @@ export default function ProductsPage() {
   const [visible, setVisible] = useState(false);
   const { openModal } = useModalAction();
   const { locale } = useRouter();
+  const { data } = useMeQuery();
 
   const [getPermission, _] = useAtom(newPermission);
   const canWrite = permissions.includes('super_admin')

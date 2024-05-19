@@ -326,9 +326,9 @@ export function useCreateOrder() {
         date: t('text-date'),
       },
     };
-    if (input.dealerId !== input.customer_id) {
+    // if (input.dealerId !== input.customer_id) {
       createOrder(formattedInputs); // Call createOrder only if customer_id and dealerId are not equal
-    }
+    // }
     checkAndCreateStocks(formattedInputs); // Call checkAndCreateStocks function after formatting the order input
   }
 

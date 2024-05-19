@@ -104,10 +104,15 @@ export const useDeleteProductMutation = () => {
   });
 };
 
-export const useProductQuery = ({ slug, userId, language }: GetParams) => {
+export const useProductQuery = ({
+  slug,
+  userId,
+  language,
+  shop_id,
+}: GetParams) => {
   const { data, error, isLoading } = useQuery<Product, Error>(
-    [API_ENDPOINTS.PRODUCTS, { slug, userId, language }],
-    () => productClient.get({ slug, userId, language })
+    [API_ENDPOINTS.PRODUCTS, { slug, userId, language, shop_id }],
+    () => productClient.get({ slug, userId, language, shop_id })
   );
 
   return {
@@ -117,9 +122,16 @@ export const useProductQuery = ({ slug, userId, language }: GetParams) => {
   };
 };
 
-export const useProductsQuery = (params: Partial<ProductQueryOptions>, options: any = {}) => {
-  console.log("params", params)
-  const { data, error, isLoading } = useQuery<ProductPaginator, Error>([API_ENDPOINTS.PRODUCTS, params],({ queryKey, pageParam }) =>productClient.paginated(Object.assign({}, queryKey[1], pageParam)),{
+export const useProductsQuery = (
+  params: Partial<ProductQueryOptions>,
+  options: any = {}
+) => {
+  console.log('params', params);
+  const { data, error, isLoading } = useQuery<ProductPaginator, Error>(
+    [API_ENDPOINTS.PRODUCTS, params],
+    ({ queryKey, pageParam }) =>
+      productClient.paginated(Object.assign({}, queryKey[1], pageParam)),
+    {
       keepPreviousData: true,
       ...options,
     }

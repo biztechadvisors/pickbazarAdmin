@@ -80,6 +80,8 @@ export default function ProductsPage() {
     setPage(current);
   }
 
+  console.log("products", products)
+
   return (
     <>
       <Card className="mb-8 flex flex-col">
