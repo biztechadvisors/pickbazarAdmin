@@ -51,6 +51,8 @@ const ProductCard = ({ item, isChecked, id, email, phone }: Props) => {
 
   const { openModal } = useModalAction();
 
+  const shop_id = item?.shop_id;
+
   const [getPermission, _] = useAtom(newPermission);
   const { permissions } = getAuthCredentials();
   const canWrite = permissions.includes('super_admin')
@@ -60,8 +62,10 @@ const ProductCard = ({ item, isChecked, id, email, phone }: Props) => {
       )?.write;
 
   function handleVariableProduct() {
-    return openModal('SELECT_PRODUCT_VARIATION', slug);
+    return openModal('SELECT_PRODUCT_VARIATION', { slug, shop_id });
   }
+
+  console.log('item-----check', item);
 
   return (
     <div className="cart-type-neon h-full overflow-hidden rounded border border-border-200 bg-light shadow-sm transition-all duration-200 hover:shadow-md">

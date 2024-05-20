@@ -76,18 +76,16 @@ export const useOrderSalesQuery = ({
   };
 };
 
-
 export const useDealerStocks = (id: any) => {
   return useQuery(['dealerStockList', id], async () => {
     try {
       const data = await stockClient.fetchDealerStockData(id);
       return data;
     } catch (error) {
-      throw new Error(error.message);
+      throw new Error((error as Error).message);
     }
   });
 };
-
 
 export const useDealerByIdStocks = (id: any) => {
   return useQuery(['dealerStockList', id], async () => {
@@ -95,25 +93,23 @@ export const useDealerByIdStocks = (id: any) => {
       const data = await stockClient.fetchDealerStockDataById(id);
       return data;
     } catch (error) {
-      throw new Error(error.message);
+      throw new Error((error as Error).message);
     }
   });
 };
 
-
 export const useUpdateStockData = (user_id: any) => {
-  const mutation = useMutation((updatedData: any) => stockClient.updateStockData(user_id, updatedData), {
-    onSuccess: () => {
-      toast.success('Stock data updated successfully');
-    },
-    onError: () => {
-      toast.error('Failed to update stock data');
-    },
-  });
+  const mutation = useMutation(
+    (updatedData: any) => stockClient.updateStockData(user_id, updatedData),
+    {
+      onSuccess: () => {
+        toast.success('Stock data updated successfully');
+      },
+      onError: () => {
+        toast.error('Failed to update stock data');
+      },
+    }
+  );
 
   return mutation;
 };
-
-
-
-

@@ -46,7 +46,7 @@ export default function ProductsPage() {
 
   const { id, email, contact } = meData || {};
 
-  const shop_id=meData?.shop_id
+  const shop_id = meData?.shop_id;
 
   const dealerId = meData?.dealer?.id;
 
@@ -61,7 +61,7 @@ export default function ProductsPage() {
     type,
     categories: category,
     dealerId,
-    shop_id
+    shop_id,
   });
 
   const [getPermission, _] = useAtom(newPermission);

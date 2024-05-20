@@ -21,7 +21,7 @@ export const stockClient = {
   },
 
   paginated: ({ tracking_number, ...params }: Partial<OrderQueryOptions>) => {
-    console.log("track", tracking_number);
+    console.log('track', tracking_number);
     return HttpClient.get<OrderPaginator>(API_ENDPOINTS.STOCK, {
       searchJoin: 'and',
       tracking_number,
@@ -31,15 +31,18 @@ export const stockClient = {
   },
 
   fetchDealerStockData: async (id: any) => {
-    return await HttpClient.get(`${API_ENDPOINTS.STOCK}/all/${id}`);
+    return await HttpClient.get(`${API_ENDPOINTS.STOCK}/user/${id}`);
   },
   fetchDealerStockDataById: async (id: any) => {
-    return await HttpClient.get(`${API_ENDPOINTS.STOCK}/${id}`);
+    return await HttpClient.get(`${API_ENDPOINTS.STOCK}/user/${id}`);
   },
 
   updateStockData: async (user_id: any, updatedData: any) => {
-    console.log("user_id", user_id)
-    console.log("updateddata", updatedData)
-    return await HttpClient.put(`${API_ENDPOINTS.STOCK}/${user_id}`, updatedData);
-  }
+    console.log('user_id', user_id);
+    console.log('updateddata', updatedData);
+    return await HttpClient.put(
+      `${API_ENDPOINTS.STOCK}/${user_id}`,
+      updatedData
+    );
+  },
 };
