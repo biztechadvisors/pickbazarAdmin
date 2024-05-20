@@ -11,7 +11,7 @@ import { useOrdersQuery } from '@/data/order';
 import { useTranslation } from 'next-i18next';
 // import { useWithdrawsQuery } from '@/data/withdraw';
 // import WithdrawTable from '@/components/withdraw/withdraw-table';
-import { ShopIcon } from '@/components/icons/sidebar';
+import { MyShopIcon, ShopIcon } from '@/components/icons/sidebar';
 import { DollarIcon } from '@/components/icons/shops/dollar';
 import { useAnalyticsQuery, usePopularProductsQuery } from '@/data/dashboard';
 import { useRouter } from 'next/router';
@@ -34,6 +34,7 @@ export default function Dashboard(user: any) {
         (permission) => permission.type === 'sidebar-nav-item-dealerlist'
       )?.write;
 
+      console.log("permission", canWrite)
   const { data: useMe } = useMeQuery();
 
   const customerId = useMe?.id ?? '';
@@ -137,7 +138,17 @@ export default function Dashboard(user: any) {
             />
           </div>
         ) : (
-          <div className="w-full ">
+          canWrite === 'owner' ? (
+            <div className="w-full ">
+            <StickerCard
+              titleTransKey="sticker-card-title-total-cutomer"
+              icon={<MyShopIcon className="w-6" color="#1D4ED8" />}
+              iconBgStyle={{ backgroundColor: '#93C5FD' }}
+              price={data?.totalShops}
+            />
+          </div>
+          ) :(
+            <div className="w-full ">
             <StickerCard
               titleTransKey="sticker-card-title-total-cutomer"
               icon={<CustomerIcon className="w-6" color="#1D4ED8" />}
@@ -145,6 +156,7 @@ export default function Dashboard(user: any) {
               price={data?.totalShops}
             />
           </div>
+          )
         )}
       </div>
 

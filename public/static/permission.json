@@ -14,6 +14,7 @@
     "ATTRIBUTES": "sidebar-nav-item-attributes",
     "GROUPS": "sidebar-nav-item-groups",
     "CATEGORIES": "sidebar-nav-item-categories",
+    "SUBCATEGORIES": "sidebar-nav-item-subcategories",
     "TAGS": "sidebar-nav-item-tags",
     "MANUFACTURERS": "sidebar-nav-item-manufacturers",
     "PERMISSIONS": "sidebar-nav-item-permissions",
