@@ -22,9 +22,7 @@ import TitleWithSort from '@/components/ui/title-with-sort';
 import QuestionCard from './question-card';
 import { LikeIcon } from '@/components/icons/like-icon';
 import { DislikeIcon } from '@/components/icons/dislike-icon';
-import { newPermission } from '@/contexts/permission/storepermission';
-import { useAtom } from 'jotai';
-import { getAuthCredentials } from '@/utils/auth-utils';
+import { AllPermission } from '@/utils/AllPermission';
 
 export type IProps = {
   questions: Question[] | undefined;
@@ -42,13 +40,10 @@ const QuestionList = ({
 }: IProps) => {
   const { t } = useTranslation();
   const { alignLeft } = useIsRTL();
-  const [getPermission,_]=useAtom(newPermission)
-  const { permissions } = getAuthCredentials();
-  const canWrite =  permissions.includes('super_admin')
-  ? siteSettings.sidebarLinks
-  :getPermission?.find(
-    (permission) => permission.type === 'sidebar-nav-item-questions'
-  )?.write;
+
+  const permissionTypes = AllPermission(); 
+
+  const canWrite = permissionTypes.includes('sidebar-nav-item-questions');
 
   const [sortingObj, setSortingObj] = useState<{
     sort: SortOrder;

@@ -17,9 +17,7 @@ import { Routes } from '@/config/routes';
 import { useIsRTL } from '@/utils/locals';
 import { useUpdateManufacturerMutation } from '@/data/manufacturer';
 import LanguageSwitcher from '@/components/ui/lang-action/action';
-import { newPermission } from '@/contexts/permission/storepermission';
-import { useAtom } from 'jotai';
-import { getAuthCredentials } from '@/utils/auth-utils';
+import { AllPermission } from '@/utils/AllPermission';
 
 type IProps = {
   manufacturers: Manufacturer[] | null | undefined;
@@ -38,13 +36,10 @@ const ManufacturerList = ({
 }: IProps) => {
   const { t } = useTranslation();
   const router = useRouter();
-  const [getPermission,_]=useAtom(newPermission)
-  const { permissions } = getAuthCredentials();
-  const canWrite =  permissions.includes('super_admin')
-  ? siteSettings.sidebarLinks
-  :getPermission?.find(
-    (permission) => permission.type === 'sidebar-nav-item-manufacturers'
-  )?.write;
+
+  const permissionTypes = AllPermission(); 
+
+  const canWrite = permissionTypes.includes('sidebar-nav-item-manufacturers');
 
   const { alignRight } = useIsRTL();
 
