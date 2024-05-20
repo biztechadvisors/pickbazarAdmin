@@ -326,7 +326,7 @@ export function useCreateOrder() {
     // if (input.dealerId !== input.customer_id) {
     createOrder(formattedInputs); // Call createOrder only if customer_id and dealerId are not equal
     // }
-    checkAndCreateStocks(formattedInputs); // Call checkAndCreateStocks function after formatting the order input
+    // checkAndCreateStocks(formattedInputs); // Call checkAndCreateStocks function after formatting the order input
   }
 
   return {

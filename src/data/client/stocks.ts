@@ -34,7 +34,7 @@ export const stockClient = {
     return await HttpClient.get(`${API_ENDPOINTS.STOCK}/user/${id}`);
   },
   fetchDealerStockDataById: async (id: any) => {
-    return await HttpClient.get(`${API_ENDPOINTS.STOCK}/user/${id}`);
+    return await HttpClient.get(`${API_ENDPOINTS.STOCK}/inventory/${id}`);
   },
 
   updateStockData: async (user_id: any, updatedData: any) => {

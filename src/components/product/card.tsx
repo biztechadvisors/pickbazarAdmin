@@ -67,6 +67,8 @@ const ProductCard = ({ item, isChecked, id, email, phone }: Props) => {
 
   console.log('item-----check', item);
 
+  console.log("image", image)
+
   return (
     <div className="cart-type-neon h-full overflow-hidden rounded border border-border-200 bg-light shadow-sm transition-all duration-200 hover:shadow-md">
       {/* <h3>{name}</h3> */}
