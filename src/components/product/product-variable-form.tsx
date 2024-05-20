@@ -151,7 +151,8 @@ export default function ProductVariableForm({
         <div
           key={`fieldAttributeValues-${index}`}
           className="flex flex-col items-start border-b border-dashed border-border-200 p-5 last:mb-8 last:border-0 md:p-8 md:last:pb-0 mx-2 my-2"
-        >
+style={{height:'250px'}}
+>
           <Title className="mb-2 !text-lg">
             {t('form:form-title-variant')}:{' '}
             <span className="font-normal text-blue-600">
@@ -177,7 +178,7 @@ export default function ProductVariableForm({
               error={t(errors.variation_options?.[index]?.price?.message)}
               variant="outline"
               className="mb-2"
-              style={{width:'60px',height:'40px'}}
+              style={{width:'70px',height:'40px'}}
             />
             <Input
               label={t('form:input-label-sale-price')}
@@ -187,7 +188,7 @@ export default function ProductVariableForm({
               error={t(errors.variation_options?.[index]?.sale_price?.message)}
               variant="outline"
               className="mb-2"
-              style={{width:'60px',height:'40px'}}
+              style={{width:'70px',height:'40px'}}
             />
             <Input
               label={`${t('form:input-label-sku')}*`}
@@ -196,7 +197,7 @@ export default function ProductVariableForm({
               error={t(errors.variation_options?.[index]?.sku?.message)}
               variant="outline"
               className="mb-2"
-              style={{width:'60px',height:'40px'}}
+              style={{width:'70px',height:'40px'}}
             />
             <Input
               label={`${t('form:input-label-quantity')}*`}
@@ -205,9 +206,9 @@ export default function ProductVariableForm({
               error={t(errors.variation_options?.[index]?.quantity?.message)}
               variant="outline"
               className="mb-2"
-              style={{width:'60px',height:'40px'}}
+              style={{width:'70px',height:'40px'}}
             />
-             <div className="mb-2" style={{width:'150px',height:'10px'}}>
+             <div className="mb-2" style={{width:'120px',height:'30px'}}>
             <Label>
               {/* {t('form:input-label-image')}  */}
               {' Upload an image  '}
