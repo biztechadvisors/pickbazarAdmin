@@ -25,6 +25,7 @@ import { siteSettings } from '@/settings/site.settings';
 import { useQuery } from 'react-query';
 import { useMeQuery } from '@/data/user';
 import ShopLayout from '@/components/layouts/shop';
+import { AllPermission } from '@/utils/AllPermission';
 
 export default function Categories() {
   const { locale } = useRouter();
@@ -51,13 +52,17 @@ export default function Categories() {
     shop,
   });
 
-  const [getPermission, _] = useAtom(newPermission);
-  const { permissions } = getAuthCredentials();
-  const canWrite = permissions?.includes('super_admin')
-    ? siteSettings.sidebarLinks
-    : getPermission?.find(
-        (permission) => permission.type === 'sidebar-nav-item-categories'
-      )?.write;
+  // const [getPermission, _] = useAtom(newPermission);
+  // const { permissions } = getAuthCredentials();
+  // const canWrite = permissions?.includes('super_admin')
+  //   ? siteSettings.sidebarLinks
+  //   : getPermission?.find(
+  //       (permission) => permission.type === 'sidebar-nav-item-categories'
+  //     )?.write;
+
+  const permissionTypes = AllPermission(); 
+
+  const canWrite = permissionTypes.includes('sidebar-nav-item-categories');
 
   if (loading) return <Loader text={t('common:text-loading')} />;
   if (error) return <ErrorMessage message={error.message} />;

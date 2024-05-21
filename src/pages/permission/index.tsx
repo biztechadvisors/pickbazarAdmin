@@ -16,22 +16,27 @@ import { usePermissionData } from '@/data/permission';
 import { useUpdateCart } from '@/data/cart';
 import { useMeQuery } from '@/data/user';
 import { date } from 'yup';
+import { AllPermission } from '@/utils/AllPermission';
 export default function Permission() {
   const { t } = useTranslation();
   const [searchTerm, setSearchTerm] = useState('');
   const [page, setPage] = useState(1);
   const [orderBy, setOrder] = useState('created_at');
-  const [getPermission, _] = useAtom(newPermission);
-  const { permissions } = getAuthCredentials();
+  // const [getPermission, _] = useAtom(newPermission);
+  // const { permissions } = getAuthCredentials();
 
   const { data: meData } = useMeQuery();
   const id = meData?.id;
 
-  const canWrite = permissions?.includes('super_admin')
-    ? siteSettings.sidebarLinks
-    : getPermission?.find(
-        (permission) => permission.type === 'sidebar-nav-item-permissions'
-      )?.write;
+  // const canWrite = permissions?.includes('super_admin')
+  //   ? siteSettings.sidebarLinks
+  //   : getPermission?.find(
+  //       (permission) => permission.type === 'sidebar-nav-item-permissions'
+  //     )?.write;
+
+  const permissionTypes = AllPermission(); 
+
+  const canWrite = permissionTypes.includes('sidebar-nav-item-permissions');
 
   const {
     isLoading,

@@ -416,9 +416,7 @@ const AdminLayout: React.FC<{ children?: React.ReactNode }> = ({
       },
     ];
   } else {
-    matchedLinks = permissions?.includes('super_admin')
-      ? siteSettings.sidebarLinks.admin
-      : siteSettings.sidebarLinks.admin.filter((link) =>
+    matchedLinks = siteSettings.sidebarLinks.admin.filter((link) =>
           matched.some((newItem) => newItem.type === link.label)
         );
 
