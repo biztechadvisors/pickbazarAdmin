@@ -113,3 +113,8 @@ export const useUpdateStockData = (user_id: any) => {
 
   return mutation;
 };
+
+
+export const useFetchStockOrderData=({dealerId, orderId})=>{
+  return useQuery(['stockData', dealerId, orderId], stockClient.getStockByOrderId({dealerId, orderId}))
+}

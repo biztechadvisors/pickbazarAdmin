@@ -45,4 +45,12 @@ export const stockClient = {
       updatedData
     );
   },
+
+  getStockByOrderId:async ({dealerId, orderId})=>{
+    console.log("dealerId**********************", dealerId)
+    console.log("orderid---------------------", orderId)
+    return await HttpClient.get(`${API_ENDPOINTS.STOCK}/user/${dealerId}/order/${orderId}`)
+  }
 };
+
+
