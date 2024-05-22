@@ -10,7 +10,7 @@ import { useLogin } from '@/data/user';
 import type { LoginInput } from '@/types';
 import { useState } from 'react';
 import Alert from '@/components/ui/alert';
-import Router from 'next/router';
+import Router from 'next/router'; // Import Router from next/router
 import {
   allowedRoles,
   hasAccess,
@@ -18,13 +18,8 @@ import {
 } from '@/utils/auth-utils';
 import { useAtom } from 'jotai';
 import {
-  filterPermission,
   newPermission,
-  permissionAtom,
 } from '@/contexts/permission/storepermission';
-import { siteSettings } from '@/settings/site.settings';
-import PageLoader from '../ui/page-loader/page-loader';
-import Loader from '../ui/loader/loader';
 
 const loginFormSchema = yup.object().shape({
   email: yup
@@ -53,8 +48,7 @@ const LoginForm = () => {
                 data?.permissions,
                 data?.type_name
               );
-              window.location.reload();
-              Router.push(Routes.dashboard);
+              Router.push(Routes.dashboard); // Navigate to dashboard
               return;
             }
             setErrorMessage('form:error-enough-permission');
@@ -62,7 +56,9 @@ const LoginForm = () => {
             setErrorMessage('form:error-credential-wrong');
           }
         },
-        onError: () => { },
+        onError: (error) => {
+          setErrorMessage(error.message); // Handle error by displaying error message
+        },
       }
     );
   }

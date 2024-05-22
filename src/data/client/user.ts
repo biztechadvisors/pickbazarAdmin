@@ -29,13 +29,19 @@ export const userClient = {
     const result = HttpClient.post<AuthResponse>(API_ENDPOINTS.TOKEN, variables);
     result
       .then(response => {
-        console.log("result*****");
+        // Assuming the token is in the response object
+        const token = response.token;
+        if (token) {
+          localStorage.setItem('authToken', token);
+        }
+        console.log("result*****", response);
       })
       .catch(error => {
         console.error("Error during login:", error);
       });
     return result;
   },
+
 
   logout: () => {
     return HttpClient.post<any>(API_ENDPOINTS.LOGOUT, {});
