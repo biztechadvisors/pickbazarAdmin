@@ -69,7 +69,6 @@ export const useMeQuery = () => {
 
   // Get user details from UserService
   const { username, sub } = UserService.getUserDetails();
-console.log('usemeQuery',username, sub);
   return useQuery<User, Error>(
     [API_ENDPOINTS.ME, { username, sub }],
     () => userClient.me({ username, sub }),

@@ -114,7 +114,21 @@ export const useUpdateStockData = (user_id: any) => {
   return mutation;
 };
 
-
-export const useFetchStockOrderData=({dealerId, orderId})=>{
-  return useQuery(['stockData', dealerId, orderId], stockClient.getStockByOrderId({dealerId, orderId}))
+export interface StockIdS {
+  dealerId: number;
+  orderId: string;
 }
+export const useFetchStockOrderData = ({ dealerId, orderId }: StockIdS) => {
+  return useQuery([API_ENDPOINTS.STOCK, dealerId, orderId], async () => {
+    try {
+      const data = await stockClient.getStockByOrderId({ dealerId, orderId });
+      return data;
+    } catch (error) {
+      console.log(error);
+    }
+  });
+};
+
+export const useCreateStockById = ({ params }: any) => {
+  return useMutation(() => stockClient.updateStockById({ params }));
+};

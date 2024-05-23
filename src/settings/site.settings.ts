@@ -48,11 +48,11 @@ export const siteSettings = {
         label: 'sidebar-nav-item-dashboard',
         icon: 'DashboardIcon',
       },
-      // {
-      //   href: Routes.shop.list,
-      //   label: 'sidebar-nav-item-shops',
-      //   icon: 'ShopIcon',
-      // },
+      {
+        href: Routes.shop.list,
+        label: 'sidebar-nav-item-shops',
+        icon: 'ShopIcon',
+      },
       {
         href: Routes.adminMyShops,
         label: 'sidebar-nav-item-my-shops',

@@ -8,6 +8,7 @@ import {
 } from '@/types';
 import { API_ENDPOINTS } from './api-endpoints';
 import { HttpClient } from './http-client';
+import { StockIdS } from '../stocks';
 
 export const stockClient = {
   getById: (id: number) => {
@@ -46,11 +47,24 @@ export const stockClient = {
     );
   },
 
-  getStockByOrderId:async ({dealerId, orderId})=>{
-    console.log("dealerId**********************", dealerId)
-    console.log("orderid---------------------", orderId)
-    return await HttpClient.get(`${API_ENDPOINTS.STOCK}/user/${dealerId}/order/${orderId}`)
+  // get stock by dealer id's
+
+  getStockByOrderId: async ({ dealerId, orderId }: StockIdS) => {
+    return await HttpClient.get(
+      `${API_ENDPOINTS.STOCK}/user/${dealerId}/order/${orderId}`
+    );
+  },
+
+
+
+  // update stock by admin
+
+
+  updateStockById:async ({params}:any)=>{
+    console.log("paramsss", params)
   }
 };
+
+
 
 

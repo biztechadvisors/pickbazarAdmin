@@ -5,6 +5,7 @@ import Button from '@/components/ui/button';
 import { Table } from '@/components/ui/table';
 import { useTranslation } from 'next-i18next';
 import { useQuery } from 'react-query';
+import { useCreateStockById } from '@/data/stocks';
 
 interface DispatchModalProps {
   isOpen: boolean;
@@ -19,13 +20,27 @@ const DispatchModal: React.FC<DispatchModalProps> = ({
   order,
   updateDispatch,
 }) => {
-    console.log("order****************************", order)
   const { t } = useTranslation();
   const { handleSubmit, control } = useForm();
 
-  const onSubmit = (data: any) => {
-    updateDispatch(data);
-    onClose();
+  const onSubmit = (rowData: any) => (data: any) => {
+    const updatedData = {
+      ...rowData,
+      ...data.products[rowData.id],
+    };
+    const updateDispatchQuant = updatedData?.update_qty;
+    const order_id = updatedData?.order?.id;
+    const product_id = updatedData?.product?.id;
+    const variation_option_id = updatedData?.variation_options?.id;
+
+    const finalUpdatedData = {
+      updateDispatchQuant,
+      order_id,
+      product_id,
+      variation_option_id,
+    };
+
+    // const {mutate}=useCreateStockById({finalUpdatedData})
   };
 
   const columns = [
@@ -36,22 +51,24 @@ const DispatchModal: React.FC<DispatchModalProps> = ({
     },
     {
       title: t('Name'),
-      dataIndex: 'name',
       key: 'name',
+      render: (_: any, item: any) => <span>{item.product.name}</span>,
     },
     {
       title: t('Status'),
-      dataIndex: 'status',
       key: 'status',
+      render: (_: any, item: any) => (
+        <span>{`${item.product.in_stock ? 'In Stock' : 'out of stock'}`}</span>
+      ),
     },
     {
-      title: t('Current-Qty'),
+      title: t('Ordered-Qty'),
       key: 'current_qty',
       render: (_: any, item: any) => (
         <Controller
           name={`products.${item.id}.current_qty`}
           control={control}
-          defaultValue={item.pivot.order_quantity}
+          defaultValue={item.orderedQuantity}
           render={({ field }) => (
             <input
               type="number"
@@ -69,7 +86,7 @@ const DispatchModal: React.FC<DispatchModalProps> = ({
         <Controller
           name={`products.${item.id}.dispatched_qty`}
           control={control}
-          defaultValue={item.dispatched_qty || 0}
+          defaultValue={item.dispatchedQuantity}
           render={({ field }) => (
             <input
               type="number"
@@ -105,10 +122,7 @@ const DispatchModal: React.FC<DispatchModalProps> = ({
         <Controller
           name={`products.${item.id}.pending_qty`}
           control={control}
-          defaultValue={
-            item.pivot.order_quantity -
-            (item.dispatched_qty + (item.update_qty || 0))
-          }
+          defaultValue={item.ordPendQuant}
           render={({ field }) => (
             <input
               type="number"
@@ -123,12 +137,10 @@ const DispatchModal: React.FC<DispatchModalProps> = ({
       title: t('Action'),
       key: 'action',
       render: (_: any, item: any) => (
-        <Button onClick={handleSubmit(onSubmit)}>Update</Button>
+        <Button onClick={handleSubmit(onSubmit(item))}>Update</Button>
       ),
     },
   ];
-
-  console.log('order*********', order);
 
   return (
     <Transition appear show={isOpen} as={Fragment}>
@@ -178,7 +190,7 @@ const DispatchModal: React.FC<DispatchModalProps> = ({
                     <Table
                       //@ts-ignore
                       columns={columns}
-                      data={order?.products}
+                      data={order}
                       rowKey="id"
                     />
                   </div>

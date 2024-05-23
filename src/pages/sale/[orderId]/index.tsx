@@ -17,7 +17,11 @@ import {
   useOrderQuery,
   useUpdateOrderMutation,
 } from '@/data/order';
-import { useFetchStockOrderData, useGetStockByOrder, useOrderSalesQuery } from '@/data/stocks';
+import {
+  useFetchStockOrderData,
+  useGetStockByOrder,
+  useOrderSalesQuery,
+} from '@/data/stocks';
 import { siteSettings } from '@/settings/site.settings';
 import { Attachment, OrderStatus, PaymentStatus } from '@/types';
 import { formatAddress } from '@/utils/format-address';
@@ -46,7 +50,7 @@ export default function OrderDetailsPage() {
   const { alignLeft, alignRight, isRTL } = useIsRTL();
   const { resetStock } = useStock();
   const [, resetCheckout] = useAtom(clearCheckoutAtom);
-  const [isDispatchModalOpen, setDispatchModalOpen] = useState(false); 
+  const [isDispatchModalOpen, setDispatchModalOpen] = useState(false);
 
   const handleDispatchUpdate = (data: any) => {
     // Logic to update the dispatch product
@@ -129,20 +133,17 @@ export default function OrderDetailsPage() {
     0
   );
 
-  const {orderId}=query
+  const { orderId } = query;
 
-  const {data:meData}=useMeQuery()
+  const { data: meData } = useMeQuery();
 
-  console.log("fsfsbfeb", meData)
+  const dealerId = 99;
 
-  const dealerId=99
+  const userId = order?.customer_id;
 
-  const userId=order?.customer_id
-
-
-
-  const {data} = useFetchStockOrderData({dealerId, orderId});
   
+
+  const { data } = useFetchStockOrderData({ dealerId, orderId });
 
   if (loading) return <Loader text={t('common:text-loading')} />;
   if (error) return <ErrorMessage message={error.message} />;
@@ -206,14 +207,9 @@ export default function OrderDetailsPage() {
     },
   ];
 
-  console.log("query", query)
-  console.log("orderId", orderId)
+  console.log("order*****check", order)
 
-  console.log("order", order)
-
-  console.log("user_id", userId)
-
-  console.log("data==============================", data)
+  console.log("userId****", userId)
 
   return (
     <>
@@ -263,21 +259,18 @@ export default function OrderDetailsPage() {
                       {t('form:button-label-change-status')}
                     </span>
                   </Button>
-                  
                 </div>
               </form>
-              
             )}
-            <Button onClick={() => setDispatchModalOpen(true)}>
-              <span className="hidden sm:block">
-                {t('form:button-label-change-dispatch')}
-              </span>
-              <span className="block sm:hidden">
-                {t('form:button-label-change-dispatch')}
-              </span>
-            </Button>
+          <Button onClick={() => setDispatchModalOpen(true)}>
+            <span className="hidden sm:block">
+              {t('form:button-label-change-dispatch')}
+            </span>
+            <span className="block sm:hidden">
+              {t('form:button-label-change-dispatch')}
+            </span>
+          </Button>
         </div>
-        
 
         <div className="my-5 flex items-center justify-center lg:my-10">
           <OrderStatusProgressBox
