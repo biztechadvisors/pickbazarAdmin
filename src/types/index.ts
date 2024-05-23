@@ -176,6 +176,7 @@ export interface GetParams {
   userId: string;
   language: string;
   categoryId : number; //for getting subcategory
+  shopId : number;
 }
 
 export interface QueryOptions {
