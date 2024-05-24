@@ -1,4 +1,4 @@
-import { useMutation, useQuery } from 'react-query';
+import { useMutation, useQuery, useQueryClient } from 'react-query';
 import { API_ENDPOINTS } from './client/api-endpoints';
 import { stockClient } from './client/stocks';
 import { Order, OrderPaginator, OrderQueryOptions } from '@/types';
@@ -130,11 +130,14 @@ export const useFetchStockOrderData = ({ dealerId, orderId }: StockIdS) => {
 };
 
 export const useUpdateStockDataById = (user_id: any) => {
+  const queryClient = useQueryClient();
+
   return useMutation(
     (updatedData: any) => stockClient.updateStockDataById(user_id, updatedData),
     {
       onSuccess: () => {
         toast.success('Stock data updated successfully');
+        queryClient.invalidateQueries([API_ENDPOINTS.STOCK]);
       },
       onError: () => {
         toast.error('Failed to update stock data');

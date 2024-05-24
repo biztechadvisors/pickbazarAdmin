@@ -1,5 +1,6 @@
 import { AUTH_TOKEN_KEY } from '@/lib/constants';
 import type { SearchParamOptions } from '@/types';
+import { getAuthCredentials } from '@/utils/auth-utils';
 import axios from 'axios';
 import Cookies from 'js-cookie';
 import Router from 'next/router';
@@ -13,12 +14,15 @@ const Axios = axios.create({
 });
 // Change request data/error here
 Axios.interceptors.request.use((config) => {
-  const token = Cookies.get(AUTH_TOKEN_KEY);
+  const token = getAuthCredentials();
+
   //@ts-ignore
   config.headers = {
     ...config.headers,
-    Authorization: `Bearer ${token ? token : ''}`,
+    Authorization: `Bearer ${token.token ? token.token : ''}`,
   };
+
+  // console.log("config****", config)
   return config;
 });
 

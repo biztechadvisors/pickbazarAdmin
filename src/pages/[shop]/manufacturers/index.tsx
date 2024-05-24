@@ -23,9 +23,7 @@ import { useManufacturersQuery } from '@/data/manufacturer';
 import { Config } from '@/config';
 import { useMeQuery } from '@/data/user';
 import { useShopQuery } from '@/data/shop';
-import { useAtom } from 'jotai';
-import { newPermission } from '@/contexts/permission/storepermission';
-import { siteSettings } from '@/settings/site.settings';
+import { AllPermission } from '@/utils/AllPermission';
 
 export default function Manufacturers() {
   const router = useRouter();
@@ -55,12 +53,10 @@ export default function Manufacturers() {
   });
   const { id: shop_id } = shopData ?? {};
 
-  const [getPermission,_]=useAtom(newPermission)  
-  const canWrite =  permissions.includes('super_admin')
-  ? siteSettings.sidebarLinks
-  :getPermission?.find(
-    (permission) => permission.type === 'sidebar-nav-item-manufacturers'
-  )?.write;
+  const permissionTypes = AllPermission(); 
+
+  const canWrite = permissionTypes.includes('sidebar-nav-item-manufacturers');
+
 
   if (loading) return <Loader text={t('common:text-loading')} />;
   if (error) return <ErrorMessage message={error.message} />;

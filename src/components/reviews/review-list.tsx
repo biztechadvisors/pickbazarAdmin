@@ -16,9 +16,7 @@ import { useRouter } from 'next/router';
 import TitleWithSort from '@/components/ui/title-with-sort';
 import { StarIcon } from '@/components/icons/star-icon';
 import { useModalAction } from '@/components/ui/modal/modal.context';
-import { newPermission } from '@/contexts/permission/storepermission';
-import { useAtom } from 'jotai';
-import { getAuthCredentials } from '@/utils/auth-utils';
+import { AllPermission } from '@/utils/AllPermission';
 
 export type IProps = {
   reviews: Review[] | undefined;
@@ -38,13 +36,10 @@ const ReviewList = ({
   const router = useRouter();
   const { alignLeft } = useIsRTL();
   const { openModal } = useModalAction();
-  const [getPermission,_]=useAtom(newPermission)
-  const { permissions } = getAuthCredentials();
-  const canWrite =  permissions.includes('super_admin')
-  ? siteSettings.sidebarLinks
-  :getPermission?.find(
-    (permission) => permission.type === 'sidebar-nav-item-reviews'
-  )?.write;
+ 
+  const permissionTypes = AllPermission(); 
+
+  const canWrite = permissionTypes.includes('sidebar-nav-item-reviews');
 
   const [sortingObj, setSortingObj] = useState<{
     sort: SortOrder;

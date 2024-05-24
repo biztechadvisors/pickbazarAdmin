@@ -25,8 +25,7 @@ const formatOptionLabel = ({ logo, name }: FormatOptionLabelProps) => (
     <div className="relative mr-3 h-6 w-6 shrink-0 overflow-hidden rounded-full">
       {!isEmpty(logo?.thumbnail) ? (
         <Image
-          // src={logo?.thumbnail}
-          src={`${process?.env?.NEXT_PUBLIC_REST_API_ENDPOINT}/${logo?.thumbnail ?? '/avatar-placeholder.svg'}`}
+          src={logo?.thumbnail}
           alt={name}
           className="product-image object-contain"
           fill

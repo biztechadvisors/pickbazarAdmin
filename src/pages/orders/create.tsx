@@ -85,6 +85,10 @@ export default function ProductsPage() {
 
   console.log('products', products);
 
+  console.log("shop_id ", shop_id )
+
+  console.log("meData", meData)
+
   return (
     <>
       <Card className="mb-8 flex flex-col">

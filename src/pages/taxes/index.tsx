@@ -15,6 +15,7 @@ import { adminOnly, getAuthCredentials } from '@/utils/auth-utils';
 import { useAtom } from 'jotai';
 import { newPermission } from '@/contexts/permission/storepermission';
 import { siteSettings } from '@/settings/site.settings';
+import { AllPermission } from '@/utils/AllPermission';
 
 export default function TaxesPage() {
   const { t } = useTranslation();
@@ -27,13 +28,12 @@ export default function TaxesPage() {
     sortedBy,
   });
 
-  const [getPermission,_]=useAtom(newPermission)
-  const { permissions } = getAuthCredentials();
-  const canWrite =  permissions?.includes('super_admin')
-  ? siteSettings.sidebarLinks
-  :getPermission?.find(
-    (permission) => permission.type === 'sidebar-nav-item-taxes'
-  )?.write;
+
+  const { permissions } = getAuthCredentials(); 
+
+  const permissionTypes = AllPermission(); 
+
+  const canWrite = permissionTypes.includes('sidebar-nav-item-taxes');
 
   if (loading) return <Loader text={t('common:text-loading')} />;
   if (error) return <ErrorMessage message={error.message} />;

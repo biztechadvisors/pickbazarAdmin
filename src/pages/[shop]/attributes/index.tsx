@@ -23,9 +23,7 @@ import { useAttributesQuery } from '@/data/attributes';
 import { Config } from '@/config';
 import { useMeQuery } from '@/data/user';
 import { Routes } from '@/config/routes';
-import { useAtom } from 'jotai';
-import { newPermission } from '@/contexts/permission/storepermission';
-import { siteSettings } from '@/settings/site.settings';
+import { AllPermission } from '@/utils/AllPermission';
 
 export default function AttributePage() {
   const router = useRouter();
@@ -60,12 +58,11 @@ export default function AttributePage() {
     }
   );
 
-  const [getPermission,_]=useAtom(newPermission)
-  const canWrite =  permissions?.includes('super_admin')
-  ? siteSettings.sidebarLinks
-  :getPermission?.find(
-    (permission) => permission.type === 'sidebar-nav-item-attributes'
-  )?.write;
+ 
+
+  const permissionTypes = AllPermission(); 
+
+  const canWrite = permissionTypes.includes('sidebar-nav-item-attributes');
 
   if (loading || fetchingShop)
     return <Loader text={t('common:text-loading')} />;

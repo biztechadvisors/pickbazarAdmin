@@ -61,7 +61,7 @@ export const stockClient = {
     console.log('user_id', user_id);
     console.log('updateddata', updatedData);
     return await HttpClient.put(
-      `${API_ENDPOINTS.STOCK}/updateStocks/${user_id}`,
+      `${API_ENDPOINTS.STOCK}/update/admin/${user_id}`,
       updatedData
     );
   },

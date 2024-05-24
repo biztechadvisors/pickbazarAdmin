@@ -141,9 +141,10 @@ export default function OrderDetailsPage() {
 
   const userId = order?.customer_id;
 
-  
-
-  const { data } = useFetchStockOrderData({ dealerId, orderId });
+  const { data, isLoading, isError } = useFetchStockOrderData({
+    dealerId,
+    orderId,
+  });
 
   if (loading) return <Loader text={t('common:text-loading')} />;
   if (error) return <ErrorMessage message={error.message} />;
@@ -207,9 +208,9 @@ export default function OrderDetailsPage() {
     },
   ];
 
-  console.log("order*****check", order)
+  console.log('order*****check', order);
 
-  console.log("userId****", userId)
+  console.log('userId****', userId);
 
   return (
     <>

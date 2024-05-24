@@ -19,9 +19,7 @@ import { useState } from 'react';
 import { SortOrder } from '@/types';
 import { Routes } from '@/config/routes';
 import { useMeQuery } from '@/data/user';
-import { useAtom } from 'jotai';
-import { newPermission } from '@/contexts/permission/storepermission';
-import { siteSettings } from '@/settings/site.settings';
+import { AllPermission } from '@/utils/AllPermission';
 
 export default function StaffsPage() {
   const router = useRouter();
@@ -33,14 +31,14 @@ export default function StaffsPage() {
   const { t } = useTranslation();
   const [page, setPage] = useState(1);
   const [orderBy, setOrder] = useState('created_at');
-  const [sortedBy, setColumn] = useState<SortOrder>(SortOrder.Desc);
-  
-  const [getPermission,_]=useAtom(newPermission)  
-  const canWrite =  permissions.includes('super_admin')
-  ? siteSettings.sidebarLinks
-  :getPermission?.find(
-   (permission) => permission.type === 'sidebar-nav-item-staffs'
- )?.write;
+  const [sortedBy, setColumn] = useState<SortOrder>(SortOrder.Desc); 
+
+
+const permissionTypes = AllPermission
+(); 
+
+const canWrite = permissionTypes.includes('sidebar-nav-item-staffs');
+
 
   const { data: shopData, isLoading: fetchingShopId } = useShopQuery({
     slug: shop as string,

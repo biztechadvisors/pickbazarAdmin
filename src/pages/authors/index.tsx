@@ -19,6 +19,7 @@ import { Config } from '@/config';
 import { newPermission } from '@/contexts/permission/storepermission';
 import { useAtom } from 'jotai';
 import { siteSettings } from '@/settings/site.settings';
+import { AllPermission } from '@/utils/AllPermission';
 
 export default function Authors() {
   const { t } = useTranslation();
@@ -36,13 +37,17 @@ export default function Authors() {
     sortedBy,
     language: locale,
   });
-  const [getPermission,_]=useAtom(newPermission)
-  const { permissions } = getAuthCredentials();
-  const canWrite =  permissions.includes('super_admin')
-  ? siteSettings.sidebarLinks
-  :getPermission?.find(
-    (permission) => permission.type === 'sidebar-nav-item-authors'
-  )?.write;
+  // const [getPermission,_]=useAtom(newPermission)
+  // const { permissions } = getAuthCredentials();
+  // const canWrite =  permissions.includes('super_admin')
+  // ? siteSettings.sidebarLinks
+  // :getPermission?.find(
+  //   (permission) => permission.type === 'sidebar-nav-item-authors'
+  // )?.write;
+
+  const permissionTypes = AllPermission(); 
+
+const canWrite = permissionTypes.includes('sidebar-nav-item-authors');
 
   if (loading) return <Loader text={t('common:text-loading')} />;
   if (error) return <ErrorMessage message={error.message} />;

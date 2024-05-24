@@ -13,10 +13,7 @@ import { Config } from '@/config';
 import Link from '@/components/ui/link';
 import { Routes } from '@/config/routes';
 import LanguageSwitcher from '@/components/ui/lang-action/action';
-import { newPermission } from '@/contexts/permission/storepermission';
-import { useAtom } from 'jotai';
-import { getAuthCredentials } from '@/utils/auth-utils';
-import { siteSettings } from '@/settings/site.settings';
+import { AllPermission } from '@/utils/AllPermission';
 
 export type IProps = {
   categories: Category[] | undefined;
@@ -35,14 +32,11 @@ const CategoryList = ({
   console.log("$$$$$$$",categories)
   const { t } = useTranslation();
   const rowExpandable = (record: any) => record.children?.length;
-  const { alignLeft, alignRight } = useIsRTL();  
-  const [getPermission,_]=useAtom(newPermission)
-  const { permissions } = getAuthCredentials();
-  const canWrite =  permissions?.includes('super_admin')
-  ? siteSettings.sidebarLinks
-  :getPermission?.find(
-    (permission) => permission.type === 'sidebar-nav-item-categories'
-  )?.write;
+  const { alignLeft, alignRight } = useIsRTL();   
+
+  const permissionTypes = AllPermission(); 
+
+  const canWrite = permissionTypes.includes('sidebar-nav-item-categories');
 
   const [sortingObj, setSortingObj] = useState<{
     sort: SortOrder;
@@ -113,7 +107,7 @@ const CategoryList = ({
         return (
           <div className="relative mx-auto h-10 w-10">
             <Image
-              src={image?.thumbnail ? `/${image.thumbnail}` : '/'}
+              src={image?.thumbnail ?? '/'}
               alt={name}
               fill
               sizes="(max-width: 768px) 100vw"
@@ -174,26 +168,26 @@ const CategoryList = ({
         </div>
       ),
     },
-    {      
+    {
       ...(canWrite
-        ?  {
+        ? {
           title: t('table:table-item-actions'),
           dataIndex: 'slug',
           key: 'actions',
           align: alignRight,
           width: 290,
-          render: (slug: string, record: Category) =>  (
+          render: (slug: string, record: Category) => (
             <LanguageSwitcher
               slug={slug}
               record={record}
               deleteModalView="DELETE_CATEGORY"
               routes={Routes?.category}
             />
-            ) ,
-        }        
+          ),
+        }
         : null),
-    }, 
-   
+    },
+
   ];
 
   return (

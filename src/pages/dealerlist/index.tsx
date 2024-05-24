@@ -16,9 +16,7 @@ import { Config } from '@/config';
 import DealerTypeList from '@/components/dealerlist/dealer-list';
 import { useMeQuery, useUsersQuery } from '@/data/user';
 import { useDealerQuery, useDealerQueryGet } from '@/data/dealer';
-import { useAtom } from 'jotai';
-import { newPermission } from '@/contexts/permission/storepermission';
-import { siteSettings } from '@/settings/site.settings';
+import { AllPermission } from '@/utils/AllPermission';
 
 export default function DealerPage() {
   const { locale } = useRouter();
@@ -38,13 +36,9 @@ export default function DealerPage() {
   
   const userdealer = users.filter((user)=>user?.type?.type_name==='dealer')
 
-  const [getPermission,_]=useAtom(newPermission)
-  const { permissions } = getAuthCredentials();
-  const canWrite = permissions?.includes('super_admin')
-    ? siteSettings.sidebarLinks
-    : getPermission?.find(
-      (permission) => permission.type === 'sidebar-nav-item-dealerlist'
-    )?.write;
+  const permissionTypes = AllPermission(); 
+
+const canWrite = permissionTypes.includes('sidebar-nav-item-dealerlist');
 
   // const {
   //   data,

@@ -5,7 +5,7 @@ import Button from '@/components/ui/button';
 import { Table } from '@/components/ui/table';
 import { useTranslation } from 'next-i18next';
 import { useQuery } from 'react-query';
-import { useCreateStockById, useUpdateStockDataById } from '@/data/stocks';
+import { useUpdateStockDataById } from '@/data/stocks';
 
 interface DispatchModalProps {
   isOpen: boolean;
@@ -31,10 +31,10 @@ const DispatchModal: React.FC<DispatchModalProps> = ({
       ...rowData,
       ...data.products[rowData.id],
     };
-    const updateDispatchQuant = updatedData?.update_qty;
-    const order_id = updatedData?.order?.id;
-    const product_id = updatedData?.product?.id;
-    const variation_option_id = updatedData?.variation_options?.id;
+    const updateDispatchQuant = Number(updatedData?.update_qty);
+    const order_id = Number(updatedData?.order?.id);
+    const product_id = Number(updatedData?.product?.id);
+    const variation_option_id = Number(updatedData?.variation_options?.id);
 
     const finalUpdatedData = {
       updateDispatchQuant,
@@ -95,6 +95,7 @@ const DispatchModal: React.FC<DispatchModalProps> = ({
               type="number"
               {...field}
               className="w-full rounded border border-gray-300 px-2 py-1"
+              disabled
             />
           )}
         />
