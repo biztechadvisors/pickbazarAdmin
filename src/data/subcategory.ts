@@ -65,9 +65,9 @@ export const useSubCategoryQuery = ({  slug, language, userId, categoryId, shopI
  console.log("slug+++++++++++++", slug,  categoryId, shopId)
   const { data, error, isLoading } = useQuery<SubCategory, Error>(
     [API_ENDPOINTS.SUBCATEGORIES, { slug, language, categoryId, userId, shopId }],
-    () => subcategoryClient.get({ slug, language, categoryId, userId, shopId })
+    () => subcategoryClient.getSubCategory({ slug, language, categoryId, shopId })
   );
-console.log("slug data", data)
+console.log("slug data", data, categoryId, shopId)
   return {
     subcategory: data ?? [],
     error,
@@ -84,7 +84,7 @@ export const useSubCategoriesQuery = (options: Partial<SubCategoryQueryOptions>)
       keepPreviousData: true,
     }
   );
-  console.log("Subcategories DATA:", data ?? []);
+
   return {
     subcategories: data ?? [],
     paginatorInfo: mapPaginatorData(data),

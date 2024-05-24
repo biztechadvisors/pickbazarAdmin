@@ -5,7 +5,7 @@ import Button from '@/components/ui/button';
 import { Table } from '@/components/ui/table';
 import { useTranslation } from 'next-i18next';
 import { useQuery } from 'react-query';
-import { useCreateStockById } from '@/data/stocks';
+import { useCreateStockById, useUpdateStockDataById } from '@/data/stocks';
 
 interface DispatchModalProps {
   isOpen: boolean;
@@ -22,6 +22,9 @@ const DispatchModal: React.FC<DispatchModalProps> = ({
 }) => {
   const { t } = useTranslation();
   const { handleSubmit, control } = useForm();
+
+  const user_id = 99;
+  const { mutate: updateStockDataById } = useUpdateStockDataById(user_id);
 
   const onSubmit = (rowData: any) => (data: any) => {
     const updatedData = {
@@ -40,7 +43,7 @@ const DispatchModal: React.FC<DispatchModalProps> = ({
       variation_option_id,
     };
 
-    // const {mutate}=useCreateStockById({finalUpdatedData})
+    updateStockDataById(finalUpdatedData);
   };
 
   const columns = [

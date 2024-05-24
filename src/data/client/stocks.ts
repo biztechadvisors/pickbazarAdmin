@@ -55,16 +55,14 @@ export const stockClient = {
     );
   },
 
-
-
   // update stock by admin
 
-
-  updateStockById:async ({params}:any)=>{
-    console.log("paramsss", params)
-  }
+  updateStockDataById: async (user_id: any, updatedData: any) => {
+    console.log('user_id', user_id);
+    console.log('updateddata', updatedData);
+    return await HttpClient.put(
+      `${API_ENDPOINTS.STOCK}/updateStocks/${user_id}`,
+      updatedData
+    );
+  },
 };
-
-
-
-

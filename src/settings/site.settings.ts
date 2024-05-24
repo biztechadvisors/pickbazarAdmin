@@ -1,4 +1,4 @@
-import { adminAndOwnerOnly, adminOwnerAndStaffOnly } from '@/utils/auth-utils';
+import { adminAndOwnerOnly, adminOwnerAndStaffOnly, ownerOnly } from '@/utils/auth-utils';
 import { Routes } from '@/config/routes';
 import { dealerOnly, getAuthCredentials, hasAccess } from '@/utils/auth-utils';
 
@@ -7,11 +7,14 @@ const Type = {
   Admin: 'admin',
   Customer: 'customer',
   Staff: 'staff',
+  Owner: 'owner',
+  // serviceProvider : 'service_provider'
 };
 const { permissions }: any = getAuthCredentials();
 let permission = hasAccess(dealerOnly, permissions);
 let identify = permissions;
 const matching: any = 'dealer';
+console.log("permission+++++++++++", permissions)
 // console.log('fetched items', permission, 'working permissoin', permissions);
 export const siteSettings = {
   name: 'PickBazar',
@@ -42,6 +45,32 @@ export const siteSettings = {
   ],
   currencyCode: 'IN',
   sidebarLinks: {
+    owner:[
+      {
+        href: Routes.dashboard,
+        label: 'sidebar-nav-item-dashboard',
+        icon: 'DashboardIcon',
+        permissions: ownerOnly,
+      },
+      {
+        href: Routes.shop.list,
+        label: 'sidebar-nav-item-shops',
+        icon: 'ShopIcon',
+        permissions: ownerOnly,
+      },
+      {
+        href: Routes.permission.list,
+        label: 'sidebar-nav-item-permissions',
+        icon: 'CalendarScheduleIcon',
+        permissions: ownerOnly,
+      },
+      {
+        href: Routes.user.list,
+        label: 'sidebar-nav-item-users',
+        icon: 'UsersIcon',
+        permissions: ownerOnly,
+      },
+    ],
     admin: [
       {
         href: Routes.dashboard,
@@ -340,6 +369,7 @@ export const siteSettings = {
     //   },
 
     // ],
+  
   },
   product: {
     placeholder: '/product-placeholder.svg',

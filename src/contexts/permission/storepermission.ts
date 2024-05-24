@@ -23,6 +23,7 @@ interface Permission {
     (get) => get(permissionAtom).permission,
     (get, set, data: Permission[]) => { 
       const prev = get(permissionAtom);    
+      console.log("data***************", data, set)
       return set(permissionAtom, { ...prev, permission: data });
     }
   );

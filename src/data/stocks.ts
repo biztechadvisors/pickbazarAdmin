@@ -129,6 +129,16 @@ export const useFetchStockOrderData = ({ dealerId, orderId }: StockIdS) => {
   });
 };
 
-export const useCreateStockById = ({ params }: any) => {
-  return useMutation(() => stockClient.updateStockById({ params }));
+export const useUpdateStockDataById = (user_id: any) => {
+  return useMutation(
+    (updatedData: any) => stockClient.updateStockDataById(user_id, updatedData),
+    {
+      onSuccess: () => {
+        toast.success('Stock data updated successfully');
+      },
+      onError: () => {
+        toast.error('Failed to update stock data');
+      },
+    }
+  );
 };

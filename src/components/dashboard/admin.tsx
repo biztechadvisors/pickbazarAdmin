@@ -9,8 +9,8 @@ import RecentOrders from '@/components/order/recent-orders';
 import PopularProductList from '@/components/product/popular-product-list';
 import { useOrdersQuery } from '@/data/order';
 import { useTranslation } from 'next-i18next';
-import { useWithdrawsQuery } from '@/data/withdraw';
-import WithdrawTable from '@/components/withdraw/withdraw-table';
+// import { useWithdrawsQuery } from '@/data/withdraw';
+// import WithdrawTable from '@/components/withdraw/withdraw-table';
 import { ShopIcon } from '@/components/icons/sidebar';
 import { DollarIcon } from '@/components/icons/shops/dollar';
 import { useAnalyticsQuery, usePopularProductsQuery } from '@/data/dashboard';
@@ -38,12 +38,12 @@ export default function Dashboard(user: any) {
 
   const customerId = useMe?.id ?? '';
 
+  console.log('customerId', customerId);
+
   const query = {
     customerId: parseInt(customerId),
     state: '',
   };
-
-  console.log('userData', query);
 
   const { data, isLoading: loading } = useAnalyticsQuery(query);
   const { price: total_revenue } = usePrice(
@@ -76,11 +76,12 @@ export default function Dashboard(user: any) {
     error: popularProductError,
   } = usePopularProductsQuery({ limit: 10, language: locale });
 
-  const { withdraws, loading: withdrawLoading } = useWithdrawsQuery({
-    limit: 10,
-  });
+  // const { withdraws, loading: withdrawLoading } = useWithdrawsQuery({
+  //   limit: 10,
+  // });
 
-  if (loading || orderLoading || popularProductLoading || withdrawLoading) {
+  // if (loading || orderLoading || popularProductLoading || withdrawLoading) {
+    if (loading || orderLoading || popularProductLoading) {
     return <Loader text={t('common:text-loading')} />;
   }
   if (orderError || popularProductError) {
