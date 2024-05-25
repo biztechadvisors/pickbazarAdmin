@@ -1,10 +1,11 @@
 import Navbar from '@/components/layouts/navigation/top-navbar';
-import { Fragment, useState, useEffect } from 'react';
+import { Fragment, useState } from 'react';
 import MobileNavigation from '@/components/layouts/navigation/mobile-navigation';
 import { siteSettings } from '@/settings/site.settings';
 import { useTranslation } from 'next-i18next';
 import SidebarItem from '@/components/layouts/navigation/sidebar-item';
 import { useRouter } from 'next/router';
+import { useEffect } from 'react';
 import { newPermission } from '@/contexts/permission/storepermission';
 import { useAtom } from 'jotai';
 import { getAuthCredentials } from '@/utils/auth-utils';
@@ -16,23 +17,31 @@ const AdminLayout: React.FC<{ children?: React.ReactNode }> = ({
   children,
 }) => {
   const { t } = useTranslation();
-  const { locale, pathname } = useRouter();
+  const { locale } = useRouter();
+
+  const router = useRouter();
   const dir = locale === 'ar' || locale === 'he' ? 'rtl' : 'ltr';
+
   const [matched, _] = useAtom(newPermission);
+
   const { permissions } = getAuthCredentials();
-  const { data } = useMeQuery();
+
+  const { data, isLoading: loading, error } = useMeQuery();
+
   const [shopSlug, setShopSlug] = useAtom(shopSlugAtom);
 
   useEffect(() => {
-    if (data?.shops?.length > 0) {
+    if (data && data.shops && data.shops.length > 0) {
       const newShopSlug = data.shops[0].slug;
       setShopSlug(newShopSlug);
       localStorage.setItem('shopSlug', newShopSlug);
     }
   }, [data]);
 
-  const getMatchedLinks = () => {
-    const commonLinks = [
+  let matchedLinks = [];
+
+  if (router.pathname === Routes.adminMyShops) {
+    matchedLinks = [
       {
         href: Routes.attribute.list,
         label: 'sidebar-nav-item-attributes',
@@ -69,40 +78,367 @@ const AdminLayout: React.FC<{ children?: React.ReactNode }> = ({
         icon: 'TagIcon',
       },
     ];
-
-    if (pathname === Routes.adminMyShops) {
-      return commonLinks;
-    }
-
-    if (
-      [
-        Routes.attribute.list,
-        Routes.type.list,
-        Routes.category.list,
-        Routes.subcategory.list,
-        Routes.product.list,
-        Routes.reviews.list,
-        Routes.tag.list,
-      ].includes(pathname)
-    ) {
-      return [
-        {
-          href: Routes.dashboard,
-          label: 'sidebar-nav-item-inventory-dashboard',
-          icon: 'DashboardIcon',
-        },
-        ...commonLinks,
-      ];
-    }
-
-    return permissions?.includes('super_admin')
+  } else if (router.pathname === Routes.attribute.list) {
+    matchedLinks = [
+      {
+        href: `${Routes.dashboard}`,
+        label: 'sidebar-nav-item-inventory-dashboard',
+        icon: 'DashboardIcon',
+      },
+      {
+        href: Routes.attribute.list,
+        label: 'sidebar-nav-item-attributes',
+        icon: 'AttributeIcon',
+      },
+      {
+        href: Routes.type.list,
+        label: 'sidebar-nav-item-groups',
+        icon: 'TypesIcon',
+      },
+      {
+        href: Routes.category.list,
+        label: 'sidebar-nav-item-categories',
+        icon: 'CategoriesIcon',
+      },
+      {
+        href: Routes.subcategory.list,
+        label: 'sidebar-nav-item-sub-categories',
+        icon: 'CategoriesIcon',
+      },
+      {
+        href: Routes.product.list,
+        label: 'sidebar-nav-item-products',
+        icon: 'ProductsIcon',
+      },
+      {
+        href: Routes.reviews.list,
+        label: 'sidebar-nav-item-reviews',
+        icon: 'ReviewIcon',
+      },
+      {
+        href: Routes.tag.list,
+        label: 'sidebar-nav-item-tags',
+        icon: 'TagIcon',
+      },
+    ];
+  } else if (router.pathname === Routes.type.list) {
+    matchedLinks = [
+      {
+        href: `${Routes.dashboard}`,
+        label: 'sidebar-nav-item-inventory-dashboard',
+        icon: 'DashboardIcon',
+      },
+      {
+        href: `${Routes.dashboard}`,
+        label: 'sidebar-nav-item-inventory-dashboard',
+        icon: 'DashboardIcon',
+      },
+      {
+        href: Routes.attribute.list,
+        label: 'sidebar-nav-item-attributes',
+        icon: 'AttributeIcon',
+      },
+      {
+        href: Routes.type.list,
+        label: 'sidebar-nav-item-groups',
+        icon: 'TypesIcon',
+      },
+      {
+        href: Routes.category.list,
+        label: 'sidebar-nav-item-categories',
+        icon: 'CategoriesIcon',
+      },
+      {
+        href: Routes.subcategory.list,
+        label: 'sidebar-nav-item-sub-categories',
+        icon: 'CategoriesIcon',
+      },
+      {
+        href: Routes.product.list,
+        label: 'sidebar-nav-item-products',
+        icon: 'ProductsIcon',
+      },
+      // {
+      //   href: Routes.order.list,
+      //   label: 'sidebar-nav-item-orders',
+      //   icon: 'OrdersIcon',
+      // },
+      // {
+      //   href: Routes.refund.list,
+      //   label: 'sidebar-nav-item-refunds',
+      //   icon: 'RefundsIcon',
+      // },
+      {
+        href: Routes.reviews.list,
+        label: 'sidebar-nav-item-reviews',
+        icon: 'ReviewIcon',
+      },
+      {
+        href: Routes.tag.list,
+        label: 'sidebar-nav-item-tags',
+        icon: 'TagIcon',
+      },
+    ];
+  } else if (router.pathname === Routes.category.list) {
+    matchedLinks = [
+      {
+        href: `${Routes.dashboard}`,
+        label: 'sidebar-nav-item-inventory-dashboard',
+        icon: 'DashboardIcon',
+      },
+      {
+        href: Routes.attribute.list,
+        label: 'sidebar-nav-item-attributes',
+        icon: 'AttributeIcon',
+      },
+      {
+        href: Routes.type.list,
+        label: 'sidebar-nav-item-groups',
+        icon: 'TypesIcon',
+      },
+      {
+        href: Routes.category.list,
+        label: 'sidebar-nav-item-categories',
+        icon: 'CategoriesIcon',
+      },
+      {
+        href: Routes.subcategory.list,
+        label: 'sidebar-nav-item-sub-categories',
+        icon: 'CategoriesIcon',
+      },
+      {
+        href: Routes.product.list,
+        label: 'sidebar-nav-item-products',
+        icon: 'ProductsIcon',
+      },
+      // {
+      //   href: Routes.order.list,
+      //   label: 'sidebar-nav-item-orders',
+      //   icon: 'OrdersIcon',
+      // },
+      // {
+      //   href: Routes.refund.list,
+      //   label: 'sidebar-nav-item-refunds',
+      //   icon: 'RefundsIcon',
+      // },
+      {
+        href: Routes.reviews.list,
+        label: 'sidebar-nav-item-reviews',
+        icon: 'ReviewIcon',
+      },
+      {
+        href: Routes.tag.list,
+        label: 'sidebar-nav-item-tags',
+        icon: 'TagIcon',
+      },
+    ];
+  } else if (router.pathname === Routes.subcategory.list) {
+    matchedLinks = [
+      {
+        href: `${Routes.dashboard}`,
+        label: 'sidebar-nav-item-inventory-dashboard',
+        icon: 'DashboardIcon',
+      },
+      {
+        href: Routes.attribute.list,
+        label: 'sidebar-nav-item-attributes',
+        icon: 'AttributeIcon',
+      },
+      {
+        href: Routes.type.list,
+        label: 'sidebar-nav-item-groups',
+        icon: 'TypesIcon',
+      },
+      {
+        href: Routes.category.list,
+        label: 'sidebar-nav-item-categories',
+        icon: 'CategoriesIcon',
+      },
+      {
+        href: Routes.subcategory.list,
+        label: 'sidebar-nav-item-sub-categories',
+        icon: 'CategoriesIcon',
+      },
+      {
+        href: Routes.product.list,
+        label: 'sidebar-nav-item-products',
+        icon: 'ProductsIcon',
+      },
+      // {
+      //   href: Routes.order.list,
+      //   label: 'sidebar-nav-item-orders',
+      //   icon: 'OrdersIcon',
+      // },
+      // {
+      //   href: Routes.refund.list,
+      //   label: 'sidebar-nav-item-refunds',
+      //   icon: 'RefundsIcon',
+      // },
+      {
+        href: Routes.reviews.list,
+        label: 'sidebar-nav-item-reviews',
+        icon: 'ReviewIcon',
+      },
+      {
+        href: Routes.tag.list,
+        label: 'sidebar-nav-item-tags',
+        icon: 'TagIcon',
+      },
+    ];
+  } else if (router.pathname === Routes.product.list) {
+    matchedLinks = [
+      {
+        href: `${Routes.dashboard}`,
+        label: 'sidebar-nav-item-inventory-dashboard',
+        icon: 'DashboardIcon',
+      },
+      {
+        href: Routes.attribute.list,
+        label: 'sidebar-nav-item-attributes',
+        icon: 'AttributeIcon',
+      },
+      {
+        href: Routes.type.list,
+        label: 'sidebar-nav-item-groups',
+        icon: 'TypesIcon',
+      },
+      {
+        href: Routes.category.list,
+        label: 'sidebar-nav-item-categories',
+        icon: 'CategoriesIcon',
+      },
+      {
+        href: Routes.subcategory.list,
+        label: 'sidebar-nav-item-sub-categories',
+        icon: 'CategoriesIcon',
+      },
+      {
+        href: Routes.product.list,
+        label: 'sidebar-nav-item-products',
+        icon: 'ProductsIcon',
+      },
+      {
+        href: Routes.reviews.list,
+        label: 'sidebar-nav-item-reviews',
+        icon: 'ReviewIcon',
+      },
+      {
+        href: Routes.tag.list,
+        label: 'sidebar-nav-item-tags',
+        icon: 'TagIcon',
+      },
+    ];
+  } else if (router.pathname === Routes.reviews.list) {
+    matchedLinks = [
+      {
+        href: `${Routes.dashboard}`,
+        label: 'sidebar-nav-item-inventory-dashboard',
+        icon: 'DashboardIcon',
+      },
+      {
+        href: Routes.attribute.list,
+        label: 'sidebar-nav-item-attributes',
+        icon: 'AttributeIcon',
+      },
+      {
+        href: Routes.type.list,
+        label: 'sidebar-nav-item-groups',
+        icon: 'TypesIcon',
+      },
+      {
+        href: Routes.category.list,
+        label: 'sidebar-nav-item-categories',
+        icon: 'CategoriesIcon',
+      },
+      {
+        href: Routes.subcategory.list,
+        label: 'sidebar-nav-item-sub-categories',
+        icon: 'CategoriesIcon',
+      },
+      {
+        href: Routes.product.list,
+        label: 'sidebar-nav-item-products',
+        icon: 'ProductsIcon',
+      },
+      {
+        href: Routes.reviews.list,
+        label: 'sidebar-nav-item-reviews',
+        icon: 'ReviewIcon',
+      },
+      {
+        href: Routes.tag.list,
+        label: 'sidebar-nav-item-tags',
+        icon: 'TagIcon',
+      },
+    ];
+  } else if (router.pathname === Routes.tag.list) {
+    matchedLinks = [
+      {
+        href: `${Routes.dashboard}`,
+        label: 'sidebar-nav-item-inventory-dashboard',
+        icon: 'DashboardIcon',
+      },
+      {
+        href: Routes.attribute.list,
+        label: 'sidebar-nav-item-attributes',
+        icon: 'AttributeIcon',
+      },
+      {
+        href: Routes.type.list,
+        label: 'sidebar-nav-item-groups',
+        icon: 'TypesIcon',
+      },
+      {
+        href: Routes.category.list,
+        label: 'sidebar-nav-item-categories',
+        icon: 'CategoriesIcon',
+      },
+      {
+        href: Routes.subcategory.list,
+        label: 'sidebar-nav-item-sub-categories',
+        icon: 'CategoriesIcon',
+      },
+      {
+        href: Routes.product.list,
+        label: 'sidebar-nav-item-products',
+        icon: 'ProductsIcon',
+      },
+      {
+        href: Routes.reviews.list,
+        label: 'sidebar-nav-item-reviews',
+        icon: 'ReviewIcon',
+      },
+      {
+        href: Routes.tag.list,
+        label: 'sidebar-nav-item-tags',
+        icon: 'TagIcon',
+      },
+    ];
+  } else {
+    matchedLinks = permissions?.includes('super_admin')
       ? siteSettings.sidebarLinks.admin
       : siteSettings.sidebarLinks.admin.filter((link) =>
-        matched.some((newItem) => newItem.type === link.label)
-      );
-  };
+          matched.some((newItem) => newItem.type === link.label)
+        );
 
-  const matchedLinks = getMatchedLinks();
+    matchedLinks = matchedLinks.filter(
+      (link) =>
+        ![
+          Routes.attribute.list,
+          Routes.type.list,
+          // Routes.settings,
+        //    Routes.order.list,
+          // Routes.refund.list,
+          Routes.category.list,
+          Routes.subcategory.list,
+          Routes.product.list,
+          Routes.reviews.list,
+          // Routes.sales,
+          // Routes.createSales,
+          Routes.tag.list,
+        ].includes(link.href)
+    );
+  }
 
   const SidebarItemMap = () => (
     <Fragment>
@@ -111,6 +447,8 @@ const AdminLayout: React.FC<{ children?: React.ReactNode }> = ({
       ))}
     </Fragment>
   );
+
+  console.log('shopSlug', shopSlug);
 
   return (
     <div
