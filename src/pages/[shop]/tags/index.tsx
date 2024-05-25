@@ -23,6 +23,7 @@ import { useAtom } from 'jotai';
 import { siteSettings } from '@/settings/site.settings';
 import ShopLayout from '@/components/layouts/shop';
 import { useMeQuery } from '@/data/user';
+import { AllPermission } from '@/utils/AllPermission';
 
 export default function Tags() {
   const { t } = useTranslation();
@@ -49,13 +50,17 @@ export default function Tags() {
 
   const shopSlug = meData?.shops?.[0]?.slug;
 
-  const [getPermission, _] = useAtom(newPermission);
-  const { permissions } = getAuthCredentials();
-  const canWrite = permissions?.includes('super_admin')
-    ? siteSettings.sidebarLinks
-    : getPermission?.find(
-        (permission) => permission.type === 'sidebar-nav-item-tags'
-      )?.write;
+  // const [getPermission, _] = useAtom(newPermission);
+  // const { permissions } = getAuthCredentials();
+  // const canWrite = permissions?.includes('super_admin')
+  //   ? siteSettings.sidebarLinks
+  //   : getPermission?.find(
+  //       (permission) => permission.type === 'sidebar-nav-item-tags'
+  //     )?.write;
+
+  const permissionTypes = AllPermission(); 
+
+  const canWrite = permissionTypes.includes('sidebar-nav-item-tags');
 
   if (loading) return <Loader text={t('common:text-loading')} />;
   if (error) return <ErrorMessage message={error.message} />;

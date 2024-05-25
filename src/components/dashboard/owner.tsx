@@ -1,127 +1,3 @@
-// import { useTranslation } from 'next-i18next';
-// import { Fragment } from 'react';
-// import { Tab } from '@headlessui/react';
-// import cn from 'classnames';
-// import dynamic from 'next/dynamic';
-// import { useRouter } from 'next/router';
-// import { isEmpty } from 'lodash';
-// const ShopList = dynamic(() => import('@/components/dashboard/shops/shops'));
-// const Message = dynamic(() => import('@/components/dashboard/shops/message'));
-// const StoreNotices = dynamic(
-//   () => import('@/components/dashboard/shops/store-notices')
-// );
-// import { adminOnly, getAuthCredentials, hasAccess, ownerOnly } from '@/utils/auth-utils';
-// import { title } from 'process';
-
-// const tabList = [
-//   {
-//     title: 'common:sidebar-nav-item-shops',
-//     children: 'ShopList',
-//   },
-//   {
-//     title: 'common:sidebar-nav-item-message',
-//     children: 'Message',
-//   },
-//   {
-//     title: 'common:sidebar-nav-item-store-notice',
-//     children: 'StoreNotices',
-//   },
-//   {
-//     title: 'common:sidebar-nav-item-dashboard',
-//     children: 'DashboardIcon',
-//   },
-//   {
-//     // href: Routes.permission.list,
-//     title: 'sidebar-nav-item-permissions',
-//     children: 'CalendarScheduleIcon',
-//     permissions: ownerOnly,
-//   },
-//   {
-//     // href: Routes.user.list,
-//     title: 'sidebar-nav-item-users',
-//     children: 'UsersIcon',
-//     permissions: ownerOnly,
-//   },
-// ];
-
-// const MAP_PAGE_LIST: Record<string, any> = {
-//   ShopList: ShopList,
-//   Message: Message,
-//   StoreNotices: StoreNotices,
-// };
-
-// const OwnerShopLayout = () => {
-//   const { t } = useTranslation();
-//   const router = useRouter();
-//   const { query } = router;
-
-//   console.log("pE++++", query)
-//   const classNames = {
-//     basic:
-//       'lg:text-[1.375rem] font-semibold border-b-2 border-solid border-transparent lg:pb-5 pb-3 -mb-0.5',
-//     selected: 'text-accent hover:text-accent-hover border-current',
-//     normal: 'hover:text-black/80',
-//   };
-
-//   return (
-//     <>
-//       <Tab.Group
-//         defaultIndex={
-//           !isEmpty(query?.tab) && query?.tab ? Number(query?.tab) : 0
-//         }
-//         onChange={(index: any) => {
-//           router.push({
-//             query: { tab: index },
-//           });
-//         }}
-//       >
-//         <Tab.List className="flex flex-wrap gap-x-9 border-b-2 border-solid border-b-[#E4E1E7]">
-//           {tabList?.map((tab, key) => {
-//             let { title } = tab;
-//             return (
-//               <Tab as={Fragment} key={key}>
-//                 {({ selected }) => (
-//                   <button
-//                     className={cn(
-//                       selected ? classNames?.selected : classNames?.normal,
-//                       classNames?.basic
-//                     )}
-//                   >
-//                     {t(title)}
-//                   </button>
-//                 )}
-//               </Tab>
-//             );
-//           })}
-//         </Tab.List>
-//         <Tab.Panels
-//           className="mt-4 lg:mt-8"
-//           style={{ height: 'calc(100% - 94px)' }}
-//         >
-//           {tabList?.map((tab, key) => {
-//             let { children } = tab;
-//             const Component = MAP_PAGE_LIST[children];
-//             return (
-//               <Tab.Panel key={key} className="h-full">
-//                 <Component />
-//               </Tab.Panel>
-//             );
-//           })}
-//         </Tab.Panels>
-//       </Tab.Group>
-//     </>
-//   );
-// };
-
-// const OwnerDashboard = () => {
-//   const { permissions } = getAuthCredentials();
-//   let permission = hasAccess(adminOnly, permissions);
-//   return permission ? <ShopList /> : <OwnerShopLayout />;
-// };
-
-// export default OwnerDashboard;
-
-
 import { CartIconBig } from '@/components/icons/cart-icon-bag';
 import { CoinIcon } from '@/components/icons/coin-icon';
 import ColumnChart from '@/components/widgets/column-chart';
@@ -133,8 +9,6 @@ import RecentOrders from '@/components/order/recent-orders';
 import PopularProductList from '@/components/product/popular-product-list';
 import { useOrdersQuery } from '@/data/order';
 import { useTranslation } from 'next-i18next';
-// import { useWithdrawsQuery } from '@/data/withdraw';
-// import WithdrawTable from '@/components/withdraw/withdraw-table';
 import { ShopIcon } from '@/components/icons/sidebar';
 import { DollarIcon } from '@/components/icons/shops/dollar';
 import { useAnalyticsQuery, usePopularProductsQuery } from '@/data/dashboard';
@@ -152,11 +26,11 @@ export default function OwnerDashboard(user: any) {
 
   const [getPermission, _] = useAtom(newPermission);
   const { permissions } = getAuthCredentials();
-  const canWrite = permissions?.includes('super_admin')
+  const canWrite = permissions?.includes('owner')
     ? siteSettings.sidebarLinks
     : getPermission?.find(
-        (permission) => permission.type === 'sidebar-nav-item-dealerlist'
-      )?.write;
+      (permission) => permission.type === 'sidebar-nav-item-dealerlist'
+    )?.write;
 
   const { data: useMe } = useMeQuery();
 
@@ -205,7 +79,7 @@ export default function OwnerDashboard(user: any) {
   // });
 
   // if (loading || orderLoading || popularProductLoading || withdrawLoading) {
-    if (loading || orderLoading || popularProductLoading) {
+  if (loading || orderLoading || popularProductLoading) {
     return <Loader text={t('common:text-loading')} />;
   }
   if (orderError || popularProductError) {

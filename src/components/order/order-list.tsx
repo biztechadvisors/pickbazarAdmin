@@ -25,6 +25,7 @@ import { getAuthCredentials } from '@/utils/auth-utils';
 import { useAtom } from 'jotai';
 import { siteSettings } from '@/settings/site.settings';
 import { newPermission } from '@/contexts/permission/storepermission';
+import { AllPermission } from '@/utils/AllPermission';
 
 type IProps = {
   orders: Order[] | undefined;
@@ -58,12 +59,16 @@ const OrderList = ({
     column: null,
   });
 
-  const [getPermission, _] = useAtom(newPermission);
-  const canWrite = permissions.includes('super_admin')
-    ? siteSettings.sidebarLinks
-    : getPermission?.find(
-        (permission) => permission.type === 'sidebar-nav-item-orders'
-      )?.write;
+  // const [getPermission, _] = useAtom(newPermission);
+  // const canWrite = permissions.includes('super_admin')
+  //   ? siteSettings.sidebarLinks
+  //   : getPermission?.find(
+  //       (permission) => permission.type === 'sidebar-nav-item-orders'
+  //     )?.write;
+
+  const permissionTypes = AllPermission(); 
+
+  const canWrite = permissionTypes.includes('sidebar-nav-item-orders');
 
   const onSubmit = async (shop_id: string | undefined) => {
     setLoading(shop_id);

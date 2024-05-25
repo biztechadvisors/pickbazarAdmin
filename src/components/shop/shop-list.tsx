@@ -14,6 +14,7 @@ import { Shop, MappedPaginatorInfo } from '@/types';
 import { newPermission } from '@/contexts/permission/storepermission';
 import { useAtom } from 'jotai';
 import { getAuthCredentials } from '@/utils/auth-utils';
+import { AllPermission } from '@/utils/AllPermission';
 
 type IProps = {
   shops: Shop[] | undefined;
@@ -32,13 +33,17 @@ const ShopList = ({
 }: IProps) => {
   const { t } = useTranslation();
   const { alignLeft, alignRight } = useIsRTL();
-  const [getPermission, _] = useAtom(newPermission)
-  const { permissions } = getAuthCredentials();
-  const canWrite = permissions.includes('super_admin')
-    ? siteSettings.sidebarLinks
-    : getPermission?.find(
-      (permission) => permission.type === 'sidebar-nav-item-shops'
-    )?.write;
+  // const [getPermission, _] = useAtom(newPermission)
+  // const { permissions } = getAuthCredentials();
+  // const canWrite = permissions.includes('super_admin')
+  //   ? siteSettings.sidebarLinks
+  //   : getPermission?.find(
+  //     (permission) => permission.type === 'sidebar-nav-item-shops'
+  //   )?.write;
+
+  const permissionTypes = AllPermission(); 
+
+  const canWrite = permissionTypes.includes('sidebar-nav-item-shops');
 
   const [sortingObj, setSortingObj] = useState<{
     sort: SortOrder;

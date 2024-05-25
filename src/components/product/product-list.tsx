@@ -27,6 +27,7 @@ import { getAuthCredentials } from '@/utils/auth-utils';
 import { useUpdateQuantity } from '@/data/product';
 import Input from '../ui/input';
 import Button from '../ui/button';
+import { AllPermission } from '@/utils/AllPermission';
 
 export type IProps = {
   products: Product[] | undefined;
@@ -51,13 +52,17 @@ const ProductList = ({
   const router = useRouter();
   const { t } = useTranslation();
   const { alignLeft, alignRight } = useIsRTL();
-  const { permissions } = getAuthCredentials();
-  const [getPermission, _] = useAtom(newPermission);
-  const canWrite = permissions?.includes('super_admin')
-    ? siteSettings.sidebarLinks.admin
-    : getPermission?.find(
-        (permission: any) => permission.type === 'sidebar-nav-item-products'
-      )?.write;
+  // const { permissions } = getAuthCredentials();
+  // const [getPermission, _] = useAtom(newPermission);
+  // const canWrite = permissions?.includes('super_admin')
+  //   ? siteSettings.sidebarLinks.admin
+  //   : getPermission?.find(
+  //       (permission: any) => permission.type === 'sidebar-nav-item-products'
+  //     )?.write;
+
+  const permissionTypes = AllPermission(); 
+
+  const canWrite = permissionTypes.includes('sidebar-nav-item-products');
 
   const [sortingObj, setSortingObj] = useState<SortingObjType>({
     sort: SortOrder.Desc,

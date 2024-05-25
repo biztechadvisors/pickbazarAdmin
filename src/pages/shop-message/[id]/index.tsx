@@ -2,7 +2,7 @@ import Layout from '@/components/layouts/owner';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import { ownerAndStaffOnly } from '@/utils/auth-utils';
 import MessagePageIndex from '@/components/message/index';
-import { SUPER_ADMIN } from '@/utils/constants';
+import {  } from '@/utils/constants';
 import { getAuthCredentials } from '@/utils/auth-utils';
 import AccessDeniedPage from '@/components/common/access-denied';
 

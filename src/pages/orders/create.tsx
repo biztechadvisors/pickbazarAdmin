@@ -28,6 +28,7 @@ import { useAtom } from 'jotai';
 import { siteSettings } from '@/settings/site.settings';
 import { toggleAtom } from '@/utils/atoms';
 import { useMeQuery } from '@/data/user';
+import { AllPermission } from '@/utils/AllPermission';
 
 export default function ProductsPage() {
   const { locale } = useRouter();
@@ -64,13 +65,17 @@ export default function ProductsPage() {
     shop_id,
   });
 
-  const [getPermission, _] = useAtom(newPermission);
-  const { permissions } = getAuthCredentials();
-  const canWrite = permissions?.includes('super_admin')
-    ? siteSettings.sidebarLinks
-    : getPermission?.find(
-        (permission) => permission.type === 'sidebar-nav-item-create-order'
-      )?.write;
+  // const [getPermission, _] = useAtom(newPermission);
+  // const { permissions } = getAuthCredentials();
+  // const canWrite = permissions?.includes('super_admin')
+  //   ? siteSettings.sidebarLinks
+  //   : getPermission?.find(
+  //       (permission) => permission.type === 'sidebar-nav-item-create-order'
+  //     )?.write;
+
+  const permissionTypes = AllPermission(); 
+
+  const canWrite = permissionTypes.includes('sidebar-nav-item-create-order');
 
   if (loading) return <Loader text={t('common:text-loading')} />;
   if (error) return <ErrorMessage message={error.message} />;

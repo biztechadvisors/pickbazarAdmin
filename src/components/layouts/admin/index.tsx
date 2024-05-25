@@ -11,7 +11,6 @@ import { getAuthCredentials } from '@/utils/auth-utils';
 import { useMeQuery } from '@/data/user';
 import { Routes } from '@/config/routes';
 import { shopSlugAtom } from '@/utils/atoms';
-import Dropdown from '../navigation/Dropdown';
 
 const AdminLayout: React.FC<{ children?: React.ReactNode }> = ({
   children,
