@@ -150,7 +150,7 @@ export default function OwnerDashboard(user: any) {
   const [getPermission, _] = useAtom(newPermission);
   const { permissions } = getAuthCredentials();
   const canWrite = permissions?.includes('owner')
-    ? siteSettings.sidebarLinks
+    ? siteSettings.sidebarLinks.owner
     : getPermission?.find(
       (permission) => permission.type === 'sidebar-nav-item-dealerlist'
     )?.write;
