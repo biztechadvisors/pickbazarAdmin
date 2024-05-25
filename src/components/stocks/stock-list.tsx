@@ -15,6 +15,7 @@ import Input from '../ui/input';
 import Button from '../ui/button';
 import { useGetStock, useUpdateStockQuantity } from '@/data/stock';
 import Select from '../ui/select/select';
+import { AllPermission } from '@/utils/AllPermission';
 
 export type IProps = {
   me: any;
@@ -34,14 +35,18 @@ const StockList = ({ me, onSort, onOrder }: IProps) => {
   const { alignLeft, alignRight } = useIsRTL();
   const { mutate: updateQuantity, isLoading: updating } =
     useUpdateStockQuantity();
-  const { permissions } = getAuthCredentials();
-  const [getPermission, _] = useAtom(newPermission);
+  // const { permissions } = getAuthCredentials();
+  // const [getPermission, _] = useAtom(newPermission);
   const { data: stocks, isLoading: loading, error } = useGetStock(me?.id);
-  const canWrite = permissions.includes('super_admin')
-    ? siteSettings.sidebarLinks.admin
-    : getPermission?.find(
-        (permission: any) => permission.type === 'sidebar-nav-item-products'
-      )?.write;
+  // const canWrite = permissions.includes('super_admin')
+  //   ? siteSettings.sidebarLinks.admin
+  //   : getPermission?.find(
+  //       (permission: any) => permission.type === 'sidebar-nav-item-products'
+  //     )?.write;
+
+  const permissionTypes = AllPermission(); 
+
+  const canWrite = permissionTypes.includes('sidebar-nav-item-products');
 
   const [sortingObj, setSortingObj] = useState<SortingObjType>({
     sort: SortOrder.Desc,

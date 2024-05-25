@@ -33,6 +33,7 @@ import StockCard from '@/components/product/StockCard';
 import Card from '@/components/common/card';
 import StockCounterButton from '@/components/stock/stock-counter-btn';
 import Stock from '@/components/stock/Stock';
+import { AllPermission } from '@/utils/AllPermission';
 
 export default function SalesPage() {
   const { locale } = useRouter();
@@ -51,13 +52,17 @@ export default function SalesPage() {
   const [isChecked] = useAtom(toggleAtom);
 
   const { data: stockData, isLoading, error } = useGetStock(meData?.id);
-  const [getPermission, _] = useAtom(newPermission);
-  const { permissions } = getAuthCredentials();
-  const canWrite = permissions?.includes('super_admin')
-    ? siteSettings.sidebarLinks
-    : getPermission?.find(
-        (permission) => permission.type === 'sidebar-nav-item-create-order'
-      )?.write;
+  // const [getPermission, _] = useAtom(newPermission);
+  // const { permissions } = getAuthCredentials();
+  // const canWrite = permissions?.includes('super_admin')
+  //   ? siteSettings.sidebarLinks
+  //   : getPermission?.find(
+  //       (permission) => permission.type === 'sidebar-nav-item-create-order'
+  //     )?.write;
+
+  const permissionTypes = AllPermission(); 
+
+  const canWrite = permissionTypes.includes('sidebar-nav-item-create-order');
 
   function handleSearch({ searchText }: { searchText: string }) {
     setSearchTerm(searchText);

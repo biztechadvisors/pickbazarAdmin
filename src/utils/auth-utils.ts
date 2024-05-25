@@ -14,9 +14,22 @@ import {
   TOKEN,
 } from './constants';
 
-export const allowedRoles = [SUPER_ADMIN, STORE_OWNER, STAFF, DEALER, ADMIN];
-export const adminAndOwnerOnly = [SUPER_ADMIN, STORE_OWNER, ADMIN, DEALER];
-export const adminOwnerAndStaffOnly = [SUPER_ADMIN, STORE_OWNER, STAFF];
+export const allowedRoles = [
+  SUPER_ADMIN,
+  STORE_OWNER,
+  STAFF,
+  DEALER,
+  ADMIN,
+  OWNER,
+];
+export const adminAndOwnerOnly = [
+  SUPER_ADMIN,
+  STORE_OWNER,
+  ADMIN,
+  DEALER,
+  OWNER,
+];
+export const adminOwnerAndStaffOnly = [SUPER_ADMIN, STORE_OWNER, STAFF, OWNER];
 export const superAdminOnly = [SUPER_ADMIN];
 export const adminOnly = [SUPER_ADMIN, ADMIN, DEALER];
 export const ownerOnly = [SUPER_ADMIN, OWNER];
