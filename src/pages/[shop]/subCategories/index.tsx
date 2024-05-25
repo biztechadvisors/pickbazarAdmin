@@ -40,6 +40,12 @@ export default function SubCategories() {
   const shop: string | undefined = meData?.shops?.[0]?.id;
   const shopSlug = meData?.shops?.[0]?.slug;
 
+  const permissionTypes = AllPermission(); 
+
+  const canWrite = permissionTypes.includes('sidebar-nav-item-subcategories');
+  
+  console.log("canwrite", canWrite)
+
   const { subcategories, paginatorInfo, loading, error } = useSubCategoriesQuery({
     limit: 20,
     page,
