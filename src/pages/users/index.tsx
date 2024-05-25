@@ -12,7 +12,11 @@ import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import { Routes } from '@/config/routes';
 import { SortOrder } from '@/types';
 import { adminOnly, getAuthCredentials, ownerOnly } from '@/utils/auth-utils';
+import { newPermission } from '@/contexts/permission/storepermission';
+import { useAtom } from 'jotai';
+import { siteSettings } from '@/settings/site.settings';
 import { AllPermission } from '@/utils/AllPermission';
+
 
 export default function Customers() {
   const [searchTerm, setSearchTerm] = useState('');

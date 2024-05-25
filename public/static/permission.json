@@ -4,7 +4,8 @@
     "STORE_OWNER": "store_owner",
     "ADMIN": "admin",
     "DEALER": "dealer",
-    "STAFF": "staff"
+    "STAFF": "staff",
+    "OWNER": "owner"
   },
   "Menus": {
     "DASHBOARD": "sidebar-nav-item-dashboard",

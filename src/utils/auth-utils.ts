@@ -14,13 +14,25 @@ import {
   TOKEN,
 } from './constants';
 
-let type_names;
-export const allowedRoles = [SUPER_ADMIN, STORE_OWNER, STAFF, DEALER, ADMIN, OWNER];
-export const adminAndOwnerOnly = [SUPER_ADMIN, STORE_OWNER, ADMIN, DEALER];
-export const adminOwnerAndStaffOnly = [SUPER_ADMIN, STORE_OWNER, STAFF];
+export const allowedRoles = [
+  SUPER_ADMIN,
+  STORE_OWNER,
+  STAFF,
+  DEALER,
+  ADMIN,
+  OWNER,
+];
+export const adminAndOwnerOnly = [
+  SUPER_ADMIN,
+  STORE_OWNER,
+  ADMIN,
+  DEALER,
+  OWNER,
+];
+export const adminOwnerAndStaffOnly = [SUPER_ADMIN, STORE_OWNER, STAFF, OWNER];
 export const superAdminOnly = [SUPER_ADMIN];
 export const adminOnly = [SUPER_ADMIN, ADMIN, DEALER];
-export const ownerOnly = [OWNER, SUPER_ADMIN, DEALER];
+export const ownerOnly = [SUPER_ADMIN, OWNER, DEALER];
 export const dealerOnly = [DEALER];
 export const ownerAndStaffOnly = [STORE_OWNER, STAFF];
 // export const serviceProviderOnly = [SERVICE_PROVIDER];

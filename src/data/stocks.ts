@@ -1,4 +1,4 @@
-import { useMutation, useQuery } from 'react-query';
+import { useMutation, useQuery, useQueryClient } from 'react-query';
 import { API_ENDPOINTS } from './client/api-endpoints';
 import { stockClient } from './client/stocks';
 import { Order, OrderPaginator, OrderQueryOptions } from '@/types';
@@ -76,18 +76,16 @@ export const useOrderSalesQuery = ({
   };
 };
 
-
 export const useDealerStocks = (id: any) => {
   return useQuery(['dealerStockList', id], async () => {
     try {
       const data = await stockClient.fetchDealerStockData(id);
       return data;
     } catch (error) {
-      throw new Error(error.message);
+      throw new Error((error as Error).message);
     }
   });
 };
-
 
 export const useDealerByIdStocks = (id: any) => {
   return useQuery(['dealerStockList', id], async () => {
@@ -95,25 +93,55 @@ export const useDealerByIdStocks = (id: any) => {
       const data = await stockClient.fetchDealerStockDataById(id);
       return data;
     } catch (error) {
-      throw new Error(error.message);
+      throw new Error((error as Error).message);
     }
   });
 };
 
-
 export const useUpdateStockData = (user_id: any) => {
-  const mutation = useMutation((updatedData: any) => stockClient.updateStockData(user_id, updatedData), {
-    onSuccess: () => {
-      toast.success('Stock data updated successfully');
-    },
-    onError: () => {
-      toast.error('Failed to update stock data');
-    },
-  });
+  const mutation = useMutation(
+    (updatedData: any) => stockClient.updateStockData(user_id, updatedData),
+    {
+      onSuccess: () => {
+        toast.success('Stock data updated successfully');
+      },
+      onError: () => {
+        toast.error('Failed to update stock data');
+      },
+    }
+  );
 
   return mutation;
 };
 
+export interface StockIdS {
+  dealerId: number;
+  orderId: string;
+}
+export const useFetchStockOrderData = ({ dealerId, orderId }: StockIdS) => {
+  return useQuery([API_ENDPOINTS.STOCK, dealerId, orderId], async () => {
+    try {
+      const data = await stockClient.getStockByOrderId({ dealerId, orderId });
+      return data;
+    } catch (error) {
+      console.log(error);
+    }
+  });
+};
 
+export const useUpdateStockDataById = (user_id: any) => {
+  const queryClient = useQueryClient();
 
-
+  return useMutation(
+    (updatedData: any) => stockClient.updateStockDataById(user_id, updatedData),
+    {
+      onSuccess: () => {
+        toast.success('Stock data updated successfully');
+        queryClient.invalidateQueries([API_ENDPOINTS.STOCK]);
+      },
+      onError: () => {
+        toast.error('Failed to update stock data');
+      },
+    }
+  );
+};

@@ -61,7 +61,7 @@ export default function AllShopPage() {
   );
 }
 AllShopPage.authenticate = {
-  permissions: ownerOnly,
+  permissions:ownerOnly,
 };
 AllShopPage.Layout = Layout;
 

@@ -78,7 +78,6 @@ import {
 import {
   ADMIN,
   DEALER,
-  OWNER,
   STAFF,
   STORE_OWNER,
   SUPER_ADMIN,

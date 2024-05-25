@@ -20,9 +20,6 @@ import { useAtom } from 'jotai';
 import {
   newPermission,
 } from '@/contexts/permission/storepermission';
-
-
-
 const loginFormSchema = yup.object().shape({
   email: yup
     .string()

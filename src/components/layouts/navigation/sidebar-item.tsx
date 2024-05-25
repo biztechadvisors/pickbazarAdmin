@@ -37,7 +37,7 @@ const SidebarItem = ({ href, icon, label }: any) => {
   // Check if the label is "Orders" and render the Dropdown component if true
   if (label === 'Orders') {
     return (
-      <div className="flex w-full items-center text-base text-body-dark text-start focus:text-accent">
+      <div className="flex w-full items-center text-base text-body-dark text-start focus:text-accent cursor-pointer">
         {getIcon({
           iconList: sidebarIcons,
           iconName: icon,

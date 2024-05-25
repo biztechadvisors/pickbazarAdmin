@@ -14,13 +14,14 @@ import { HttpClient } from './http-client';
 export const productClient = {
   ...crudFactory<Product, QueryOptions, CreateProduct>(API_ENDPOINTS.PRODUCTS),
 
-  get({ slug, userId, language }: GetParams) {
-    console.log("slug", slug)
-    console.log("userId", userId)
-    return HttpClient.get<Product>(`${API_ENDPOINTS.PRODUCTS}?${slug}& ${userId}`, {
-      language,
-      with: 'type;shop;categories;tags;variations.attribute.values;variation_options;author;manufacturer;digital_file',
-    });
+  get({ slug, userId, language, shop_id }: GetParams) {
+    return HttpClient.get<Product>(
+      `${API_ENDPOINTS.PRODUCTS}/${slug}/${shop_id}`,
+      {
+        language,
+        with: 'type;shop;categories;tags;variations.attribute.values;variation_options;author;manufacturer;digital_file',
+      }
+    );
   },
 
   paginated: ({
@@ -29,9 +30,12 @@ export const productClient = {
     slug,
     categories,
     shop_id,
+    dealerId,
     ...params
   }: Partial<ProductQueryOptions>) => {
     return HttpClient.get<ProductPaginator>(API_ENDPOINTS.PRODUCTS, {
+      dealerId,
+      shop_id,
       searchJoin: 'and',
       with: 'shop;type',
       ...params,
@@ -40,7 +44,6 @@ export const productClient = {
         name,
         slug,
         categories,
-        shop_id,
       }),
     });
   },
@@ -55,7 +58,7 @@ export const productClient = {
   generateDescription: (data: GenerateDescriptionInput) => {
     return HttpClient.post<any>(API_ENDPOINTS.GENERATE_DESCRIPTION, data);
   },
-  updateQuantity: (data:any) => {
+  updateQuantity: (data: any) => {
     return HttpClient.post<any>(`${API_ENDPOINTS.PRODUCTS}/${data.id}`, data);
   },
 };

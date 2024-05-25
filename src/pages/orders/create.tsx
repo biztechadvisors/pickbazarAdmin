@@ -28,6 +28,7 @@ import { useAtom } from 'jotai';
 import { siteSettings } from '@/settings/site.settings';
 import { toggleAtom } from '@/utils/atoms';
 import { useMeQuery } from '@/data/user';
+import { AllPermission } from '@/utils/AllPermission';
 
 export default function ProductsPage() {
   const { locale } = useRouter();
@@ -46,7 +47,9 @@ export default function ProductsPage() {
 
   const { id, email, contact } = meData || {};
 
-  const userId = meData?.dealer?.id;
+  const shop_id = meData?.shop_id;
+
+  const dealerId = meData?.dealer?.id;
 
   const [isChecked] = useAtom(toggleAtom);
 
@@ -58,16 +61,21 @@ export default function ProductsPage() {
     page,
     type,
     categories: category,
-    userId,
+    dealerId,
+    shop_id,
   });
 
-  const [getPermission, _] = useAtom(newPermission);
-  const { permissions } = getAuthCredentials();
-  const canWrite = permissions?.includes('super_admin')
-    ? siteSettings.sidebarLinks
-    : getPermission?.find(
-        (permission) => permission.type === 'sidebar-nav-item-create-order'
-      )?.write;
+  // const [getPermission, _] = useAtom(newPermission);
+  // const { permissions } = getAuthCredentials();
+  // const canWrite = permissions?.includes('super_admin')
+  //   ? siteSettings.sidebarLinks
+  //   : getPermission?.find(
+  //       (permission) => permission.type === 'sidebar-nav-item-create-order'
+  //     )?.write;
+
+  const permissionTypes = AllPermission(); 
+
+  const canWrite = permissionTypes.includes('sidebar-nav-item-create-order');
 
   if (loading) return <Loader text={t('common:text-loading')} />;
   if (error) return <ErrorMessage message={error.message} />;
@@ -79,6 +87,12 @@ export default function ProductsPage() {
   function handlePagination(current: any) {
     setPage(current);
   }
+
+  console.log('products', products);
+
+  console.log("shop_id ", shop_id )
+
+  console.log("meData", meData)
 
   return (
     <>

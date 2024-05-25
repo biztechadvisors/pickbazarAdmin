@@ -17,6 +17,7 @@ import classNames from 'classnames';
 import { DownloadIcon } from '@/components/icons/download-icon';
 import { useOrdersSalesQuery } from '@/data/stocks';
 import StockList from '@/components/stock/StockList';
+import { useOrdersQuery } from '@/data/order';
 
 export default function Sales() {
   const router = useRouter();
@@ -47,8 +48,22 @@ export default function Sales() {
       enabled: !!shop,
     }
   );
+  // const shopId = shopData?.id!;
+  // const { orders, loading, paginatorInfo, error } = useOrdersSalesQuery({
+  //   language: locale,
+  //   limit: 20,
+  //   page,
+  //   tracking_number: searchTerm,
+  // });
+  // const { refetch } = useExportOrderQuery(
+  //   {
+  //     ...(shopId && { shop_id: shopId }),
+  //   },
+  //   { enabled: false }
+  // );
+
   const shopId = shopData?.id!;
-  const { orders, loading, paginatorInfo, error } = useOrdersSalesQuery({
+  const { orders, loading, paginatorInfo, error } = useOrdersQuery({
     language: locale,
     limit: 20,
     page,
@@ -76,6 +91,10 @@ export default function Sales() {
       a.click();
     }
   }
+
+  var ordersData = orders.filter(
+    (order) => order?.customer_id == order?.dealer?.id
+  );
 
   return (
     <>
@@ -132,7 +151,7 @@ export default function Sales() {
       </Card>
 
       <StockList
-        orders={orders}
+        orders={ordersData}
         paginatorInfo={paginatorInfo}
         onPagination={handlePagination}
         onOrder={setOrder}

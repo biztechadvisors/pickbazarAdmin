@@ -144,7 +144,7 @@ const CreatePermission = () => {
   };
 
   const filteredData = () => {
-    if (permissions.includes('super_admin')) {
+    if (permissions.includes('owner')) {
       return Object.entries(menusData).map(([key, value], index) => ({
         [key]: value,
         id: index + 1,
@@ -168,7 +168,7 @@ const CreatePermission = () => {
   };
 
   useEffect(() => {
-    if (permissions.includes('super_admin')) {
+    if (permissions.includes('owner')) {
       setTypeName(PermissionJson.type_name);
     } else {
       const permList = permissions;
@@ -179,6 +179,8 @@ const CreatePermission = () => {
 
       for (let i = 0; i < filteredArray.length; i++) {
         switch (filteredArray[i]) {
+          case 'owner':
+            updatedTypeName.push('owner', 'admin', 'store_owner', 'dealer', 'staff');
           case 'admin':
             updatedTypeName.push('admin', 'store_owner', 'dealer', 'staff');
             break;

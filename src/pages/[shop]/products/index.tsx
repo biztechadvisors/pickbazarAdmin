@@ -31,6 +31,7 @@ import { useMeQuery } from '@/data/user';
 import { useAtom } from 'jotai';
 import { newPermission } from '@/contexts/permission/storepermission';
 import { siteSettings } from '@/settings/site.settings';
+import { AllPermission } from '@/utils/AllPermission';
 
 export default function ProductsPage() {
   const router = useRouter();
@@ -54,23 +55,31 @@ export default function ProductsPage() {
   const [visible, setVisible] = useState(false);
   const { openModal } = useModalAction();
   const { locale } = useRouter();
+  const { data } = useMeQuery();
 
-  const [getPermission, _] = useAtom(newPermission);
-  const canWrite = permissions.includes('super_admin')
-    ? siteSettings.sidebarLinks
-    : getPermission?.find(
-        (permission) => permission.type === 'sidebar-nav-item-products'
-      )?.write;
+  // const [getPermission, _] = useAtom(newPermission);
+  // const canWrite = permissions.includes('super_admin')
+  //   ? siteSettings.sidebarLinks
+  //   : getPermission?.find(
+  //       (permission) => permission.type === 'sidebar-nav-item-products'
+  //     )?.write;
+
+  const permissionTypes = AllPermission(); 
+
+  const canWrite = permissionTypes.includes('sidebar-nav-item-products');
 
   const toggleVisible = () => {
     setVisible((v) => !v);
   };
+
+  const dealerId = me?.dealer?.id;
 
   const { products, paginatorInfo, loading, error } = useProductsQuery(
     {
       language: locale,
       name: searchTerm,
       limit: 20,
+      dealerId,
       shop_id: shopId,
       type,
       categories: category,
@@ -106,6 +115,10 @@ export default function ProductsPage() {
   ) {
     router.replace(Routes.dashboard);
   }
+
+  console.log('meData', me);
+
+  console.log('dealerId', dealerId);
 
   return (
     <>

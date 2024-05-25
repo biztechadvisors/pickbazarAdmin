@@ -73,5 +73,5 @@ export const API_ENDPOINTS = {
   PERMISSION: 'permission',
   CART: 'carts',
   STOCK: '/stocks',
-  STOCKBYID: '/stocks/ord',
+  STOCKBYID: '/orders',
 };
