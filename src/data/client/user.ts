@@ -24,9 +24,25 @@ export const userClient = {
       `${API_ENDPOINTS.ME}?username=${params.username}&sub=${params.sub}`
     );
   },
+
   login: (variables: LoginInput) => {
-    return HttpClient.post<AuthResponse>(API_ENDPOINTS.TOKEN, variables);
+    const result = HttpClient.post<AuthResponse>(API_ENDPOINTS.TOKEN, variables);
+    result
+      .then(response => {
+        // Assuming the token is in the response object
+        const token = response.token;
+        if (token) {
+          localStorage.setItem('authToken', token);
+        }
+        console.log("result*****", response);
+      })
+      .catch(error => {
+        console.error("Error during login:", error);
+      });
+    return result;
   },
+
+
   logout: () => {
     return HttpClient.post<any>(API_ENDPOINTS.LOGOUT, {});
   },

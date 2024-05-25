@@ -23,7 +23,7 @@ module.exports = withPWA({
       'localhost',
       'picsum.photos',
       'pickbazar-sail.test',
-      'pickbazarlaravel.s3.ap-southeast-1.amazonaws.com',
+      'codenoxtestbucket.s3.ap-south-1.amazonaws.com',
       'lh3.googleusercontent.com',
       'images.pexels.com',
     ],

@@ -58,8 +58,8 @@ const StockCard = ({ item, isChecked, inStock }: Props) => {
   const canWrite = permissions.includes('super_admin')
     ? siteSettings.sidebarLinks
     : getPermission?.find(
-        (permission) => permission.type === 'sidebar-nav-item-create-order'
-      )?.write;
+      (permission) => permission.type === 'sidebar-nav-item-create-order'
+    )?.write;
 
   function handleVariableProduct() {
     return openModal('SELECT_PRODUCT_VARIATION', slug);
@@ -70,9 +70,7 @@ const StockCard = ({ item, isChecked, inStock }: Props) => {
       <div className="relative flex h-48 w-auto items-center justify-center sm:h-64">
         <span className="sr-only">{t('text-product-image')}</span>
         <Image
-          src={`${process?.env?.NEXT_PUBLIC_REST_API_ENDPOINT}/${
-            image?.original ?? 'productPlaceholder'
-          }`}
+          src={image?.thumbnail}
           alt={name}
           fill
           sizes="(max-width: 768px) 100vw"

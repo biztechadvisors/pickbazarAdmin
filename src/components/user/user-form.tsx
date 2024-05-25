@@ -21,23 +21,27 @@ type FormValues = {
   email: string;
   password: string;
   contact: string;
-  type: { value: string };
+  type: { value: string; label: string };
   permission: Permission;
   UsrBy: string;
 };
 
 const defaultValues = {
+  name: '',
   email: '',
   password: '',
   contact: '',
+  type: { value: '', label: '' },
 };
 
 const CustomerCreateForm = () => {
   const { t } = useTranslation();
   const router = useRouter();
-  const { data: meData } = useMeQuery();
-  const { id } = meData || {};
+  const { data: meData, isLoading: meLoading } = useMeQuery();
   const { mutate: registerUser, isLoading: loading } = useRegisterMutation();
+  const { id } = meData || {};
+  const { data: permissionData } = usePermissionData(id);
+  const { permissions } = getAuthCredentials();
 
   const {
     register,
@@ -50,41 +54,22 @@ const CustomerCreateForm = () => {
     resolver: yupResolver(customerValidationSchema),
   });
 
-  const {data:me,isLoading} = useMeQuery()
-  const userId:any = me?.id
-
-  const{ data:permissionData}= usePermissionData(userId);
-  const { permissions } = getAuthCredentials();
-
-  console.log("permissionData", permissionData)
-  const permissionNames =
-    permissionData?.map(
-      (permission: { permission_name: any }) => permission.permission_name
-    ) ?? [];
-  var permissionOptions: any;
-  if (permissions[0] !== 'dealer') {
-    permissionOptions = [
-      ...permissionNames.map((name: any) => ({
-        value: name,
-        label: name,
-      })),
-    ];
-  } else {
-    permissionOptions = [
-      { value: 'customer', label: 'customer' },
-      { value: 'staff', label: 'staff' },
-    ];
+  if (meLoading || !permissionData) {
+    return <Loader />;
   }
 
-  console.log("permissionOptions", permissionOptions)
+  const permissionNames =
+    permissionData?.map((permission: { permission_name: string }) => permission.permission_name) ?? [];
 
-  async function onSubmit({
-    name,
-    email,
-    password,
-    contact,
-    type,
-  }: FormValues) {
+  const permissionOptions =
+    permissions[0] !== 'dealer'
+      ? permissionNames.map((name: string) => ({ value: name, label: name }))
+      : [
+        { value: 'customer', label: 'customer' },
+        { value: 'staff', label: 'staff' },
+      ];
+
+  async function onSubmit({ name, email, password, contact, type }: FormValues) {
     registerUser(
       {
         name,
@@ -93,13 +78,11 @@ const CustomerCreateForm = () => {
         contact,
         UsrBy: id,
         type: type?.value,
-        // permission: Permission.StoreOwner,
-        // UsrBy: id,
       },
       {
         onError: (error: any) => {
-          Object.keys(error?.response?.data).forEach((field: any) => {
-            setError(field, {
+          Object.keys(error?.response?.data).forEach((field: string) => {
+            setError(field as keyof FormValues, {
               type: 'manual',
               message: error?.response?.data[field][0],
             });
@@ -108,8 +91,6 @@ const CustomerCreateForm = () => {
       }
     );
   }
-
-  // console.log("Permission.StoreOwner", Permission.StoreOwner)
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} noValidate>
@@ -160,8 +141,8 @@ const CustomerCreateForm = () => {
                 <Label>{t('form:input-label-type')}</Label>
                 <Select
                   {...field}
-                  getOptionLabel={(option: any) => option.label}
-                  getOptionValue={(option: any) => option.value}
+                  getOptionLabel={(option: { label: string }) => option.label}
+                  getOptionValue={(option: { value: string }) => option.value}
                   options={permissionOptions}
                   isClearable={true}
                   isLoading={loading}
@@ -192,17 +173,3 @@ const CustomerCreateForm = () => {
 };
 
 export default CustomerCreateForm;
-
-// Json which require to send while registering.
-
-// {
-//   "name": "John Doe",
-//   "email": "john@example.com",
-//   "password": "password123",
-//   "type": "user",
-//   "UsrBy": "Admin",
-//   "contact": "1234567890",
-//   "permission": {
-//   },
-//   "isVerified": false
-// }

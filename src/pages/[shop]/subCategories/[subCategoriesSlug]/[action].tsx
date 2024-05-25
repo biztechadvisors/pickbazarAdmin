@@ -39,7 +39,11 @@ console.log("extra data'''''''''''''", subcategory)
   );
 }
 
+<<<<<<< HEAD
 UpdateSubCategoriesPage.Layout = Layout;
+=======
+UpdateCategoriesPage.Layout = ShopLayout;
+>>>>>>> f93fae9bb49728c8b2644c1323d1a9888dffcc67
 
 export const getServerSideProps = async ({ locale }: any) => ({
   props: {

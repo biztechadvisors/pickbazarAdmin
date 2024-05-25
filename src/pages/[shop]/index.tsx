@@ -45,11 +45,11 @@ export default function ShopPage() {
   const { t } = useTranslation();
   const { permissions } = getAuthCredentials();
   const { data: me } = useMeQuery();
-  const {query: { shop },locale,} = useRouter();
-  const {data,isLoading: loading,error,} = useShopQuery({slug: shop!.toString(),});
+  const { query: { shop }, locale, } = useRouter();
+  const { data, isLoading: loading, error, } = useShopQuery({ slug: shop!.toString(), });
 
-  const { price: totalEarnings } = usePrice(data && {amount: data?.balance?.total_earnings!,});
-  const { price: currentBalance } = usePrice(data && {amount: data?.balance?.current_balance!,});
+  const { price: totalEarnings } = usePrice(data && { amount: data?.balance?.total_earnings!, });
+  const { price: currentBalance } = usePrice(data && { amount: data?.balance?.current_balance!, });
 
   const [getPermission, _] = useAtom(newPermission)
   const canWrite = permissions?.includes('super_admin')
@@ -166,8 +166,7 @@ export default function ShopPage() {
       {/* Cover Photo */}
       <div className="relative order-1 col-span-12 h-full min-h-[400px] overflow-hidden rounded bg-light xl:order-2 xl:col-span-8 3xl:col-span-9">
         <Image
-          // src={`https://localhost:5000/api/${cover_image?.original ?? '/product-placeholder-borderless.svg'}`}
-          src={`${process?.env?.NEXT_PUBLIC_REST_API_ENDPOINT}/${cover_image?.original ?? '/product-placeholder-borderless.svg'}`}
+          src={`${cover_image?.original ?? '/product-placeholder-borderless.svg'}`}
           fill
           sizes="(max-width: 768px) 100vw"
           alt={Object(name)}
