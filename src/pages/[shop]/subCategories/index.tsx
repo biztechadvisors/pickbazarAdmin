@@ -25,6 +25,7 @@ import { siteSettings } from '@/settings/site.settings';
 import { useQuery } from 'react-query';
 import { useMeQuery } from '@/data/user';
 import ShopLayout from '@/components/layouts/shop';
+import { AllPermission } from '@/utils/AllPermission';
 
 export default function SubCategories() {
   const { locale } = useRouter();
@@ -39,6 +40,12 @@ export default function SubCategories() {
   const shop: string | undefined = meData?.shops?.[0]?.id;
   const shopSlug = meData?.shops?.[0]?.slug;
 
+  const permissionTypes = AllPermission(); 
+
+  const canWrite = permissionTypes.includes('sidebar-nav-item-subcategories');
+  
+  console.log("canwrite", canWrite)
+
   const { subcategories, paginatorInfo, loading, error } = useSubCategoriesQuery({
     limit: 20,
     page,
@@ -52,12 +59,12 @@ export default function SubCategories() {
   });
 console.log("shopID++++++++++++", shop, subcategories)
   const [getPermission, _] = useAtom(newPermission);
-  const { permissions } = getAuthCredentials();
-  const canWrite = permissions?.includes('super_admin')
-    ? siteSettings.sidebarLinks
-    : getPermission?.find(
-        (permission) => permission.type === 'sidebar-nav-item-subcategories'
-      )?.write;
+  // const { permissions } = getAuthCredentials();
+  // const canWrite = permissions?.includes('super_admin')
+  //   ? siteSettings.sidebarLinks
+  //   : getPermission?.find(
+  //       (permission) => permission.type === 'sidebar-nav-item-subcategories'
+  //     )?.write;
 
   if (loading) return <Loader text={t('common:text-loading')} />;
   if (error) return <ErrorMessage message={error.message} />;
