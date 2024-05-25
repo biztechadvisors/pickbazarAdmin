@@ -16,7 +16,7 @@ import Loader from '@/components/ui/loader/loader';
 import { useMeQuery, useUserQuery } from '@/data/user';
 import { AddressType } from '@/types';
 import { PlusIcon } from '@/components/icons/plus-icon';
-import AddCustomerSlider from './AddCustomerSlider';
+// import AddCustomerSlider from './AddCustomerSlider';
 import { checkoutCustAtom, shopIdAtom } from '@/utils/atoms';
 import UserAddressSelection from '@/components/UserAddressSelection';
 

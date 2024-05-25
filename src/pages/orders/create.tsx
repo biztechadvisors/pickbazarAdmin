@@ -46,7 +46,9 @@ export default function ProductsPage() {
 
   const { id, email, contact } = meData || {};
 
-  const userId = meData?.dealer?.id;
+  const shop_id = meData?.shop_id;
+
+  const dealerId = meData?.dealer?.id;
 
   const [isChecked] = useAtom(toggleAtom);
 
@@ -58,7 +60,8 @@ export default function ProductsPage() {
     page,
     type,
     categories: category,
-    userId,
+    dealerId,
+    shop_id,
   });
 
   const [getPermission, _] = useAtom(newPermission);
@@ -79,6 +82,12 @@ export default function ProductsPage() {
   function handlePagination(current: any) {
     setPage(current);
   }
+
+  console.log('products', products);
+
+  console.log("shop_id ", shop_id )
+
+  console.log("meData", meData)
 
   return (
     <>

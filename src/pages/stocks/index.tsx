@@ -42,6 +42,8 @@ export default function DealerStockList() {
       query: { id: item?.user?.id },
     });
   }
+
+  if(isLoading) return <Loader/>
   return (
     <>
       <Card className="mb-8 flex flex-col">

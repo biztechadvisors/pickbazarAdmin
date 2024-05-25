@@ -176,6 +176,7 @@ export interface GetParams {
   userId: string;
   language: string;
   categoryId : number; //for getting subcategory
+  shopId : number;
 }
 
 export interface QueryOptions {
@@ -1002,6 +1003,7 @@ export interface CreateMessageInput {
   shop_id: string;
   latest_message:any;
   user_id:any;
+  conversation: any;
 }
 export interface CreateMessageSeenInput {
   id: string;
@@ -1574,6 +1576,7 @@ export interface ProductQueryOptions extends QueryOptions {
   rating: string;
   question: string;
   userId: string;
+  dealerId:string
 }
 
 export interface UserQueryOptions extends QueryOptions {

@@ -21,5 +21,10 @@ import {
         search: HttpClient.formatSearchParams({ type, name }),
       });
     },
+    getSubCategory: ({ slug, language, categoryId, shopId }: any) => {
+      return HttpClient.get<any>(`${API_ENDPOINTS.SUBCATEGORIES}/${slug}/?language=${language}&categoryId=${categoryId}&shopId=${shopId}`);
+    },
   };
+
+  
   

@@ -54,6 +54,7 @@ export default function ProductsPage() {
   const [visible, setVisible] = useState(false);
   const { openModal } = useModalAction();
   const { locale } = useRouter();
+  const { data } = useMeQuery();
 
   const [getPermission, _] = useAtom(newPermission);
   const canWrite = permissions.includes('super_admin')
@@ -66,11 +67,14 @@ export default function ProductsPage() {
     setVisible((v) => !v);
   };
 
+  const dealerId = me?.dealer?.id;
+
   const { products, paginatorInfo, loading, error } = useProductsQuery(
     {
       language: locale,
       name: searchTerm,
       limit: 20,
+      dealerId,
       shop_id: shopId,
       type,
       categories: category,
@@ -106,6 +110,10 @@ export default function ProductsPage() {
   ) {
     router.replace(Routes.dashboard);
   }
+
+  console.log('meData', me);
+
+  console.log('dealerId', dealerId);
 
   return (
     <>

@@ -18,7 +18,7 @@
 
 
 
-import { ADMIN, DEALER, STAFF, STORE_OWNER, SUPER_ADMIN } from '@/utils/constants';
+import { ADMIN, DEALER, STAFF, STORE_OWNER, SUPER_ADMIN, OWNER } from '@/utils/constants';
 import dynamic from 'next/dynamic';
 
 const AdminLayout = dynamic(() => import('@/components/layouts/admin'));
@@ -36,6 +36,9 @@ export default function AppLayout({
     )
   ) {
     return <AdminLayout {...props} />;
-  }
-  return <OwnerLayout {...props} />;
+  } else if (userPermissions?.some(permission => [OWNER].includes(permission)))
+    {
+      console.log("working good fine excellent")
+      return <OwnerLayout {...props} />;
+    }
 }

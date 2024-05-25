@@ -17,7 +17,11 @@ import {
   useOrderQuery,
   useUpdateOrderMutation,
 } from '@/data/order';
-import { useOrderSalesQuery } from '@/data/stocks';
+import {
+  useFetchStockOrderData,
+  useGetStockByOrder,
+  useOrderSalesQuery,
+} from '@/data/stocks';
 import { siteSettings } from '@/settings/site.settings';
 import { Attachment, OrderStatus, PaymentStatus } from '@/types';
 import { formatAddress } from '@/utils/format-address';
@@ -30,8 +34,10 @@ import { useTranslation } from 'next-i18next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import Image from 'next/image';
 import { useRouter } from 'next/router';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
+import DispatchModal from '@/components/ui/modal-component/dispatch-modal';
+import { useMeQuery } from '@/data/user';
 // import { jsPDF } from 'jspdf';
 // import 'jspdf-autotable';
 
@@ -44,6 +50,12 @@ export default function OrderDetailsPage() {
   const { alignLeft, alignRight, isRTL } = useIsRTL();
   const { resetStock } = useStock();
   const [, resetCheckout] = useAtom(clearCheckoutAtom);
+  const [isDispatchModalOpen, setDispatchModalOpen] = useState(false);
+
+  const handleDispatchUpdate = (data: any) => {
+    // Logic to update the dispatch product
+    console.log('Dispatch data', data);
+  };
 
   useEffect(() => {
     resetStock();
@@ -121,6 +133,19 @@ export default function OrderDetailsPage() {
     0
   );
 
+  const { orderId } = query;
+
+  const { data: meData } = useMeQuery();
+
+  const dealerId = 99;
+
+  const userId = order?.customer_id;
+
+  const { data, isLoading, isError } = useFetchStockOrderData({
+    dealerId,
+    orderId,
+  });
+
   if (loading) return <Loader text={t('common:text-loading')} />;
   if (error) return <ErrorMessage message={error.message} />;
 
@@ -183,6 +208,10 @@ export default function OrderDetailsPage() {
     },
   ];
 
+  console.log('order*****check', order);
+
+  console.log('userId****', userId);
+
   return (
     <>
       <Card className="relative overflow-hidden">
@@ -222,16 +251,26 @@ export default function OrderDetailsPage() {
 
                   <ValidationError message={t(errors?.order_status?.message)} />
                 </div>
-                <Button loading={updating}>
-                  <span className="hidden sm:block">
-                    {t('form:button-label-change-status')}
-                  </span>
-                  <span className="block sm:hidden">
-                    {t('form:form:button-label-change')}
-                  </span>
-                </Button>
+                <div className="flex w-full gap-x-1 max-sm:flex-col-reverse max-sm:gap-y-1">
+                  <Button loading={updating}>
+                    <span className="hidden sm:block">
+                      {t('form:button-label-change-status')}
+                    </span>
+                    <span className="block sm:hidden">
+                      {t('form:button-label-change-status')}
+                    </span>
+                  </Button>
+                </div>
               </form>
             )}
+          <Button onClick={() => setDispatchModalOpen(true)}>
+            <span className="hidden sm:block">
+              {t('form:button-label-change-dispatch')}
+            </span>
+            <span className="block sm:hidden">
+              {t('form:button-label-change-dispatch')}
+            </span>
+          </Button>
         </div>
 
         <div className="my-5 flex items-center justify-center lg:my-10">
@@ -349,6 +388,12 @@ export default function OrderDetailsPage() {
           </div>
         </div>
       </Card>
+      <DispatchModal
+        isOpen={isDispatchModalOpen}
+        onClose={() => setDispatchModalOpen(false)}
+        order={data}
+        updateDispatch={handleDispatchUpdate}
+      />
     </>
   );
 }

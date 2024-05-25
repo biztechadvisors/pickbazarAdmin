@@ -149,6 +149,7 @@ export const useConversationQuery = ({ id }: { id: string }) => {
     }
   );
 
+  console.log("datatz_______", data)
   return {
     data: data ?? [],
     error,

@@ -6,10 +6,7 @@ import { useState } from 'react';
 import { useTranslation } from 'next-i18next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import { adminOnly } from '@/utils/auth-utils';
-import {
-  useDealerByIdStocks,
-  useUpdateStockData,
-} from '@/data/stocks';
+import { useDealerByIdStocks, useUpdateStockData } from '@/data/stocks';
 
 export default function DealerStockData() {
   const [searchTerm, setSearchTerm] = useState('');
@@ -59,8 +56,8 @@ export default function DealerStockData() {
     } = stocksData;
 
     const quantity = parseInt(quantityStr, 10);
-    const ordPendQuant = parseInt(ordPendQuantStr, 10)
-    const dispatchedQuantity = parseInt(dispatchedQuantityStr, 10)
+    const ordPendQuant = parseInt(ordPendQuantStr, 10);
+    const dispatchedQuantity = parseInt(dispatchedQuantityStr, 10);
 
     const productId = product ? product.id : undefined;
 
@@ -73,6 +70,8 @@ export default function DealerStockData() {
       product: productId,
     });
   };
+
+  console.log('Data---Stocks', data);
 
   return (
     <>
@@ -94,8 +93,8 @@ export default function DealerStockData() {
         <table className="min-w-full divide-y divide-gray-200"> */}
       <div className="overflow-x-auto">
         <div className="sm:-mx-6 lg:-mx-8">
-          <div className="py-2 align-middle inline-block min-w-full sm:px-6 lg:px-8">
-            <div className="shadow overflow-hidden border-b border-gray-200 sm:rounded-lg">
+          <div className="inline-block min-w-full py-2 align-middle sm:px-6 lg:px-8">
+            <div className="overflow-hidden border-b border-gray-200 shadow sm:rounded-lg">
               <table className="min-w-full divide-y divide-gray-200">
                 <thead className="bg-gray-50">
                   <tr>
@@ -112,14 +111,18 @@ export default function DealerStockData() {
                   {data?.map((item, index) => (
                     <tr key={index}>
                       <td className="border px-4 py-2">{index + 1}</td>
-                      <td className="border px-4 py-2">{item?.product?.name}</td>
+                      <td className="border px-4 py-2">
+                        {item?.product?.name}
+                      </td>
                       <td className="border px-4 py-2">
                         {item?.status ? 'In Stock' : 'Out of Stock'}
                       </td>
                       <td className="border px-4 py-2">
                         <input
                           type="number"
-                          value={updatedStocks[index]?.quantity || item.quantity}
+                          value={
+                            updatedStocks[index]?.quantity || item.quantity
+                          }
                           onChange={(e) =>
                             handleUpdateStock(index, 'quantity', e.target.value)
                           }
@@ -145,10 +148,15 @@ export default function DealerStockData() {
                         <input
                           type="number"
                           value={
-                            updatedStocks[index]?.ordPendQuant || item.ordPendQuant
+                            updatedStocks[index]?.ordPendQuant ||
+                            item.ordPendQuant
                           }
                           onChange={(e) =>
-                            handleUpdateStock(index, 'ordPendQuant', e.target.value)
+                            handleUpdateStock(
+                              index,
+                              'ordPendQuant',
+                              e.target.value
+                            )
                           }
                         />
                       </td>

@@ -11,8 +11,15 @@ import { useTranslation } from 'next-i18next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import { Routes } from '@/config/routes';
 import { SortOrder } from '@/types';
+<<<<<<< HEAD
+import { adminOnly, getAuthCredentials, ownerOnly } from '@/utils/auth-utils';
+import { newPermission } from '@/contexts/permission/storepermission';
+import { useAtom } from 'jotai';
+import { siteSettings } from '@/settings/site.settings';
+=======
 import { adminOnly, getAuthCredentials } from '@/utils/auth-utils';
 import { AllPermission } from '@/utils/AllPermission';
+>>>>>>> f93fae9bb49728c8b2644c1323d1a9888dffcc67
 
 export default function Customers() {
   const [searchTerm, setSearchTerm] = useState('');
@@ -85,7 +92,7 @@ export default function Customers() {
 }
 
 Customers.authenticate = {
-  permissions: adminOnly,
+  permissions: ownerOnly,
 };
 Customers.Layout = Layout;
 

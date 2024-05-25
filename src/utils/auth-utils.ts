@@ -9,6 +9,8 @@ import {
   STAFF,
   STORE_OWNER,
   SUPER_ADMIN,
+  // SERVICE_PROVIDER,
+  OWNER,
   TOKEN,
 } from './constants';
 
@@ -17,9 +19,10 @@ export const adminAndOwnerOnly = [SUPER_ADMIN, STORE_OWNER, ADMIN, DEALER];
 export const adminOwnerAndStaffOnly = [SUPER_ADMIN, STORE_OWNER, STAFF];
 export const superAdminOnly = [SUPER_ADMIN];
 export const adminOnly = [SUPER_ADMIN, ADMIN, DEALER];
-export const ownerOnly = [STORE_OWNER];
+export const ownerOnly = [SUPER_ADMIN, OWNER];
 export const dealerOnly = [DEALER];
 export const ownerAndStaffOnly = [STORE_OWNER, STAFF];
+// export const serviceProviderOnly = [SERVICE_PROVIDER];
 
 export interface AuthCredentials {
   token: string | null;
