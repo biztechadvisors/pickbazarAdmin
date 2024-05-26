@@ -17,6 +17,7 @@ import { useUpdateCart } from '@/data/cart';
 import { useMeQuery } from '@/data/user';
 import { date } from 'yup';
 import { AllPermission } from '@/utils/AllPermission';
+import OwnerLayout from '@/components/layouts/owner';
 export default function Permission() {
   const { t } = useTranslation();
   const [searchTerm, setSearchTerm] = useState('');
@@ -150,7 +151,7 @@ export default function Permission() {
   );
 }
 
-Permission.Layout = Layout;
+Permission.Layout = OwnerLayout;
 
 export const getStaticProps = async ({ locale }: any) => ({
   props: {

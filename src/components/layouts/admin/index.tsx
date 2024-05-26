@@ -23,7 +23,6 @@ const AdminLayout: React.FC<{ children?: React.ReactNode }> = ({
   const dir = locale === 'ar' || locale === 'he' ? 'rtl' : 'ltr';
 
   const [matched, _] = useAtom(newPermission);
-
   const { permissions } = getAuthCredentials();
 
   const { data, isLoading: loading, error } = useMeQuery();
@@ -33,10 +32,14 @@ const AdminLayout: React.FC<{ children?: React.ReactNode }> = ({
   useEffect(() => {
     if (data && data.shops && data.shops.length > 0) {
       const newShopSlug = data.shops[0].slug;
+
       setShopSlug(newShopSlug);
       localStorage.setItem('shopSlug', newShopSlug);
     }
   }, [data]);
+
+  console.log("matched", matched)
+  console.log("permissions", permissions)
 
   let matchedLinks = [];
 
@@ -266,12 +269,12 @@ const AdminLayout: React.FC<{ children?: React.ReactNode }> = ({
       },
       // {
       //   href: Routes.order.list,
-      //   label: 'sidebar-nav-item-orders',
       //   icon: 'OrdersIcon',
-      // },
       // {
+      // },
       //   href: Routes.refund.list,
       //   label: 'sidebar-nav-item-refunds',
+      //   label: 'sidebar-nav-item-orders',
       //   icon: 'RefundsIcon',
       // },
       {

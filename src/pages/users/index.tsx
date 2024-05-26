@@ -12,11 +12,8 @@ import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import { Routes } from '@/config/routes';
 import { SortOrder } from '@/types';
 import { adminOnly, getAuthCredentials, ownerOnly } from '@/utils/auth-utils';
-import { newPermission } from '@/contexts/permission/storepermission';
-import { useAtom } from 'jotai';
-import { siteSettings } from '@/settings/site.settings';
 import { AllPermission } from '@/utils/AllPermission';
-
+import OwnerLayout from '@/components/layouts/owner';
 
 export default function Customers() {
   const [searchTerm, setSearchTerm] = useState('');
@@ -64,11 +61,11 @@ export default function Customers() {
           </h1>
         </div>
 
-        <div className="ms-auto flex w-full items-center md:w-3/4">
+        <div className="flex w-full items-center ms-auto md:w-3/4">
           <Search onSearch={handleSearch} />
           <LinkButton
             href={`${Routes.user.create}`}
-            className="ms-4 md:ms-6 h-12"
+            className="h-12 ms-4 md:ms-6"
           >
             <span>+ {t('form:button-label-add-user')}</span>
           </LinkButton>
@@ -91,7 +88,7 @@ export default function Customers() {
 Customers.authenticate = {
   permissions: ownerOnly,
 };
-Customers.Layout = Layout;
+Customers.Layout = OwnerLayout;
 
 export const getStaticProps = async ({ locale }: any) => ({
   props: {
