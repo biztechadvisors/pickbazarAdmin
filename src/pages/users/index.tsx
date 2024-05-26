@@ -11,15 +11,9 @@ import { useTranslation } from 'next-i18next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import { Routes } from '@/config/routes';
 import { SortOrder } from '@/types';
-<<<<<<< HEAD
 import { adminOnly, getAuthCredentials, ownerOnly } from '@/utils/auth-utils';
-import { newPermission } from '@/contexts/permission/storepermission';
-import { useAtom } from 'jotai';
-import { siteSettings } from '@/settings/site.settings';
-=======
-import { adminOnly, getAuthCredentials } from '@/utils/auth-utils';
 import { AllPermission } from '@/utils/AllPermission';
->>>>>>> f93fae9bb49728c8b2644c1323d1a9888dffcc67
+import OwnerLayout from '@/components/layouts/owner';
 
 export default function Customers() {
   const [searchTerm, setSearchTerm] = useState('');
@@ -33,16 +27,16 @@ export default function Customers() {
   const { users, paginatorInfo, loading, error } = useUsersQuery({
     limit: 20,
     usrById: data?.id,
-    email:searchTerm,
+    email: searchTerm,
     page,
     name: searchTerm,
     orderBy,
     sortedBy,
   });
 
-  const { permissions }:any = getAuthCredentials();
+  const { permissions }: any = getAuthCredentials();
 
-  const permissionTypes = AllPermission(); 
+  const permissionTypes = AllPermission();
 
   const canWrite = permissionTypes.includes('sidebar-nav-item-users');
 
@@ -67,11 +61,11 @@ export default function Customers() {
           </h1>
         </div>
 
-        <div className="ms-auto flex w-full items-center md:w-3/4">
+        <div className="flex w-full items-center ms-auto md:w-3/4">
           <Search onSearch={handleSearch} />
           <LinkButton
             href={`${Routes.user.create}`}
-            className="ms-4 md:ms-6 h-12"
+            className="h-12 ms-4 md:ms-6"
           >
             <span>+ {t('form:button-label-add-user')}</span>
           </LinkButton>
@@ -94,7 +88,7 @@ export default function Customers() {
 Customers.authenticate = {
   permissions: ownerOnly,
 };
-Customers.Layout = Layout;
+Customers.Layout = OwnerLayout;
 
 export const getStaticProps = async ({ locale }: any) => ({
   props: {

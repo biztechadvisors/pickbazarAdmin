@@ -191,6 +191,8 @@ const ShopList = ({
     },
   ];
 
+  console.log("shops", shops)
+
   return (
     <>
       <div className="mb-6 overflow-hidden rounded shadow">
