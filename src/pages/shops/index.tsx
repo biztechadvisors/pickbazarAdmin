@@ -11,6 +11,7 @@ import { adminOnly, ownerOnly } from '@/utils/auth-utils';
 import { useShopsQuery } from '@/data/shop';
 import { SortOrder } from '@/types';
 import permission from '../permission';
+import OwnerLayout from '@/components/layouts/owner';
 
 export default function AllShopPage() {
   const { t } = useTranslation();
@@ -46,7 +47,7 @@ export default function AllShopPage() {
           </h1>
         </div>
 
-        <div className="ms-auto flex w-full flex-col items-center md:w-1/2 md:flex-row">
+        <div className="flex w-full flex-col items-center ms-auto md:w-1/2 md:flex-row">
           <Search onSearch={handleSearch} />
         </div>
       </Card>
@@ -61,9 +62,9 @@ export default function AllShopPage() {
   );
 }
 AllShopPage.authenticate = {
-  permissions:ownerOnly,
+  permissions: ownerOnly,
 };
-AllShopPage.Layout = Layout;
+AllShopPage.Layout = OwnerLayout;
 
 export const getStaticProps = async ({ locale }: any) => ({
   props: {

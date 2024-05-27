@@ -61,7 +61,7 @@ const CreatePermission = () => {
     }
   }, [singlePermissionData]);
 
-  const handleChange = (e:any) => {
+  const handleChange = (e: any) => {
     setSelectedType(e.target.value);
     setTypeError('');
   };
@@ -71,7 +71,7 @@ const CreatePermission = () => {
     setPermissionError('');
   };
 
-  const handleCheckboxChange = (menuItem: any, type:any, isChecked:any) => {
+  const handleCheckboxChange = (menuItem: any, type: any, isChecked: any) => {
     const permissionIndex = selectedPermissions.findIndex(
       (p) => p.type === menuItem
     );
@@ -180,7 +180,14 @@ const CreatePermission = () => {
       for (let i = 0; i < filteredArray.length; i++) {
         switch (filteredArray[i]) {
           case 'owner':
-            updatedTypeName.push('owner', 'admin', 'store_owner', 'dealer', 'staff');
+            updatedTypeName.push(
+              'owner',
+              'admin',
+              'store_owner',
+              'dealer',
+              'staff'
+            );
+            break;
           case 'admin':
             updatedTypeName.push('admin', 'store_owner', 'dealer', 'staff');
             break;

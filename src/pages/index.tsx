@@ -114,7 +114,7 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
       ? `/${locale}${Routes.login}`
       : Routes.login;
 
-  const { token, permissions }: any = getAuthCredentials(ctx) || {}
+  const { token, permissions }: any = getAuthCredentials(ctx) || {};
   if (
     !isAuthenticated({ token, permissions }) ||
     !hasAccess(allowedRoles, permissions)
@@ -124,8 +124,8 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
         destination: generateRedirectUrl,
         permanent: false,
       },
-    }
-  };
+    };
+  }
   if (locale) {
     return {
       props: {
