@@ -148,7 +148,6 @@ import { CustomerIcon } from '../icons/sidebar/customer';
 export default function OwnerDashboard(user: any) {
   const { t } = useTranslation();
   const { locale } = useRouter();
-
   const [getPermission, _] = useAtom(newPermission);
   const { permissions } = getAuthCredentials();
   const canWrite = permissions?.includes('owner')
@@ -225,7 +224,7 @@ export default function OwnerDashboard(user: any) {
 
   console.log('getPermission', getPermission);
 
-  console.log("permissions", permissions)
+  console.log('permissions', permissions);
 
   return (
     <>

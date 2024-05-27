@@ -63,13 +63,20 @@ const CustomerCreateForm = () => {
       (permission: { permission_name: string }) => permission.permission_name
     ) ?? [];
 
+  // const permissionOptions =permissions[0] !== 'dealer'? permissionNames.map((name: string) => ({ value: name, label: name })): [
+  //         { value: 'customer', label: 'customer' },
+  //         { value: 'staff', label: 'staff' },
+  //       ];
+
   const permissionOptions =
-    permissions[0] !== 'dealer'
-      ? permissionNames.map((name: string) => ({ value: name, label: name }))
-      : [
+    permissions[0] === 'dealer'
+      ? [
           { value: 'customer', label: 'customer' },
           { value: 'staff', label: 'staff' },
-        ];
+        ]
+      : permissions[0] === 'owner'
+      ? permissionNames.map((name: string) => ({ value: name, label: name }))
+      : [];
 
   async function onSubmit({
     name,
@@ -100,7 +107,11 @@ const CustomerCreateForm = () => {
     );
   }
 
-  console.log('permissionOptions', permissionOptions);
+  console.log('permissionData', permissionData);
+
+  console.log('permissions', permissions);
+
+  console.log('permissionNames', permissionNames);
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} noValidate>
