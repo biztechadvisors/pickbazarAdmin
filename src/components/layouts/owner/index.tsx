@@ -5,6 +5,7 @@ import { siteSettings } from '@/settings/site.settings';
 import { useTranslation } from 'next-i18next';
 import SidebarItem from '@/components/layouts/navigation/sidebar-item';
 import { useRouter } from 'next/router';
+import { useMeQuery } from '@/data/user';
 
 const OwnerLayout: React.FC<{ children?: React.ReactNode }> = ({
   children,

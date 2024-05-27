@@ -14,6 +14,7 @@ import { useMeQuery } from '@/data/user';
 import { getAuthCredentials } from '@/utils/auth-utils';
 import { newPermission } from '@/contexts/permission/storepermission';
 import { useAtom } from 'jotai';
+import OwnerLayout from '@/components/layouts/owner';
 
 const CreatePermission = () => {
   const router = useRouter();
@@ -342,7 +343,7 @@ const CreatePermission = () => {
   );
 };
 
-CreatePermission.Layout = AdminLayout;
+CreatePermission.Layout = OwnerLayout;
 
 export const getStaticProps = async ({ locale }) => ({
   props: {
