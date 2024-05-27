@@ -308,11 +308,11 @@ export const useUserQuery = ({ id }: { id: string }) => {
   );
 };
 
-export const useVendorQuery = () => {
+export const useVendorQuery = (user_id:any) => {
   const type: string = API_ENDPOINTS.VENDOR_LIST;
   return useQuery<User, Error>(
-    [API_ENDPOINTS.USERS, type],
-    () => userClient.fetchVendor({ type }),
+    [API_ENDPOINTS.USERS, type, user_id],
+    () => userClient.fetchVendor({ type, user_id }),
     {
       enabled: Boolean(type),
     }
