@@ -8,7 +8,7 @@ export const Routes = {
   adminMyShops: getAdminMyShopsRoute(),
 
   OwnerMyShops: '/shops',  ///for owner dashboard
-  
+
   profile: '/profile',
   verifyCoupons: '/coupons/verify',
   settings: '/settings',
@@ -144,7 +144,7 @@ export const Routes = {
 };
 
 function routesFactory(endpoint: string) {
- 
+
   return {
     list: `${endpoint}`,
     create: `${endpoint}/create`,

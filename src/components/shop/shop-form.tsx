@@ -142,8 +142,9 @@ function SelectUser({
   const { t } = useTranslation();
 
   const { data } = useMeQuery();
-  const user_id = data?.id;
-  const { data: users, isLoading } = useVendorQuery(user_id);
+  const usrById = data?.id;
+
+  const { data: users, isLoading } = useVendorQuery(usrById);
 
   const options: any = users || [];
 
@@ -191,23 +192,23 @@ const ShopForm = ({ initialValues }: { initialValues?: any }) => {
     shouldUnregister: true,
     ...(initialValues
       ? {
-          defaultValues: {
-            ...initialValues,
-            logo: getFormattedImage(initialValues.logo),
-            cover_image: getFormattedImage(initialValues.cover_image),
-            settings: {
-              ...initialValues?.settings,
-              socials: initialValues?.settings?.socials
-                ? initialValues?.settings?.socials.map((social: any) => ({
-                    icon: updatedIcons?.find(
-                      (icon) => icon?.value === social?.icon
-                    ),
-                    url: social?.url,
-                  }))
-                : [],
-            },
+        defaultValues: {
+          ...initialValues,
+          logo: getFormattedImage(initialValues.logo),
+          cover_image: getFormattedImage(initialValues.cover_image),
+          settings: {
+            ...initialValues?.settings,
+            socials: initialValues?.settings?.socials
+              ? initialValues?.settings?.socials.map((social: any) => ({
+                icon: updatedIcons?.find(
+                  (icon) => icon?.value === social?.icon
+                ),
+                url: social?.url,
+              }))
+              : [],
           },
-        }
+        },
+      }
       : {}),
     resolver: yupResolver(shopValidationSchema),
   });
@@ -247,9 +248,9 @@ const ShopForm = ({ initialValues }: { initialValues?: any }) => {
       location: { ...omit(values?.settings?.location, '__typename') },
       socials: values?.settings?.socials
         ? values?.settings?.socials?.map((social: any) => ({
-            icon: social?.icon?.value,
-            url: social?.url,
-          }))
+          icon: social?.icon?.value,
+          url: social?.url,
+        }))
         : [],
     };
     if (initialValues) {

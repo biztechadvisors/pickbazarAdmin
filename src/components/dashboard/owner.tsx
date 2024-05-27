@@ -25,11 +25,6 @@ export default function OwnerDashboard(user: any) {
   const { locale } = useRouter();
   const [getPermission, _] = useAtom(newPermission);
   const { permissions } = getAuthCredentials();
-  const canWrite = permissions?.includes('owner')
-    ? siteSettings.sidebarLinks.owner
-    : getPermission?.find(
-      (permission) => permission.type === 'sidebar-nav-item-dealerlist'
-    )?.write;
 
   const { data: useMe } = useMeQuery();
 
@@ -41,10 +36,6 @@ export default function OwnerDashboard(user: any) {
     customerId: parseInt(customerId),
     state: '',
   };
-
-  console.log('getPermission', getPermission);
-
-  console.log('permissions', permissions);
 
   return (
     <>

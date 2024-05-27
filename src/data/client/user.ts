@@ -84,7 +84,6 @@ export const userClient = {
     return HttpClient.post<any>(API_ENDPOINTS.ADD_WALLET_POINTS, variables);
   },
   fetchUsers: ({ email, usrById, ...params }: Partial<UserQueryOptions>) => {
-    // console.log('name, ...params*********', email, usrById);
     return HttpClient.get<UserPaginator>(API_ENDPOINTS.USERS, {
       searchJoin: 'and',
       with: 'wallet',
@@ -93,9 +92,9 @@ export const userClient = {
       search: HttpClient.formatSearchParams({ email }),
     });
   },
-  fetchVendor: ({ type, user_id }: { type: string }) => {
+  fetchVendor: ({ type, usrById }: { type: string, usrById: number }) => {
     return HttpClient.get<User>(
-      `${API_ENDPOINTS.USERS}?type=${type}?usrById=${user_id}`
+      `${API_ENDPOINTS.USERS}?type=${type}&usrById=${usrById}`
     );
   },
   fetchAdmins: ({ ...params }: Partial<UserQueryOptions>) => {
