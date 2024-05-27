@@ -26,22 +26,24 @@ export const userClient = {
   },
 
   login: (variables: LoginInput) => {
-    const result = HttpClient.post<AuthResponse>(API_ENDPOINTS.TOKEN, variables);
+    const result = HttpClient.post<AuthResponse>(
+      API_ENDPOINTS.TOKEN,
+      variables
+    );
     result
-      .then(response => {
+      .then((response) => {
         // Assuming the token is in the response object
         const token = response.token;
         if (token) {
           localStorage.setItem('authToken', token);
         }
-        console.log("result*****", response);
+        console.log('result*****', response);
       })
-      .catch(error => {
-        console.error("Error during login:", error);
+      .catch((error) => {
+        console.error('Error during login:', error);
       });
     return result;
   },
-
 
   logout: () => {
     return HttpClient.post<any>(API_ENDPOINTS.LOGOUT, {});
@@ -91,8 +93,10 @@ export const userClient = {
       search: HttpClient.formatSearchParams({ email }),
     });
   },
-  fetchVendor: ({ type }: { type: string }) => {
-    return HttpClient.get<User>(`${API_ENDPOINTS.USERS}?type=${type}`);
+  fetchVendor: ({ type, user_id }: { type: string }) => {
+    return HttpClient.get<User>(
+      `${API_ENDPOINTS.USERS}?type=${type}?usrById=${user_id}`
+    );
   },
   fetchAdmins: ({ ...params }: Partial<UserQueryOptions>) => {
     return HttpClient.get<UserPaginator>(API_ENDPOINTS.ADMIN_LIST, {
