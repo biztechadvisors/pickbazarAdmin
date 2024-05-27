@@ -1,4 +1,5 @@
 import Layout from '@/components/layouts/admin';
+import OwnerLayout from '@/components/layouts/owner';
 import CustomerCreateForm from '@/components/user/user-form';
 import { useTranslation } from 'next-i18next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
@@ -16,7 +17,7 @@ export default function CreateCustomerPage() {
     </>
   );
 }
-CreateCustomerPage.Layout = Layout;
+CreateCustomerPage.Layout = OwnerLayout;
 
 export const getStaticProps = async ({ locale }: any) => ({
   props: {

@@ -23,23 +23,13 @@ const Navbar = () => {
   const { t } = useTranslation();
   const { toggleSidebar } = useUI();
 
-  // const [getPermission, _] = useAtom(newPermission);
-  // const { permissions } = getAuthCredentials();
-  // const canWrite = permissions?.includes('super_admin')
-  //   ? siteSettings.sidebarLinks
-  //   : getPermission?.find(
-  //       (permission) => permission.type === 'sidebar-nav-item-dealerlist'
-  //     )?.write;
+  const { permissions, type_name } = getAuthCredentials();
+  const permissionTypes = AllPermission();
+  // const canWrite = permissionTypes.includes('sidebar-nav-item-dealerlist');
 
-  const permissionTypes = AllPermission(); 
-
-  const canWrite = permissionTypes.includes('sidebar-nav-item-dealerlist');
-
-  // const { permissions } = getAuthCredentials();
-  // const { permissions } = getAuthCredentials()
+  const canWrite = permissions?.includes('owner');
 
   const { enableMultiLang } = Config;
-
   return (
     <header className="fixed z-40 w-full bg-white shadow">
       <nav className="flex items-center justify-between px-5 py-4 md:px-8">

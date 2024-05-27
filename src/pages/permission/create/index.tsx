@@ -14,6 +14,7 @@ import { useMeQuery } from '@/data/user';
 import { getAuthCredentials } from '@/utils/auth-utils';
 import { newPermission } from '@/contexts/permission/storepermission';
 import { useAtom } from 'jotai';
+import OwnerLayout from '@/components/layouts/owner';
 
 const CreatePermission = () => {
   const router = useRouter();
@@ -144,7 +145,7 @@ const CreatePermission = () => {
   };
 
   const filteredData = () => {
-    if (permissions.includes('super_admin')) {
+    if (permissions.includes('owner')) {
       return Object.entries(menusData).map(([key, value], index) => ({
         [key]: value,
         id: index + 1,
@@ -168,7 +169,7 @@ const CreatePermission = () => {
   };
 
   useEffect(() => {
-    if (permissions.includes('super_admin')) {
+    if (permissions.includes('owner')) {
       setTypeName(PermissionJson.type_name);
     } else {
       const permList = permissions;
@@ -342,7 +343,7 @@ const CreatePermission = () => {
   );
 };
 
-CreatePermission.Layout = AdminLayout;
+CreatePermission.Layout = OwnerLayout;
 
 export const getStaticProps = async ({ locale }) => ({
   props: {

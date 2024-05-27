@@ -24,20 +24,15 @@ export default function Permission() {
   const [page, setPage] = useState(1);
   const [orderBy, setOrder] = useState('created_at');
   // const [getPermission, _] = useAtom(newPermission);
-  // const { permissions } = getAuthCredentials();
+  const { permissions } = getAuthCredentials();
 
   const { data: meData } = useMeQuery();
   const id = meData?.id;
+  const permissionTypes = AllPermission();
 
-  // const canWrite = permissions?.includes('super_admin')
-  //   ? siteSettings.sidebarLinks
-  //   : getPermission?.find(
-  //       (permission) => permission.type === 'sidebar-nav-item-permissions'
-  //     )?.write;
-
-  const permissionTypes = AllPermission(); 
-
-  const canWrite = permissionTypes.includes('sidebar-nav-item-permissions');
+  const canWrite =
+    permissionTypes.includes('sidebar-nav-item-permissions') ||
+    permissions[0] === 'owner';
 
   const {
     isLoading,
@@ -59,6 +54,9 @@ export default function Permission() {
   if (!permissionData) {
     return <div>No permission data available</div>;
   }
+
+  console.log('permissionData', permissionData);
+
   return (
     <>
       <Card className="mb-8 flex flex-col items-center justify-between md:flex-row">
@@ -70,7 +68,9 @@ export default function Permission() {
           <Search onSearch={handleSearch} />
           {canWrite ? (
             <LinkButton href="/permission/create">Create Permission</LinkButton>
-          ) : null}
+          ) : (
+            <LinkButton href="/permission/create">Create Permission</LinkButton>
+          )}
         </div>
       </Card>
 
