@@ -24,8 +24,6 @@ const OwnerLayout: React.FC<{ children?: React.ReactNode }> = ({
     var matchedLinks = siteSettings.sidebarLinks.admin;
   }
 
-  console.log('permissions********', permissions);
-
   const SidebarItemMap = () => (
     <Fragment>
       {matchedLinks.map(({ href, label, icon }) => (

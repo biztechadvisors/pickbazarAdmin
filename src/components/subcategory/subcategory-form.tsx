@@ -265,13 +265,11 @@ export default function CreateOrUpdateSubCategoriesForm({
     useCreateSubCategoryMutation();
   const { mutate: updateSubCategory, isLoading: updating } =
     useUpdateSubCategoryMutation();
-  console.log('initialvalue+++++++', initialValues);
 
   // const categoryvalue = initialValues?.category
   // console.log("category+++++++", categoryvalue)
 
   const onSubmit = async (values: FormValues) => {
-    console.log('inputsss++++++++', values);
     const input = {
       language: router.locale,
       name: values.name,
@@ -304,8 +302,6 @@ export default function CreateOrUpdateSubCategoriesForm({
       });
     }
   };
-
-  console.log('shop_id', meData?.shops?.[0]?.id);
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>

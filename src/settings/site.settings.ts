@@ -14,8 +14,6 @@ const { permissions }: any = getAuthCredentials();
 let permission = hasAccess(dealerOnly, permissions);
 let identify = permissions;
 const matching: any = 'dealer';
-console.log("permission+++++++++++", permissions)
-// console.log('fetched items', permission, 'working permissoin', permissions);
 export const siteSettings = {
   name: 'PickBazar',
   description: '',

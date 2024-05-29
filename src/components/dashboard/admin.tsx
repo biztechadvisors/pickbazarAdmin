@@ -41,7 +41,7 @@ export default function Dashboard() {
   const { data: popularProductData, isLoading: popularProductLoading, error: popularProductError } = usePopularProductsQuery({
     limit: 10,
     language: locale,
-    shop_id: meData?.shop_id ? meData.shops : meData?.managed_shop.id
+    shop_id: meData?.shop_id ? meData.shops : meData?.managed_shop?.id
   });
 
   if (analyticsLoading || orderLoading || popularProductLoading) {

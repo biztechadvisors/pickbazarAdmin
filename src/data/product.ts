@@ -126,7 +126,6 @@ export const useProductsQuery = (
   params: Partial<ProductQueryOptions>,
   options: any = {}
 ) => {
-  console.log('params', params);
   const { data, error, isLoading } = useQuery<ProductPaginator, Error>(
     [API_ENDPOINTS.PRODUCTS, params],
     ({ queryKey, pageParam }) =>
