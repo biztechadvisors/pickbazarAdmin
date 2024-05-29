@@ -76,7 +76,7 @@ export default function Dashboard() {
           price={analyticsData?.todaysRevenue ?? 0}
         />
         <StickerCard
-          titleTransKey={canWrite ? "sticker-card-title-total-shops" : "sticker-card-title-total-customer"}
+          titleTransKey={canWrite ? "sticker-card-title-total-shops" : "sticker-card-title-total-cutomer"}
           icon={canWrite ? <ShopIcon className="w-6" color="#1D4ED8" /> : <CustomerIcon className="w-6" color="#1D4ED8" />}
           iconBgStyle={{ backgroundColor: '#93C5FD' }}
           price={canWrite ? analyticsData?.totalShops ?? 0 : analyticsData?.totalCustomers ?? 0}
