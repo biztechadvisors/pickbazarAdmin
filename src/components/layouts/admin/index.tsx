@@ -12,7 +12,6 @@ import { getAuthCredentials } from '@/utils/auth-utils';
 import { useMeQuery } from '@/data/user';
 import { Routes } from '@/config/routes';
 import { shopSlugAtom } from '@/utils/atoms';
-import Dropdown from '../navigation/Dropdown';
 
 const AdminLayout: React.FC<{ children?: React.ReactNode }> = ({
   children,
@@ -422,8 +421,8 @@ const AdminLayout: React.FC<{ children?: React.ReactNode }> = ({
     matchedLinks = permissions?.includes('super_admin')
       ? siteSettings.sidebarLinks.admin
       : siteSettings.sidebarLinks.admin.filter((link) =>
-          matched.some((newItem) => newItem.type === link.label)
-        );
+        matched.some((newItem) => newItem.type === link.label)
+      );
 
     matchedLinks = matchedLinks.filter(
       (link) =>
@@ -431,7 +430,7 @@ const AdminLayout: React.FC<{ children?: React.ReactNode }> = ({
           Routes.attribute.list,
           Routes.type.list,
           // Routes.settings,
-        //    Routes.order.list,
+          //    Routes.order.list,
           // Routes.refund.list,
           Routes.category.list,
           Routes.subcategory.list,
@@ -451,8 +450,6 @@ const AdminLayout: React.FC<{ children?: React.ReactNode }> = ({
       ))}
     </Fragment>
   );
-
-  console.log('shopSlug', shopSlug);
 
   return (
     <div

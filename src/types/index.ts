@@ -130,9 +130,9 @@ export enum AddressType {
 export type QueryOptionsType = {
   page?: number;
   type?: string;
-  name?: string;
   shop_id?: number;
   limit?: number;
+  name?: string;
   orderBy?: string;
   sortedBy?: SortOrder;
 };

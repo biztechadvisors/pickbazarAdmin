@@ -1,6 +1,12 @@
 import Button from '@/components/ui/button';
 import Input from '@/components/ui/input';
-import { Control, Controller, FieldErrors, useFieldArray, useForm } from 'react-hook-form';
+import {
+  Control,
+  Controller,
+  FieldErrors,
+  useFieldArray,
+  useForm,
+} from 'react-hook-form';
 import { useTranslation } from 'next-i18next';
 import { yupResolver } from '@hookform/resolvers/yup';
 import Description from '@/components/ui/description';
@@ -32,7 +38,7 @@ import OpenAIButton from '../openAI/openAI.button';
 import { useCallback, useMemo } from 'react';
 import { useSettingsQuery } from '@/data/settings';
 import Select from '../ui/select/select';
-import { useUserQuery, useVendorQuery } from '@/data/user';
+import { useMeQuery, useUserQuery, useVendorQuery } from '@/data/user';
 import ValidationError from '../ui/form-validation-error';
 
 export const chatbotAutoSuggestion = ({ name }: { name: string }) => {
@@ -134,9 +140,13 @@ function SelectUser({
   errors: FieldErrors;
 }) {
   const { t } = useTranslation();
-  const { data: users, isLoading } = useVendorQuery();
 
-  const options: any = users || []
+  const { data } = useMeQuery();
+  const usrById = data?.id;
+
+  const { data: users, isLoading } = useVendorQuery(usrById);
+
+  const options: any = users || [];
 
   return (
     <div className="mb-5">
@@ -156,13 +166,13 @@ function SelectUser({
             option.name.toLowerCase().includes(searchValue) ||
             option.email.toLowerCase().includes(searchValue)
           );
-        } } defaultValue={[]}      />
+        }}
+        defaultValue={[]}
+      />
       <ValidationError message={t(errors.user?.message)} />
     </div>
-
   );
 }
-
 
 const ShopForm = ({ initialValues }: { initialValues?: any }) => {
   const { mutate: createShop, isLoading: creating } = useCreateShopMutation();
@@ -233,7 +243,6 @@ const ShopForm = ({ initialValues }: { initialValues?: any }) => {
     name: 'settings.socials',
   });
   function onSubmit(values: FormValues) {
-
     const settings = {
       ...values?.settings,
       location: { ...omit(values?.settings?.location, '__typename') },
