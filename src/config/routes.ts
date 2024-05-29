@@ -6,9 +6,7 @@ export const Routes = {
   forgotPassword: '/forgot-password',
   resetPassword: '/reset-password',
   adminMyShops: getAdminMyShopsRoute(),
-
-  OwnerMyShops: '/shops',  ///for owner dashboard
-
+  OwnerMyShops: '/shops', ///for owner dashboard
   profile: '/profile',
   verifyCoupons: '/coupons/verify',
   settings: '/settings',
@@ -144,7 +142,6 @@ export const Routes = {
 };
 
 function routesFactory(endpoint: string) {
-
   return {
     list: `${endpoint}`,
     create: `${endpoint}/create`,
