@@ -13,6 +13,14 @@ import {
 import { mapPaginatorData } from '@/utils/data-mappers';
 import { categoryClient } from './client/category';
 import { Config } from '@/config';
+import { shop_slug } from '@/utils/atoms';
+
+export const getShopSlug = () => {
+  if (typeof window !== 'undefined') {
+    return localStorage.getItem('shopSlug') || '';
+  }
+  return '';
+};
 
 export const useCreateCategoryMutation = () => {
   const queryClient = useQueryClient();
@@ -20,7 +28,7 @@ export const useCreateCategoryMutation = () => {
 
   return useMutation(categoryClient.create, {
     onSuccess: () => {
-      Router.push(Routes.category.list, undefined, {
+      Router.push(`/${getShopSlug()}/${Routes.category.list}`, undefined, {
         locale: Config.defaultLanguage,
       });
       toast.success(t('common:successfully-created'));

@@ -14,13 +14,19 @@ import { mapPaginatorData } from '@/utils/data-mappers';
 import { subcategoryClient } from './client/subcategory';
 import { Config } from '@/config';
 
+export const getShopSlug = () => {
+  if (typeof window !== 'undefined') {
+    return localStorage.getItem('shopSlug') || '';
+  }
+  return '';
+};
 export const useCreateSubCategoryMutation = () => {
   const queryClient = useQueryClient();
   const { t } = useTranslation();
 
   return useMutation(subcategoryClient.create, {
     onSuccess: () => {
-      Router.push(Routes.subcategory.list, undefined, {
+      Router.push(`/${getShopSlug()}/${Routes.subcategory.list}`, undefined, {
         locale: Config.defaultLanguage,
       });
       toast.success(t('common:successfully-created'));
@@ -61,13 +67,23 @@ export const useUpdateSubCategoryMutation = () => {
   });
 };
 
-export const useSubCategoryQuery = ({  slug, language, userId, categoryId, shopId }: GetParams) => {
- console.log("slug+++++++++++++", slug,  categoryId, shopId)
+export const useSubCategoryQuery = ({
+  slug,
+  language,
+  userId,
+  categoryId,
+  shopId,
+}: GetParams) => {
+  console.log('slug+++++++++++++', slug, categoryId, shopId);
   const { data, error, isLoading } = useQuery<SubCategory, Error>(
-    [API_ENDPOINTS.SUBCATEGORIES, { slug, language, categoryId, userId, shopId }],
-    () => subcategoryClient.getSubCategory({ slug, language, categoryId, shopId })
+    [
+      API_ENDPOINTS.SUBCATEGORIES,
+      { slug, language, categoryId, userId, shopId },
+    ],
+    () =>
+      subcategoryClient.getSubCategory({ slug, language, categoryId, shopId })
   );
-console.log("slug data", data, categoryId, shopId)
+  console.log('slug data', data, categoryId, shopId);
   return {
     subcategory: data ?? [],
     error,
@@ -75,7 +91,9 @@ console.log("slug data", data, categoryId, shopId)
   };
 };
 
-export const useSubCategoriesQuery = (options: Partial<SubCategoryQueryOptions>) => {
+export const useSubCategoriesQuery = (
+  options: Partial<SubCategoryQueryOptions>
+) => {
   const { data, error, isLoading } = useQuery<SubCategoryPaginator, Error>(
     [API_ENDPOINTS.SUBCATEGORIES, options],
     ({ queryKey, pageParam }) =>

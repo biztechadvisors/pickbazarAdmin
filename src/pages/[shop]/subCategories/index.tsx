@@ -66,9 +66,6 @@ console.log("shopID++++++++++++", shop, subcategories)
   //       (permission) => permission.type === 'sidebar-nav-item-subcategories'
   //     )?.write;
 
-  const permissionTypes = AllPermission(); 
-
-  const canWrite = permissionTypes.includes('sidebar-nav-item-subcategories');
 
   if (loading) return <Loader text={t('common:text-loading')} />;
   if (error) return <ErrorMessage message={error.message} />;
