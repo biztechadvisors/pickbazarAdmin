@@ -35,7 +35,6 @@ type FormValues = {
 };
 
 export default function ProfileUpdate({ me }: any) {
-  console.log("myDealers", me)
   const id = me?.id
   const { t } = useTranslation();
   const {
@@ -43,14 +42,11 @@ export default function ProfileUpdate({ me }: any) {
     isLoading,
     error,
   } = useDealerQueryGet({id});
-
-  console.log("DealerGet", data)
   const { mutate: updateUser, isLoading: loading } = useUpdateUserMutation();
   const { mutate: updateDealer, isLoading: updating } = useUpdateDealerMutation();
   const { permissions } = getAuthCredentials();
 
   let permission = hasAccess(adminOnly, permissions);
-  console.log("permission", permissions[0])
   let identify = permissions[0]
   const matching: any = 'dealer'
   const {
@@ -100,7 +96,6 @@ export default function ProfileUpdate({ me }: any) {
       pan: pan,
     }
     updateDealer(inputGP)
-    console.log("inputs", input)
     updateUser({ ...input });
     // updateDealer({  })
   }

@@ -158,9 +158,7 @@ export const useRegisterMutation = () => {
   return useMutation(userClient.register, {
     onSuccess: () => {
       const queryParams = new URLSearchParams(window.location.search);
-      console.log('queryParams', queryParams);
       const fromCheckout = queryParams.get('from') === 'checkout';
-      console.log('fromCheckout', fromCheckout);
 
       toast.success(t('common:successfully-register'));
       // if (fromCheckout) {

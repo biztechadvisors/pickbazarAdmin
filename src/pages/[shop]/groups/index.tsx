@@ -56,15 +56,8 @@ export default function TypesPage() {
     sortedBy,
     shop,
   });
-  // const [getPermission, _] = useAtom(newPermission);
-  // const { permissions } = getAuthCredentials();
-  // const canWrite = permissions?.includes('super_admin')
-  //   ? siteSettings.sidebarLinks
-  //   : getPermission?.find(
-  //       (permission) => permission.type === 'sidebar-nav-item-groups'
-  //     )?.write;
-
-  const permissionTypes = AllPermission(); 
+  const { permissions } = getAuthCredentials();
+  const permissionTypes = AllPermission();
 
   const canWrite = permissionTypes.includes('sidebar-nav-item-groups');
 

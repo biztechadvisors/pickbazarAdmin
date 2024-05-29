@@ -217,8 +217,6 @@ export default function CreateOrUpdateCategoriesForm({
 
   const { data: meData } = useMeQuery();
 
-  console.log('meData', meData);
-
   const { openModal } = useModalAction();
   const { locale } = router;
   const {
@@ -249,7 +247,6 @@ export default function CreateOrUpdateCategoriesForm({
     useUpdateCategoryMutation();
 
   const onSubmit = async (values: FormValues) => {
-    console.log("category on submit function", values)
     const input = {
       language: router.locale,
       name: values.name,
@@ -281,8 +278,6 @@ export default function CreateOrUpdateCategoriesForm({
       });
     }
   };
-
-  console.log('shop_id', meData?.shops?.[0]?.id);
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
