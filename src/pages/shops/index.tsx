@@ -7,11 +7,13 @@ import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import ShopList from '@/components/shop/shop-list';
 import { useState } from 'react';
 import Search from '@/components/common/search';
-import { adminOnly, ownerOnly } from '@/utils/auth-utils';
+import { adminOnly, getAuthCredentials, ownerOnly } from '@/utils/auth-utils';
 import { useShopsQuery } from '@/data/shop';
 import { SortOrder } from '@/types';
 import permission from '../permission';
 import OwnerLayout from '@/components/layouts/owner';
+import LinkButton from '@/components/ui/link-button';
+import { Routes } from '@/config/routes';
 
 export default function AllShopPage() {
   const { t } = useTranslation();
@@ -20,6 +22,8 @@ export default function AllShopPage() {
   const [orderBy, setOrder] = useState('created_at');
   const [sortedBy, setColumn] = useState<SortOrder>(SortOrder.Desc);
 
+  const { permissions } = getAuthCredentials();
+
   const { shops, paginatorInfo, loading, error } = useShopsQuery({
     name: searchTerm,
     limit: 10,
@@ -27,6 +31,8 @@ export default function AllShopPage() {
     orderBy,
     sortedBy,
   });
+
+  const canWrite = permissions?.includes('owner');
 
   if (loading) return <Loader text={t('common:text-loading')} />;
   if (error) return <ErrorMessage message={error.message} />;
@@ -48,7 +54,21 @@ export default function AllShopPage() {
         </div>
 
         <div className="flex w-full flex-col items-center ms-auto md:w-1/2 md:flex-row">
-          <Search onSearch={handleSearch} />
+          {/* {hasAccess(adminAndOwnerOnly, permissions) && ( */}
+          <div className="flex w-full items-center">
+            <Search onSearch={handleSearch} />
+            {canWrite ? (
+              <LinkButton
+              href={Routes.shop.create}
+              className="h-12 ms-4 md:ms-6"
+            >
+              <span className="hidden md:block">
+              {t('common:text-create-shop')}
+              </span>
+            </LinkButton>
+              
+            ) : null}
+          </div>
         </div>
       </Card>
       <ShopList
