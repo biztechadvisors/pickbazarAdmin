@@ -55,7 +55,7 @@ export const siteSettings = {
       {
         href: Routes.shop.list,
         label: 'sidebar-nav-item-shops',
-        icon: 'ShopIcon',
+        icon: 'MyShopIcon',
         permissions: ownerOnly,
       },
       {

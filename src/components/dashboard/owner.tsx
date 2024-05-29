@@ -134,7 +134,7 @@ import { useOrdersQuery } from '@/data/order';
 import { useTranslation } from 'next-i18next';
 // import { useWithdrawsQuery } from '@/data/withdraw';
 // import WithdrawTable from '@/components/withdraw/withdraw-table';
-import { ShopIcon } from '@/components/icons/sidebar';
+import { MyShopIcon, ShopIcon } from '@/components/icons/sidebar';
 import { DollarIcon } from '@/components/icons/shops/dollar';
 import { useAnalyticsQuery, usePopularProductsQuery } from '@/data/dashboard';
 import { useRouter } from 'next/router';
@@ -150,17 +150,18 @@ export default function OwnerDashboard(user: any) {
   const { locale } = useRouter();
   const [getPermission, _] = useAtom(newPermission);
   const { permissions } = getAuthCredentials();
-  const canWrite = permissions?.includes('owner')
-    ? siteSettings.sidebarLinks.owner
-    : getPermission?.find(
-        (permission) => permission.type === 'sidebar-nav-item-dealerlist'
-      )?.write;
+  // const canWrite = siteSettings.sidebarLinks.owner
+  // permissions?.includes('owner')
+    // ? siteSettings.sidebarLinks.owner
+    // : getPermission?.find(
+    //     (permission) => permission.type === 'sidebar-nav-item-dealerlist'
+    //   )?.write;
 
   const { data: useMe } = useMeQuery();
 
   const customerId = useMe?.id ?? '';
 
-  console.log('customerId', customerId);
+  console.log('customerId');
 
   const query = {
     customerId: parseInt(customerId),
@@ -259,26 +260,34 @@ export default function OwnerDashboard(user: any) {
               titleTransKey="sticker-card-title-total-shops"
               icon={<ShopIcon className="w-6" color="#1D4ED8" />}
               iconBgStyle={{ backgroundColor: '#93C5FD' }}
-              price={data?.totalShops}
+              // price={data?.totalShops}
             />
           </div>
-        ) : (
+        ) : ( */}
           <div className="w-full ">
             <StickerCard
-              titleTransKey="sticker-card-title-total-cutomer"
-              icon={<CustomerIcon className="w-6" color="#1D4ED8" />}
+              titleTransKey="sticker-card-title-total-company"
+              icon={<MyShopIcon className="w-6" color="#1D4ED8" />}
               iconBgStyle={{ backgroundColor: '#93C5FD' }}
-              price={data?.totalShops}
+              // price={data?.totalShops}
             />
           </div>
-        )} */}
+          <div className="w-full ">
+            <StickerCard
+              titleTransKey="sticker-card-title-total-customer"
+              icon={<CustomerIcon className="w-6" color="#1D4ED8" />}
+              iconBgStyle={{ backgroundColor: '#93C5FD' }}
+              // price={data?.totalShops}
+            />
+          </div>
+        {/* )} */}
       </div>
 
       {/* <div className="mb-6 flex w-full flex-wrap md:flex-nowrap">
         <ColumnChart
           widgetTitle={t('common:sale-history')}
           colors={['#03D3B5']}
-          series={salesByYear}
+          // series={salesByYear}
           categories={[
             t('common:january'),
             t('common:february'),

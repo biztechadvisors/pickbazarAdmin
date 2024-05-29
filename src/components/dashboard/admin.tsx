@@ -29,44 +29,44 @@ export default function Dashboard() {
   const { data: meData } = useMeQuery();
   const customerId = meData?.id;
 
-  const analyticsQuery = useMemo(() => ({
-    customerId: customerId ? parseInt(customerId, 10) : null,
-    state: '',
-  }), [customerId]);
+  // const analyticsQuery = useMemo(() => ({
+  //   customerId: customerId ? parseInt(customerId, 10) : null,
+  //   state: '',
+  // }), [customerId]);
 
-  const { data: analyticsData, isLoading: analyticsLoading, error: analyticsError } = useAnalyticsQuery(analyticsQuery);
-  const { price: totalRevenue } = usePrice(analyticsData && { amount: analyticsData?.totalRevenue ?? 0 });
-  const { price: todaysRevenue } = usePrice(analyticsData && { amount: analyticsData?.todaysRevenue ?? 0 });
+  // const { data: analyticsData, isLoading: analyticsLoading, error: analyticsError } = useAnalyticsQuery(analyticsQuery);
+  // const { price: totalRevenue } = usePrice(analyticsData && { amount: analyticsData?.totalRevenue ?? 0 });
+  // const { price: todaysRevenue } = usePrice(analyticsData && { amount: analyticsData?.todaysRevenue ?? 0 });
 
-  const { data: orderData, error: orderError, isLoading: orderLoading } = useOrdersQuery({
-    customer_id: customerId,
-    language: locale,
-    limit: 10,
-    page: 1,
-  });
+  // const { data: orderData, error: orderError, isLoading: orderLoading } = useOrdersQuery({
+  //   customer_id: customerId,
+  //   language: locale,
+  //   limit: 10,
+  //   page: 1,
+  // });
 
-  const { data: popularProductData, isLoading: popularProductLoading, error: popularProductError } = usePopularProductsQuery({
-    limit: 10,
-    language: locale,
-  });
+  // const { data: popularProductData, isLoading: popularProductLoading, error: popularProductError } = usePopularProductsQuery({
+  //   limit: 10,
+  //   language: locale,
+  // });
 
-  const { data: withdrawData, isLoading: withdrawLoading } = useWithdrawsQuery({
-    limit: 10,
-  });
+  // const { data: withdrawData, isLoading: withdrawLoading } = useWithdrawsQuery({
+  //   limit: 10,
+  // });
 
-  if (analyticsLoading || orderLoading || popularProductLoading || withdrawLoading) {
-    return <Loader text={t('common:text-loading')} />;
-  }
+  // if (analyticsLoading || orderLoading || popularProductLoading || withdrawLoading) {
+  //   return <Loader text={t('common:text-loading')} />;
+  // }
 
-  const salesByYear = analyticsData?.totalYearSaleByMonth?.map((item) => item.total.toFixed(2)) || Array(12).fill(0);
+  // const salesByYear = analyticsData?.totalYearSaleByMonth?.map((item) => item.total.toFixed(2)) || Array(12).fill(0);
 
-  const errorMessage = analyticsError?.message || orderError?.message || popularProductError?.message;
+  // const errorMessage = analyticsError?.message || orderError?.message || popularProductError?.message;
 
   return (
     <>
-      {errorMessage && <ErrorMessage message={errorMessage} />}
+      {/* {errorMessage && <ErrorMessage message={errorMessage} />} */}
 
-      <div className="mb-6 grid w-full grid-cols-1 gap-5 sm:grid-cols-2 xl:grid-cols-4">
+      {/* <div className="mb-6 grid w-full grid-cols-1 gap-5 sm:grid-cols-2 xl:grid-cols-4">
         <StickerCard
           titleTransKey="sticker-card-title-rev"
           subtitleTransKey="sticker-card-subtitle-rev"
@@ -100,9 +100,9 @@ export default function Dashboard() {
             price={analyticsData?.totalCustomers}
           />
         )}
-      </div>
+      </div> */}
 
-      <div className="mb-6 flex w-full flex-wrap md:flex-nowrap">
+      {/* <div className="mb-6 flex w-full flex-wrap md:flex-nowrap">
         <ColumnChart
           widgetTitle={t('common:sale-history')}
           colors={['#03D3B5']}
@@ -122,23 +122,23 @@ export default function Dashboard() {
             t('common:december'),
           ]}
         />
-      </div>
+      </div> */}
 
       <div className="mb-6 flex w-full flex-wrap space-y-6 xl:flex-nowrap xl:space-y-0 xl:space-x-5">
-        <RecentOrders
+        {/* <RecentOrders
           orders={orderData}
           title={t('table:recent-order-table-title')}
-        />
+        /> */}
         {/* Uncomment the following block if WithdrawTable is needed */}
         {/* <WithdrawTable
           withdraws={withdrawData}
           title={t('table:withdraw-table-title')}
         /> */}
       </div>
-      <PopularProductList
+      {/* <PopularProductList
         products={popularProductData}
         title={t('table:popular-products-table-title')}
-      />
+      /> */}
     </>
   );
 }

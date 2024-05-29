@@ -11,14 +11,15 @@ export function formatPrice({
   currencyCode: string;
   locale: string;
   fractions: number
-}) {
+})
+ {
   const formatCurrency = new Intl.NumberFormat(locale, {
     style: 'currency',
-    currency: currencyCode,
+    currency: currencyCode ? currencyCode : 'INR',
     maximumFractionDigits: (fractions > 20 || fractions < 0 || !fractions ) ? 2 : fractions,
   });
 
-  return formatCurrency.format(amount);
+  return formatCurrency?.format(amount);
 }
 
 export function formatVariantPrice({
