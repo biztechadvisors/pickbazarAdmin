@@ -38,8 +38,8 @@ const AdminLayout: React.FC<{ children?: React.ReactNode }> = ({
     }
   }, [data]);
 
-  console.log("matched", matched)
-  console.log("permissions", permissions)
+  console.log('matched', matched);
+  console.log('permissions', permissions);
 
   let matchedLinks = [];
 
@@ -421,8 +421,8 @@ const AdminLayout: React.FC<{ children?: React.ReactNode }> = ({
     matchedLinks = permissions?.includes('super_admin')
       ? siteSettings.sidebarLinks.admin
       : siteSettings.sidebarLinks.admin.filter((link) =>
-        matched.some((newItem) => newItem.type === link.label)
-      );
+          matched.some((newItem) => newItem.type === link.label)
+        );
 
     matchedLinks = matchedLinks.filter(
       (link) =>

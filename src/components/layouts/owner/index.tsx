@@ -6,17 +6,25 @@ import { useTranslation } from 'next-i18next';
 import SidebarItem from '@/components/layouts/navigation/sidebar-item';
 import { useRouter } from 'next/router';
 import { useMeQuery } from '@/data/user';
+import { getAuthCredentials } from '@/utils/auth-utils';
 
 const OwnerLayout: React.FC<{ children?: React.ReactNode }> = ({
   children,
 }) => {
   const { t } = useTranslation();
   const { locale } = useRouter();
+  const { permissions } = getAuthCredentials();
 
   const router = useRouter();
   const dir = locale === 'ar' || locale === 'he' ? 'rtl' : 'ltr';
 
-  let matchedLinks = siteSettings.sidebarLinks.owner;
+  if (permissions[0] === 'owner') {
+    var matchedLinks = siteSettings.sidebarLinks.owner;
+  } else {
+    var matchedLinks = siteSettings.sidebarLinks.admin;
+  }
+
+  console.log('permissions********', permissions);
 
   const SidebarItemMap = () => (
     <Fragment>
