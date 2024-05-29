@@ -22,7 +22,7 @@ export default function AllShopPage() {
   const [orderBy, setOrder] = useState('created_at');
   const [sortedBy, setColumn] = useState<SortOrder>(SortOrder.Desc);
 
-  const {permissions}=getAuthCredentials()
+  const { permissions } = getAuthCredentials();
 
   const { shops, paginatorInfo, loading, error } = useShopsQuery({
     name: searchTerm,
