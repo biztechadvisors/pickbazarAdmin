@@ -55,16 +55,20 @@ export default function AllShopPage() {
 
         <div className="flex w-full flex-col items-center ms-auto md:w-1/2 md:flex-row">
           {/* {hasAccess(adminAndOwnerOnly, permissions) && ( */}
-          <Search onSearch={handleSearch} />
-          {canWrite ? (
-            <LinkButton
+          <div className="flex w-full items-center">
+            <Search onSearch={handleSearch} />
+            {canWrite ? (
+              <LinkButton
               href={Routes.shop.create}
-              className="ms-4 md:ms-6"
-              size="small"
+              className="h-12 ms-4 md:ms-6"
             >
+              <span className="hidden md:block">
               {t('common:text-create-shop')}
+              </span>
             </LinkButton>
-          ) : null}
+              
+            ) : null}
+          </div>
         </div>
       </Card>
       <ShopList
