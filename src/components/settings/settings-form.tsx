@@ -50,6 +50,7 @@ import {
 import { EMAIL_GROUP_OPTION, SMS_GROUP_OPTION } from './eventsOption';
 import OpenAIButton from '../openAI/openAI.button';
 import { useModalAction } from '../ui/modal/modal.context';
+import { useMeQuery } from '@/data/user';
 
 export const chatbotAutoSuggestion = ({ name }: { name: string }) => {
   return [
@@ -250,21 +251,15 @@ export default function SettingsForm({
 }: IProps) {
   const { t } = useTranslation();
   const { locale } = useRouter();
+  const { data: meData } = useMeQuery();
+  const shop_id = meData?.shop_id;
   const [isCopied, setIsCopied] = useState(false);
   const { mutate: updateSettingsMutation, isLoading: loading } =
     useUpdateSettingsMutation();
   const { language, options } = settings ?? {};
   const [serverInfo, SetSeverInfo] = useState(options?.server_info);
 
-  const {
-    register,
-    handleSubmit,
-    control,
-    getValues,
-    watch,
-    setValue,
-    formState: { errors },
-  } = useForm<FormValues>({
+  const {register,handleSubmit,control,getValues,watch,setValue,formState: { errors },}= useForm<FormValues>({
     shouldUnregister: true,
     resolver: yupResolver(settingsValidationSchema),
     defaultValues: {
@@ -274,9 +269,9 @@ export default function SettingsForm({
         ...options?.contactDetails,
         socials: options?.contactDetails?.socials
           ? options?.contactDetails?.socials.map((social: any) => ({
-            icon: updatedIcons?.find((icon) => icon?.value === social?.icon),
-            url: social?.url,
-          }))
+              icon: updatedIcons?.find((icon) => icon?.value === social?.icon),
+              url: social?.url,
+            }))
           : [],
       },
       deliveryTime: options?.deliveryTime ? options?.deliveryTime : [],
@@ -297,8 +292,8 @@ export default function SettingsForm({
 
       defaultPaymentGateway: options?.defaultPaymentGateway
         ? PAYMENT_GATEWAY.find(
-          (item) => item.name == options?.defaultPaymentGateway
-        )
+            (item) => item.name == options?.defaultPaymentGateway
+          )
         : PAYMENT_GATEWAY[0],
 
       currencyOptions: {
@@ -306,16 +301,16 @@ export default function SettingsForm({
         // @ts-ignore
         formation: options?.currencyOptions?.formation
           ? COUNTRY_LOCALE.find(
-            (item) => item.code == options?.currencyOptions?.formation
-          )
+              (item) => item.code == options?.currencyOptions?.formation
+            )
           : COUNTRY_LOCALE[0],
       },
       // multi-select on payment gateway
       paymentGateway: options?.paymentGateway
         ? options?.paymentGateway?.map((gateway: any) => ({
-          name: gateway?.name,
-          title: gateway?.title,
-        }))
+            name: gateway?.name,
+            title: gateway?.title,
+          }))
         : [],
 
       // @ts-ignore
@@ -325,8 +320,8 @@ export default function SettingsForm({
       // @ts-ignore
       shippingClass: !!shippingClasses?.length
         ? shippingClasses?.find(
-          (shipping: Shipping) => shipping.id == options?.shippingClass
-        )
+            (shipping: Shipping) => shipping.id == options?.shippingClass
+          )
         : '',
       smsEvent: options?.smsEvent
         ? formatEventAPIData(options?.smsEvent)
@@ -393,14 +388,15 @@ export default function SettingsForm({
       location: { ...omit(values?.contactDetails?.location, '__typename') },
       socials: values?.contactDetails?.socials
         ? values?.contactDetails?.socials?.map((social: any) => ({
-          icon: social?.icon?.value,
-          url: social?.url,
-        }))
+            icon: social?.icon?.value,
+            url: social?.url,
+          }))
         : [],
     };
     const smsEvent = formatEventOptions(values.smsEvent);
     const emailEvent = formatEventOptions(values.emailEvent);
     updateSettingsMutation({
+      shop_id,
       language: locale,
       options: {
         ...values,
@@ -417,9 +413,9 @@ export default function SettingsForm({
         paymentGateway:
           values?.paymentGateway && values?.paymentGateway!.length
             ? values?.paymentGateway?.map((gateway: any) => ({
-              name: gateway.name,
-              title: gateway.title,
-            }))
+                name: gateway.name,
+                title: gateway.title,
+              }))
             : PAYMENT_GATEWAY.filter((value: any, index: number) => index < 2),
         useEnableGateway: values?.useEnableGateway,
         guestCheckout: values?.guestCheckout,
@@ -468,7 +464,9 @@ export default function SettingsForm({
     (item: any) => item?.name === defaultPaymentGateway?.name
   );
 
-  const isStripeActive = paymentGateway?.some(payment => payment?.name === "stripe");
+  const isStripeActive = paymentGateway?.some(
+    (payment) => payment?.name === 'stripe'
+  );
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
@@ -480,7 +478,12 @@ export default function SettingsForm({
         />
 
         <Card className="w-full sm:w-8/12 md:w-2/3">
-          <FileInput name="logo" control={control} multiple={false} maxSize={max_fileSize} />
+          <FileInput
+            name="logo"
+            control={control}
+            multiple={false}
+            maxSize={max_fileSize}
+          />
         </Card>
       </div>
 
@@ -739,7 +742,9 @@ export default function SettingsForm({
                             control={control}
                             disabled={isNotDefaultSettingsPage}
                           />
-                          <Label className="!mb-0">{t('Enable Stripe Element')}</Label>
+                          <Label className="!mb-0">
+                            {t('Enable Stripe Element')}
+                          </Label>
                         </div>
                       </div>
                     </>
@@ -795,7 +800,7 @@ export default function SettingsForm({
                     amount: 987456321.123456789,
                     currencyCode:
                       currentCurrency?.code ?? settings?.options?.currency!,
-                      // @ts-ignore
+                    // @ts-ignore
                     locale: formation?.code! as string,
                     fractions: currentFractions,
                   })}

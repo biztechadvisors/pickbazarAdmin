@@ -14,16 +14,18 @@ export const taxClient = {
   get({ id }: { id: string }) {
     return HttpClient.get<Tax>(`${API_ENDPOINTS.TAXES}/${id}`);
   },
-  paginated: ({ name, ...params }: Partial<TaxQueryOptions>) => {
+  paginated: ({ name,shop_id, ...params }: Partial<TaxQueryOptions>) => {
     return HttpClient.get<TaxPaginator>(API_ENDPOINTS.TAXES, {
       searchJoin: 'and',
       ...params,
+      shopId:shop_id,
       search: HttpClient.formatSearchParams({ name }),
     });
   },
-  all: ({ name, ...params }: Partial<TaxQueryOptions>) => {
+  all: ({ name, shop_id, ...params }: Partial<TaxQueryOptions>) => {
     return HttpClient.get<Tax[]>(API_ENDPOINTS.TAXES, {
       searchJoin: 'and',
+      shopId:shop_id,
       ...params,
       search: HttpClient.formatSearchParams({ name }),
     });

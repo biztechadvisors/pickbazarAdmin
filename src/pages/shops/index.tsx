@@ -59,14 +59,13 @@ export default function AllShopPage() {
             <Search onSearch={handleSearch} />
             {canWrite ? (
               <LinkButton
-              href={Routes.shop.create}
-              className="h-12 ms-4 md:ms-6"
-            >
-              <span className="hidden md:block">
-              {t('common:text-create-shop')}
-              </span>
-            </LinkButton>
-              
+                href={Routes.shop.create}
+                className="h-12 ms-4 md:ms-6"
+              >
+                <span className="hidden md:block">
+                  {t('common:text-create-shop')}
+                </span>
+              </LinkButton>
             ) : null}
           </div>
         </div>
