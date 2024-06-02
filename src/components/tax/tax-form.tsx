@@ -12,16 +12,17 @@ import {
 import { useTranslation } from 'next-i18next';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { taxValidationSchema } from './tax-validation-schema';
+import { useMeQuery } from '@/data/user';
 
 const defaultValues = {
   name: '',
   rate: 0,
-  cgst:'',
-  sgst:'',
-  gst_Name:'',
-  hsn_no:'',
-  sac_no:'',
-  compensatoin:'',
+  cgst: '',
+  sgst: '',
+  gst_Name: '',
+  hsn_no: '',
+  sac_no: '',
+  compensatoin: '',
   // country: '',
   // state: '',
   // zip: '',
@@ -31,9 +32,11 @@ const defaultValues = {
 type IProps = {
   initialValues?: Tax | null;
 };
+
 export default function CreateOrUpdateTaxForm({ initialValues }: IProps) {
   const router = useRouter();
   const { t } = useTranslation();
+  const { data: meData } = useMeQuery();
   const {
     register,
     handleSubmit,
@@ -43,19 +46,23 @@ export default function CreateOrUpdateTaxForm({ initialValues }: IProps) {
     resolver: yupResolver(taxValidationSchema),
     defaultValues: initialValues ?? defaultValues,
   });
+
+  const shop_id = meData?.shop_id;
   const { mutate: createTaxClass, isLoading: creating } =
-    useCreateTaxClassMutation();
+    useCreateTaxClassMutation(shop_id);
   const { mutate: updateTaxClass, isLoading: updating } =
-    useUpdateTaxClassMutation();
+    useUpdateTaxClassMutation(shop_id);
   const onSubmit = async (values: Tax) => {
     if (initialValues) {
       updateTaxClass({
         id: initialValues.id!,
         ...values,
+        shop_id,
       });
     } else {
       createTaxClass({
         ...values,
+        shop_id,
       });
     }
   };
@@ -88,7 +95,7 @@ export default function CreateOrUpdateTaxForm({ initialValues }: IProps) {
             variant="outline"
             className="mb-5"
           />
-          <Input  //form.json to change languages and set all aditional fiels(hsn,CGST,SGST,GSTName, Compensatoin) 
+          <Input //form.json to change languages and set all aditional fiels(hsn,CGST,SGST,GSTName, Compensatoin)
             label={t('form:input-label-hsn_no')}
             {...register('hsn_no')}
             error={t(errors.hsn_no?.message!)}
@@ -116,14 +123,14 @@ export default function CreateOrUpdateTaxForm({ initialValues }: IProps) {
             variant="outline"
             className="mb-5"
           />
-          <Input  //form.json to change languages and set all aditional fiels(hsn,CGST,SGST,GSTName, Compensatoin) 
+          <Input //form.json to change languages and set all aditional fiels(hsn,CGST,SGST,GSTName, Compensatoin)
             label={t('form:input-label-sac_no')}
             {...register('sac_no')}
             error={t(errors.sac_no?.message!)}
             variant="outline"
             className="mb-5"
           />
-           <Input
+          <Input
             label={t('form:input-label-compensatoin')}
             {...register('compensation_Cess')}
             error={t(errors.compensation_Cess?.message!)}
@@ -163,14 +170,14 @@ export default function CreateOrUpdateTaxForm({ initialValues }: IProps) {
 
       <div className="mb-4 text-end">
         {/* {initialValues && ( */}
-          <Button
-            variant="outline"
-            onClick={router.back}
-            className="me-4"
-            type="button"
-          >
-            {t('form:button-label-back')}
-          </Button>
+        <Button
+          variant="outline"
+          onClick={router.back}
+          className="me-4"
+          type="button"
+        >
+          {t('form:button-label-back')}
+        </Button>
         {/* )} */}
 
         <Button loading={creating || updating}>

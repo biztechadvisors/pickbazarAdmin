@@ -153,17 +153,12 @@ export default function CreateOrUpdateProductForm({
 
   const upload_max_filesize = options?.server_info?.upload_max_filesize / 1024;
 
-  console.log('options', options);
-
-  console.log('upload_max_filesize', upload_max_filesize);
-
   const { mutate: createProduct, isLoading: creating } =
     useCreateProductMutation();
   const { mutate: updateProduct, isLoading: updating } =
     useUpdateProductMutation();
 
   const onSubmit = async (values: ProductFormValues) => {
-    console.log('valuesProduct', values);
     const inputValues = {
       language: router.locale,
       ...getProductInputValues(values, initialValues),

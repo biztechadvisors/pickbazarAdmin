@@ -38,9 +38,6 @@ const AdminLayout: React.FC<{ children?: React.ReactNode }> = ({
     }
   }, [data]);
 
-  console.log('matched', matched);
-  console.log('permissions', permissions);
-
   let matchedLinks = [];
 
   if (router.pathname === Routes.adminMyShops) {

@@ -15,14 +15,16 @@ export const orderClient = {
   ...crudFactory<Order, QueryOptions, CreateOrderInput>(API_ENDPOINTS.ORDERS),
 
   get: ({ id, language }: { id: string; language: string }) => {
-    console.log('first--18')
     return HttpClient.get<Order>(`${API_ENDPOINTS.ORDERS}/${id}`, {
       language,
     });
   },
 
-  paginated: ({ tracking_number,customer_id, ...params }: Partial<OrderQueryOptions>) => {
-    console.log("Customer_id", customer_id);
+  paginated: ({
+    tracking_number,
+    customer_id,
+    ...params
+  }: Partial<OrderQueryOptions>) => {
     return HttpClient.get<OrderPaginator>(API_ENDPOINTS.ORDERS, {
       searchJoin: 'and',
       ...params,

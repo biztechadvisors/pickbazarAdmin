@@ -10,7 +10,8 @@ export const settingsClient = {
       language,
     });
   },
-  update: ({ ...data }: SettingsInput) => {
-    return HttpClient.post<Settings>(API_ENDPOINTS.SETTINGS, { ...data });
+  update: ({ shop_id, ...data }: SettingsInput) => {
+    const url = `${API_ENDPOINTS.SETTINGS}?shopId=${shop_id}`;
+    return HttpClient.post<Settings>(url, { ...data });
   },
 };

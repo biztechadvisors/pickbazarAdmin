@@ -87,7 +87,6 @@ const AddressForm: React.FC<any> = ({ onSubmit }) => {
   } = useModalState();
 
   const [getState, setState] = useState(address?.address?.state)
-  console.log("myState", getState)
 
 
   return (
@@ -109,7 +108,6 @@ const AddressForm: React.FC<any> = ({ onSubmit }) => {
             },
             location: data?.address?.location
           }
-          console.log("StateData", dataji)
           onSubmit(dataji);
         }}
 

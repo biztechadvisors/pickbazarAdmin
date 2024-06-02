@@ -29,7 +29,6 @@ export const conversationsClient = {
     return HttpClient.get<Conversations>(`${API_ENDPOINTS.CONVERSIONS}/${id}`);
   },
   messageCreate({ id, ...input }: Partial<CreateMessageInput>) {
-    console.log("00//////////////", id , input)
     return HttpClient.post<CreateMessageInput>(
       `${API_ENDPOINTS.MESSAGE}/${id}`,
       input

@@ -16,16 +16,20 @@ import { useAtom } from 'jotai';
 import { newPermission } from '@/contexts/permission/storepermission';
 import { siteSettings } from '@/settings/site.settings';
 import { AllPermission } from '@/utils/AllPermission';
+import { useMeQuery } from '@/data/user';
 
 export default function TaxesPage() {
   const { t } = useTranslation();
   const [searchTerm, setSearch] = useState('');
   const [orderBy, setOrder] = useState('created_at');
   const [sortedBy, setColumn] = useState<SortOrder>(SortOrder.Desc);
+  const {data:meData}=useMeQuery()
+  const shop_id=meData?.shop_id
   const { taxes, loading, error } = useTaxesQuery({
     name: searchTerm,
     orderBy,
     sortedBy,
+    shop_id
   });
 
 
