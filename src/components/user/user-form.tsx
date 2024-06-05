@@ -36,7 +36,7 @@ const defaultValues = {
 const CustomerCreateForm = () => {
   const { t } = useTranslation();
   const router = useRouter();
-  const { data: meData } = useMeQuery();
+  const { data: meData, isLoading: meLoading } = useMeQuery();
   const { mutate: registerUser, isLoading: loading } = useRegisterMutation();
   const { id } = meData || {};
   const { data: permissionData } = usePermissionData(id);
@@ -53,14 +53,12 @@ const CustomerCreateForm = () => {
     resolver: yupResolver(customerValidationSchema),
   });
 
-  const { data: me, isLoading: meLoading } = useMeQuery();
-  const userId: any = me?.id;
-
-  const { data: permissionData } = usePermissionData(userId);
-  const { permissions } = getAuthCredentials();
+  if (meLoading || !permissionData) {
+    return <Loader />;
+  }
 
   const permissionOptions =
-    permissionData?.map((permission: { id: any, permission_name: any }) => ({
+    permissionData?.map((permission: { id: any, permission_name: string }) => ({
       value: permission.permission_name,
       label: permission.permission_name,
       id: permission.id,
@@ -74,7 +72,9 @@ const CustomerCreateForm = () => {
   }
 
   async function onSubmit({ name, email, password, contact, type }: FormValues) {
-    const selectedPermission = permissionOptions.find(option => option.value === type.value);
+    const selectedPermission = permissionOptions.find(
+      (option) => option.value === type.value
+    );
 
     registerUser(
       {
