@@ -37,7 +37,6 @@ export const userClient = {
         if (token) {
           localStorage.setItem('authToken', token);
         }
-        console.log('result*****', response);
       })
       .catch((error) => {
         console.error('Error during login:', error);
@@ -92,7 +91,7 @@ export const userClient = {
       search: HttpClient.formatSearchParams({ email }),
     });
   },
-  fetchVendor: ({ type, usrById }: { type: string, usrById: number }) => {
+  fetchVendor: ({ type, usrById }: { type: string; usrById: number }) => {
     return HttpClient.get<User>(
       `${API_ENDPOINTS.USERS}?type=${type}&usrById=${usrById}`
     );

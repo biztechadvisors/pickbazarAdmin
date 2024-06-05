@@ -5,8 +5,8 @@ import { HttpClient } from '@/data/client/http-client';
 
 export const settingsClient = {
   ...crudFactory<Settings, any, SettingsOptionsInput>(API_ENDPOINTS.SETTINGS),
-  all({ language }: { language: string }) {
-    return HttpClient.get<Settings>(API_ENDPOINTS.SETTINGS, {
+  all({ language, shop_slug }: { language: string; shop_slug: string }) {
+    return HttpClient.get<Settings>(`${API_ENDPOINTS.SETTINGS}/${shop_slug}`, {
       language,
     });
   },
