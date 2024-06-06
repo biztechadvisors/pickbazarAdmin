@@ -32,6 +32,8 @@ export default function Tags() {
   const [page, setPage] = useState(1);
   const [orderBy, setOrder] = useState('created_at');
   const [sortedBy, setColumn] = useState<SortOrder>(SortOrder.Desc);
+  const { data: meData } = useMeQuery();
+  const shopSlug = meData?.shops?.[0]?.slug;
   const {
     tags,
     loading: loading,
@@ -44,11 +46,10 @@ export default function Tags() {
     name: searchTerm,
     page,
     language: locale,
+    shopSlug
   });
 
-  const { data: meData } = useMeQuery();
 
-  const shopSlug = meData?.shops?.[0]?.slug;
 
   // const [getPermission, _] = useAtom(newPermission);
   // const { permissions } = getAuthCredentials();

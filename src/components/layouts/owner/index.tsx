@@ -15,13 +15,15 @@ const OwnerLayout: React.FC<{ children?: React.ReactNode }> = ({
   const { locale } = useRouter();
   const { permissions } = getAuthCredentials();
 
+  console.log('permissions ', permissions)
   const router = useRouter();
   const dir = locale === 'ar' || locale === 'he' ? 'rtl' : 'ltr';
 
-  if (permissions[0] === 'owner') {
-    var matchedLinks = siteSettings.sidebarLinks.owner;
+  let matchedLinks;
+  if (permissions && permissions[0] === 'owner') {
+    matchedLinks = siteSettings.sidebarLinks.owner;
   } else {
-    var matchedLinks = siteSettings.sidebarLinks.admin;
+    matchedLinks = siteSettings.sidebarLinks.admin;
   }
 
   const SidebarItemMap = () => (
@@ -31,6 +33,7 @@ const OwnerLayout: React.FC<{ children?: React.ReactNode }> = ({
       ))}
     </Fragment>
   );
+
   return (
     <div
       className="flex min-h-screen flex-col bg-gray-100 transition-colors duration-150"

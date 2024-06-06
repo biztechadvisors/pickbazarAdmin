@@ -22,6 +22,7 @@ import PrivateRoute from '@/utils/private-route';
 import { Config } from '@/config';
 import 'react-toastify/dist/ReactToastify.css';
 import { StockProvider } from '@/contexts/quick-cart/stock.context';
+import { useMeQuery } from '@/data/user';
 
 const Noop: React.FC<{ children?: React.ReactNode }> = ({ children }) => (
   <>{children}</>
@@ -29,16 +30,34 @@ const Noop: React.FC<{ children?: React.ReactNode }> = ({ children }) => (
 
 const AppSettings: React.FC<{ children?: React.ReactNode }> = (props) => {
   const { query, locale } = useRouter();
-  const { settings, loading, error } = useSettingsQuery({ language: locale! });
-  if (loading) return <PageLoader />;
+  const { data: meData } = useMeQuery();
+  const shop_slug = meData?.shops[0]?.slug;
+
+  const {
+    data: settings,
+    isLoading: settingsLoading,
+    error,
+  } = useSettingsQuery(
+    {
+      language: locale!,
+      shop_slug: shop_slug || '',
+    },
+    {
+      enabled: !!shop_slug,
+    }
+  );
+
+  if (!shop_slug) {
+    return <>{props.children}</>;
+  }
+  if (settingsLoading) return <PageLoader />;
   if (error) return <ErrorMessage message={error.message} />;
-  // TODO: fix it
-  // @ts-ignore
   return <SettingsProvider initialValue={settings?.options} {...props} />;
 };
 type AppPropsWithLayout = AppProps & {
   Component: NextPageWithLayout;
 };
+
 const CustomApp = ({ Component, pageProps }: AppPropsWithLayout) => {
   const Layout = (Component as any).Layout || Noop;
   const authProps = (Component as any).authenticate;
@@ -55,23 +74,23 @@ const CustomApp = ({ Component, pageProps }: AppPropsWithLayout) => {
             <UIProvider>
               <ModalProvider>
                 <>
-                <StockProvider>
-                  <CartProvider>
-                    <DefaultSeo />
-                    {authProps ? (
-                      <PrivateRoute authProps={authProps}>
+                  <StockProvider>
+                    <CartProvider>
+                      <DefaultSeo />
+                      {authProps ? (
+                        <PrivateRoute authProps={authProps}>
+                          <Layout {...pageProps}>
+                            <Component {...pageProps} />
+                          </Layout>
+                        </PrivateRoute>
+                      ) : (
                         <Layout {...pageProps}>
                           <Component {...pageProps} />
                         </Layout>
-                      </PrivateRoute>
-                    ) : (
-                      <Layout {...pageProps}>
-                        <Component {...pageProps} />
-                      </Layout>
-                    )}
-                    <ToastContainer autoClose={2000} theme="colored" />
-                    <ManagedModal />
-                  </CartProvider>
+                      )}
+                      <ToastContainer autoClose={2000} theme="colored" />
+                      <ManagedModal />
+                    </CartProvider>
                   </StockProvider>
                 </>
               </ModalProvider>

@@ -26,10 +26,10 @@ export const useUpdateSettingsMutation = () => {
   });
 };
 
-export const useSettingsQuery = ({ language }: { language: string }) => {
+export const useSettingsQuery = ({ language , shop_slug}: { language: string , shop_slug:string}) => {
   const { data, error, isLoading } = useQuery<Settings, Error>(
-    [API_ENDPOINTS.SETTINGS, { language }],
-    () => settingsClient.all({ language })
+    [API_ENDPOINTS.SETTINGS, { language, shop_slug }],
+    () => settingsClient.all({ language, shop_slug })
   );
 
   return {

@@ -3,12 +3,12 @@ import { siteSettings } from '@/settings/site.settings';
 import { useSettings } from '@/contexts/settings.context';
 export function formatPrice({
   amount,
-  currencyCode='USD',
+  currencyCode="USD",
   locale,
   fractions = 2
 }: {
   amount: number;
-  currencyCode?: string;
+  currencyCode: string;
   locale: string;
   fractions: number
 }) {
@@ -56,7 +56,7 @@ export default function usePrice(data?: PriceProps | null) {
   const { currency, currencyOptions } = useSettings();
   const { formation, fractions } = currencyOptions;
   const { amount, baseAmount, currencyCode = currency } = data ?? {};
-  const locale = formation ?? siteSettings?.defaultLanguage;
+  const locale = formation ?? siteSettings.defaultLanguage;
   const value = useMemo(() => {
     if (typeof amount !== 'number' || !currencyCode) return '';
 

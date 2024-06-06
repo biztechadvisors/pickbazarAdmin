@@ -15,10 +15,11 @@ export default function Settings() {
   const { t } = useTranslation();
   const { locale } = useRouter();
   const { data: meData } = useMeQuery();
+  const shop_slug = meData?.shops[0]?.slug;
   const shop_id = meData?.shop_id;
   const { taxes, loading: taxLoading } = useTaxesQuery({
     limit: 999,
-    shop_id
+    shop_id,
   });
 
   const { shippingClasses, loading: shippingLoading } =
@@ -26,7 +27,7 @@ export default function Settings() {
 
   const { settings, loading, error } = useSettingsQuery({
     language: locale!,
-    
+    shop_slug,
   });
 
   if (loading || shippingLoading || taxLoading)

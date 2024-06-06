@@ -29,28 +29,45 @@ export default function Dashboard() {
     state: '',
   };
 
-  const { data: analyticsData, isLoading: analyticsLoading, error: analyticsError } = useAnalyticsQuery(analyticsQuery);
+  const {
+    data: analyticsData,
+    isLoading: analyticsLoading,
+    error: analyticsError,
+  } = useAnalyticsQuery(analyticsQuery);
 
-  const { data: orderData, error: orderError, isLoading: orderLoading } = useOrdersQuery({
+  const {
+    data: orderData,
+    error: orderError,
+    isLoading: orderLoading,
+  } = useOrdersQuery({
     customer_id: customerId,
     language: locale,
     limit: 10,
     page: 1,
   });
 
-  const { data: popularProductData, isLoading: popularProductLoading, error: popularProductError } = usePopularProductsQuery({
+  const {
+    data: popularProductData,
+    isLoading: popularProductLoading,
+    error: popularProductError,
+  } = usePopularProductsQuery({
     limit: 10,
     language: locale,
-    shop_id: meData?.shop_id ? meData.shops : meData?.managed_shop?.id
+    shop_id: meData?.shop_id ? meData.shops : meData?.managed_shop?.id,
   });
 
   if (analyticsLoading || orderLoading || popularProductLoading) {
     return <Loader text={t('common:text-loading')} />;
   }
 
-  const salesByYear = analyticsData?.totalYearSaleByMonth?.map((item) => item.total.toFixed(2)) || Array(12).fill(0);
+  const salesByYear =
+    analyticsData?.totalYearSaleByMonth?.map((item) => item.total.toFixed(2)) ||
+    Array(12).fill(0);
 
-  const errorMessage = analyticsError?.message || orderError?.message || popularProductError?.message;
+  const errorMessage =
+    analyticsError?.message ||
+    orderError?.message ||
+    popularProductError?.message;
 
   return (
     <>
@@ -76,10 +93,24 @@ export default function Dashboard() {
           price={analyticsData?.todaysRevenue ?? 0}
         />
         <StickerCard
-          titleTransKey={canWrite ? "sticker-card-title-total-shops" : "sticker-card-title-total-cutomer"}
-          icon={canWrite ? <ShopIcon className="w-6" color="#1D4ED8" /> : <CustomerIcon className="w-6" color="#1D4ED8" />}
+          titleTransKey={
+            canWrite
+              ? 'sticker-card-title-total-shops'
+              : 'sticker-card-title-total-cutomer'
+          }
+          icon={
+            canWrite ? (
+              <ShopIcon className="w-6" color="#1D4ED8" />
+            ) : (
+              <CustomerIcon className="w-6" color="#1D4ED8" />
+            )
+          }
           iconBgStyle={{ backgroundColor: '#93C5FD' }}
-          price={canWrite ? analyticsData?.totalShops ?? 0 : analyticsData?.totalCustomers ?? 0}
+          price={
+            canWrite
+              ? analyticsData?.totalShops ?? 0
+              : analyticsData?.totalCustomers ?? 0
+          }
         />
       </div>
 

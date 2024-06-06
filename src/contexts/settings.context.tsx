@@ -8,7 +8,7 @@ const initialState = {
   siteSubtitle: '',
   currency: 'USD',
   currencyOptions: {
-    formation: "en-US",
+    formation: 'en-US',
     fractions: 2,
   },
   logo: {

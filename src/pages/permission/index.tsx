@@ -18,6 +18,7 @@ import { useMeQuery } from '@/data/user';
 import { date } from 'yup';
 import { AllPermission } from '@/utils/AllPermission';
 import OwnerLayout from '@/components/layouts/owner';
+
 export default function Permission() {
   const { t } = useTranslation();
   const [searchTerm, setSearchTerm] = useState('');
@@ -32,7 +33,7 @@ export default function Permission() {
 
   const canWrite =
     permissionTypes.includes('sidebar-nav-item-permissions') ||
-    permissions[0] === 'owner';
+    (permissions && permissions[0] === 'owner');
 
   const {
     isLoading,
@@ -95,19 +96,19 @@ export default function Permission() {
                   <td className="border p-2">
                     {e.permissions.length > 0
                       ? e.permissions.slice(0, 3).map((permission, i) => (
-                          <React.Fragment key={i}>
-                            <li>
-                              {permission.type
+                        <React.Fragment key={i}>
+                          <li>
+                            {permission.type
+                              .replace('sidebar-nav-item-', '')
+                              .charAt(0)
+                              .toUpperCase() +
+                              permission.type
                                 .replace('sidebar-nav-item-', '')
-                                .charAt(0)
-                                .toUpperCase() +
-                                permission.type
-                                  .replace('sidebar-nav-item-', '')
-                                  .slice(1)}
-                            </li>
-                            {i !== e.permissions.length - 1 && ' '}
-                          </React.Fragment>
-                        ))
+                                .slice(1)}
+                          </li>
+                          {i !== e.permissions.length - 1 && ' '}
+                        </React.Fragment>
+                      ))
                       : ''}
                   </td>
                   {canWrite ? (
