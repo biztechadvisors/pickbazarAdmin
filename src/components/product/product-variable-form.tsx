@@ -17,6 +17,7 @@ import { getCartesianProduct, filterAttributes } from './form-utils';
 import { useRouter } from 'next/router';
 import { Config } from '@/config';
 import { useSettingsQuery } from '@/data/settings';
+import { useShopQuery } from '@/data/shop';
 type IProps = {
   initialValues?: Product | null;
   shopId: string | undefined;
@@ -29,13 +30,23 @@ export default function ProductVariableForm({
 }: IProps) {
   console.log('initial', initialValues);
   const { t } = useTranslation();
-  const { locale } = useRouter();
+  const router = useRouter();
+  const { locale } = router;
+
+  const { data: shopData } = useShopQuery(
+    { slug: router.query.shop as string },
+    {
+      enabled: !!router.query.shop,
+    }
+  );
   const {
     // @ts-ignore
     settings: { options },
   } = useSettingsQuery({
     language: locale!,
+    shop_slug: shopData?.slug
   });
+
   const upload_max_filesize = options?.server_info?.upload_max_filesize / 1024;
   const { attributes, loading } = useAttributesQuery({
     shop_id: initialValues ? initialValues.shop_id : shopId,
