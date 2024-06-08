@@ -24,6 +24,7 @@ type FormValues = {
   type: { value: string; label: string };
   permission: Permission;
   UsrBy: string;
+  numberOfDealers: number;  // Added new field type
 };
 
 const defaultValues = {
@@ -32,6 +33,7 @@ const defaultValues = {
   password: '',
   contact: '',
   type: { value: '', label: '' },
+  numberOfDealers: 0,  // Added default value for new field
 };
 
 const CustomerCreateForm = () => {
@@ -74,6 +76,7 @@ const CustomerCreateForm = () => {
     password,
     contact,
     type,
+    numberOfDealers,  // Added new field to destructure
   }: FormValues) {
     registerUser(
       {
@@ -83,6 +86,7 @@ const CustomerCreateForm = () => {
         contact,
         UsrBy: id,
         type: type?.value,
+        numberOfDealers,  // Added new field to payload
       },
       {
         onError: (error: any) => {
@@ -156,6 +160,14 @@ const CustomerCreateForm = () => {
               </>
             )}
           />
+          <Input
+            label={t('form:input-label-dealers')}
+            {...register('numberOfDealers')}
+            type="number"
+            variant="outline"
+            className="mb-4"
+            error={t(errors.numberOfDealers?.message!)}
+          />
         </Card>
       </div>
 
@@ -178,3 +190,4 @@ const CustomerCreateForm = () => {
 };
 
 export default CustomerCreateForm;
+

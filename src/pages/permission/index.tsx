@@ -32,7 +32,7 @@ export default function Permission() {
 
   const canWrite =
     permissionTypes.includes('sidebar-nav-item-permissions') ||
-    permissions[0] === 'owner';
+    permissions?.[0] === 'owner';
 
   const {
     isLoading,

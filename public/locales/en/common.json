@@ -396,5 +396,6 @@
   "text-paid-from-wallet": "Paid From Wallet",
   "text-total-item": "Total Item",
   "text-deliver-time": "Delivery Time",
-  "text-order-failed": "Order Failed"
+  "text-order-failed": "Order Failed",
+  "form:input-label-number-of-dealers":"Total dealers"
 }

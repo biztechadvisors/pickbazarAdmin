@@ -15,44 +15,67 @@ import { ModalProvider } from '@/components/ui/modal/modal.context';
 import DefaultSeo from '@/components/ui/default-seo';
 import ManagedModal from '@/components/ui/modal/managed-modal';
 import { CartProvider } from '@/contexts/quick-cart/cart.context';
-import { useState } from 'react';
-import type { NextPageWithLayout } from '@/types';
+import { useEffect, useState } from 'react';
+import { NextPageWithLayout, SortOrder } from '@/types';
 import { useRouter } from 'next/router';
 import PrivateRoute from '@/utils/private-route';
 import { Config } from '@/config';
 import 'react-toastify/dist/ReactToastify.css';
 import { StockProvider } from '@/contexts/quick-cart/stock.context';
 import { useMeQuery } from '@/data/user';
+import { useShopsQuery } from '@/data/shop';
 
 const Noop: React.FC<{ children?: React.ReactNode }> = ({ children }) => (
   <>{children}</>
 );
 
 const AppSettings: React.FC<{ children?: React.ReactNode }> = (props) => {
-  const { query, locale } = useRouter();
-  const { data: meData } = useMeQuery();
-  const shop_slug = meData?.shops[0]?.slug;
+  const { locale } = useRouter();
+  const [searchTerm, setSearchTerm] = useState('');
+  const [page, setPage] = useState(1);
+  const [orderBy, setOrder] = useState('created_at');
+  const [sortedBy, setColumn] = useState<SortOrder>(SortOrder.Desc);
 
   const {
-    data: settings,
+    shops,
+    loading: shopsLoading,
+    error: shopsError,
+  } = useShopsQuery({
+    name: searchTerm,
+    limit: 10,
+    page,
+    orderBy,
+    sortedBy,
+  });
+
+  const shop_slug = shops?.[0]?.slug;
+
+  const {
+    settings,
     isLoading: settingsLoading,
-    error,
+    error: settingsError,
+    refetch: refetchSettings,
   } = useSettingsQuery(
     {
       language: locale!,
-      shop_slug: shop_slug || '',
+      shop_slug,
     },
     {
       enabled: !!shop_slug,
     }
   );
 
-  if (!shop_slug) {
-    return <>{props.children}</>;
-  }
-  if (settingsLoading) return <PageLoader />;
-  if (error) return <ErrorMessage message={error.message} />;
-  return <SettingsProvider initialValue={settings?.options} {...props} />;
+  useEffect(() => {
+    if (shop_slug) {
+      refetchSettings();
+    }
+  }, [shop_slug, locale, refetchSettings]);
+
+  if (shopsLoading || (shop_slug && settingsLoading)) return <PageLoader />;
+  if (shopsError) return <ErrorMessage message={shopsError.message} />;
+  if (settingsError) return <ErrorMessage message={settingsError.message} />;
+
+  return <SettingsProvider initialValue={settings?.options || {}} {...props} />;
 };
 type AppPropsWithLayout = AppProps & {
   Component: NextPageWithLayout;

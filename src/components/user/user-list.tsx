@@ -36,6 +36,8 @@ const CustomerList = ({
 
   const permissionTypes = AllPermission(); 
 
+  console.log("customers", customers)
+
   const canWrite = permissionTypes.includes('sidebar-nav-item-users');
   const [sortingObj, setSortingObj] = useState<{
     sort: SortOrder;
