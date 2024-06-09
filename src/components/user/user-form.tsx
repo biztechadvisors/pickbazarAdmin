@@ -108,94 +108,95 @@ const CustomerCreateForm = () => {
         }
       );
     }
+  }
 
-    return (
-      <form onSubmit={handleSubmit(onSubmit)} noValidate>
-        <div className="my-5 flex flex-wrap sm:my-8">
-          <Description
-            title={t('form:form-title-information')}
-            details={t('form:customer-form-info-help-text')}
-            className="w-full px-0 pb-5 sm:w-4/12 sm:py-8 sm:pe-4 md:w-1/3 md:pe-5"
-          />
+  return (
+    <form onSubmit={handleSubmit(onSubmit)} noValidate>
+      <div className="my-5 flex flex-wrap sm:my-8">
+        <Description
+          title={t('form:form-title-information')}
+          details={t('form:customer-form-info-help-text')}
+          className="w-full px-0 pb-5 sm:w-4/12 sm:py-8 sm:pe-4 md:w-1/3 md:pe-5"
+        />
 
-          <Card className="w-full sm:w-8/12 md:w-2/3">
-            <Input
-              label={t('form:input-label-name')}
-              {...register('name')}
-              type="text"
-              variant="outline"
-              className="mb-4"
-              error={t(errors.name?.message!)}
-            />
-            <Input
-              label={t('form:input-label-email')}
-              {...register('email')}
-              type="email"
-              variant="outline"
-              className="mb-4"
-              error={t(errors.email?.message!)}
-            />
-            <PasswordInput
-              label={t('form:input-label-password')}
-              {...register('password')}
-              error={t(errors.password?.message!)}
-              variant="outline"
-              className="mb-4"
-            />
-            <Input
-              label={t('form:input-label-contact')}
-              {...register('contact')}
-              type="text"
-              variant="outline"
-              className="mb-4"
-              error={t(errors.contact?.message!)}
-            />
-            <Controller
-              name="type"
-              control={control}
-              render={({ field }) => (
-                <>
-                  <Label>{t('form:input-label-type')}</Label>
-                  <Select
-                    {...field}
-                    getOptionLabel={(option: { label: string }) => option.label}
-                    getOptionValue={(option: { value: string }) => option.value}
-                    options={permissionOptions}
-                    isClearable={true}
-                    isLoading={loading}
-                    className="mb-4"
-                  />
-                </>
-              )}
-            />
-            <Input
-              label={t('form:input-label-dealers')}
-              {...register('numberOfDealers')}
-              type="number"
-              variant="outline"
-              className="mb-4"
-              error={t(errors.numberOfDealers?.message!)}
-            />
-          </Card>
-        </div>
-
-        <div className="mb-4 text-end">
-          <Button
+        <Card className="w-full sm:w-8/12 md:w-2/3">
+          <Input
+            label={t('form:input-label-name')}
+            {...register('name')}
+            type="text"
             variant="outline"
-            onClick={router.back}
-            className="me-4"
-            type="button"
-          >
-            {t('form:button-label-back')}
-          </Button>
+            className="mb-4"
+            error={t(errors.name?.message!)}
+          />
+          <Input
+            label={t('form:input-label-email')}
+            {...register('email')}
+            type="email"
+            variant="outline"
+            className="mb-4"
+            error={t(errors.email?.message!)}
+          />
+          <PasswordInput
+            label={t('form:input-label-password')}
+            {...register('password')}
+            error={t(errors.password?.message!)}
+            variant="outline"
+            className="mb-4"
+          />
+          <Input
+            label={t('form:input-label-contact')}
+            {...register('contact')}
+            type="text"
+            variant="outline"
+            className="mb-4"
+            error={t(errors.contact?.message!)}
+          />
+          <Controller
+            name="type"
+            control={control}
+            render={({ field }) => (
+              <>
+                <Label>{t('form:input-label-type')}</Label>
+                <Select
+                  {...field}
+                  getOptionLabel={(option: { label: string }) => option.label}
+                  getOptionValue={(option: { value: string }) => option.value}
+                  options={permissionOptions}
+                  isClearable={true}
+                  isLoading={loading}
+                  className="mb-4"
+                />
+              </>
+            )}
+          />
+          <Input
+            label={t('form:input-label-dealers')}
+            {...register('numberOfDealers')}
+            type="number"
+            variant="outline"
+            className="mb-4"
+            error={t(errors.numberOfDealers?.message!)}
+          />
+        </Card>
+      </div>
 
-          <Button loading={loading} disabled={loading}>
-            {t('form:button-label-create-customer')}
-          </Button>
-        </div>
-      </form>
-    );
-  };
+      <div className="mb-4 text-end">
+        <Button
+          variant="outline"
+          onClick={router.back}
+          className="me-4"
+          type="button"
+        >
+          {t('form:button-label-back')}
+        </Button>
 
+        <Button loading={loading} disabled={loading}>
+          {t('form:button-label-create-customer')}
+        </Button>
+      </div>
+    </form>
+  );
+};
 export default CustomerCreateForm;
+
 
