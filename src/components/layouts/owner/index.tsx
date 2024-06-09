@@ -19,9 +19,8 @@ const OwnerLayout: React.FC<{ children?: React.ReactNode }> = ({
   const router = useRouter();
   const dir = locale === 'ar' || locale === 'he' ? 'rtl' : 'ltr';
 
-  let matchedLinks;
-  if (permissions && permissions[0] === 'owner') {
-    matchedLinks = siteSettings.sidebarLinks.owner;
+  if (permissions?.[0] === 'owner') {
+    var matchedLinks = siteSettings.sidebarLinks.owner;
   } else {
     matchedLinks = siteSettings.sidebarLinks.admin;
   }

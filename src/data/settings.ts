@@ -26,15 +26,35 @@ export const useUpdateSettingsMutation = () => {
   });
 };
 
-export const useSettingsQuery = ({ language , shop_slug}: { language: string , shop_slug:string}) => {
-  const { data, error, isLoading } = useQuery<Settings, Error>(
+// export const useSettingsQuery = ({ language , shop_slug}: { language: string , shop_slug:string}) => {
+//   const { data, error, isLoading } = useQuery<Settings, Error>(
+//     [API_ENDPOINTS.SETTINGS, { language }],
+//     () => settingsClient.all({ language, shop_slug })
+//   );
+
+//   return {
+//     settings: data ?? {},
+//     error,
+//     loading: isLoading,
+//   };
+// };
+
+export const useSettingsQuery = ({
+  language,
+  shop_slug,
+}: {
+  language: string;
+  shop_slug: string;
+}) => {
+  const query = useQuery<Settings, Error>(
     [API_ENDPOINTS.SETTINGS, { language, shop_slug }],
     () => settingsClient.all({ language, shop_slug })
   );
 
   return {
-    settings: data ?? {},
-    error,
-    loading: isLoading,
+    settings: query.data ?? {},
+    error: query.error,
+    loading: query.isLoading,
+    refetch: query.refetch,
   };
 };

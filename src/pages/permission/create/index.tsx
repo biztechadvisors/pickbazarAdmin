@@ -145,7 +145,7 @@ const CreatePermission = () => {
   };
 
   const filteredData = () => {
-    if (permissions.includes('owner')) {
+    if (permissions?.includes('owner')) {
       return Object.entries(menusData).map(([key, value], index) => ({
         [key]: value,
         id: index + 1,
