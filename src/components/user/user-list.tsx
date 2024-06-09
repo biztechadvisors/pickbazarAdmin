@@ -34,9 +34,9 @@ const CustomerList = ({
   const { t } = useTranslation();
   const { alignLeft } = useIsRTL();
 
-  const permissionTypes = AllPermission(); 
+  const permissionTypes = AllPermission();
 
-  console.log("customers", customers)
+  console.log('customers', customers);
 
   const canWrite = permissionTypes.includes('sidebar-nav-item-users');
   const [sortingObj, setSortingObj] = useState<{
@@ -94,22 +94,21 @@ const CustomerList = ({
     },
     {
       title: t('table:table-item-permissions'),
-      dataIndex: 'permissions',
-      key: 'permissions',
+      dataIndex: 'type',
+      key: 'type',
       align: 'center',
-      render: (permissions: any, record: any) => {
-        return (
-          <div>
-            {permissions?.map(({ name }: { name: string }) => name).join(', ')}
-          </div>
-        );
+      render: (type: any, record: any) => {
+        return <div>{type?.type_name}</div>;
       },
     },
     {
       title: t('table:table-item-available_wallet_points'),
-      dataIndex: ['wallet', 'available_points'],
-      key: 'available_wallet_points',
+      dataIndex: 'walletPoints',
+      key: 'walletPoints',
       align: 'center',
+      render: (walletPoints: any, record: any) => {
+        return <div>{walletPoints}</div>;
+      },
     },
     {
       title: (
@@ -131,31 +130,30 @@ const CustomerList = ({
     },
     {
       ...(canWrite
-      ?{
-        title: t('table:table-item-actions'),
-        dataIndex: 'id',
-        key: 'actions',
-        align: 'right',
-        render: function Render(id: string, { is_active }: any) {
-          const { data } = useMeQuery();
-          return (
-            <>
-              {data?.id != id && (
-                <ActionButtons
-                  id={id}
-                  userStatus={true}
-                  isUserActive={is_active}
-                  showAddWalletPoints={true}
-                  showMakeAdminButton={true}
-                />
-              )}
-            </>
-          );
-        },
-      }      
-      : null),
-      },
-    
+        ? {
+            title: t('table:table-item-actions'),
+            dataIndex: 'id',
+            key: 'actions',
+            align: 'right',
+            render: function Render(id: string, { is_active }: any) {
+              const { data } = useMeQuery();
+              return (
+                <>
+                  {data?.id != id && (
+                    <ActionButtons
+                      id={id}
+                      userStatus={true}
+                      isUserActive={is_active}
+                      showAddWalletPoints={true}
+                      showMakeAdminButton={true}
+                    />
+                  )}
+                </>
+              );
+            },
+          }
+        : null),
+    },
   ];
 
   return (

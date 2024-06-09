@@ -71,11 +71,13 @@ const AppSettings: React.FC<{ children?: React.ReactNode }> = (props) => {
     }
   }, [shop_slug, locale, refetchSettings]);
 
+  console.log('ettings', settings);
+
   if (shopsLoading || (shop_slug && settingsLoading)) return <PageLoader />;
   if (shopsError) return <ErrorMessage message={shopsError.message} />;
   if (settingsError) return <ErrorMessage message={settingsError.message} />;
 
-  return <SettingsProvider initialValue={settings?.options || {}} {...props} />;
+  return <SettingsProvider initialValue={settings?.options} {...props} />;
 };
 type AppPropsWithLayout = AppProps & {
   Component: NextPageWithLayout;
