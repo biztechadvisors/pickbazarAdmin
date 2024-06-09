@@ -20,9 +20,10 @@ import { useCreateTagMutation, useUpdateTagMutation } from '@/data/tag';
 import { useTypesQuery } from '@/data/type';
 import OpenAIButton from '../openAI/openAI.button';
 import { useSettingsQuery } from '@/data/settings';
-import { useCallback, useMemo } from 'react';
-import { ItemProps } from '@/types';
+import { useCallback, useMemo, useState } from 'react';
+import { ItemProps, SortOrder } from '@/types';
 import { useModalAction } from '../ui/modal/modal.context';
+import { useShopsQuery } from '@/data/shop';
 
 export const chatbotAutoSuggestion = ({ name }: { name: string }) => {
   return [
@@ -140,6 +141,24 @@ export default function CreateOrUpdateTagForm({ initialValues }: IProps) {
   const router = useRouter();
   const { t } = useTranslation();
   const isNewTranslation = router?.query?.action === 'translate';
+  const [searchTerm, setSearchTerm] = useState('');
+  const [page, setPage] = useState(1);
+  const [orderBy, setOrder] = useState('created_at');
+  const [sortedBy, setColumn] = useState<SortOrder>(SortOrder.Desc);
+
+  const {
+    shops,
+    loading: shopsLoading,
+    error: shopsError,
+  } = useShopsQuery({
+    name: searchTerm,
+    limit: 10,
+    page,
+    orderBy,
+    sortedBy,
+  });
+
+  const shop_slug = shops?.[0]?.slug;
 
   const {
     register,
@@ -174,7 +193,10 @@ export default function CreateOrUpdateTagForm({ initialValues }: IProps) {
     settings: { options },
   } = useSettingsQuery({
     language: locale!,
+    shop_slug
   });
+
+  console.log("options-----", options)
 
   const generateName = watch('name');
   const autoSuggestionList = useMemo(() => {
