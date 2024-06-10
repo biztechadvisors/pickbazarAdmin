@@ -4,12 +4,15 @@ import ErrorMessage from '@/components/ui/error-message';
 import Loader from '@/components/ui/loader/loader';
 import { useSettingsQuery } from '@/data/settings';
 import { useShippingClassesQuery } from '@/data/shipping';
+import { useShopsQuery } from '@/data/shop';
 import { useTaxesQuery } from '@/data/tax';
 import { useMeQuery } from '@/data/user';
+import { SortOrder } from '@/types';
 import { adminOnly } from '@/utils/auth-utils';
 import { useTranslation } from 'next-i18next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import { useRouter } from 'next/router';
+import { useState } from 'react';
 
 export default function Settings() {
   const { t } = useTranslation();
@@ -22,12 +25,31 @@ export default function Settings() {
     shop_id,
   });
 
+  const [searchTerm, setSearchTerm] = useState('');
+  const [page, setPage] = useState(1);
+  const [orderBy, setOrder] = useState('created_at');
+  const [sortedBy, setColumn] = useState<SortOrder>(SortOrder.Desc);
+
+  const {
+    shops,
+    loading: shopsLoading,
+    error: shopsError,
+  } = useShopsQuery({
+    name: searchTerm,
+    limit: 10,
+    page,
+    orderBy,
+    sortedBy,
+  });
+
+  const shop_slug = shops?.[0]?.slug;
+
   const { shippingClasses, loading: shippingLoading } =
     useShippingClassesQuery();
 
   const { settings, loading, error } = useSettingsQuery({
     language: locale!,
-    shop_slug="xyz",
+    shop_slug,
   });
 
   if (loading || shippingLoading || taxLoading)
