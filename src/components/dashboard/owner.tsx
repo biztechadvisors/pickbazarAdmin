@@ -70,7 +70,8 @@ export default function OwnerDashboard(user: any) {
           <StickerCard
             titleTransKey="sticker-card-title-shops"
             subtitleTransKey="sticker-card-subtitle-shops"
-            icon={<DollarIcon className="h-7 w-7" color="#047857" />}
+            icon={<ShopIcon className="w-6" color="#047857" />}
+            // icon={<DollarIcon className="h-7 w-7" color="#047857" />}
             iconBgStyle={{ backgroundColor: '#A7F3D0' }}
             price={total_shops}
           />
@@ -78,7 +79,8 @@ export default function OwnerDashboard(user: any) {
         <div className="w-full ">
           <StickerCard
             titleTransKey="sticker-card-title-users"
-            icon={<CartIconBig />}
+            // icon={<CartIconBig />}
+            icon={<CustomerIcon className="w-6" color="#047857" />}
             price={total_users}
           />
         </div>
