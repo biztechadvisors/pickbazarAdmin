@@ -27,7 +27,7 @@ export default function Settings() {
 
   const { settings, loading, error } = useSettingsQuery({
     language: locale!,
-    shop_slug="xyz",
+    shop_slug: shop_slug,
   });
 
   if (loading || shippingLoading || taxLoading)
