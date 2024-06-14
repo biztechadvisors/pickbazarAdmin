@@ -174,7 +174,7 @@ export interface GetParams {
   slug: string;
   userId: string;
   language: string;
-  categoryId: number; //for getting subcategory
+  categoryId: number;
   shopId: number;
 }
 

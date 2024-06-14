@@ -17,66 +17,97 @@ import { getCartesianProduct, filterAttributes } from './form-utils';
 import { useRouter } from 'next/router';
 import { Config } from '@/config';
 import { useSettingsQuery } from '@/data/settings';
-import { useShopQuery } from '@/data/shop';
+
 type IProps = {
   initialValues?: Product | null;
   shopId: string | undefined;
   settings: Settings | undefined;
 };
+
 export default function ProductVariableForm({
   shopId,
   initialValues,
   settings,
 }: IProps) {
-  console.log('initial', initialValues);
-  const { t } = useTranslation();
-  const router = useRouter();
-  const { locale } = router;
 
-  const { data: shopData } = useShopQuery(
-    { slug: router.query.shop as string },
-    {
-      enabled: !!router.query.shop,
-    }
-  );
+  console.log("initial", initialValues);
+  const { t } = useTranslation();
+  const { locale } = useRouter();
   const {
+
     // @ts-ignore
     settings: { options },
   } = useSettingsQuery({
     language: locale!,
-    shop_slug: shopData?.slug
+
   });
 
   const upload_max_filesize = options?.server_info?.upload_max_filesize / 1024;
+
   const { attributes, loading } = useAttributesQuery({
+
     shop_id: initialValues ? initialValues.shop_id : shopId,
+
     language: locale,
+
   });
+
   const {
+
     register,
+
     control,
+
     watch,
+
     setValue,
+
     getValues,
+
     formState: { errors },
+
   } = useFormContext();
+
   // This field array will keep all the attribute dropdown fields
+
   const { fields, append, remove } = useFieldArray({
+
     shouldUnregister: true,
+
     control,
+
     name: 'variations',
+
   });
+
   const variations = watch('variations');
+
   const cartesianProduct = getCartesianProduct(getValues('variations')) || [];
-  console.log('cartesianProduct+++++++++++', cartesianProduct);
+
+  console.log("cartesianProduct+++++++++++", cartesianProduct);
 
   // const [autoFill, setAutoFill] = useState(false);
 
   const combinedVariationOptions = [
+
     ...(initialValues?.variation_options || []),
+
     ...cartesianProduct,
+
   ];
+
+  // useEffect(() => {
+  //   if (initialValues?.variations) {
+  //     initialValues.variations.forEach((variation: any) => {
+  //       append({
+  //         attribute: variation.attribute,
+  //         value: variation.value,
+  //       });
+  //     });
+  //   }
+  // }, [initialValues, append]);
   return (
+
     <div className="my-5 flex flex-wrap sm:my-8">
       <Description
         title={t('form:form-title-variation-product-info')}
@@ -86,8 +117,11 @@ export default function ProductVariableForm({
           } ${t('form:form-description-variation-product-info')}`}
         className="w-full px-0 pb-5 sm:w-4/12 sm:py-8 sm:pe-4 md:w-1/3 md:pe-5"
       />
+
       <Card className="w-full p-0 sm:w-8/12 md:w-2/3 md:p-0">
         <div className="mb-5 border-t border-dashed border-border-200 md:mb-8">
+
+          {/* {(!!combinedVariationOptions.length) && ( */}
           <Title className="mt-8 mb-0 px-5 text-center text-lg uppercase md:px-8">
             {t('form:form-title-options')}
           </Title>
@@ -102,6 +136,7 @@ export default function ProductVariableForm({
                     <Title className="mb-0">
                       {t('form:form-title-options')} {index + 1}
                     </Title>
+
                     <button
                       onClick={() => remove(index)}
                       type="button"
@@ -110,10 +145,12 @@ export default function ProductVariableForm({
                       {t('form:button-label-remove')}
                     </button>
                   </div>
+
                   <div className="grid grid-cols-fit gap-5">
                     <div className="mt-5">
                       <Label>{t('form:input-label-attribute-name')}*</Label>
                       <SelectInput
+
                         name={`variations.${index}.attribute`}
                         control={control}
                         defaultValue={field.attribute}
@@ -137,13 +174,14 @@ export default function ProductVariableForm({
                     </div>
                   </div>
                   {/* <div className="mb-5 flex items-center mt-5">
-<Checkbox
+            <Checkbox
               checked={autoFill}
               onChange={(e) => setAutoFill(e.target.checked)}
               label={t('form:checkbox-label-auto-fill')}
             />
-</div> */}
+          </div> */}
                 </div>
+
               );
             })}
           </div>
@@ -159,150 +197,154 @@ export default function ProductVariableForm({
               {t('form:button-label-add-option')}
             </Button>
           </div>
+
           {/* Preview generation section start */}
-          {!!combinedVariationOptions.length && (
+
+          {(!!combinedVariationOptions.length) && (
             <div className="mt-5 border-t border-dashed border-border-200 pt-5 md:mt-8 md:pt-8">
               <Title className="mb-0 px-5 text-center text-lg uppercase md:px-8">
-                {combinedVariationOptions.length}{' '}
-                {t('form:total-variation-added')}
+                {combinedVariationOptions.length} {t('form:total-variation-added')}
               </Title>
               <div className="flex flex-wrap justify-start">
-                {combinedVariationOptions.map(
-                  (fieldAttributeValue: any, index: number) => (
-                    <div
-                      key={`fieldAttributeValues-${index}`}
-                      className="mx-2 my-2 flex flex-col items-start border-b border-dashed border-border-200 p-5 last:mb-8 last:border-0 md:p-8 md:last:pb-0"
-                      style={{ height: '250px' }}
-                    >
-                      <Title className="mb-2 !text-lg">
-                        {t('form:form-title-variant')}:{' '}
-                        <span className="font-normal text-blue-600">
-                          {Array.isArray(fieldAttributeValue)
-                            ? fieldAttributeValue?.map((a) => a.value).join('/')
-                            : fieldAttributeValue.value}
-                        </span>
-                      </Title>
-                      <TitleAndOptionsInput
-                        register={register}
-                        setValue={setValue}
-                        index={index}
-                        fieldAttributeValue={fieldAttributeValue}
+                {combinedVariationOptions.map((fieldAttributeValue: any, index: number) => (
+                  <div
+                    key={`fieldAttributeValues-${index}`}
+                    className="flex flex-col items-start border-b border-dashed border-border-200 p-5 last:mb-8 last:border-0 md:p-8 md:last:pb-0 mx-2 my-2"
+                    style={{ height: '250px' }}
+                  >
+                    {/* <Title className="mb-2 !text-lg">
+                      {t('form:form-title-variant')}:{' '}
+                      <span className="font-normal text-blue-600">
+                        {Array.isArray(fieldAttributeValue)
+                          ? fieldAttributeValue?.map((a) => a.value).join('/')
+                          : fieldAttributeValue.value}
+                      </span>
+                    </Title> */}
+                    <Title className="mb-2 !text-lg">
+                      {t('form:form-title-variant')}:{' '}
+                      <span className="font-normal text-blue-600">
+                        {fieldAttributeValue.title}
+                        <input
+                          type="hidden"
+                          {...register(`variation_options.${index}.title`)}
+                          value={fieldAttributeValue.title}
+                        />
+                      </span>
+                    </Title>
+                    {/* <Title className="mb-2 !text-lg">
+      {t('form:form-title-variant')}:{' '}
+      <span className="font-normal text-blue-600">
+        {initialValues?.variation_options ? (
+          <>
+            {fieldAttributeValue.title}
+            <input
+              type="hidden"
+              {...register(`variation_options.${index}.title`)}
+              value={fieldAttributeValue.title}
+            />
+          </>
+        ) : (
+          <>
+            {Array.isArray(fieldAttributeValue)
+              ? fieldAttributeValue?.map((a) => a.value).join('/')
+              : fieldAttributeValue.value}
+          </>
+        )}
+      </span>
+    </Title> */}
+                    <TitleAndOptionsInput
+                      register={register}
+                      setValue={setValue}
+                      index={index}
+                      fieldAttributeValue={fieldAttributeValue}
+                    />
+                    <input {...register(`variation_options.${index}.id`)} type="hidden" />
+                    <div className="flex flex-wrap gap-2">
+                      <Input
+                        label={`${t('form:input-label-price')}*`}
+                        type="number"
+                        {...register(`variation_options.${index}.price`)}
+                        error={t(errors.variation_options?.[index]?.price?.message)}
+                        variant="outline"
+                        className="mb-2"
+                        style={{ width: '70px', height: '40px' }}
                       />
-                      <input
-                        {...register(`variation_options.${index}.id`)}
-                        type="hidden"
+                      <Input
+                        label={t('form:input-label-sale-price')}
+                        // label='sale'
+                        type="number"
+                        {...register(`variation_options.${index}.sale_price`)}
+                        error={t(errors.variation_options?.[index]?.sale_price?.message)}
+                        variant="outline"
+                        className="mb-2"
+                        style={{ width: '70px', height: '40px' }}
                       />
-                      <div className="flex flex-wrap gap-2">
-                        <Input
-                          label={`${t('form:input-label-price')}*`}
-                          type="number"
-                          {...register(`variation_options.${index}.price`)}
-                          error={t(
-                            errors.variation_options?.[index]?.price?.message
-                          )}
-                          variant="outline"
-                          className="mb-2"
-                          style={{ width: '70px', height: '40px' }}
-                        />
-                        <Input
-                          label={t('form:input-label-sale-price')}
-                          // label='sale'
-                          type="number"
-                          {...register(`variation_options.${index}.sale_price`)}
-                          error={t(
-                            errors.variation_options?.[index]?.sale_price
-                              ?.message
-                          )}
-                          variant="outline"
-                          className="mb-2"
-                          style={{ width: '70px', height: '40px' }}
-                        />
-                        <Input
-                          label={`${t('form:input-label-sku')}*`}
-                          note={
-                            Config.enableMultiLang
-                              ? `${t('form:input-note-multilang-sku')}`
-                              : ''
-                          }
-                          {...register(`variation_options.${index}.sku`)}
-                          error={t(
-                            errors.variation_options?.[index]?.sku?.message
-                          )}
-                          variant="outline"
-                          className="mb-2"
-                          style={{ width: '70px', height: '40px' }}
-                        />
-                        <Input
-                          label={`${t('form:input-label-quantity')}*`}
-                          type="number"
-                          {...register(`variation_options.${index}.quantity`)}
-                          error={t(
-                            errors.variation_options?.[index]?.quantity?.message
-                          )}
-                          variant="outline"
-                          className="mb-2"
-                          style={{ width: '70px', height: '40px' }}
-                        />
-                        <div
-                          className="mb-2"
-                          style={{ width: '120px', height: '30px' }}
-                        >
-                          <Label>
-                            {/* {t('form:input-label-image')}  */}
-                            {' Upload an image  '}
-                            {/* {upload_max_filesize} {'MB '} */}
-                          </Label>
-                          <FileInput
-                            name={`variation_options.${index}.image`}
-                            control={control}
-                            multiple={false}
-                          />
-                        </div>
-                      </div>
-                      <div className="mb-2">
-                        <Checkbox
-                          {...register(`variation_options.${index}.is_digital`)}
-                          label={t('form:input-label-is-digital')}
-                        />
-                        {!!watch(`variation_options.${index}.is_digital`) && (
-                          <div className="mt-2">
-                            <Label>{t('form:input-label-digital-file')}</Label>
-                            <FileInput
-                              name={`variation_options.${index}.digital_file_input`}
-                              control={control}
-                              multiple={false}
-                              acceptFile={true}
-                              helperText={t('form:text-upload-digital-file')}
-                              defaultValue={{}}
-                            />
-                            <ValidationError
-                              message={t(
-                                errors?.variation_options?.[index]
-                                  ?.digital_file_input?.message
-                              )}
-                            />
-                            <input
-                              type="hidden"
-                              {...register(
-                                `variation_options.${index}.digital_file`
-                              )}
-                            />
-                          </div>
-                        )}
-                      </div>
-                      <div className="mb-2">
-                        <Checkbox
-                          {...register(`variation_options.${index}.is_disable`)}
-                          error={t(
-                            errors.variation_options?.[index]?.is_disable
-                              ?.message
-                          )}
-                          label={t('form:input-label-disable-variant')}
+                      <Input
+                        label={`${t('form:input-label-sku')}*`}
+                        note={Config.enableMultiLang ? `${t('form:input-note-multilang-sku')}` : ''}
+                        {...register(`variation_options.${index}.sku`)}
+                        error={t(errors.variation_options?.[index]?.sku?.message)}
+                        variant="outline"
+                        className="mb-2"
+                        style={{ width: '70px', height: '40px' }}
+                      />
+                      <Input
+                        label={`${t('form:input-label-quantity')}*`}
+                        type="number"
+                        {...register(`variation_options.${index}.quantity`)}
+                        error={t(errors.variation_options?.[index]?.quantity?.message)}
+                        variant="outline"
+                        className="mb-2"
+                        style={{ width: '70px', height: '40px' }}
+                      />
+                      <div className="mb-2" style={{ width: '120px', height: '30px' }}>
+                        <Label>
+                          {/* {t('form:input-label-image')}  */}
+                          {' Upload an image  '}
+                          {/* {upload_max_filesize} {'MB '} */}
+                        </Label>
+                        <FileInput
+                          name={`variation_options.${index}.image`}
+                          control={control}
+                          multiple={false}
                         />
                       </div>
                     </div>
-                  )
-                )}
+                    <div className="mb-2">
+                      <Checkbox
+                        {...register(`variation_options.${index}.is_digital`)}
+                        label={t('form:input-label-is-digital')}
+                      />
+                      {!!watch(`variation_options.${index}.is_digital`) && (
+                        <div className="mt-2">
+                          <Label>{t('form:input-label-digital-file')}</Label>
+                          <FileInput
+                            name={`variation_options.${index}.digital_file_input`}
+                            control={control}
+                            multiple={false}
+                            acceptFile={true}
+                            helperText={t('form:text-upload-digital-file')}
+                            defaultValue={{}}
+                          />
+                          <ValidationError
+                            message={t(errors?.variation_options?.[index]?.digital_file_input?.message)}
+                          />
+                          <input
+                            type="hidden"
+                            {...register(`variation_options.${index}.digital_file`)}
+                          />
+                        </div>
+                      )}
+                    </div>
+                    <div className="mb-2">
+                      <Checkbox
+                        {...register(`variation_options.${index}.is_disable`)}
+                        error={t(errors.variation_options?.[index]?.is_disable?.message)}
+                        label={t('form:input-label-disable-variant')}
+                      />
+                    </div>
+                  </div>
+                ))}
               </div>
             </div>
           )}
@@ -311,7 +353,9 @@ export default function ProductVariableForm({
     </div>
   );
 }
+
 export const TitleAndOptionsInput = ({
+
   fieldAttributeValue,
   index,
   setValue,

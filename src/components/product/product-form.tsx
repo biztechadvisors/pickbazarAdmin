@@ -44,6 +44,10 @@ import { useCallback } from 'react';
 import OpenAIButton from '@/components/openAI/openAI.button';
 import { ItemProps } from '@/types';
 import ProductSubCategoryInput from './product-subcategory-input';
+import { useTaxesQuery } from '@/data/tax';
+import SelectInput from '../ui/select-input';
+import ValidationError from '../ui/form-validation-error';
+import { useMeQuery } from '@/data/user';
 
 export const chatbotAutoSuggestion = ({ name }: { name: string }) => {
   return [
@@ -129,8 +133,7 @@ export default function CreateOrUpdateProductForm({
     // @ts-ignore
     settings: { options },
   } = useSettingsQuery({
-    language: locale!,
-    shop_slug: shopData?.slug
+    language: locale!
   });
 
   const shopId = shopData?.id!;
@@ -144,6 +147,14 @@ export default function CreateOrUpdateProductForm({
     // @ts-ignore
     defaultValues: getProductDefaultValues(initialValues!, isNewTranslation),
   });
+
+  const { data: meData } = useMeQuery()
+  const shop_id = meData?.shop_id
+  const { taxes, loading, error } = useTaxesQuery({
+    shop_id
+  });
+  console.log("TExes --148", taxes)
+
   const {
     register,
     handleSubmit,
@@ -491,7 +502,18 @@ export default function CreateOrUpdateProductForm({
                   className="mb-5"
                 />
               </div>
-
+              <div>
+                <Label>{t('form:input-label-hsn_no')}</Label>
+                <SelectInput
+                  options={taxes}
+                  placeholder={t('Select')}
+                  getOptionLabel={(option: any) => `${option?.name}-${option?.hsn_no}`}
+                  getOptionValue={(option: any) => option}
+                  control={control}
+                  name={'hsn'}
+                  defaultValue={[]} />
+                <ValidationError message={errors.address?.state?.message} />
+              </div>
               <div>
                 <Label>{t('form:input-label-status')}</Label>
                 {!isEmpty(statusList)

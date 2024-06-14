@@ -7,14 +7,16 @@ import { permissionClient } from './client/permission';
 export const usePermissionData = (userId: string) => {
 
   const { isLoading, error, data, refetch } = useQuery<
-    { Permission: any },
+    {
+      map(arg0: (e: any, index: any) => JSX.Element): import("react").ReactNode | Record<string, unknown>; Permission: any
+    },
     Error
   >([API_ENDPOINTS.PERMISSION], async () => {
     const response = await permissionClient.getAllPermission(userId);
     return response;
   });
 
-  return { data,isLoading, error, refetch };
+  return { data, isLoading, error, refetch };
 };
 
 export const useSavePermissionData = () => {
