@@ -63,8 +63,11 @@ export default function ProductVariableForm({
 
   const combinedVariationOptions = [
     ...(initialValues?.variation_options || []),
-    ...cartesianProduct,
+    // ...cartesianProduct,
   ];
+  const initialValuesData =[
+    initialValues,
+  ]
   return (
     <div className="my-5 flex flex-wrap sm:my-8">
       <Description
@@ -82,7 +85,7 @@ export default function ProductVariableForm({
             {t('form:form-title-options')}
           </Title>
           <div>
-            {fields?.map((field: any, index: number) => {
+            {initialValuesData?.map((field: any, index: number) => {
               return (
                 <div
                   key={field.id}
@@ -164,14 +167,25 @@ export default function ProductVariableForm({
                       className="mx-2 my-2 flex flex-col items-start border-b border-dashed border-border-200 p-5 last:mb-8 last:border-0 md:p-8 md:last:pb-0"
                       style={{ height: '250px' }}
                     >
-                      <Title className="mb-2 !text-lg">
+                      {/* <Title className="mb-2 !text-lg">
                         {t('form:form-title-variant')}:{' '}
                         <span className="font-normal text-blue-600">
                           {Array.isArray(fieldAttributeValue)
                             ? fieldAttributeValue?.map((a) => a.value).join('/')
                             : fieldAttributeValue.value}
                         </span>
-                      </Title>
+                      </Title> */}
+                      <Title className="mb-2 !text-lg">
+      {t('form:form-title-variant')}:{' '}
+      <span className="font-normal text-blue-600">
+        {fieldAttributeValue.title}
+        <input
+          type="hidden"
+          {...register(`variation_options.${index}.title`)}
+          value={fieldAttributeValue.title}
+        />
+      </span>
+    </Title>
                       <TitleAndOptionsInput
                         register={register}
                         setValue={setValue}
