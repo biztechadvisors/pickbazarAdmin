@@ -197,6 +197,7 @@ type IProps = {
 export default function CreateOrUpdateSubCategoriesForm({
   initialValues,
 }: IProps) {
+
   const [isSlugDisable, setIsSlugDisable] = useState<boolean>(true);
   const router = useRouter();
   const { t } = useTranslation();

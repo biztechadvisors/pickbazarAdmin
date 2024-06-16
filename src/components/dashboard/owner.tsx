@@ -82,77 +82,15 @@ export default function OwnerDashboard(user: any) {
             price={total_users}
           />
         </div>
-        {/* <div className="w-full ">
-          <StickerCard
-            titleTransKey="sticker-card-title-today-rev"
-            icon={<CoinIcon />}
-            price={todays_revenue}
-          />
-        </div> */}
-        {/* {canWrite ? (
-          <div className="w-full ">
-            <StickerCard
-              titleTransKey="sticker-card-title-total-shops"
-              icon={<ShopIcon className="w-6" color="#1D4ED8" />}
-              iconBgStyle={{ backgroundColor: '#93C5FD' }}
-              price={data?.totalShops}
-            />
-          </div>
-        ) : (
-          <div className="w-full ">
-            <StickerCard
-              titleTransKey="sticker-card-title-total-cutomer"
-              icon={<CustomerIcon className="w-6" color="#1D4ED8" />}
-              iconBgStyle={{ backgroundColor: '#93C5FD' }}
-              price={data?.totalShops}
-            />
-          </div>
-        )} */}
+        
       </div>
 
-      {/* <div className="mb-6 flex w-full flex-wrap md:flex-nowrap">
-        <ColumnChart
-          widgetTitle={t('common:sale-history')}
-          colors={['#03D3B5']}
-          series={salesByYear}
-          categories={[
-            t('common:january'),
-            t('common:february'),
-            t('common:march'),
-            t('common:april'),
-            t('common:may'),
-            t('common:june'),
-            t('common:july'),
-            t('common:august'),
-            t('common:september'),
-            t('common:october'),
-            t('common:november'),
-            t('common:december'),
-          ]}
-        />
-      </div> */}
+      
 
       <div className="mb-6 flex w-full flex-wrap space-y-6 rtl:space-x-reverse xl:flex-nowrap xl:space-y-0 xl:space-x-5">
-        {/* <div className="w-full">
-          <RecentOrders
-            orders={orderData}
-            title={t('table:recent-order-table-title')}
-          />
-        </div> */}
-
-        {/* <div className="w-full xl:w-1/2">
-          <WithdrawTable
-            withdraws={withdraws}
-            title={t('table:withdraw-table-title')}
-          />
-        </div> */}
+        
       </div>
-      {/* <div className="mb-6 w-full xl:mb-0">
-        <PopularProductList
-          products={popularProductData}
-          title={t('table:popular-products-table-title')}
-        />
-      </div> */}
+     
     </>
   );
 }
