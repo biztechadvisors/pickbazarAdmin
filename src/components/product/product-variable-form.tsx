@@ -30,7 +30,6 @@ export default function ProductVariableForm({
   settings,
 }: IProps) {
 
-  console.log("initial", initialValues);
   const { t } = useTranslation();
   const { locale } = useRouter();
   const {
@@ -83,8 +82,6 @@ export default function ProductVariableForm({
   const variations = watch('variations');
 
   const cartesianProduct = getCartesianProduct(getValues('variations')) || [];
-
-  console.log("cartesianProduct+++++++++++", cartesianProduct);
 
   // const [autoFill, setAutoFill] = useState(false);
 

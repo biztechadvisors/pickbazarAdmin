@@ -15,13 +15,11 @@ export const settingsClient = {
   },
 
   create: ({ shop_id, ...data }: SettingsInput) => {
-    console.log("shop_id 18", shop_id);
     const url = `${API_ENDPOINTS.SETTINGS}?shopId=${shop_id}`;
     return HttpClient.post<Settings>(url, { ...data });
   },
 
   update: ({ id, ...data }: SettingsInput) => {
-    console.log("shop_id 24", id);
     const url = `${API_ENDPOINTS.SETTINGS}/${id}`;
     return HttpClient.put<Settings>(url, { ...data }); // Changed to HttpClient.put
   },

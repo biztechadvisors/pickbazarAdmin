@@ -54,7 +54,6 @@ export default function OrderDetailsPage() {
 
   const handleDispatchUpdate = (data: any) => {
     // Logic to update the dispatch product
-    console.log('Dispatch data', data);
   };
 
   useEffect(() => {
@@ -152,8 +151,6 @@ export default function OrderDetailsPage() {
   async function handleDownloadInvoice() {
     const { data } = await refetch();
 
-    console.log('Data****Invoice', data);
-
     if (data) {
       const a = document.createElement('a');
       a.href = data;
@@ -207,10 +204,6 @@ export default function OrderDetailsPage() {
       },
     },
   ];
-
-  console.log('order*****check', order);
-
-  console.log('userId****', userId);
 
   return (
     <>

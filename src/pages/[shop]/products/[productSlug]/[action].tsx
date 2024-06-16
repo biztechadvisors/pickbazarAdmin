@@ -42,7 +42,7 @@ export default function UpdateProductPage() {
   if (loading) return <Loader text={t('common:text-loading')} />;
   if (error) return <ErrorMessage message={error.message} />;
 
-  if(
+  if (
     !hasAccess(adminOnly, permissions) &&
     !me?.shops?.map((shop) => shop.id).includes(shopId) &&
     me?.managed_shop?.id != shopId
@@ -50,9 +50,6 @@ export default function UpdateProductPage() {
     router.replace(Routes.dashboard);
   }
 
-  console.log("query", query)
-
-  console.log("product", product)
   return (
     <>
       <div className="flex py-5 border-b border-dashed border-border-base sm:py-8">

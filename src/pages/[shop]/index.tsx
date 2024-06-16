@@ -60,7 +60,7 @@ export default function ShopPage() {
   //     // (permission) => permission.type === 'sidebar-nav-item-dashboard'
   //   )?.write;
 
-  const permissionTypes = AllPermission(); 
+  const permissionTypes = AllPermission();
 
   const canWrite = permissionTypes.includes('sidebar-nav-item-my-shops');
 
@@ -89,10 +89,6 @@ export default function ShopPage() {
   ) {
     router.replace(Routes.dashboard);
   }
-
-  console.log("data******", data)
-  console.log("me***********", me)
-  console.log("shop*********", shop)
 
   return (
     <div className="grid grid-cols-12 gap-6">

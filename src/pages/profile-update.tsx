@@ -30,8 +30,8 @@ export default function ProfilePage() {
       });
     }
 
-    if (selectedAddress && router.query.from === 'order-checkout') {
-      router.push('orders/checkout');
+    if (!selectedAddress && router.query.from === 'order-checkout') {
+      router.push('/profile-update'); // Navigate to profile update if address is missing
     }
   }, [data, selectedAddress, router.query.from]);
 
@@ -64,9 +64,3 @@ export default function ProfilePage() {
   );
 }
 ProfilePage.Layout = Layout;
-
-export const getStaticProps = async ({ locale }: any) => ({
-  props: {
-    ...(await serverSideTranslations(locale, ['form', 'common'])),
-  },
-});

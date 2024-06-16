@@ -234,9 +234,6 @@ export default function CreateOrUpdateSubCategoriesForm({
 
   const { data: meData } = useMeQuery();
 
-  console.log("initialValues",initialValues)
-
-  // console.log('meData', meData);
   const shop = meData?.shops?.[0]?.id;
 
   const { openModal } = useModalAction();
@@ -268,9 +265,6 @@ export default function CreateOrUpdateSubCategoriesForm({
     useCreateSubCategoryMutation();
   const { mutate: updateSubCategory, isLoading: updating } =
     useUpdateSubCategoryMutation();
-
-  // const categoryvalue = initialValues?.category
-  // console.log("category+++++++", categoryvalue)
 
   const onSubmit = async (values: FormValues) => {
     const input = {

@@ -76,8 +76,6 @@ export default function TypesPage() {
     router.replace(Routes.dashboard);
   }
 
-  console.log('shoSlug', shopSlug);
-
   return (
     <>
       <Card className="mb-8 flex flex-col items-center xl:flex-row">
