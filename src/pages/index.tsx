@@ -28,7 +28,7 @@ export default function Dashboard({
 }) {
   if (
     userPermissions.some((permission) =>
-      [DEALER, STAFF, Store_Owner, SUPER_ADMIN, ADMIN].includes(permission)
+      [DEALER, STAFF, STORE_OWNER, SUPER_ADMIN, ADMIN].includes(permission)
     )
   ) {
     return <AdminDashboard />;
