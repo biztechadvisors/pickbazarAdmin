@@ -222,8 +222,6 @@ const StockList = ({
     },
   ];
 
-  // console.log("newrouter",router.asPath)
-
   return (
     <>
       <div className="mb-6 overflow-hidden rounded shadow">

@@ -134,7 +134,7 @@ const StockList = ({ me, onSort, onOrder }: IProps) => {
         // const [getstatus, setStatus] = useState(status);
 
         const onOrderChange = (selectedOption: any) => {
-          console.log('Selected option:', selectedOption);
+
           const data = {
             user_id: me?.id,
             quantity: record.quantity,

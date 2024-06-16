@@ -258,8 +258,6 @@ export default function SettingsForm({
 
   const { options } = settings ?? {};
 
-  console.log('options** 258', options)
-
   const [serverInfo, SetSeverInfo] = useState(options?.server_info);
 
   const {
@@ -448,10 +446,8 @@ export default function SettingsForm({
 
     try {
       if (!settings || !settings.language.includes(router.locale!)) {
-        console.log('createSettingsMutation 450')
         await createSettingsMutation(mutationParams);
       } else {
-        console.log('updateSettingsMutation 453')
         await updateSettingsMutation(mutationParams);
       }
     } catch (error) {
@@ -472,8 +468,6 @@ export default function SettingsForm({
 
   const upload_max_filesize = options?.server_info?.upload_max_filesize! / 1024;
   const max_fileSize = options?.server_info?.upload_max_filesize! * 1000;
-
-  // console.log('upload_max_filesize', upload_max_filesize)
 
   const logoInformation = (
     <span>

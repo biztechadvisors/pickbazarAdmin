@@ -14,8 +14,6 @@ const OwnerLayout: React.FC<{ children?: React.ReactNode }> = ({
   const { t } = useTranslation();
   const { locale } = useRouter();
   const { permissions } = getAuthCredentials();
-
-  console.log('permissions ', permissions)
   const router = useRouter();
   const dir = locale === 'ar' || locale === 'he' ? 'rtl' : 'ltr';
 

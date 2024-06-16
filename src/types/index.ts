@@ -496,7 +496,8 @@ export interface User {
   address: Address[];
   orders?: OrderPaginator;
   email_verified: boolean;
-  shop_id: number
+  shop_id: number;
+  dealer?: any;
 }
 
 export interface UpdateUser {

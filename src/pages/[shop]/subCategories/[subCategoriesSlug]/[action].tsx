@@ -21,8 +21,8 @@ export default function UpdateSubCategoriesPage() {
       query.action!.toString() === 'edit' ? locale! : Config.defaultLanguage,
     categoryId: 2,
     shopId: 9,
-    });
-console.log("extra data'''''''''''''", subcategory)
+  });
+
   if (loading) return <Loader text={t('common:text-loading')} />;
   if (error) return <ErrorMessage message={error.message} />;
 

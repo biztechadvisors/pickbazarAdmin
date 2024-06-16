@@ -13,12 +13,12 @@ const UserAddressSelection = ({
   type,
   selectedAddress,
   setSelectedAddress,
-}) => {
+}: any) => {
   const [showAllAddresses, setShowAllAddresses] = useState(false);
 
   const { openModal } = useModalAction();
 
-  const handleAddressSelection = (address) => {
+  const handleAddressSelection = (address: { address: { street_address: string | number | boolean | React.ReactFragment | React.ReactPortal | React.ReactElement<any, string | React.JSXElementConstructor<any>> | Record<string, unknown> | null | undefined; }; }) => {
     setSelectedAddress(address);
     toast.success('Address selected successfully!');
   };
@@ -56,12 +56,11 @@ const UserAddressSelection = ({
           </div>
           <div className="grid grid-cols-1 gap-2 md:gap-4">
             {displayedAddresses.length > 0 ? (
-              displayedAddresses.map((address, index) => (
+              displayedAddresses.map((address: { address: { street_address: string | number | boolean | React.ReactElement<any, string | React.JSXElementConstructor<any>> | React.ReactFragment | React.ReactPortal | Record<string, unknown> | null | undefined; }; }, index: React.Key | null | undefined) => (
                 <div
                   key={index}
-                  className={`cursor-pointer rounded border border-gray-200 p-3 hover:bg-gray-50 md:p-4 ${
-                    selectedAddress === address ? 'border-green-500' : ''
-                  }`}
+                  className={`cursor-pointer rounded border border-gray-200 p-3 hover:bg-gray-50 md:p-4 ${selectedAddress === address ? 'border-green-500' : ''
+                    }`}
                   onClick={() => handleAddressSelection(address)}
                 >
                   <h3 className="text-base font-normal">
