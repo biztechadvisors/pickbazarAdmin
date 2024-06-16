@@ -1130,6 +1130,7 @@ export interface SettingsInput {
   language?: string;
   options?: SettingsOptionsInput;
   shop_id?: number;
+  id?: number;
 }
 
 export interface Tax {
