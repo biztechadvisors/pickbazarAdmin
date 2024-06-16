@@ -29,7 +29,6 @@ const CategoryList = ({
   onSort,
   onOrder,
 }: IProps) => {
-  console.log("$$$$$$$",categories)
   const { t } = useTranslation();
   const rowExpandable = (record: any) => record.children?.length;
   const { alignLeft, alignRight } = useIsRTL();   

@@ -54,14 +54,6 @@ const ProductCard = ({ item, isChecked, id, email, phone }: Props) => {
 
   const { shop_id } = item;
 
-  // const [getPermission, _] = useAtom(newPermission);
-  // const { permissions } = getAuthCredentials();
-  // const canWrite = permissions.includes('super_admin')
-  //   ? siteSettings.sidebarLinks
-  //   : getPermission?.find(
-  //       (permission) => permission.type === 'sidebar-nav-item-create-order'
-  //     )?.write;
-
   const permissionTypes = AllPermission();
 
   const canWrite = permissionTypes.includes('sidebar-nav-item-create-order');
@@ -69,10 +61,6 @@ const ProductCard = ({ item, isChecked, id, email, phone }: Props) => {
   function handleVariableProduct() {
     return openModal('SELECT_PRODUCT_VARIATION', { slug, shop_id });
   }
-
-  console.log('item-----check', item);
-
-  console.log('image', image);
 
   return (
     <div className="cart-type-neon h-full overflow-hidden rounded border border-border-200 bg-light shadow-sm transition-all duration-200 hover:shadow-md">

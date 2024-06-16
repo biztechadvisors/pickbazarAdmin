@@ -1,11 +1,11 @@
 export const LIMIT = 10;
 // export const SERVICE_PROVIDER = 'service_provider';
-export const OWNER = 'owner'
-export const SUPER_ADMIN = 'super_admin';
-export const STORE_OWNER = 'store_owner';
-export const STAFF = 'staff';
-export const DEALER = 'dealer';
-export const ADMIN = 'admin';
+export const OWNER = 'Owner'
+export const SUPER_ADMIN = 'Super_Admin';
+export const STORE_OWNER = 'Store_Owner';
+export const STAFF = 'Staff';
+export const DEALER = 'Dealer';
+export const ADMIN = 'Admin';
 export const TOKEN = 'token';
 export const PERMISSIONS = 'permissions';
 export const AUTH_CRED = 'AUTH_CRED';

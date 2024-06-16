@@ -9,16 +9,11 @@ import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import { GetStaticProps } from 'next';
 import Layout from '@/components/layouts/admin';
 import { adminOnly } from '@/utils/auth-utils';
-// import CustomerGrid from '@/components/checkout/customer/customer-grid';
 import { useEffect, useState } from 'react';
 import { useAtom } from 'jotai';
-import Loader from '@/components/ui/loader/loader';
-import { useMeQuery, useUserQuery } from '@/data/user';
+import { useUserQuery } from '@/data/user';
 import { AddressType } from '@/types';
-import { PlusIcon } from '@/components/icons/plus-icon';
-import AddCustomerSlider from './AddCustomerSlider';
-import { checkoutCustAtom, shopIdAtom } from '@/utils/atoms';
-import UserAddressSelection from '@/components/UserAddressSelection';
+import { shopIdAtom } from '@/utils/atoms';
 
 const CustomerEmail = dynamic(
   () => import('@/components/checkout/customer/CustomerEmail')
@@ -102,6 +97,7 @@ export default function CheckoutPage() {
     </div>
   );
 }
+
 CheckoutPage.authenticate = {
   permissions: adminOnly,
 };
