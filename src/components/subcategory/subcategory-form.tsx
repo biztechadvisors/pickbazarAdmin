@@ -197,6 +197,7 @@ type IProps = {
 export default function CreateOrUpdateSubCategoriesForm({
   initialValues,
 }: IProps) {
+
   const [isSlugDisable, setIsSlugDisable] = useState<boolean>(true);
   const router = useRouter();
   const { t } = useTranslation();
@@ -232,6 +233,8 @@ export default function CreateOrUpdateSubCategoriesForm({
   });
 
   const { data: meData } = useMeQuery();
+
+  console.log("initialValues",initialValues)
 
   // console.log('meData', meData);
   const shop = meData?.shops?.[0]?.id;

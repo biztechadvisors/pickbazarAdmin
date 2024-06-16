@@ -32,6 +32,7 @@ const CategoryList = ({
   const { t } = useTranslation();
   const rowExpandable = (record: any) => record.children?.length;
   const { alignLeft, alignRight } = useIsRTL();   
+  
 
   const permissionTypes = AllPermission(); 
 
@@ -44,6 +45,8 @@ const CategoryList = ({
     sort: SortOrder.Desc,
     column: null,
   });
+  console.log("categories", categories)
+  
 
   const onHeaderClick = (column: string | null) => ({
     onClick: () => {

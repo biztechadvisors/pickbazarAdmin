@@ -44,7 +44,7 @@ export default function SubCategories() {
 
   const canWrite = permissionTypes.includes('sidebar-nav-item-subcategories');
   
-  console.log("canwrite", canWrite)
+
 
   const { subcategories, paginatorInfo, loading, error } = useSubCategoriesQuery({
     limit: 20,
