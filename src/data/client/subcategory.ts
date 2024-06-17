@@ -20,8 +20,10 @@ export const subcategoryClient = {
       search: HttpClient.formatSearchParams({ type, name }),
     });
   },
-  getSubCategory: ({ slug, language, categoryId, shopId }: any) => {
-    return HttpClient.get<any>(`${API_ENDPOINTS.SUBCATEGORIES}/${slug}/?language=${language}&categoryId=${categoryId}&shopId=${shopId}`);
+  getSubCategory: ({ slug, language, shopSlug }: { slug: string; language: string; shopSlug: string | null }) => {
+    return HttpClient.get<any>(
+      `${API_ENDPOINTS.SUBCATEGORIES}/${slug}/?language=${language}&shopSlug=${shopSlug}`
+    );
   },
 };
 

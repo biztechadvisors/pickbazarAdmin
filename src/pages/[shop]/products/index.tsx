@@ -6,7 +6,7 @@ import Loader from '@/components/ui/loader/loader';
 import { useState } from 'react';
 import { useTranslation } from 'next-i18next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
-import ShopLayout from '@/components/layouts/shop';
+
 import { useRouter } from 'next/router';
 import LinkButton from '@/components/ui/link-button';
 import {
@@ -29,6 +29,7 @@ import { Config } from '@/config';
 import { Routes } from '@/config/routes';
 import { useMeQuery } from '@/data/user';
 import { AllPermission } from '@/utils/AllPermission';
+import AdminLayout from '@/components/layouts/admin';
 
 export default function ProductsPage() {
   const router = useRouter();
@@ -195,7 +196,7 @@ export default function ProductsPage() {
 ProductsPage.authenticate = {
   permissions: adminOwnerAndStaffOnly,
 };
-ProductsPage.Layout = ShopLayout;
+ProductsPage.Layout = AdminLayout;
 
 export const getServerSideProps = async ({ locale }: any) => ({
   props: {

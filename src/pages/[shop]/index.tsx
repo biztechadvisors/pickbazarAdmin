@@ -1,4 +1,3 @@
-import ShopLayout from '@/components/layouts/shop';
 import LinkButton from '@/components/ui/link-button';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import Image from 'next/image';
@@ -38,6 +37,7 @@ import { useAtom } from 'jotai';
 import { newPermission } from '@/contexts/permission/storepermission';
 import { siteSettings } from '@/settings/site.settings';
 import { AllPermission } from '@/utils/AllPermission';
+import AdminLayout from '@/components/layouts/admin';
 
 
 
@@ -346,7 +346,7 @@ export default function ShopPage() {
     </div>
   );
 }
-ShopPage.Layout = ShopLayout;
+ShopPage.Layout = AdminLayout;
 ShopPage.authenticate = {
   permissions: adminOwnerAndStaffOnly,
 };

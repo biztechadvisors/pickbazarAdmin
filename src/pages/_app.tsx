@@ -22,8 +22,6 @@ import PrivateRoute from '@/utils/private-route';
 import { Config } from '@/config';
 import 'react-toastify/dist/ReactToastify.css';
 import { StockProvider } from '@/contexts/quick-cart/stock.context';
-import { useMeQuery } from '@/data/user';
-import { useShopQuery, useShopsQuery } from '@/data/shop';
 
 const Noop: React.FC<{ children?: React.ReactNode }> = ({ children }) => (
   <>{children}</>

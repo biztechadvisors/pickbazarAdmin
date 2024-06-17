@@ -271,13 +271,13 @@ export default function CreateOrUpdateCategoriesForm({
       createCategory({
         ...input,
         ...(initialValues?.slug && { slug: initialValues.slug }),
-        shop_id: meData?.shops?.[0]?.id || initialValues?.shop_id,
+        shop_id: meData?.managed_shop?.id || initialValues?.shop_id,
       });
     } else {
       updateCategory({
         ...input,
         id: initialValues.id!,
-        shop_id: meData?.shops?.[0]?.id,
+        shop_id: meData?.managed_shop?.id,
       });
     }
   };

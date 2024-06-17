@@ -3,7 +3,7 @@ import LinkButton from '@/components/ui/link-button';
 import Loader from '@/components/ui/loader/loader';
 import { useTranslation } from 'next-i18next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
-import ShopLayout from '@/components/layouts/shop';
+
 import { useRouter } from 'next/router';
 import StaffList from '@/components/shop/staff-list';
 import {
@@ -20,6 +20,7 @@ import { SortOrder } from '@/types';
 import { Routes } from '@/config/routes';
 import { useMeQuery } from '@/data/user';
 import { AllPermission } from '@/utils/AllPermission';
+import AdminLayout from '@/components/layouts/admin';
 
 export default function StaffsPage() {
   const router = useRouter();
@@ -31,13 +32,13 @@ export default function StaffsPage() {
   const { t } = useTranslation();
   const [page, setPage] = useState(1);
   const [orderBy, setOrder] = useState('created_at');
-  const [sortedBy, setColumn] = useState<SortOrder>(SortOrder.Desc); 
+  const [sortedBy, setColumn] = useState<SortOrder>(SortOrder.Desc);
 
 
-const permissionTypes = AllPermission
-(); 
+  const permissionTypes = AllPermission
+    ();
 
-const canWrite = permissionTypes.includes('sidebar-nav-item-staffs');
+  const canWrite = permissionTypes.includes('sidebar-nav-item-staffs');
 
 
   const { data: shopData, isLoading: fetchingShopId } = useShopQuery({
@@ -87,7 +88,7 @@ const canWrite = permissionTypes.includes('sidebar-nav-item-staffs');
         </div>
 
         <div className="flex w-3/4 items-center ms-auto xl:w-2/4">
-        {canWrite ? (
+          {canWrite ? (
             <LinkButton href={`/${shop}/staffs/create`} className="h-12 ms-auto">
               <span>+ {t('form:button-label-add-staff')}</span>
             </LinkButton>
@@ -108,7 +109,7 @@ const canWrite = permissionTypes.includes('sidebar-nav-item-staffs');
 StaffsPage.authenticate = {
   permissions: adminAndOwnerOnly,
 };
-StaffsPage.Layout = ShopLayout;
+StaffsPage.Layout = AdminLayout;
 
 export const getServerSideProps = async ({ locale }: any) => ({
   props: {

@@ -1,4 +1,4 @@
-import ShopLayout from '@/components/layouts/shop';
+
 import CreateOrUpdateProductForm from '@/components/product/product-form';
 import { useTranslation } from 'next-i18next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
@@ -12,6 +12,7 @@ import { Routes } from '@/config/routes';
 import { useShopQuery } from '@/data/shop';
 import { useMeQuery } from '@/data/user';
 import { useRouter } from 'next/router';
+import AdminLayout from '@/components/layouts/admin';
 
 export default function CreateProductPage() {
   const { t } = useTranslation();
@@ -47,7 +48,7 @@ export default function CreateProductPage() {
 CreateProductPage.authenticate = {
   permissions: adminOwnerAndStaffOnly,
 };
-CreateProductPage.Layout = ShopLayout;
+CreateProductPage.Layout = AdminLayout;
 
 export const getServerSideProps = async ({ locale }: any) => ({
   props: {

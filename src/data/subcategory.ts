@@ -13,6 +13,8 @@ import {
 import { mapPaginatorData } from '@/utils/data-mappers';
 import { subcategoryClient } from './client/subcategory';
 import { Config } from '@/config';
+import { useState } from 'react';
+import { useEffect } from 'react';
 
 export const getShopSlug = () => {
   if (typeof window !== 'undefined') {
@@ -67,21 +69,22 @@ export const useUpdateSubCategoryMutation = () => {
   });
 };
 
-export const useSubCategoryQuery = ({
-  slug,
-  language,
-  userId,
-  categoryId,
-  shopId,
-}: GetParams) => {
+export const useSubCategoryQuery = ({ slug, language }: GetParams) => {
+  const [shopSlug, setShopSlug] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const storedSlug = localStorage.getItem('shopSlug');
+      setShopSlug(storedSlug);
+    }
+  }, []);
 
   const { data, error, isLoading } = useQuery<SubCategory, Error>(
-    [
-      API_ENDPOINTS.SUBCATEGORIES,
-      { slug, language, categoryId, userId, shopId },
-    ],
-    () =>
-      subcategoryClient.getSubCategory({ slug, language, categoryId, shopId })
+    [API_ENDPOINTS.SUBCATEGORIES, slug, language, shopSlug],
+    () => subcategoryClient.getSubCategory({ slug, language, shopSlug }),
+    {
+      enabled: !!shopSlug,
+    }
   );
 
   return {
@@ -94,12 +97,24 @@ export const useSubCategoryQuery = ({
 export const useSubCategoriesQuery = (
   options: Partial<SubCategoryQueryOptions>
 ) => {
+  const [shopSlug, setShopSlug] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const storedSlug = localStorage.getItem('shopSlug');
+      setShopSlug(storedSlug);
+    }
+  }, []);
+
+  const queryOptions = { ...options, shopSlug };
+
   const { data, error, isLoading } = useQuery<SubCategoryPaginator, Error>(
-    [API_ENDPOINTS.SUBCATEGORIES, options],
+    [API_ENDPOINTS.SUBCATEGORIES, queryOptions],
     ({ queryKey, pageParam }) =>
       subcategoryClient.paginated(Object.assign({}, queryKey[1], pageParam)),
     {
       keepPreviousData: true,
+      enabled: !!shopSlug, // Ensures the query runs only when shopSlug is set
     }
   );
 

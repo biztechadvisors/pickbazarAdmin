@@ -172,10 +172,10 @@ export enum Permission {
 
 export interface GetParams {
   slug: string;
-  userId: string;
+  userId?: string;
   language: string;
-  categoryId: number;
-  shopId: number;
+  categoryId?: number;
+  shopId?: number;
 }
 
 export interface QueryOptions {
@@ -1504,7 +1504,7 @@ export interface SubCategoryQueryOptions extends QueryOptions {
   type: string;
   name: string;
   categoryId: number | null;
-  shopId: string | null;
+  shopSlug: string | null;
 }
 
 export interface ConversationQueryOptions extends QueryOptions {
