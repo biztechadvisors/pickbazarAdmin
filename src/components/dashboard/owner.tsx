@@ -1,46 +1,22 @@
 import { CartIconBig } from '@/components/icons/cart-icon-bag';
-import { CoinIcon } from '@/components/icons/coin-icon';
-import ColumnChart from '@/components/widgets/column-chart';
 import StickerCard from '@/components/widgets/sticker-card';
-import ErrorMessage from '@/components/ui/error-message';
-import usePrice from '@/utils/use-price';
-import Loader from '@/components/ui/loader/loader';
-import RecentOrders from '@/components/order/recent-orders';
-import PopularProductList from '@/components/product/popular-product-list';
-import { useOrdersQuery } from '@/data/order';
 import { useTranslation } from 'next-i18next';
-import { ShopIcon } from '@/components/icons/sidebar';
 import { DollarIcon } from '@/components/icons/shops/dollar';
-import { useAnalyticsQuery, usePopularProductsQuery } from '@/data/dashboard';
 import { useRouter } from 'next/router';
 import { useMeQuery, useUsersQuery } from '@/data/user';
-import { useAtom } from 'jotai';
-import { newPermission } from '@/contexts/permission/storepermission';
-import { getAuthCredentials } from '@/utils/auth-utils';
-import { siteSettings } from '@/settings/site.settings';
-import { CustomerIcon } from '../icons/sidebar/customer';
-import { useShopQuery, useShopsQuery } from '@/data/shop';
+import { useShopsQuery } from '@/data/shop';
 import { useState } from 'react';
 import { SortOrder } from '@/types';
 
 export default function OwnerDashboard(user: any) {
   const { t } = useTranslation();
   const { locale } = useRouter();
-  const [getPermission, _] = useAtom(newPermission);
-  const { permissions } = getAuthCredentials();
   const [searchTerm, setSearchTerm] = useState('');
   const [page, setPage] = useState(1);
   const [orderBy, setOrder] = useState('created_at');
   const [sortedBy, setColumn] = useState<SortOrder>(SortOrder.Desc);
 
   const { data: useMe } = useMeQuery();
-
-  const customerId = useMe?.id ?? '';
-
-  const query = {
-    customerId: parseInt(customerId),
-    state: '',
-  };
 
   const { shops } = useShopsQuery({
     name: searchTerm,

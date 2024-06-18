@@ -1,5 +1,4 @@
 import ErrorMessage from '@/components/ui/error-message';
-import { useState } from 'react';
 import { useTranslation } from 'next-i18next';
 import { useStoreNoticesLoadMoreQuery } from '@/data/store-notice';
 import { SortOrder, StoreNotice } from '@/types';

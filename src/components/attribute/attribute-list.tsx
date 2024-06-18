@@ -1,11 +1,9 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { Table } from '@/components/ui/table';
 import { Attribute, Shop, SortOrder } from '@/types';
 import { useRouter } from 'next/router';
 import { useTranslation } from 'next-i18next';
 import TitleWithSort from '@/components/ui/title-with-sort';
-import { Config } from '@/config';
-import Link from '@/components/ui/link';
 import { Routes } from '@/config/routes';
 import LanguageSwitcher from '@/components/ui/lang-action/action';
 import { AllPermission } from '@/utils/AllPermission';

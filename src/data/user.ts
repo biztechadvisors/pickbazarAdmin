@@ -309,12 +309,18 @@ export const useUserQuery = ({ id }: { id: string }) => {
 };
 
 export const useVendorQuery = (usrById: number) => {
-  const type: string = API_ENDPOINTS.VENDOR_LIST;
+  const type: string = API_ENDPOINTS.STORE_OWNER;
+
   return useQuery<User, Error>(
     [API_ENDPOINTS.USERS, type, usrById],
-    () => userClient.fetchVendor({ type, usrById }),
+    () => {
+      if (isNaN(usrById)) {
+        throw new Error('usrById must be a valid number');
+      }
+      return userClient.fetchVendor({ type, usrById });
+    },
     {
-      enabled: Boolean(type),
+      enabled: !isNaN(usrById) && Boolean(type), // Enable query only if usrById is a valid number and type is truthy
     }
   );
 };
