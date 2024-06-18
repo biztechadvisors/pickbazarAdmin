@@ -15,6 +15,7 @@ import { useRouter } from 'next/router';
 import { usePermissionData } from '@/data/permission';
 import { getAuthCredentials } from '@/utils/auth-utils';
 import Loader from '../ui/loader/loader';
+import { DEALER } from '@/utils/constants';
 
 type FormValues = {
   name: string;
@@ -66,7 +67,7 @@ const CustomerCreateForm = () => {
       id: permission.id,
     })) ?? [];
 
-  if (permissions[0] === 'dealer') {
+  if (permissions[0] === DEALER) {
     permissionOptions.push(
       { value: 'customer', label: 'customer', id: 'customer_id' },
       { value: 'staff', label: 'staff', id: 'staff_id' }

@@ -34,12 +34,6 @@ export default function Customers() {
     sortedBy,
   });
 
-  const { permissions }: any = getAuthCredentials();
-
-  const permissionTypes = AllPermission();
-
-  const canWrite = permissionTypes.includes('sidebar-nav-item-users');
-
   if (loading) return <Loader text={t('common:text-loading')} />;
   if (error) return <ErrorMessage message={error.message} />;
 

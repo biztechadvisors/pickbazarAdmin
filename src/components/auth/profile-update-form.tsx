@@ -50,10 +50,6 @@ export default function ProfileUpdate({ me }: any) {
   let permission = hasAccess(adminOnly, permissions);
   let identify = permissions?.[0]
   const matching: any = DEALER
-  console.log('permission 53', permission)
-  console.log('identify 54', identify)
-  console.log('matching 55', matching)
-
   const {
     register,
     handleSubmit,
