@@ -7,7 +7,7 @@ import ErrorMessage from '@/components/ui/error-message';
 import Loader from '@/components/ui/loader/loader';
 import { useTranslation } from 'next-i18next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
-import ShopLayout from '@/components/layouts/shop';
+
 import { useRouter } from 'next/router';
 import {
   adminOnly,
@@ -25,12 +25,13 @@ import { MoreIcon } from '@/components/icons/more-icon';
 import { useExportOrderQuery } from '@/data/export';
 import { useMeQuery } from '@/data/user';
 import { Routes } from '@/config/routes';
+import AdminLayout from '@/components/layouts/admin';
 
 export default function Orders() {
   const router = useRouter();
   const { permissions } = getAuthCredentials();
   const { data: me } = useMeQuery();
- 
+
   const { locale } = useRouter();
   const {
     query: { shop },
@@ -50,7 +51,7 @@ export default function Orders() {
       limit: LIMIT,
       page,
       tracking_number: searchTerm,
-      customer_id:searchTerm,
+      customer_id: searchTerm,
       orderBy,
       sortedBy,
       shop_id: shopId,
@@ -167,7 +168,7 @@ export default function Orders() {
 Orders.authenticate = {
   permissions: adminOwnerAndStaffOnly,
 };
-Orders.Layout = ShopLayout;
+Orders.Layout = AdminLayout;
 
 export const getServerSideProps = async ({ locale }: any) => ({
   props: {

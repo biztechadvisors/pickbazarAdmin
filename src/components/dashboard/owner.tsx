@@ -82,15 +82,7 @@ export default function OwnerDashboard(user: any) {
             price={total_users}
           />
         </div>
-        
       </div>
-
-      
-
-      <div className="mb-6 flex w-full flex-wrap space-y-6 rtl:space-x-reverse xl:flex-nowrap xl:space-y-0 xl:space-x-5">
-        
-      </div>
-     
     </>
   );
 }

@@ -26,7 +26,6 @@ export default function AppLayout({
   } else if (
     userPermissions?.some((permission) => [OWNER].includes(permission))
   ) {
-    console.log('working good fine excellent');
     return <OwnerLayout {...props} />;
   }
 }

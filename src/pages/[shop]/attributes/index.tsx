@@ -5,7 +5,7 @@ import LinkButton from '@/components/ui/link-button';
 import Loader from '@/components/ui/loader/loader';
 import { useTranslation } from 'next-i18next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
-import ShopLayout from '@/components/layouts/shop';
+
 import router, { useRouter } from 'next/router';
 import {
   adminOnly,
@@ -25,6 +25,7 @@ import { useMeQuery } from '@/data/user';
 import { Routes } from '@/config/routes';
 import { AllPermission } from '@/utils/AllPermission';
 import Search from '@/components/common/search';
+import AdminLayout from '@/components/layouts/admin';
 
 export default function AttributePage() {
   const router = useRouter();
@@ -61,9 +62,9 @@ export default function AttributePage() {
     }
   );
 
- 
 
-  const permissionTypes = AllPermission(); 
+
+  const permissionTypes = AllPermission();
 
   const canWrite = permissionTypes.includes('sidebar-nav-item-attributes');
 
@@ -98,7 +99,7 @@ export default function AttributePage() {
         </div>
 
         <div className="flex w-full flex-col items-center ms-auto md:w-3/4 md:flex-row xl:w-2/4">
-        <Search onSearch={handleSearch} />
+          <Search onSearch={handleSearch} />
 
           {canWrite && locale === Config.defaultLanguage && (
             <LinkButton
@@ -115,13 +116,13 @@ export default function AttributePage() {
           <Button onClick={handleImportModal} className="mt-5 w-full md:hidden">
             {t('common:text-export-import')}
           </Button>
-          
+
           <button
             onClick={handleImportModal}
             className="hidden h-8 w-8 flex-shrink-0 items-center justify-center rounded-full bg-gray-50 transition duration-300 ms-6 hover:bg-gray-100 md:flex"
           >
             {canWrite && (
-            <MoreIcon className="w-3.5 text-body" />
+              <MoreIcon className="w-3.5 text-body" />
             )}
           </button>
         </div>
@@ -138,7 +139,7 @@ export default function AttributePage() {
 AttributePage.authenticate = {
   permissions: adminOwnerAndStaffOnly,
 };
-AttributePage.Layout = ShopLayout;
+AttributePage.Layout = AdminLayout;
 export const getServerSideProps = async ({ locale }: any) => ({
   props: {
     ...(await serverSideTranslations(locale, ['table', 'common', 'form'])),

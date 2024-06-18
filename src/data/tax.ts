@@ -46,7 +46,7 @@ export const useUpdateTaxClassMutation = (shop_id) => {
 
   return useMutation((data) => taxClient.update({ ...data, shop_id }), {
     onSuccess: () => {
-      toast.success(t('common:successfully-created'));
+      toast.success(t('common:successfully-updated'));
     },
     onSettled: () => {
       queryClient.invalidateQueries(API_ENDPOINTS.TAXES);

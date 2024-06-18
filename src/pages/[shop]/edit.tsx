@@ -4,7 +4,6 @@ import { useRouter } from 'next/router';
 import { useTranslation } from 'next-i18next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import ShopForm from '@/components/shop/shop-form';
-import ShopLayout from '@/components/layouts/shop';
 import {
   adminAndOwnerOnly,
   adminOnly,
@@ -14,6 +13,7 @@ import {
 import { useShopQuery } from '@/data/shop';
 import { Routes } from '@/config/routes';
 import { useMeQuery } from '@/data/user';
+import AdminLayout from '@/components/layouts/admin';
 
 export default function UpdateShopPage() {
   const router = useRouter();
@@ -52,7 +52,7 @@ export default function UpdateShopPage() {
 UpdateShopPage.authenticate = {
   permissions: adminAndOwnerOnly,
 };
-UpdateShopPage.Layout = ShopLayout;
+UpdateShopPage.Layout = AdminLayout;
 
 export const getServerSideProps = async ({ locale }: any) => ({
   props: {
