@@ -23,14 +23,16 @@ import { Config } from '@/config';
 import 'react-toastify/dist/ReactToastify.css';
 import { StockProvider } from '@/contexts/quick-cart/stock.context';
 
+
 const Noop: React.FC<{ children?: React.ReactNode }> = ({ children }) => (
   <>{children}</>
-);
-
-const AppSettings: React.FC<{ children?: React.ReactNode }> = (props) => {
+  );
+  
+  const AppSettings: React.FC<{ children?: React.ReactNode }> = (props) => {
+  const authToken=localStorage.getItem("authToken")
   const { locale } = useRouter();
   const { settings, loading, error } = useSettingsQuery({ language: locale! });
-  if (loading) return <PageLoader />;
+  // if (loading) return <PageLoader />;
   if (error) return <ErrorMessage message={error.message} />;
   // TODO: fix it
   // @ts-ignore
