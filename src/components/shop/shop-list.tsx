@@ -15,6 +15,7 @@ import { newPermission } from '@/contexts/permission/storepermission';
 import { useAtom } from 'jotai';
 import { getAuthCredentials } from '@/utils/auth-utils';
 import { AllPermission } from '@/utils/AllPermission';
+import { OWNER } from '@/utils/constants';
 
 type IProps = {
   shops: Shop[] | undefined;
@@ -43,7 +44,11 @@ const ShopList = ({
 
   const permissionTypes = AllPermission(); 
 
-  const canWrite = permissionTypes.includes('sidebar-nav-item-shops');
+  const {permissions}=getAuthCredentials()
+
+  console.log("per", permissions)
+
+  const canWrite = permissionTypes.includes(OWNER);
 
   const [sortingObj, setSortingObj] = useState<{
     sort: SortOrder;

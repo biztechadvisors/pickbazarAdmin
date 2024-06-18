@@ -14,6 +14,8 @@ import { useEffect, useRef } from 'react';
 import { useAtom } from 'jotai';
 import { dealerAddress } from '@/utils/atoms';
 import { useRouter } from 'next/router';
+import OwnerLayout from '@/components/layouts/owner';
+import { adminOwnerAndStaffOnly, ownerAndStaffOnly } from '@/utils/auth-utils';
 
 export default function ProfilePage() {
   const { t } = useTranslation();
@@ -63,4 +65,12 @@ export default function ProfilePage() {
     </>
   );
 }
-ProfilePage.Layout = Layout;
+ProfilePage.Layout = OwnerLayout;
+
+
+export const getStaticProps = async ({ locale }: any) => ({
+  props: {
+    ...(await serverSideTranslations(locale, ['table', 'common', 'form'])),
+  },
+});
+

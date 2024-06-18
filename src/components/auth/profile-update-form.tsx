@@ -47,7 +47,7 @@ export default function ProfileUpdate({ me }: any) {
   const { permissions } = getAuthCredentials();
 
   let permission = hasAccess(adminOnly, permissions);
-  let identify = permissions[0]
+  let identify = permissions?.[0]
   const matching: any = 'dealer'
   const {
     register,
