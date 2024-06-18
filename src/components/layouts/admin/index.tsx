@@ -31,7 +31,7 @@ const AdminLayout: React.FC<{ children?: React.ReactNode }> = ({
 
   useEffect(() => {
     if (data && data.shops && data.shops.length > 0) {
-      const newShopSlug = data.shops[0].slug;
+      const newShopSlug = data.managed_shop.slug;
 
       setShopSlug(newShopSlug);
       localStorage.setItem('shopSlug', newShopSlug);
