@@ -132,21 +132,20 @@ export const useLogoutMutation = () => {
 
   const logoutMutation = useMutation(userClient.logout, {
     onSuccess: () => {
-      // Check if logout occurred due to a window refresh
-      const isWindowRefresh = !router.query.noredirect;
-
-      if (isWindowRefresh) {
-        console.log('Logout: Window Refresh');
-      } else {
-        console.log('Logout: Route Change');
-      }
-
-      // Remove auth credentials and redirect to login route
+      // Remove auth credentials and clear all local storage items
       Cookies.remove(AUTH_CRED);
+      localStorage.clear();
+
+      // Redirect to login route
       router.replace(Routes.login);
+
+      // Show success toast
       toast.success(t('common:successfully-logout'));
     },
     onError: (error) => {
+      // Show error toast
+      toast.error(t('common:logout-failed', { error: error.message }));
+
       console.error('Logout Error:', error);
     },
   });
