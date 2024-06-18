@@ -4,7 +4,8 @@ import { useLogoutMutation } from '@/data/user';
 import { useTranslation } from 'next-i18next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import { useRouter } from 'next/router';
-import { toast } from 'react-toastify'; // Ensure correct import
+import { toast } from 'react-toastify';
+import { Routes } from '@/config/routes';
 
 function SignOut() {
   const { t } = useTranslation();
