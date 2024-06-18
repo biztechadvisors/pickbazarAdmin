@@ -46,7 +46,7 @@
   "sidebar-nav-item-dashboard": "لوحة القيادة",
   "sidebar-nav-item-create-sales": "إنشاء المبيعات",
   "sidebar-nav-item-sales": "المبيعات",
-  "sidebar-nav-item-inventory-dashboard": "تفاصيل الحساب",
+  "sidebar-nav-item--dashboard": "تفاصيل الحساب",
   "sidebar-nav-item-products": "المنتجات",
   "sidebar-nav-item-attributes": "السمات",
   "sidebar-nav-item-attribute-value": "قيم السمة",

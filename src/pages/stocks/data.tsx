@@ -71,8 +71,6 @@ export default function DealerStockData() {
     });
   };
 
-  console.log('Data---Stocks', data);
-
   return (
     <>
       <Card className="mb-8 flex flex-col">

@@ -115,7 +115,7 @@ export const useMeQuery = () => {
       isLoading: false,
       isError: false,
       error: null,
-      refetch: () => {},
+      refetch: () => { },
     };
   }
 
@@ -158,8 +158,6 @@ export const useRegisterMutation = () => {
   const router = useRouter();
   const queryClient = useQueryClient();
   const { t } = useTranslation();
-  // console.log(t, queryClient)
-
   return useMutation(userClient.register, {
     onSuccess: () => {
       const queryParams = new URLSearchParams(window.location.search);

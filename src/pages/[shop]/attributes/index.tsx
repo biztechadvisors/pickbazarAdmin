@@ -24,6 +24,7 @@ import { Config } from '@/config';
 import { useMeQuery } from '@/data/user';
 import { Routes } from '@/config/routes';
 import { AllPermission } from '@/utils/AllPermission';
+import Search from '@/components/common/search';
 
 export default function AttributePage() {
   const router = useRouter();
@@ -32,6 +33,8 @@ export default function AttributePage() {
     locale,
   } = useRouter();
   const { permissions } = getAuthCredentials();
+  const [searchTerm, setSearchTerm] = useState('');
+  const [page, setPage] = useState(1);
   const { t } = useTranslation();
   const { openModal } = useModalAction();
   const [orderBy, setOrder] = useState('updated_at');
@@ -76,6 +79,15 @@ export default function AttributePage() {
     router.replace(Routes.dashboard);
   }
 
+  function handleSearch({ searchText }: { searchText: string }) {
+    setSearchTerm(searchText);
+    setPage(1);
+  }
+
+  function handlePagination(current: any) {
+    setPage(current);
+  }
+
   return (
     <>
       <Card className="mb-8 flex flex-col items-center justify-between md:flex-row">
@@ -86,10 +98,13 @@ export default function AttributePage() {
         </div>
 
         <div className="flex w-full flex-col items-center ms-auto md:w-3/4 md:flex-row xl:w-2/4">
+        <Search onSearch={handleSearch} />
+
           {canWrite && locale === Config.defaultLanguage && (
             <LinkButton
               href={`/${shop}/attributes/create`}
-              className="mt-5 h-12 w-full md:mt-0 md:w-auto md:ms-auto"
+              // className="mt-5 h-12 w-full md:mt-0 md:w-auto md:ms-auto"
+              className="h-12 w-full md:w-auto md:ms-6"
             >
               <span>
                 + {t('form:button-label-add')} {t('common:attribute')}
@@ -113,6 +128,7 @@ export default function AttributePage() {
       </Card>
       <AttributeList
         attributes={attributes}
+        onPagination={handlePagination}
         onOrder={setOrder}
         onSort={setColumn}
       />

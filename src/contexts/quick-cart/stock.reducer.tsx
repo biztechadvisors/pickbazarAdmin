@@ -48,8 +48,7 @@ export const initState: State = {
 let updateCartTimeout: NodeJS.Timeout | null = null;
 
 export function stockReducer(state: State, action: Action): State {
-  console.log('state', state);
-  console.log('action', action);
+
   switch (action.type) {
     case 'ADD_ITEM_WITH_QUANT': {
       const items = addItemWithQuant(

@@ -222,10 +222,6 @@ const OrderList = ({
     },
   ];
 
-  // console.log("newrouter",router.asPath)
-
-  console.log("orders_orders_orders++++++", orders)
-
   return (
     <>
       <div className="mb-6 overflow-hidden rounded shadow">

@@ -33,17 +33,9 @@ export const orderClient = {
   },
 
   downloadInvoice: (input: GenerateInvoiceDownloadUrlInput) => {
-    console.log('downloadInvoice***', input);
     return HttpClient.post<string>(
       `${API_ENDPOINTS.ORDER_INVOICE_DOWNLOAD}`,
       input
     );
   },
-  // downloadInvoicee: (input: GenerateInvoiceDownloadUrlInput) => {
-  //   console.log('downloadInvoice***', input);
-  //   return HttpClient.post<string>(
-  //     `${API_ENDPOINTS.INVOICE_DOWNLOAD}`,
-  //     input
-  //   );
-  // },
 };

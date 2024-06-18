@@ -45,7 +45,6 @@ export default function Uploader({
           acceptedFiles,
           {
             onSuccess: (data: any) => {
-              console.log('data', data)
               data &&
                 data?.map((file: any, idx: any) => {
                   const splitArray = file?.original?.split('/');
@@ -197,11 +196,6 @@ export default function Uploader({
     },
     [files]
   );
-
-  console.log('files', files);
-  console.log('value', value);
-
-  console.log("acceptFile", acceptFile)
 
   return (
     <section className="upload">

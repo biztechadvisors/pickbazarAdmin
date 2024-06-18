@@ -19,7 +19,7 @@ const ProductAuthorInput = ({ control }: Props) => {
     is_approved: true,
     language: locale,
   });
-console.log("get Available author", authors)
+
   return (
     <div className="mb-5">
       <Label>{t('common:text-authors')}</Label>

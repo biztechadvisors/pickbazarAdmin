@@ -124,104 +124,41 @@ export default function OrderDetailsPage() {
   if (error) return <ErrorMessage message={error.message} />;
 
 
-  // async function handleDownloadInvoice() {
-  //   try {
-  //     // Fetch the HTML content of the invoice (same as before)
-  //     const response = await refetch();
-  //     const htmlContent = response.data;
-  //     console.log("HTML CONTAIN",htmlContent);
-  
-  //     const doc = new jsPDF('p', 'pt', 'a4', false);
-  //     doc.setFontSize(10);
-    
-      
-  //     // Render HTML content
-  //     doc.html(htmlContent, {
-  //       callback: function () { doc.save('invoice.pdf'); },
-  //       // You can remove the styles object here, as it's not needed for setting font size
-  //     });
-  //   } catch (error) {
-  //     console.error('Error generating PDF:', error);
-  //   }
-  // }
-  
+  async function handleDownloadInvoice() {
+    try {
+      const response = await refetch();
 
-//   async function handleDownloadInvoice() {
-//     try {
-//         // Fetch the HTML content of the invoice
-//         const response = await refetch();
-//         const htmlContent = response.data;
+      // Check if the response is successful and contains data
+      if (!response || !response.data) {
+        throw new Error('Invalid response received from backend');
+      }
 
-//         // Convert HTML content to PDF using html2pdf
-//         html2pdf().from(htmlContent).save('invoice.pdf'); // Use html2pdf() instead of html2pdf.from()
+      const pdfContent = response.data;
 
-//     } catch (error) {
-//         console.error('Error generating PDF:', error);
-//     }
-// }
+      if (!pdfContent || pdfContent.length === 0) {
+        throw new Error('Invalid PDF content received from backend');
+      }
 
-// async function handleDownloadInvoice() {
-//   try {
-//     const response = await refetch();
-//     const pdfContent = response.data;
-//     console.log("pdf or not",pdfContent);
+      const blob = new Blob([pdfContent], { type: 'application/pdf' });
 
-//     // Validate PDF content (add checks here)
-//     if (!pdfContent || !pdfContent.length) {
-//       throw new Error('Invalid PDF content received from backend');
-//     }
+      const link = document.createElement('a');
+      link.href = window.URL.createObjectURL(blob);
+      link.download = 'invoice.pdf';
 
-//     const blob = new Blob([pdfContent], { type: 'application/pdf' });
-//     const link = document.createElement('a');
-//     link.href = window.URL.createObjectURL(blob);
-//     link.download = 'invoice.pdf';
+      document.body.appendChild(link);
+      link.click();
 
-//     document.body.appendChild(link);
-//     link.click();
+      // Wait for a short delay before removing the link
+      await new Promise(resolve => setTimeout(resolve, 1000));
 
-//     await new Promise(resolve => setTimeout(resolve, 1000));
-//     document.body.removeChild(link);
-//   } catch (error) {
-//     console.error('Error downloading PDF:', error);
-//     // Handle download error (e.g., display a message to the user)
-//   }
-// }
-async function handleDownloadInvoice() {
-  try {
-    const response = await refetch();
-
-    // Check if the response is successful and contains data
-    if (!response || !response.data) {
-      throw new Error('Invalid response received from backend');
+      document.body.removeChild(link);
+    } catch (error) {
+      console.error('Error downloading PDF:', error);
     }
+  }
 
-    const pdfContent = response.data;
-    console.log("pdfContain",pdfContent)
 
-    if (!pdfContent || pdfContent.length === 0) {
-      throw new Error('Invalid PDF content received from backend');
-    }
-
-     const blob = new Blob([pdfContent], { type: 'application/pdf' });
-  
-     const link = document.createElement('a');
-     link.href = window.URL.createObjectURL(blob);
-     link.download = 'invoice.pdf';
- 
-     document.body.appendChild(link);
-     link.click();
- 
-     // Wait for a short delay before removing the link
-     await new Promise(resolve => setTimeout(resolve, 1000));
-
-     document.body.removeChild(link);
-   } catch (error) {
-     console.error('Error downloading PDF:', error);
-   }
- }
- 
-
-const columns = [
+  const columns = [
     {
       dataIndex: 'image',
       key: 'image',

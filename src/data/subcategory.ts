@@ -74,7 +74,7 @@ export const useSubCategoryQuery = ({
   categoryId,
   shopId,
 }: GetParams) => {
-  console.log('slug+++++++++++++', slug, categoryId, shopId);
+
   const { data, error, isLoading } = useQuery<SubCategory, Error>(
     [
       API_ENDPOINTS.SUBCATEGORIES,
@@ -83,7 +83,7 @@ export const useSubCategoryQuery = ({
     () =>
       subcategoryClient.getSubCategory({ slug, language, categoryId, shopId })
   );
-  console.log('slug data', data, categoryId, shopId);
+
   return {
     subcategory: data ?? [],
     error,

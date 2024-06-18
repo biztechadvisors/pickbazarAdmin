@@ -21,8 +21,7 @@ type FormValues = {
   email: string;
   password: string;
   contact: string;
-  type: { value: string; label: string };
-  permission: Permission;
+  type: { value: string, label: string };
   UsrBy: string;
   numberOfDealers: number;  // Added new field type
 };
@@ -60,45 +59,55 @@ const CustomerCreateForm = () => {
     return <Loader />;
   }
 
-  const permissionNames =
-    permissionData?.map(
-      (permission: { permission_name: string }) => permission.permission_name
-    ) ?? [];
+  const permissionOptions =
+    permissionData?.map((permission: { id: any, permission_name: string }) => ({
+      value: permission.permission_name,
+      label: permission.permission_name,
+      id: permission.id,
+    })) ?? [];
 
-  const permissionOptions = permissionNames.map((name: string) => ({
-    value: name,
-    label: name,
-  }));
-
-  async function onSubmit({
-    name,
-    email,
-    password,
-    contact,
-    type,
-    numberOfDealers,  // Added new field to destructure
-  }: FormValues) {
-    registerUser(
-      {
-        name,
-        email,
-        password,
-        contact,
-        UsrBy: id,
-        type: type?.value,
-        numberOfDealers,  // Added new field to payload
-      },
-      {
-        onError: (error: any) => {
-          Object.keys(error?.response?.data).forEach((field: string) => {
-            setError(field as keyof FormValues, {
-              type: 'manual',
-              message: error?.response?.data[field][0],
-            });
-          });
-        },
-      }
+  if (permissions[0] === 'dealer') {
+    permissionOptions.push(
+      { value: 'customer', label: 'customer', id: 'customer_id' },
+      { value: 'staff', label: 'staff', id: 'staff_id' }
     );
+  }
+
+  async function onSubmit({ name, email, password, contact, type }: FormValues) {
+    const selectedPermission = permissionOptions.find(
+      (option) => option.value === type.value
+    );
+
+    async function onSubmit({
+      name,
+      email,
+      password,
+      contact,
+      type,
+      numberOfDealers,  // Added new field to destructure
+    }: FormValues) {
+      registerUser(
+        {
+          name,
+          email,
+          password,
+          contact,
+          UsrBy: id,
+          type: type?.value,
+          numberOfDealers,  // Added new field to payload
+        },
+        {
+          onError: (error: any) => {
+            Object.keys(error?.response?.data).forEach((field: string) => {
+              setError(field as keyof FormValues, {
+                type: 'manual',
+                message: error?.response?.data[field][0],
+              });
+            });
+          },
+        }
+      );
+    }
   }
 
   return (
@@ -188,6 +197,6 @@ const CustomerCreateForm = () => {
     </form>
   );
 };
-
 export default CustomerCreateForm;
+
 

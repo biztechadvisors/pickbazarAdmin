@@ -70,7 +70,6 @@ const ProductVariation = ({ productSlug }: { productSlug: object }) => {
 
   const { slug, shop_id } = productSlug;
 
-  console.log('productSlug', productSlug);
   const { product, isLoading: loading } = useProductQuery({
     slug: slug,
     userId,

@@ -22,7 +22,6 @@ export const stockClient = {
   },
 
   paginated: ({ tracking_number, ...params }: Partial<OrderQueryOptions>) => {
-    console.log('track', tracking_number);
     return HttpClient.get<OrderPaginator>(API_ENDPOINTS.STOCK, {
       searchJoin: 'and',
       tracking_number,
@@ -39,8 +38,6 @@ export const stockClient = {
   },
 
   updateStockData: async (user_id: any, updatedData: any) => {
-    console.log('user_id', user_id);
-    console.log('updateddata', updatedData);
     return await HttpClient.put(
       `${API_ENDPOINTS.STOCK}/${user_id}`,
       updatedData
@@ -58,8 +55,6 @@ export const stockClient = {
   // update stock by admin
 
   updateStockDataById: async (user_id: any, updatedData: any) => {
-    console.log('user_id', user_id);
-    console.log('updateddata', updatedData);
     return await HttpClient.put(
       `${API_ENDPOINTS.STOCK}/update/admin/${user_id}`,
       updatedData

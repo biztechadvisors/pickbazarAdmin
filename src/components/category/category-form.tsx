@@ -260,6 +260,9 @@ export default function CreateOrUpdateCategoriesForm({
       parent: values.parent?.id ?? null,
       type_id: values.type?.id,
     };
+
+    console.log('Form submission values:', input);
+    
     if (
       !initialValues ||
       (initialValues.translated_languages &&

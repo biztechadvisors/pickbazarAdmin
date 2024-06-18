@@ -7,7 +7,7 @@ import { useState } from 'react';
 import { useTranslation } from 'next-i18next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import ShopLayout from '@/components/layouts/shop';
-import router, { useRouter } from 'next/router';
+import { useRouter } from 'next/router';
 import LinkButton from '@/components/ui/link-button';
 import {
   adminOnly,
@@ -28,9 +28,6 @@ import Button from '@/components/ui/button';
 import { Config } from '@/config';
 import { Routes } from '@/config/routes';
 import { useMeQuery } from '@/data/user';
-import { useAtom } from 'jotai';
-import { newPermission } from '@/contexts/permission/storepermission';
-import { siteSettings } from '@/settings/site.settings';
 import { AllPermission } from '@/utils/AllPermission';
 
 export default function ProductsPage() {
@@ -57,14 +54,7 @@ export default function ProductsPage() {
   const { locale } = useRouter();
   const { data } = useMeQuery();
 
-  // const [getPermission, _] = useAtom(newPermission);
-  // const canWrite = permissions.includes('super_admin')
-  //   ? siteSettings.sidebarLinks
-  //   : getPermission?.find(
-  //       (permission) => permission.type === 'sidebar-nav-item-products'
-  //     )?.write;
-
-  const permissionTypes = AllPermission(); 
+  const permissionTypes = AllPermission();
 
   const canWrite = permissionTypes.includes('sidebar-nav-item-products');
 
@@ -115,10 +105,6 @@ export default function ProductsPage() {
   ) {
     router.replace(Routes.dashboard);
   }
-
-  console.log('meData', me);
-
-  console.log('dealerId', dealerId);
 
   return (
     <>

@@ -8,9 +8,7 @@ import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import { useSubCategoryQuery } from '@/data/subcategory';
 import { Config } from '@/config';
 
-
 export default function UpdateSubCategoriesPage() {
-
   const { query, locale } = useRouter();
   const { t } = useTranslation();
   const {
@@ -23,8 +21,8 @@ export default function UpdateSubCategoriesPage() {
       query.action!.toString() === 'edit' ? locale! : Config.defaultLanguage,
     categoryId: 2,
     shopId: 9,
-    });
-console.log("extra data'''''''''''''", subcategory)
+  });
+
   if (loading) return <Loader text={t('common:text-loading')} />;
   if (error) return <ErrorMessage message={error.message} />;
 
@@ -41,10 +39,7 @@ console.log("extra data'''''''''''''", subcategory)
   );
 }
 
-
-
-UpdateCategoriesPage.Layout = ShopLayout;
-1
+UpdateSubCategoriesPage.Layout = Layout;
 
 export const getServerSideProps = async ({ locale }: any) => ({
   props: {

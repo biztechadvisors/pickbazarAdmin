@@ -28,7 +28,6 @@ export const PlaceOrderAction: React.FC<{
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const { createOrder, isLoading } = useCreateOrder();
   const { items } = useCart();
-  const { me } = useUser();
   const [selectedAddress] = useAtom(dealerAddress);
   const router = useRouter();
 
@@ -62,7 +61,7 @@ export const PlaceOrderAction: React.FC<{
         query: { from: 'order-checkout' },
       });
     }
-  }, [selectedAddress]);
+  }, [selectedAddress, router]);
 
   useEffect(() => {
     setErrorMessage(null);
@@ -73,10 +72,11 @@ export const PlaceOrderAction: React.FC<{
   );
 
   const subtotal = calculateTotal(available_items);
-  const {
-    settings: { freeShippingAmount, freeShipping },
-  } = useSettings();
-  let freeShippings = freeShipping && Number(freeShippingAmount) <= subtotal;
+
+  const { settings: option } = useSettings();
+
+  let freeShippings = option?.freeShipping && Number(option?.freeShippingAmount) <= subtotal;
+
   const total = calculatePaidTotal(
     {
       totalAmount: subtotal,
@@ -85,24 +85,25 @@ export const PlaceOrderAction: React.FC<{
     },
     Number(discount)
   );
+
   const handlePlaceOrder = () => {
     if (!customer_contact) {
       setErrorMessage('Contact Number Is Required');
       return;
     }
     if (!use_wallet_points && !payment_gateway) {
-      setErrorMessage('Gateway Is Required');
+      setErrorMessage('Payment Gateway Is Required');
       return;
     }
 
     const isFullWalletPayment =
-      use_wallet_points && payable_amount == 0 ? true : false;
+      use_wallet_points && payable_amount === 0;
+
     const gateWay = isFullWalletPayment
       ? PaymentGateway.FULL_WALLET_PAYMENT
       : payment_gateway;
 
-    let input = {
-      //@ts-ignore
+    const input = {
       products: available_items?.map((item) => formatOrderedProduct(item)),
       amount: subtotal,
       coupon_id: Number(coupon?.id),
@@ -115,7 +116,6 @@ export const PlaceOrderAction: React.FC<{
       delivery_time: delivery_time?.title,
       customer,
       customer_id: customer?.id,
-      customerId: customer?.id,
       customer_contact,
       customer_name,
       note,
@@ -132,25 +132,24 @@ export const PlaceOrderAction: React.FC<{
       saleBy: selectedAddress.address,
     };
 
+    console.log('place-order-action 135', input.products)
     createOrder(input);
   };
+
   const isDigitalCheckout = available_items.find((item) =>
     Boolean(item.is_digital)
   );
 
-  let formatRequiredFields = isDigitalCheckout
+  const formatRequiredFields = isDigitalCheckout
     ? [customer_contact, payment_gateway, available_items]
     : [
-        customer_contact,
-        payment_gateway,
-        billing_address,
-        shipping_address,
-        delivery_time,
-        available_items,
-      ];
-  // if (!isDigitalCheckout && !me) {
-  //   formatRequiredFields.push(customer_name);
-  // }
+      customer_contact,
+      payment_gateway,
+      billing_address,
+      shipping_address,
+      delivery_time,
+      available_items,
+    ];
 
   const isAllRequiredFieldSelected = formatRequiredFields.every(
     (item) => !isEmpty(item)
@@ -178,3 +177,4 @@ export const PlaceOrderAction: React.FC<{
     </>
   );
 };
+

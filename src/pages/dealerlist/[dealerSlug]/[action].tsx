@@ -10,19 +10,17 @@ import Loader from '@/components/ui/loader/loader';
 export default function UpdateDealerPage() {
   const { query, locale } = useRouter();
   const { t } = useTranslation();
-  const  id : any = query.dealerSlug;
+  const id: any = query.dealerSlug;
   const {
     data,
     isLoading,
     error,
-  } = useDealerQueryGet({id});
-  
+  } = useDealerQueryGet({ id });
+
   if (isLoading) return <Loader text={t('common:text-loading')} />;
   if (error) return <ErrorMessage message={error.message} />;
-  
-  var initialValues: any = data;
 
-  console.log("initialValues", initialValues)
+  var initialValues: any = data;
 
   return (
     <>

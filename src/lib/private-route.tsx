@@ -21,12 +21,7 @@ const PrivateRoute: React.FC<{ children?: React.ReactNode }> = ({
   const hasMounted = useHasMounted();
   const isUser = !!me;
 
-  console.log("me", me)
-  console.log("isAuthorized", isAuthorized )
-
-  console.log("isUser", isUser)
-
-  const {emailVerified} = getEmailVerified();
+  const { emailVerified } = getEmailVerified();
   if (!isUser && !isAuthorized && hasMounted) {
     return (
       <div className="relative flex min-h-screen w-full justify-center py-5 md:py-8">

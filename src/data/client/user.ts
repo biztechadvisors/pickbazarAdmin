@@ -48,11 +48,9 @@ export const userClient = {
     return HttpClient.post<any>(API_ENDPOINTS.LOGOUT, {});
   },
   register: (variables: RegisterInput) => {
-    // console.log('variables', variables)
     return HttpClient.post<AuthResponse>(API_ENDPOINTS.REGISTER, variables);
   },
   update: ({ id, input }: { id: string; input: UpdateUser }) => {
-    // console.log('myUpdateUser', input);
     return HttpClient.put<User>(`${API_ENDPOINTS.USERS}/${id}`, input);
   },
   changePassword: (variables: ChangePasswordInput) => {
@@ -103,7 +101,6 @@ export const userClient = {
     });
   },
   fetchUser: ({ id }: { id: string }) => {
-    console.log('id******', id);
     return HttpClient.get<User>(`${API_ENDPOINTS.USERS}/${id}`);
   },
   resendVerificationEmail: () => {

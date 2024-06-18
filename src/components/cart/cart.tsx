@@ -13,25 +13,16 @@ import usePrice from '@/utils/use-price';
 import { useCart } from '@/contexts/quick-cart/cart.context';
 import CheckoutForm from '../checkout/CheckoutForm';
 import { useMeQuery } from '@/data/user';
-// import { drawerAtom } from '@store/drawer-atom';
 
 const Cart = () => {
   const { t } = useTranslation('common');
   const { items, totalUniqueItems, total } = useCart();
   const { closeCartSidebar } = useUI();
 
-  // const [_, closeSidebar] = useAtom(drawerAtom);
   const router = useRouter();
 
   function handleCheckout() {
-    // const regularCheckout = items.find((item) => item.is_digital === false);
-    // if (regularCheckout) {
     router.push(Routes.checkout);
-    // } else {
-    // router.push(ROUTES.CHECKOUT_DIGITAL);
-    // }
-
-    // closeSidebar({ display: false, view: '' });
   }
 
   const { price: totalPrice } = usePrice({

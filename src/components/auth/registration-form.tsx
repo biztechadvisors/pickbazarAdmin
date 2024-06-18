@@ -54,7 +54,7 @@ const RegistrationForm = () => {
   const { t } = useTranslation();
 
   async function onSubmit({ name, email, password, permission,contact,UsrBy}: FormValues) {
-    console.log(name, email, password, permission,contact)
+
     registerUser(
       {
         name,
@@ -67,7 +67,6 @@ const RegistrationForm = () => {
 
       {
         onSuccess: (data) => {
-          console.log('data = ', data)
           if (data?.token) {
             if (hasAccess(allowedRoles, data?.permissions)) {
               setAuthCredentials(data?.token, data?.permissions);

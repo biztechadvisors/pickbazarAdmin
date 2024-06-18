@@ -10,7 +10,6 @@ export const permissionClient = {
     return HttpClient.get(`${API_ENDPOINTS.PERMISSION}/${permissionId}`);
   },
   updatePermission: (params: any) => {
-    console.log('params', params);
     const { permissionId, dataToSend } = params;
     return HttpClient.put(
       `${API_ENDPOINTS.PERMISSION}/${permissionId}`,
@@ -18,7 +17,6 @@ export const permissionClient = {
     );
   },
   postPermission: (data: any) => {
-    console.log('Data***Post', data);
     return HttpClient.post(`${API_ENDPOINTS.PERMISSION}`, data);
   },
 };

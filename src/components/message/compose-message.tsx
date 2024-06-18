@@ -79,8 +79,7 @@ const ComposeMessageModal = () => {
   let loadingState = permission ? loading : adminLoading;
   let errorState = permission ? error : adminError;
   const mergeList = lists.concat(getdealer)
-  console.log("HiDealer",mergeList)
-
+  
   if (errorState) return <ErrorMessage message={error?.message} />;
 
   const onTypeFilter = (shop: Shop[] | undefined) => {

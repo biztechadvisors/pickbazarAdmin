@@ -197,6 +197,7 @@ type IProps = {
 export default function CreateOrUpdateSubCategoriesForm({
   initialValues,
 }: IProps) {
+
   const [isSlugDisable, setIsSlugDisable] = useState<boolean>(true);
   const router = useRouter();
   const { t } = useTranslation();
@@ -233,7 +234,6 @@ export default function CreateOrUpdateSubCategoriesForm({
 
   const { data: meData } = useMeQuery();
 
-  // console.log('meData', meData);
   const shop = meData?.shops?.[0]?.id;
 
   const { openModal } = useModalAction();
@@ -265,9 +265,6 @@ export default function CreateOrUpdateSubCategoriesForm({
     useCreateSubCategoryMutation();
   const { mutate: updateSubCategory, isLoading: updating } =
     useUpdateSubCategoryMutation();
-
-  // const categoryvalue = initialValues?.category
-  // console.log("category+++++++", categoryvalue)
 
   const onSubmit = async (values: FormValues) => {
     const input = {

@@ -104,12 +104,13 @@
   "input-label-search": "חיפוש",
   "input-label-taxes": "מיסים",
   "input-label-rate": "שיעור",
-  "input-label-hsn_no": "מספר HSN",
+  "input-label-hsn_no": "מספר HSN (סחורה)",
   "input-label-cgst": "CGST",
   "input-label-sgst": "SGST",
   "input-label-gst_Name": "שם GST",
+  "select-label-gst-type": "בחר סוג GST",
   "input-label-compensatoin": "פיצוי",
-  "input-label-sac_no": "מספר SAC",
+  "input-label-sac_no": "מספר SAC (שירות)",
   "input-label-country": "מדינה",
   "input-label-city": "עיר",
   "input-label-state": "מדינה",
@@ -347,7 +348,7 @@
   "form-title-create-author": "צור יוצר",
   "form-title-update-author": "עדכן יוצר",
   "button-label-add-author": "הוסף יוצר",
-  "author-form-description-details":  "הוסף מידע על היוצר וביוגרפיה מכאן.",
+  "author-form-description-details": "הוסף מידע על היוצר וביוגרפיה מכאן.",
   "input-label-languages": "שפות",
   "placeholder-add-languages-comma-separated": "נא להוסיף שפות מופרדות בפסיקים",
   "input-label-quote": "ציטוט",
@@ -421,4 +422,3 @@
   "enter-notice-heading": "הזן את כותרת/תיאור ההודעה שלך",
   "enter-notice-description": "הזן את תיאור ההודעה שלך"
 }
-

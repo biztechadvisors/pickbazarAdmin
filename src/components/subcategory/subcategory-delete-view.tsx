@@ -11,7 +11,7 @@ const SubCategoryDeleteView = () => {
 
   const { data } = useModalState();
   const { closeModal } = useModalAction();
-console.log("delete", data)
+
   function handleDelete() {
     deleteSubCategory({
       id: data,
