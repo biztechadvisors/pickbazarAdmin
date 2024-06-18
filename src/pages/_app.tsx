@@ -15,7 +15,7 @@ import { ModalProvider } from '@/components/ui/modal/modal.context';
 import DefaultSeo from '@/components/ui/default-seo';
 import ManagedModal from '@/components/ui/modal/managed-modal';
 import { CartProvider } from '@/contexts/quick-cart/cart.context';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { NextPageWithLayout, SortOrder } from '@/types';
 import { useRouter } from 'next/router';
 import PrivateRoute from '@/utils/private-route';
@@ -66,24 +66,26 @@ const CustomApp = ({ Component, pageProps }: AppPropsWithLayout) => {
           <AppSettings>
             <UIProvider>
               <ModalProvider>
-                <StockProvider>
-                  <CartProvider>
-                    <DefaultSeo />
-                    {authProps ? (
-                      <PrivateRoute authProps={authProps}>
+                <>
+                  <StockProvider>
+                    <CartProvider>
+                      <DefaultSeo />
+                      {authProps ? (
+                        <PrivateRoute authProps={authProps}>
+                          <Layout {...pageProps}>
+                            <Component {...pageProps} />
+                          </Layout>
+                        </PrivateRoute>
+                      ) : (
                         <Layout {...pageProps}>
                           <Component {...pageProps} />
                         </Layout>
-                      </PrivateRoute>
-                    ) : (
-                      <Layout {...pageProps}>
-                        <Component {...pageProps} />
-                      </Layout>
-                    )}
-                    <ToastContainer autoClose={2000} theme="colored" />
-                    <ManagedModal />
-                  </CartProvider>
-                </StockProvider>
+                      )}
+                      <ToastContainer autoClose={2000} theme="colored" />
+                      <ManagedModal />
+                    </CartProvider>
+                  </StockProvider>
+                </>
               </ModalProvider>
             </UIProvider>
           </AppSettings>
