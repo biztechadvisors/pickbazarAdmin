@@ -12,6 +12,7 @@ import { usePermissionData } from '@/data/permission';
 import { useMeQuery } from '@/data/user';
 import { AllPermission } from '@/utils/AllPermission';
 import OwnerLayout from '@/components/layouts/owner';
+import { OWNER } from '@/utils/constants';
 
 // Define PermissionComponentProps interface to include Layout property
 interface PermissionComponentProps {
@@ -28,8 +29,8 @@ const PermissionComponent: React.FC & PermissionComponentProps = () => {
   const permissionTypes = AllPermission();
 
   const canWrite =
-    permissionTypes.includes('sidebar-nav-item-permissions') ||
-    permissions?.[0] === 'owner';
+    permissions.includes('sidebar-nav-item-permissions') ||
+    permissions?.[0] === OWNER;
 
   const {
     isLoading,

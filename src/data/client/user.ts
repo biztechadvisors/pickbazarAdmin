@@ -24,56 +24,22 @@ export const userClient = {
       `${API_ENDPOINTS.ME}?username=${params.username}&sub=${params.sub}`
     );
   },
-
-  // login: (variables: LoginInput) => {
-  //   console.log("variables", variables)
-  //   const result = HttpClient.post<AuthResponse>(
-  //     API_ENDPOINTS.TOKEN,
-  //     variables
-  //   );
-
-  //   console.log("result", result)
-  //   result
-  //     .then((response) => {
-  //       // Assuming the token is in the response object
-  //       const token = response.token;
-
-  //       if (token) {
-  //         console.log("token", token)
-  //         localStorage.setItem('authToken', token);
-  //       }
-  //     })
-  //     .catch((error) => {
-  //       console.error('Error during login:', error);
-  //     });
-
-  //     console.log("Result", result)
-  //   return result;
-  // },
-
   login: async (variables: LoginInput) => {
-    console.log("variables", variables);
-
     try {
-        const response = await HttpClient.post<AuthResponse>(
-          API_ENDPOINTS.TOKEN,
-          variables
-        );
-        console.log("Response", response);
-
-        const token = response.token;
-        if (token) {
-          localStorage.setItem('authToken', token);
-        }
-        
-        return response;
+      const response = await HttpClient.post<AuthResponse>(
+        API_ENDPOINTS.TOKEN,
+        variables
+      );
+      const token = response.token;
+      if (token) {
+        localStorage.setItem('authToken', token);
+      }
+      return response;
     } catch (error) {
-        console.error('Error during login:', error);
-        throw error;
+      console.error('Error during login:', error);
+      throw error;
     }
-},
-
-
+  },
   logout: () => {
     return HttpClient.post<any>(API_ENDPOINTS.LOGOUT, {});
   },
@@ -120,9 +86,7 @@ export const userClient = {
     });
   },
   fetchVendor: ({ type, usrById }: { type: string; usrById: number }) => {
-    return HttpClient.get<User>(
-      `${API_ENDPOINTS.USERS}?type=${type}&usrById=${usrById}`
-    );
+    return HttpClient.get<User>(`${API_ENDPOINTS.USERS}?type=${type}&usrById=${usrById}`);
   },
   fetchAdmins: ({ ...params }: Partial<UserQueryOptions>) => {
     return HttpClient.get<UserPaginator>(API_ENDPOINTS.ADMIN_LIST, {

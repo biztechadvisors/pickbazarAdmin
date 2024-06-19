@@ -5,9 +5,7 @@ import ErrorMessage from '@/components/ui/error-message';
 import Loader from '@/components/ui/loader/loader';
 import { useMeQuery } from '@/data/user';
 import { useTranslation } from 'next-i18next';
-import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import EmailUpdateForm from '@/components/auth/email-update-form';
-import CreateOrUpdateDealerForm from '@/components/dealerlist/add-dealer-form';
 import { AddressType } from '@/types';
 import UserAddressSelection from '@/components/UserAddressSelection';
 import { useEffect, useRef } from 'react';
@@ -16,6 +14,7 @@ import { dealerAddress } from '@/utils/atoms';
 import { useRouter } from 'next/router';
 import OwnerLayout from '@/components/layouts/owner';
 import { adminOwnerAndStaffOnly, ownerAndStaffOnly } from '@/utils/auth-utils';
+import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 
 export default function ProfilePage() {
   const { t } = useTranslation();

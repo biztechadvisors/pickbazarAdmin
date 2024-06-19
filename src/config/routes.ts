@@ -6,7 +6,7 @@ export const Routes = {
   forgotPassword: '/forgot-password',
   resetPassword: '/reset-password',
   adminMyShops: getAdminMyShopsRoute(),
-  OwnerMyShops: '/shops', ///for owner dashboard
+  OwnerMyShops: '/shops', //For Owner Dashboard
   profile: '/profile',
   verifyCoupons: '/coupons/verify',
   settings: '/settings',

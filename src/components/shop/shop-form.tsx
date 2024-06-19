@@ -473,7 +473,7 @@ const ShopForm = ({ initialValues }: { initialValues?: any }) => {
                 name="settings.location"
                 render={({ field: { onChange } }) => (
                   <GooglePlacesAutocomplete
-                  apiKey={process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY}
+                    apiKey={process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY}
                     onChange={onChange}
                     data={getValues('settings.location')!}
                   />

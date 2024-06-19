@@ -48,7 +48,9 @@ const ShopList = ({
 
   console.log("per", permissions)
 
-  const canWrite = permissionTypes.includes(OWNER);
+  console.log("permissionTypes", permissionTypes)
+
+  const canWrite = permissions.includes(OWNER);
 
   const [sortingObj, setSortingObj] = useState<{
     sort: SortOrder;
