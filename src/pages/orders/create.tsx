@@ -64,14 +64,7 @@ export default function ProductsPage() {
         dealerId,
         shop_id,
     });
-
-    // const [getPermission, _] = useAtom(newPermission);
-    // const { permissions } = getAuthCredentials();
-    // const canWrite = permissions?.includes('super_admin')
-    //   ? siteSettings.sidebarLinks
-    //   : getPermission?.find(
-    //       (permission) => permission.type === 'sidebar-nav-item-create-order'
-    //     )?.write;
+   
 
     const permissionTypes = AllPermission();
 
