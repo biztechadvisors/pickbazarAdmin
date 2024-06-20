@@ -14,6 +14,8 @@ import { useShopQuery } from '@/data/shop';
 import { Routes } from '@/config/routes';
 import { useMeQuery } from '@/data/user';
 import AdminLayout from '@/components/layouts/admin';
+import { OWNER } from '@/utils/constants';
+import OwnerLayout from '@/components/layouts/owner';
 
 export default function UpdateShopPage() {
   const router = useRouter();
@@ -29,6 +31,9 @@ export default function UpdateShopPage() {
   } = useShopQuery({
     slug: shop as string,
   });
+
+  console.log('ShopForm*** 41', data)
+
   if (loading) return <Loader text={t('common:text-loading')} />;
   if (error) return <ErrorMessage message={error.message} />;
   if (
@@ -52,7 +57,9 @@ export default function UpdateShopPage() {
 UpdateShopPage.authenticate = {
   permissions: adminAndOwnerOnly,
 };
-UpdateShopPage.Layout = AdminLayout;
+
+UpdateShopPage.Layout = OwnerLayout;
+// permissions?.[0] === OWNER ? OwnerLayout : AdminLayout;
 
 export const getServerSideProps = async ({ locale }: any) => ({
   props: {

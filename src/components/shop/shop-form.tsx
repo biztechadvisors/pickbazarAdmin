@@ -37,7 +37,6 @@ import { useModalAction } from '../ui/modal/modal.context';
 import OpenAIButton from '../openAI/openAI.button';
 import { useCallback, useMemo } from 'react';
 import { useSettingsQuery } from '@/data/settings';
-import Select from '../ui/select/select';
 import { useMeQuery, useUserQuery, useVendorQuery } from '@/data/user';
 import ValidationError from '../ui/form-validation-error';
 
@@ -132,13 +131,12 @@ type FormValues = {
   settings: ShopSettings;
 };
 
-function SelectUser({
-  control,
-  errors,
-}: {
+type SelectUserProps = {
   control: Control<FormValues>;
   errors: FieldErrors;
-}) {
+};
+
+function SelectUser({ control, errors }: SelectUserProps) {
   const { t } = useTranslation();
 
   const { data } = useMeQuery();
@@ -177,8 +175,7 @@ function SelectUser({
 const ShopForm = ({ initialValues }: { initialValues?: any }) => {
   const { mutate: createShop, isLoading: creating } = useCreateShopMutation();
   const { mutate: updateShop, isLoading: updating } = useUpdateShopMutation();
-  // const { permissions } = getAuthCredentials();
-  // let permission = hasAccess(adminAndOwnerOnly, permissions);
+
   const { permissions } = getAuthCredentials();
   const {
     register,
@@ -242,7 +239,8 @@ const ShopForm = ({ initialValues }: { initialValues?: any }) => {
     control,
     name: 'settings.socials',
   });
-  function onSubmit(values: FormValues) {
+
+  async function onSubmit(values: FormValues) {
     const settings = {
       ...values?.settings,
       location: { ...omit(values?.settings?.location, '__typename') },
@@ -253,26 +251,31 @@ const ShopForm = ({ initialValues }: { initialValues?: any }) => {
         }))
         : [],
     };
-    if (initialValues) {
-      const { ...restAddress } = values.address;
-      updateShop({
-        id: initialValues.id,
-        ...values,
-        address: restAddress,
-        settings,
-        balance: {
-          id: initialValues.balance?.id,
-          ...values.balance,
-        },
-      });
-    } else {
-      createShop({
-        ...values,
-        settings,
-        balance: {
-          ...values.balance,
-        },
-      });
+    try {
+      if (initialValues) {
+        const { ...restAddress } = values.address;
+        await updateShop({
+          id: initialValues.id,
+          ...values,
+          address: restAddress,
+          settings,
+          balance: {
+            id: initialValues.balance?.id,
+            ...values.balance,
+          },
+        });
+      } else {
+        await createShop({
+          ...values,
+          settings,
+          balance: {
+            ...values.balance,
+          },
+        });
+      }
+      router.push('/shops'); // Navigate to the shops list or appropriate page
+    } catch (error) {
+      console.error('Error while saving the shop:', error);
     }
   }
 
@@ -512,13 +515,6 @@ const ShopForm = ({ initialValues }: { initialValues?: any }) => {
                           defaultValue={item?.icon!}
                         />
                       </div>
-                      {/* <Input
-                        className="sm:col-span-2"
-                        label={t("form:input-label-icon")}
-                        variant="outline"
-                        {...register(`settings.socials.${index}.icon` as const)}
-                        defaultValue={item?.icon!} // make sure to set up defaultValue
-                      /> */}
                       <Input
                         className="sm:col-span-2"
                         label={t('form:input-label-url')}
