@@ -70,6 +70,9 @@ export const useTaxesQuery = (options: Partial<TaxQueryOptions> = {}) => {
     }
   );
 
+  console.log('Fetched taxes data:', data);
+  console.log('Query error:', error);
+
   return {
     taxes: data ?? [],
     error,

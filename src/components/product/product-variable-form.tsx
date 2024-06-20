@@ -93,16 +93,7 @@ export default function ProductVariableForm({
 
   ];
 
-  // useEffect(() => {
-  //   if (initialValues?.variations) {
-  //     initialValues.variations.forEach((variation: any) => {
-  //       append({
-  //         attribute: variation.attribute,
-  //         value: variation.value,
-  //       });
-  //     });
-  //   }
-  // }, [initialValues, append]);
+  
   return (
 
     <div className="my-5 flex flex-wrap sm:my-8">
@@ -170,13 +161,7 @@ export default function ProductVariableForm({
                       />
                     </div>
                   </div>
-                  {/* <div className="mb-5 flex items-center mt-5">
-            <Checkbox
-              checked={autoFill}
-              onChange={(e) => setAutoFill(e.target.checked)}
-              label={t('form:checkbox-label-auto-fill')}
-            />
-          </div> */}
+                  
                 </div>
 
               );
@@ -209,14 +194,7 @@ export default function ProductVariableForm({
                     className="flex flex-col items-start border-b border-dashed border-border-200 p-5 last:mb-8 last:border-0 md:p-8 md:last:pb-0 mx-2 my-2"
                     style={{ height: '250px' }}
                   >
-                    {/* <Title className="mb-2 !text-lg">
-                      {t('form:form-title-variant')}:{' '}
-                      <span className="font-normal text-blue-600">
-                        {Array.isArray(fieldAttributeValue)
-                          ? fieldAttributeValue?.map((a) => a.value).join('/')
-                          : fieldAttributeValue.value}
-                      </span>
-                    </Title> */}
+                  
                     <Title className="mb-2 !text-lg">
                       {t('form:form-title-variant')}:{' '}
                       <span className="font-normal text-blue-600">
@@ -228,27 +206,7 @@ export default function ProductVariableForm({
                         />
                       </span>
                     </Title>
-                    {/* <Title className="mb-2 !text-lg">
-      {t('form:form-title-variant')}:{' '}
-      <span className="font-normal text-blue-600">
-        {initialValues?.variation_options ? (
-          <>
-            {fieldAttributeValue.title}
-            <input
-              type="hidden"
-              {...register(`variation_options.${index}.title`)}
-              value={fieldAttributeValue.title}
-            />
-          </>
-        ) : (
-          <>
-            {Array.isArray(fieldAttributeValue)
-              ? fieldAttributeValue?.map((a) => a.value).join('/')
-              : fieldAttributeValue.value}
-          </>
-        )}
-      </span>
-    </Title> */}
+                    
                     <TitleAndOptionsInput
                       register={register}
                       setValue={setValue}
