@@ -7,6 +7,8 @@ import { userClient } from '@/data/client/user';
 import { useMeQuery } from '@/data/user';
 import { PlusIcon } from '@/components/icons/plus-icon';
 import { useRouter } from 'next/router';
+import { ADMIN, DEALER, STAFF, STORE_OWNER, SUPER_ADMIN } from '@/utils/constants';
+import { getAuthCredentials } from '@/utils/auth-utils';
 
 const CustomerEmail = ({ count }) => {
   const { closeModal } = useModalAction();
@@ -17,10 +19,13 @@ const CustomerEmail = ({ count }) => {
   const [loading, setLoading] = useState(false);
   const [showAddButton, setShowAddButton] = useState(true);
   const router = useRouter();
+  const { permissions } = getAuthCredentials();
+  const isPermission = permissions?.some(role =>
+    [DEALER, SUPER_ADMIN, STAFF, STORE_OWNER, ADMIN].includes(role)
+  );
 
   const { data: meData } = useMeQuery();
-  const { id, email } = meData || {};
-  const usrById = id;
+  const { id: usrById, email } = meData || {};
 
   useEffect(() => {
     const storedInputValue = localStorage.getItem('inputValue');
@@ -62,7 +67,7 @@ const CustomerEmail = ({ count }) => {
     fetchEmailSuggestions(inputValue);
   }
 
-  function handleAddEmail(e: any) {
+  function handleAddEmail(e) {
     e.preventDefault();
     router.push('/users/create?from=checkout');
   }
@@ -93,19 +98,16 @@ const CustomerEmail = ({ count }) => {
             {t('text-customer')}
           </p>
         </div>
-        {!loading &&
-          emailSuggestions.length === 0 &&
-          inputValue !== '' &&
-          showAddButton && (
-            <button
-              type="button"
-              className="flex items-center text-sm font-semibold text-accent transition-colors duration-200 hover:text-accent-hover focus:text-accent-hover focus:outline-none"
-              onClick={handleAddEmail}
-            >
-              <PlusIcon className="h-4 w-4 stroke-2 me-0.5" />
-              Add
-            </button>
-          )}
+        {isPermission && (
+          <button
+            type="button"
+            className="flex items-center text-sm font-semibold text-accent transition-colors duration-200 hover:text-accent-hover focus:text-accent-hover focus:outline-none"
+            onClick={handleAddEmail}
+          >
+            <PlusIcon className="h-4 w-4 stroke-2 me-0.5" />
+            Add
+          </button>
+        )}
       </div>
 
       <div className="relative">
@@ -122,14 +124,11 @@ const CustomerEmail = ({ count }) => {
             Loading...
           </div>
         )}
-        {!loading &&
-          emailSuggestions.length === 0 &&
-          inputValue !== '' &&
-          showAddButton && (
-            <div className="relative mt-2 rounded border border-border-200 bg-gray-100 px-5 py-6 text-center text-base">
-              No email found{' '}
-            </div>
-          )}
+        {!loading && emailSuggestions.length === 0 && inputValue !== '' && showAddButton && (
+          <div className="relative mt-2 rounded border border-border-200 bg-gray-100 px-5 py-6 text-center text-base">
+            No email found
+          </div>
+        )}
         {!loading && emailSuggestions.length > 0 && (
           <ul className="absolute z-10 mt-0.5 max-h-24 w-full overflow-y-auto rounded border border-accent bg-white py-1 shadow-lg">
             {emailSuggestions.map((suggestion) => (
