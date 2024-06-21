@@ -43,8 +43,6 @@ const CategoryList = ({
     sort: SortOrder.Desc,
     column: null,
   });
-  console.log("categories", categories)
-
 
   const onHeaderClick = (column: string | null) => ({
     onClick: () => {

@@ -168,9 +168,6 @@ export default function CreateOrUpdateSubCategoriesForm({
     resolver: yupResolver(subcategoryValidationSchema), // Replace with your actual schema
   });
 
-  console.log('initialValues:', initialValues);
-  console.log('formValues:', formValues);
-
   const { data: meData } = useMeQuery();
 
   const shop = meData?.managed_shop.id;

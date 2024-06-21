@@ -498,6 +498,7 @@ export interface User {
   email_verified: boolean;
   shop_id: number;
   dealer?: any;
+  UsrBy?: any;
 }
 
 export interface UpdateUser {

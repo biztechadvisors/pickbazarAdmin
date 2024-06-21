@@ -114,7 +114,7 @@ function SelectTypes({
         getOptionLabel={(option: any) => option.name}
         getOptionValue={(option: any) => option.slug}
         options={types!}
-        isLoading={loading} defaultValue={[]}      />
+        isLoading={loading} defaultValue={[]} />
       <ValidationError message={t(errors.type?.message)} />
     </div>
   );
@@ -156,7 +156,7 @@ function SelectCategories({
         getOptionValue={(option: any) => option.id}
         options={categories}
         isClearable={true}
-        isLoading={loading} defaultValue={[]}      />
+        isLoading={loading} defaultValue={[]} />
     </div>
   );
 }
@@ -201,16 +201,16 @@ export default function CreateOrUpdateCategoriesForm({
     //@ts-ignore
     defaultValues: initialValues
       ? {
-          ...initialValues,
-          icon: initialValues?.icon
-            ? categoryIcons.find(
-                (singleIcon) => singleIcon.value === initialValues?.icon!
-              )
-            : '',
-          ...(isNewTranslation && {
-            type: null,
-          }),
-        }
+        ...initialValues,
+        icon: initialValues?.icon
+          ? categoryIcons.find(
+            (singleIcon) => singleIcon.value === initialValues?.icon!
+          )
+          : '',
+        ...(isNewTranslation && {
+          type: null,
+        }),
+      }
       : defaultValues,
     resolver: yupResolver(categoryValidationSchema),
   });
@@ -261,8 +261,6 @@ export default function CreateOrUpdateCategoriesForm({
       type_id: values.type?.id,
     };
 
-    console.log('Form submission values:', input);
-    
     if (
       !initialValues ||
       (initialValues.translated_languages &&
@@ -299,11 +297,10 @@ export default function CreateOrUpdateCategoriesForm({
       <div className="my-5 flex flex-wrap sm:my-8">
         <Description
           title={t('form:input-label-description')}
-          details={`${
-            initialValues
+          details={`${initialValues
               ? t('form:item-description-edit')
               : t('form:item-description-add')
-          } ${t('form:category-description-helper-text')}`}
+            } ${t('form:category-description-helper-text')}`}
           className="w-full px-0 pb-5 sm:w-4/12 sm:py-8 sm:pe-4 md:w-1/3 md:pe-5 "
         />
 
@@ -337,7 +334,7 @@ export default function CreateOrUpdateCategoriesForm({
               name="icon"
               control={control}
               options={updatedIcons}
-              isClearable={true} defaultValue={[]}            />
+              isClearable={true} defaultValue={[]} />
           </div>
           <SelectTypes control={control} errors={errors} />
           <SelectCategories control={control} setValue={setValue} />

@@ -21,8 +21,6 @@ export default function UpdateSubCategoriesPage() {
     language: query.action!.toString() === 'edit' ? locale! : Config.defaultLanguage
   });
 
-  console.log('subcategory ** 24', subcategory)
-
   if (loading) return <Loader text={t('common:text-loading')} />;
   if (error) return <ErrorMessage message={error.message} />;
 
