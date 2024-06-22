@@ -5,6 +5,7 @@ import ErrorMessage from '@/components/ui/error-message';
 import Loader from '@/components/ui/loader/loader';
 import { useMeQuery } from '@/data/user';
 import { useTranslation } from 'next-i18next';
+import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import EmailUpdateForm from '@/components/auth/email-update-form';
 import { AddressType } from '@/types';
 import UserAddressSelection from '@/components/UserAddressSelection';
@@ -13,8 +14,6 @@ import { useAtom } from 'jotai';
 import { dealerAddress } from '@/utils/atoms';
 import { useRouter } from 'next/router';
 import OwnerLayout from '@/components/layouts/owner';
-import { adminOwnerAndStaffOnly, ownerAndStaffOnly } from '@/utils/auth-utils';
-import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 
 export default function ProfilePage() {
   const { t } = useTranslation();
@@ -31,8 +30,8 @@ export default function ProfilePage() {
       });
     }
 
-    if (!selectedAddress && router.query.from === 'order-checkout') {
-      router.push('/profile-update'); // Navigate to profile update if address is missing
+    if (selectedAddress && router.query.from === 'order-checkout') {
+      router.push('orders/checkout');
     }
   }, [data, selectedAddress, router.query.from]);
 
@@ -66,10 +65,8 @@ export default function ProfilePage() {
 }
 ProfilePage.Layout = OwnerLayout;
 
-
 export const getStaticProps = async ({ locale }: any) => ({
   props: {
-    ...(await serverSideTranslations(locale, ['table', 'common', 'form'])),
+    ...(await serverSideTranslations(locale, ['form', 'common'])),
   },
 });
-
