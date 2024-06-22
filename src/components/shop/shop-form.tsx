@@ -22,6 +22,7 @@ import {
   ItemProps,
   ShopSettings,
   ShopSocialInput,
+  User,
   UserAddressInput,
 } from '@/types';
 import GooglePlacesAutocomplete from '@/components/form/google-places-autocomplete';
@@ -32,7 +33,7 @@ import * as socialIcons from '@/components/icons/social';
 import omit from 'lodash/omit';
 import SwitchInput from '@/components/ui/switch-input';
 import { getAuthCredentials } from '@/utils/auth-utils';
-import { SUPER_ADMIN, STORE_OWNER } from '@/utils/constants';
+import { SUPER_ADMIN, STORE_OWNER, OWNER } from '@/utils/constants';
 import { useModalAction } from '../ui/modal/modal.context';
 import OpenAIButton from '../openAI/openAI.button';
 import { useCallback, useMemo } from 'react';
@@ -132,23 +133,23 @@ type FormValues = {
 };
 
 type SelectUserProps = {
-  control: Control<FormValues>;
+  control: Control<User>;
   errors: FieldErrors;
 };
 
 function SelectUser({ control, errors }: SelectUserProps) {
   const { t } = useTranslation();
-
   const { data } = useMeQuery();
   const usrById = data?.id;
-
+  const { permissions } = getAuthCredentials();
+  const isOwner = permissions?.[0].includes(OWNER);
   const { data: users, isLoading } = useVendorQuery(usrById);
-
   const options: any = users || [];
+  const shouldDisable = control._defaultValues.owner != null || !isOwner;
 
   return (
     <div className="mb-5">
-      <Label>{t('form:input-label-search')}</Label>
+      <Label>{t('form:input-label-user-select')}</Label>
       <SelectInput
         name="user"
         control={control}
@@ -158,19 +159,20 @@ function SelectUser({ control, errors }: SelectUserProps) {
         isLoading={isLoading}
         isSearchable={true}
         filterOption={(option: any, inputValue: any) => {
-          // Customize the filter logic as needed
           const searchValue = inputValue.toLowerCase();
           return (
             option.name.toLowerCase().includes(searchValue) ||
             option.email.toLowerCase().includes(searchValue)
           );
         }}
-        defaultValue={[]}
+        defaultValue={control._defaultValues.owner}
+        disabled={shouldDisable}
       />
       <ValidationError message={t(errors.user?.message)} />
     </div>
   );
 }
+
 
 const ShopForm = ({ initialValues }: { initialValues?: any }) => {
   const { mutate: createShop, isLoading: creating } = useCreateShopMutation();
@@ -327,8 +329,9 @@ const ShopForm = ({ initialValues }: { initialValues?: any }) => {
               className="mb-5"
               error={t(errors.name?.message!)}
             />
-
-            <SelectUser control={control} errors={errors} />
+            {
+              <SelectUser control={control} errors={errors} />
+            }
 
             <div className="relative">
               {options?.useAi && (

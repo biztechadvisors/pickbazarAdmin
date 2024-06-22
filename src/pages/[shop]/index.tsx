@@ -70,7 +70,6 @@ export default function ShopPage() {
     id: shop_id,
   } = data ?? {};
 
-  console.log('index-shop** 72', data)
   if (
     !hasAccess(adminOnly, permissions) &&
     !me?.shops?.map((shop) => shop.id).includes(shop_id) &&
@@ -335,8 +334,12 @@ export default function ShopPage() {
   );
 }
 
-ShopPage.Layout = OwnerLayout;
-// permissions?.[0] === OWNER ? OwnerLayout : AdminLayout;
+const { permissions } = getAuthCredentials();
+const resLayout = () => {
+  return permissions?.[0] === OWNER ? OwnerLayout : AdminLayout;
+};
+
+ShopPage.Layout = resLayout()
 
 ShopPage.authenticate = {
   permissions: adminOwnerAndStaffOnly,

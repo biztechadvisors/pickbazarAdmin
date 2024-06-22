@@ -22,10 +22,7 @@ import { Product, ProductStatus } from '@/types';
 import { useProductsQuery } from '@/data/product';
 import NotFound from '@/components/ui/not-found';
 import { useRouter } from 'next/router';
-import { useSettings } from '@/contexts/settings.context';
-import { newPermission } from '@/contexts/permission/storepermission';
 import { useAtom } from 'jotai';
-import { siteSettings } from '@/settings/site.settings';
 import { toggleAtom } from '@/utils/atoms';
 import { useMeQuery } from '@/data/user';
 import { AllPermission } from '@/utils/AllPermission';
@@ -65,14 +62,6 @@ export default function ProductsPage() {
         shop_id,
     });
 
-    // const [getPermission, _] = useAtom(newPermission);
-    // const { permissions } = getAuthCredentials();
-    // const canWrite = permissions?.includes('super_admin')
-    //   ? siteSettings.sidebarLinks
-    //   : getPermission?.find(
-    //       (permission) => permission.type === 'sidebar-nav-item-create-order'
-    //     )?.write;
-
     const permissionTypes = AllPermission();
 
     const canWrite = permissionTypes.includes('sidebar-nav-item-create-order');
@@ -87,12 +76,6 @@ export default function ProductsPage() {
     function handlePagination(current: any) {
         setPage(current);
     }
-
-    console.log('products', products);
-
-    console.log("shop_id ", shop_id)
-
-    console.log("meData", meData)
 
     return (
         <>

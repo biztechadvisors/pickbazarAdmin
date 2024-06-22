@@ -153,7 +153,6 @@ export default function CreateOrUpdateProductForm({
   const { taxes, loading, error } = useTaxesQuery({
     shop_id
   });
-  console.log("Taxes --148", taxes)
 
   const {
     register,
