@@ -1,4 +1,8 @@
-import Input from '@/components/ui/input';
+
+ 
+
+
+  import Input from '@/components/ui/input';
 import { useFieldArray, useFormContext } from 'react-hook-form';
 import Button from '@/components/ui/button';
 import Description from '@/components/ui/description';
@@ -17,85 +21,98 @@ import { getCartesianProduct, filterAttributes } from './form-utils';
 import { useRouter } from 'next/router';
 import { Config } from '@/config';
 import { useSettingsQuery } from '@/data/settings';
-
+ 
 type IProps = {
   initialValues?: Product | null;
   shopId: string | undefined;
   settings: Settings | undefined;
 };
-
+ 
 export default function ProductVariableForm({
   shopId,
   initialValues,
   settings,
 }: IProps) {
-
+ 
   const { t } = useTranslation();
   const { locale } = useRouter();
   const {
-
+ 
     // @ts-ignore
     settings: { options },
   } = useSettingsQuery({
     language: locale!,
-
+ 
   });
-
+  // console.log("first initialValues",initialValues);
+ 
   const upload_max_filesize = options?.server_info?.upload_max_filesize / 1024;
-
+ 
   const { attributes, loading } = useAttributesQuery({
-
+ 
     shop_id: initialValues ? initialValues.shop_id : shopId,
-
+ 
     language: locale,
-
+ 
   });
-
+ 
+ 
   const {
-
+ 
     register,
-
+ 
     control,
-
+ 
     watch,
-
+ 
     setValue,
-
+ 
     getValues,
-
+ 
     formState: { errors },
-
+ 
   } = useFormContext();
-
+ 
   // This field array will keep all the attribute dropdown fields
-
+ 
   const { fields, append, remove } = useFieldArray({
-
+ 
     shouldUnregister: true,
-
+ 
     control,
-
+ 
     name: 'variations',
-
+ 
   });
-
-  const variations = watch('variations');
-
+ 
+  const variations = [watch('variations')];
+ 
   const cartesianProduct = getCartesianProduct(getValues('variations')) || [];
-
+  const value = attributes.find(option => option.name === initialValues?.variation_options[0]?.options[0]?.name);
+  if (value) {
+    variations.push(value);
+  }
+ 
+// console.log("value",value);
+ 
   // const [autoFill, setAutoFill] = useState(false);
 
-  const combinedVariationOptions = [
 
-    ...(initialValues?.variation_options || []),
+  // const combinedVariationOptions = [
+  //   ...(initialValues?.variation_options || []),
+  //   ...cartesianProduct,
+  // ];
 
-    ...cartesianProduct,
+  const combinedVariationOptions = initialValues?.variation_options
+  ? [...initialValues.variation_options]
+  : [...cartesianProduct];
 
-  ];
-
-  
+  console.log("DATA combinedVariationOptions",combinedVariationOptions);
+ 
+ 
+ 
   return (
-
+ 
     <div className="my-5 flex flex-wrap sm:my-8">
       <Description
         title={t('form:form-title-variation-product-info')}
@@ -105,16 +122,16 @@ export default function ProductVariableForm({
           } ${t('form:form-description-variation-product-info')}`}
         className="w-full px-0 pb-5 sm:w-4/12 sm:py-8 sm:pe-4 md:w-1/3 md:pe-5"
       />
-
+ 
       <Card className="w-full p-0 sm:w-8/12 md:w-2/3 md:p-0">
         <div className="mb-5 border-t border-dashed border-border-200 md:mb-8">
-
+ 
           {/* {(!!combinedVariationOptions.length) && ( */}
           <Title className="mt-8 mb-0 px-5 text-center text-lg uppercase md:px-8">
             {t('form:form-title-options')}
           </Title>
           <div>
-            {fields?.map((field: any, index: number) => {
+            {attributes?.map((field: any, index: number) => {
               return (
                 <div
                   key={field.id}
@@ -124,7 +141,7 @@ export default function ProductVariableForm({
                     <Title className="mb-0">
                       {t('form:form-title-options')} {index + 1}
                     </Title>
-
+ 
                     <button
                       onClick={() => remove(index)}
                       type="button"
@@ -133,12 +150,12 @@ export default function ProductVariableForm({
                       {t('form:button-label-remove')}
                     </button>
                   </div>
-
+ 
                   <div className="grid grid-cols-fit gap-5">
                     <div className="mt-5">
                       <Label>{t('form:input-label-attribute-name')}*</Label>
                       <SelectInput
-
+ 
                         name={`variations.${index}.attribute`}
                         control={control}
                         defaultValue={field.attribute}
@@ -163,7 +180,6 @@ export default function ProductVariableForm({
                   </div>
                   
                 </div>
-
               );
             })}
           </div>
@@ -179,9 +195,9 @@ export default function ProductVariableForm({
               {t('form:button-label-add-option')}
             </Button>
           </div>
-
+ 
           {/* Preview generation section start */}
-
+ 
           {(!!combinedVariationOptions.length) && (
             <div className="mt-5 border-t border-dashed border-border-200 pt-5 md:mt-8 md:pt-8">
               <Title className="mb-0 px-5 text-center text-lg uppercase md:px-8">
@@ -194,11 +210,14 @@ export default function ProductVariableForm({
                     className="flex flex-col items-start border-b border-dashed border-border-200 p-5 last:mb-8 last:border-0 md:p-8 md:last:pb-0 mx-2 my-2"
                     style={{ height: '250px' }}
                   >
-                  
+                   
                     <Title className="mb-2 !text-lg">
                       {t('form:form-title-variant')}:{' '}
                       <span className="font-normal text-blue-600">
                         {fieldAttributeValue.title}
+                        {Array.isArray(fieldAttributeValue)
+                          ? fieldAttributeValue?.map((a) => a.value).join('/')
+                          : fieldAttributeValue.value}
                         <input
                           type="hidden"
                           {...register(`variation_options.${index}.title`)}
@@ -206,7 +225,7 @@ export default function ProductVariableForm({
                         />
                       </span>
                     </Title>
-                    
+ 
                     <TitleAndOptionsInput
                       register={register}
                       setValue={setValue}
@@ -308,9 +327,8 @@ export default function ProductVariableForm({
     </div>
   );
 }
-
+ 
 export const TitleAndOptionsInput = ({
-
   fieldAttributeValue,
   index,
   setValue,
