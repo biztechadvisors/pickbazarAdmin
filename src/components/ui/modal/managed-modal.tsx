@@ -53,7 +53,9 @@ const RemoveStaffView = dynamic(
 const ExportImportView = dynamic(
   () => import('@/components/product/import-export-modal')
 );
-
+const ModelImportView = dynamic(
+  () => import('@/components/product/modal-import')
+);
 const AttributeExportImport = dynamic(
   () => import('@/components/attribute/attribute-import-export')
 );
@@ -166,6 +168,8 @@ function renderModal(view: MODAL_VIEWS | undefined, data: any) {
       return <MakeAdminView />;
     case 'EXPORT_IMPORT_PRODUCT':
       return <ExportImportView />;
+      case 'MODEL_IMPORT':
+        return <ModelImportView />;
     case 'EXPORT_IMPORT_ATTRIBUTE':
       return <AttributeExportImport />;
     case 'ADD_WALLET_POINTS':

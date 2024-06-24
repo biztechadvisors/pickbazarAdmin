@@ -3,6 +3,7 @@ import { API_ENDPOINTS } from '@/data/client/api-endpoints';
 import { toast } from 'react-toastify';
 import { useTranslation } from 'next-i18next';
 import { importClient } from '@/data/client/import';
+import {importModelClient} from '@/data/client/modelImport';
 
 type Input = {
   shop_id: string;
@@ -38,6 +39,27 @@ export const useImportProductsMutation = () => {
   return useMutation(
     (input: Input) => {
       return importClient.importCsv(API_ENDPOINTS.IMPORT_PRODUCTS, input);
+    },
+    {
+      onSuccess: () => {
+        toast.success(t('common:product-imported-successfully'));
+      },
+      onError: (error: any) => {
+        toast.error(t(`common:${error?.response?.data.message}`));
+      },
+      onSettled: () => {
+        queryClient.invalidateQueries(API_ENDPOINTS.PRODUCTS);
+      },
+    }
+  );
+};
+export const useModelImportMutation = () => {
+  const queryClient = useQueryClient();
+  const { t } = useTranslation('common');
+
+  return useMutation(
+    (input: { file: File, shopSlug: string }) => {
+      return importModelClient.importCsv(API_ENDPOINTS.MODEL_IMPORT, input);
     },
     {
       onSuccess: () => {

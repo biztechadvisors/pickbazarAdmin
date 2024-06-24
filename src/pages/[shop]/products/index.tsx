@@ -41,7 +41,8 @@ export default function ProductsPage() {
   const { data: shopData, isLoading: fetchingShop } = useShopQuery({
     slug: shop as string,
   });
-
+  
+  // const shopSlug = shopData?.slug
   const shopId = shopData?.id!;
   const { t } = useTranslation();
   const [searchTerm, setSearchTerm] = useState('');
@@ -86,6 +87,12 @@ export default function ProductsPage() {
   function handleImportModal() {
     openModal('EXPORT_IMPORT_PRODUCT', shopId);
   }
+  function handleOpenModel(){
+    openModal('MODEL_IMPORT',shopId);
+  }
+  // function handleOpenModel(){
+  //   openModal('MODEL_IMPORT',shopSlug);
+  // }
 
   if (loading || fetchingShop)
     return <Loader text={t('common:text-loading')} />;
@@ -137,8 +144,8 @@ export default function ProductsPage() {
             </div>
 
             <Button
-              onClick={handleImportModal}
-              className="mt-5 w-full md:hidden"
+              onClick={handleOpenModel}
+              className="h-12 ms-4 md:ms-6 "
             >
               {t('common:text-export-import')}
             </Button>
