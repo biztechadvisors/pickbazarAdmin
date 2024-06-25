@@ -53,13 +53,13 @@ export const useImportProductsMutation = () => {
     }
   );
 };
-export const useModelImportMutation = () => {
+export const useModelImportMutation = (onUploadProgress: (progressEvent: ProgressEvent) => void) => {
   const queryClient = useQueryClient();
   const { t } = useTranslation('common');
 
   return useMutation(
     (input: { file: File, shopSlug: string }) => {
-      return importModelClient.importCsv(API_ENDPOINTS.MODEL_IMPORT, input);
+      return importModelClient.importCsv(API_ENDPOINTS.MODEL_IMPORT, input, onUploadProgress);
     },
     {
       onSuccess: () => {

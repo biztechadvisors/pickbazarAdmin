@@ -1,27 +1,32 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useRouter } from 'next/router';
 import { useTranslation } from 'next-i18next';
 import ImportCsv from '@/components/ui/import-csv';
 import { useShopQuery } from '@/data/shop';
 import { useModelImportMutation } from '@/data/import';
-import { progress } from 'framer-motion';
+import { ProgressBar } from 'react-bootstrap';
+import 'bootstrap/dist/css/bootstrap.min.css';
 
 export default function ModalImportProducts() {
   const { t } = useTranslation('common');
   const { query: { shop } } = useRouter();
   const { data: shopData } = useShopQuery({ slug: shop as string });
   const shopSlug = shopData?.slug!;
-  
-  const { mutate: importProducts, isLoading: loading } = useModelImportMutation();
 
-  const handleDrop = async (acceptedFiles: any) => {
+  const [progress, setProgress] = useState(0);
+
+  const { mutate: importProducts, isLoading: loading } = useModelImportMutation((progressEvent) => {
+    const percentComplete = Math.round((progressEvent.loaded * 100) / progressEvent.total);
+    setProgress(percentComplete);
+  });
+
+  const handleDrop = async (acceptedFiles) => {
     if (acceptedFiles.length) {
       console.log("File and shopSlug: ", acceptedFiles[0], shopSlug);
       importProducts({
         file: acceptedFiles[0],
         shopSlug,
       });
-    
     }
   };
 
@@ -32,22 +37,10 @@ export default function ModalImportProducts() {
         loading={loading}
         title={t('text-import-products')}
       />
-      <section className='loading-area'>
-        <li className='mt-10' style={{borderRadius:'10px', display:'flex',justifyContent:'space-between', alignItems:'center',marginBottom:'10px', backgroundColor:'#d5ebff',listStyle:'none',padding:'10px'}}>
-           <i className='fas fa-file-alt' style={{color:'#0086fe',fontSize:'30px'}}></i>
-           <div className='content'>
-            <div className='details' style={{fontSize:'12px'}}>
-              <div className='name'>File Name</div>
-              <div className='percent'></div>
-              <div className='loading-bar'>
-                <div className='loading'>
- 
-                </div>
-              </div>
-            </div>
-           </div>
-        </li>
-      </section>
+      <div style={{ marginTop: '20px' }}>
+        <ProgressBar now={progress} label={`${progress}%`} variant={progress > 0 ? 'success' : 'info'} />
+      </div>
+      {loading && <p>{t('Loading...')}</p>}
     </div>
   );
 }
