@@ -62,8 +62,6 @@ export default function AttributePage() {
     }
   );
 
-
-
   const permissionTypes = AllPermission();
 
   const canWrite = permissionTypes.includes('sidebar-nav-item-attributes');

@@ -24,6 +24,7 @@ import { useCallback, useMemo, useState } from 'react';
 import { ItemProps, SortOrder } from '@/types';
 import { useModalAction } from '../ui/modal/modal.context';
 import { useShopsQuery } from '@/data/shop';
+import { useMeQuery } from '@/data/user';
 
 export const chatbotAutoSuggestion = ({ name }: { name: string }) => {
   return [
@@ -146,6 +147,10 @@ export default function CreateOrUpdateTagForm({ initialValues }: IProps) {
   const [orderBy, setOrder] = useState('created_at');
   const [sortedBy, setColumn] = useState<SortOrder>(SortOrder.Desc);
 
+  const { data: meData } = useMeQuery();
+
+  const shopSlug = meData?.managed_shop.slug;
+
   const {
     register,
     handleSubmit,
@@ -211,6 +216,7 @@ export default function CreateOrUpdateTagForm({ initialValues }: IProps) {
       },
       icon: values.icon?.value ?? '',
       type_id: values.type?.id,
+      shop: shopSlug,
     };
 
     try {
@@ -251,8 +257,8 @@ export default function CreateOrUpdateTagForm({ initialValues }: IProps) {
         <Description
           title={t('form:input-label-description')}
           details={`${initialValues
-              ? t('form:item-description-edit')
-              : t('form:item-description-add')
+            ? t('form:item-description-edit')
+            : t('form:item-description-add')
             } ${t('form:tag-description-helper-text')}`}
           className="w-full px-0 pb-5 sm:w-4/12 sm:py-8 sm:pe-4 md:w-1/3 md:pe-5 "
         />
