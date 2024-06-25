@@ -17,6 +17,7 @@ import { useShopQuery } from '@/data/shop';
 import { Menu, Transition } from '@headlessui/react';
 import classNames from 'classnames';
 import { DownloadIcon } from '@/components/icons/download-icon';
+import { useMeQuery } from '@/data/user';
 
 export default function Orders() {
     const router = useRouter();
@@ -38,6 +39,8 @@ export default function Orders() {
     function handlePagination(current: any) {
         setPage(current);
     }
+    console.log("query**42", shop)
+    const { data: me } = useMeQuery();
 
     const { data: shopData, isLoading: fetchingShop } = useShopQuery(
         {
@@ -47,12 +50,15 @@ export default function Orders() {
             enabled: !!shop,
         }
     );
+
     const shopId = shopData?.id!;
     const { orders, loading, paginatorInfo, error } = useOrdersQuery({
         language: locale,
         limit: 20,
         page,
         tracking_number: searchTerm,
+        customer_id: me?.id,
+        shop_id: shopId ? shopId : null
     });
     console.log('orders ** 57', orders)
     const { refetch } = useExportOrderQuery(
