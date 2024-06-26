@@ -18,6 +18,7 @@ import { DownloadIcon } from '@/components/icons/download-icon';
 import { useOrdersSalesQuery } from '@/data/stocks';
 import StockList from '@/components/stock/StockList';
 import { useOrdersQuery } from '@/data/order';
+import { useMeQuery } from '@/data/user';
 
 export default function Sales() {
   const router = useRouter();
@@ -62,13 +63,18 @@ export default function Sales() {
   //   { enabled: false }
   // );
 
+  const { data: me } = useMeQuery();
+
   const shopId = shopData?.id!;
   const { orders, loading, paginatorInfo, error } = useOrdersQuery({
     language: locale,
     limit: 20,
     page,
     tracking_number: searchTerm,
+    customer_id: me?.id,
+    shop_id: shopId ? shopId : null
   });
+
   const { refetch } = useExportOrderQuery(
     {
       ...(shopId && { shop_id: shopId }),

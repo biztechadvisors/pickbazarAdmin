@@ -1622,6 +1622,7 @@ export interface OrderQueryOptions extends QueryOptions {
   shop_id: string;
   tracking_number: string;
   customer_id: number;
+  search: any
 }
 
 export interface CouponQueryOptions extends QueryOptions {

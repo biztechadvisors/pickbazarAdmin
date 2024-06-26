@@ -8,7 +8,6 @@ import { useMeQuery, useRegisterMutation } from '@/data/user';
 import { useTranslation } from 'next-i18next';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { customerValidationSchema } from './user-validation-schema';
-import { Permission } from '@/types';
 import Select from '../ui/select/select';
 import Label from '../ui/label';
 import { useRouter } from 'next/router';
@@ -74,41 +73,35 @@ const CustomerCreateForm = () => {
     );
   }
 
-  async function onSubmit({ name, email, password, contact, type }: FormValues) {
-    const selectedPermission = permissionOptions.find(
-      (option) => option.value === type.value
-    );
-
-    async function onSubmit({
-      name,
-      email,
-      password,
-      contact,
-      type,
-      numberOfDealers,  // Added new field to destructure
-    }: FormValues) {
-      registerUser(
-        {
-          name,
-          email,
-          password,
-          contact,
-          UsrBy: id,
-          type: type?.value,
-          numberOfDealers,  // Added new field to payload
-        },
-        {
-          onError: (error: any) => {
-            Object.keys(error?.response?.data).forEach((field: string) => {
-              setError(field as keyof FormValues, {
-                type: 'manual',
-                message: error?.response?.data[field][0],
-              });
+  async function onSubmit({
+    name,
+    email,
+    password,
+    contact,
+    type,
+    numberOfDealers,  // Added new field to destructure
+  }: FormValues) {
+    registerUser(
+      {
+        name,
+        email,
+        password,
+        contact,
+        UsrBy: id,
+        type: type?.value,
+        numberOfDealers,  // Added new field to payload
+      },
+      {
+        onError: (error: any) => {
+          Object.keys(error?.response?.data).forEach((field: string) => {
+            setError(field as keyof FormValues, {
+              type: 'manual',
+              message: error?.response?.data[field][0],
             });
-          },
-        }
-      );
-    }
+          });
+        },
+      }
+    );
   }
 
   return (
@@ -199,5 +192,3 @@ const CustomerCreateForm = () => {
   );
 };
 export default CustomerCreateForm;
-
-

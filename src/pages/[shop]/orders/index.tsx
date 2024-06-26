@@ -45,21 +45,37 @@ export default function Orders() {
   const shopId = shopData?.id!;
   const [searchTerm, setSearchTerm] = useState('');
   const [page, setPage] = useState(1);
-  const { orders, loading, paginatorInfo, error } = useOrdersQuery(
+
+  const {
+    orders,
+    paginatorInfo,
+    error,
+    loading,
+  } = useOrdersQuery(
     {
       language: locale,
       limit: LIMIT,
       page,
       tracking_number: searchTerm,
-      customer_id: searchTerm,
+      customer_id: me?.id,
       orderBy,
       sortedBy,
-      shop_id: shopId,
+      shop_id: shopId ? shopId : null,
     },
     {
       enabled: Boolean(shopId),
     }
   );
+
+  console.log('Orders: 69', orders);
+
+  if (error) {
+    console.error('Error fetching orders:', error);
+  }
+
+  if (loading) {
+    console.log('Loading orders...');
+  }
 
   const { refetch } = useExportOrderQuery(
     {
