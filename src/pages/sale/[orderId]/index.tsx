@@ -52,6 +52,8 @@ export default function OrderDetailsPage() {
   const [, resetCheckout] = useAtom(clearCheckoutAtom);
   const [isDispatchModalOpen, setDispatchModalOpen] = useState(false);
 
+  
+
   const handleDispatchUpdate = (data: any) => {
     // Logic to update the dispatch product
   };
@@ -136,7 +138,10 @@ export default function OrderDetailsPage() {
 
   const { data: meData } = useMeQuery();
 
-  const dealerId = 99;
+  console.log("data@@@@@", meData)
+  
+
+  const dealerId = 11;
 
   const userId = order?.customer_id;
 
@@ -144,6 +149,7 @@ export default function OrderDetailsPage() {
     dealerId,
     orderId,
   });
+  console.log("data",data)
 
   if (loading) return <Loader text={t('common:text-loading')} />;
   if (error) return <ErrorMessage message={error.message} />;
@@ -205,6 +211,11 @@ export default function OrderDetailsPage() {
     },
   ];
 
+  console.log("meData", meData?.type.type_name)
+
+const DispatchButton = meData?.type.type_name === "Store_Owner";
+console.log("Dispatech", DispatchButton)
+
   return (
     <>
       <Card className="relative overflow-hidden">
@@ -256,6 +267,7 @@ export default function OrderDetailsPage() {
                 </div>
               </form>
             )}
+            {DispatchButton && (
           <Button onClick={() => setDispatchModalOpen(true)}>
             <span className="hidden sm:block">
               {t('form:button-label-change-dispatch')}
@@ -264,6 +276,8 @@ export default function OrderDetailsPage() {
               {t('form:button-label-change-dispatch')}
             </span>
           </Button>
+        )}
+         
         </div>
 
         <div className="my-5 flex items-center justify-center lg:my-10">

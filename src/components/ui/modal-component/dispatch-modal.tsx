@@ -23,7 +23,7 @@ const DispatchModal: React.FC<DispatchModalProps> = ({
   const { t } = useTranslation();
   const { handleSubmit, control } = useForm();
 
-  const user_id = 99;
+  const user_id = 11;
   const { mutate: updateStockDataById } = useUpdateStockDataById(user_id);
 
   const onSubmit = (rowData: any) => (data: any) => {
