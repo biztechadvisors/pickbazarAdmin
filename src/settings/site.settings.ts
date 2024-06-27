@@ -14,8 +14,6 @@ let permission = hasAccess(dealerOnly, permissions);
 let identify = permissions;
 const matching: any = Type.Dealer;
 
-console.log("permission",permission)
-console.log("matching",matching)
 export const siteSettings = {
   name: 'PickBazar',
   description: '',
@@ -175,7 +173,7 @@ export const siteSettings = {
         icon: 'SettingsIcon',
       },
       {
-        href: permission && identify === matching ? `${Routes.stock.list}/dealer` : Routes.stock.list,
+        href: permission && identify.includes(matching) ? `${Routes.stock.list}/dealer` : Routes.stock.list,
         label: 'sidebar-nav-item-stocks',
         icon: 'ProductsIcon',
       },
