@@ -13,7 +13,7 @@ import ValidationError from '@/components/ui/form-validation-error';
 import { useTranslation } from 'next-i18next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import SelectInput from '@/components/ui/select-input';
-import ShopLayout from '@/components/layouts/shop';
+
 import { useIsRTL } from '@/utils/locals';
 import {
   adminOnly,
@@ -34,6 +34,7 @@ import OrderStatusProgressBox from '@/components/order/order-status-progress-box
 import { Routes } from '@/config/routes';
 import { useShopQuery } from '@/data/shop';
 import { useMeQuery } from '@/data/user';
+import AdminLayout from '@/components/layouts/admin';
 
 type FormValues = {
   order_status: any;
@@ -41,7 +42,7 @@ type FormValues = {
 export default function OrderDetailsPage() {
   const { t } = useTranslation();
   const { locale, query } = useRouter();
-  
+
   const router = useRouter();
   const { permissions } = getAuthCredentials();
   const { data: me } = useMeQuery();
@@ -307,7 +308,7 @@ export default function OrderDetailsPage() {
 OrderDetailsPage.authenticate = {
   permissions: adminOwnerAndStaffOnly,
 };
-OrderDetailsPage.Layout = ShopLayout;
+OrderDetailsPage.Layout = AdminLayout;
 
 export const getServerSideProps = async ({ locale }: any) => ({
   props: {

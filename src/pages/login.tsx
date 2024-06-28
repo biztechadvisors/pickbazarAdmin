@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import LoginForm from '@/components/auth/login-form';
 import { useTranslation } from 'next-i18next';
 import type { GetStaticProps } from 'next';
@@ -15,11 +16,14 @@ export const getStaticProps: GetStaticProps = async ({ locale }) => ({
 
 export default function LoginPage() {
   const router = useRouter();
-  const { token, permissions } = getAuthCredentials();
-  if (isAuthenticated({ token, permissions })) {
-    router.replace(Routes.dashboard);
-  }
   const { t } = useTranslation('common');
+  const { token, permissions } = getAuthCredentials();
+
+  useEffect(() => {
+    if (isAuthenticated({ token, permissions })) {
+      router.replace(Routes.dashboard);
+    }
+  }, [token, permissions, router]);
 
   return (
     <AuthPageLayout>

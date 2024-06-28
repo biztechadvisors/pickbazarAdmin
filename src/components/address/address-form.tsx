@@ -9,13 +9,11 @@ import { useModalState } from '@/components/ui/modal/modal.context';
 import { Form } from '@/components/ui/form/form';
 import { AddressType, GoogleMapLocation } from '@/types';
 import { useSettings } from '@/contexts/settings.context';
-import { Control, Controller, FieldErrors, UseFormGetValues } from 'react-hook-form';
+import { Controller } from 'react-hook-form';
 import GooglePlacesAutocomplete from '@/components/form/google-places-autocomplete';
 import ValidationError from '../ui/validation-error';
-import Select from '../ui/select/select';
 import SelectInput from '../ui/select-input';
 import { useState } from 'react';
-import { error } from 'console';
 
 type FormValues = {
   title: string;
@@ -220,9 +218,9 @@ const AddressForm: React.FC<any> = ({ onSubmit }) => {
                 placeholder={t('Select')}
                 getOptionLabel={(option: any) => `${option?.label}`}
                 getOptionValue={(option: any) => option}
-                control={control} 
-                name={'address.state'} 
-                defaultValue={[]}              />
+                control={control}
+                name={'address.state'}
+                defaultValue={[]} />
               <ValidationError message={errors.address?.state?.message} />
             </div>
 

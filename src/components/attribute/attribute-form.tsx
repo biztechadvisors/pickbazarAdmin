@@ -57,8 +57,6 @@ export default function CreateOrUpdateAttributeForm({ initialValues }: IProps) {
     useUpdateAttributeMutation();
   const onSubmit = (values: FormValues) => {
 
-    console.log('first 60****', router.locale)
-
     if (
       !initialValues &&
       !initialValues?.translated_languages?.includes(router.locale!) ||

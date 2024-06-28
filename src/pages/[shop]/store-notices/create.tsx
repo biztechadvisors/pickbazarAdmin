@@ -1,4 +1,4 @@
-import ShopLayout from '@/components/layouts/shop';
+
 import StoreNoticeCreateOrUpdateForm from '@/components/store-notice/store-notice-form';
 import { useTranslation } from 'next-i18next';
 import {
@@ -12,6 +12,7 @@ import { Routes } from '@/config/routes';
 import { useShopQuery } from '@/data/shop';
 import { useMeQuery } from '@/data/user';
 import { useRouter } from 'next/router';
+import AdminLayout from '@/components/layouts/admin';
 
 export default function CreateStoreNotice() {
   const { t } = useTranslation();
@@ -46,7 +47,7 @@ export default function CreateStoreNotice() {
 CreateStoreNotice.authenticate = {
   permissions: adminAndOwnerOnly,
 };
-CreateStoreNotice.Layout = ShopLayout;
+CreateStoreNotice.Layout = AdminLayout;
 
 export const getServerSideProps = async ({ locale }: any) => ({
   props: {

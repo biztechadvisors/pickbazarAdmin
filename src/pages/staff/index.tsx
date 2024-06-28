@@ -3,7 +3,7 @@ import LinkButton from '@/components/ui/link-button';
 import Loader from '@/components/ui/loader/loader';
 import { useTranslation } from 'next-i18next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
-import ShopLayout from '@/components/layouts/shop';
+
 import { useRouter } from 'next/router';
 import StaffList from '@/components/shop/staff-list';
 import {
@@ -105,7 +105,7 @@ export default function StaffsPage() {
 StaffsPage.authenticate = {
   permissions: adminAndOwnerOnly,
 };
-StaffsPage.Layout = ShopLayout;
+StaffsPage.Layout = AdminLayout;
 
 export const getServerSideProps = async ({ locale }: any) => ({
   props: {

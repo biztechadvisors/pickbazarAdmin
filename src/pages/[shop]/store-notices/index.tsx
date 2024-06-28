@@ -1,5 +1,5 @@
 import Card from '@/components/common/card';
-import ShopLayout from '@/components/layouts/shop';
+
 import { useState } from 'react';
 import Search from '@/components/common/search';
 import ErrorMessage from '@/components/ui/error-message';
@@ -21,6 +21,7 @@ import StoreNoticeList from '@/components/store-notice/store-notice-list';
 import { Config } from '@/config';
 import { Routes } from '@/config/routes';
 import { useMeQuery } from '@/data/user';
+import AdminLayout from '@/components/layouts/admin';
 export default function StoreNotices() {
   const router = useRouter();
   const { permissions } = getAuthCredentials();
@@ -103,7 +104,7 @@ export default function StoreNotices() {
 StoreNotices.authenticate = {
   permissions: adminAndOwnerOnly,
 };
-StoreNotices.Layout = ShopLayout;
+StoreNotices.Layout = AdminLayout;
 
 export const getServerSideProps = async ({ locale }: any) => ({
   props: {

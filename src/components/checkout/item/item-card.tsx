@@ -3,7 +3,7 @@ import { useMeQuery } from '@/data/user';
 import usePrice from '@/utils/use-price';
 import cn from 'classnames';
 import { useTranslation } from 'next-i18next';
-import { useState } from 'react';
+
 interface Props {
   item: any;
   notAvailable?: boolean;

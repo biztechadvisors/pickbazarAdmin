@@ -4,7 +4,6 @@ import { useRouter } from 'next/router';
 import { useTranslation } from 'next-i18next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import ShopForm from '@/components/shop/shop-form';
-import ShopLayout from '@/components/layouts/shop';
 import {
   adminAndOwnerOnly,
   adminOnly,
@@ -14,8 +13,12 @@ import {
 import { useShopQuery } from '@/data/shop';
 import { Routes } from '@/config/routes';
 import { useMeQuery } from '@/data/user';
+import AdminLayout from '@/components/layouts/admin';
+import OwnerLayout from '@/components/layouts/owner';
+import { OWNER } from '@/utils/constants';
+import { FC } from 'react';
 
-export default function UpdateShopPage() {
+const UpdateShopPage: FC = () => {
   const router = useRouter();
   const { permissions } = getAuthCredentials();
   const { data: me } = useMeQuery();
@@ -29,6 +32,7 @@ export default function UpdateShopPage() {
   } = useShopQuery({
     slug: shop as string,
   });
+
   if (loading) return <Loader text={t('common:text-loading')} />;
   if (error) return <ErrorMessage message={error.message} />;
   if (
@@ -38,6 +42,7 @@ export default function UpdateShopPage() {
   ) {
     router.replace(Routes.dashboard);
   }
+
   return (
     <>
       <div className="flex py-5 border-b border-dashed border-border-base sm:py-8">
@@ -48,14 +53,23 @@ export default function UpdateShopPage() {
       <ShopForm initialValues={data} />
     </>
   );
-}
+};
+
+const { permissions } = getAuthCredentials();
+const resLayout = () => {
+  return permissions?.[0] === OWNER ? OwnerLayout : AdminLayout;
+};
+
 UpdateShopPage.authenticate = {
   permissions: adminAndOwnerOnly,
 };
-UpdateShopPage.Layout = ShopLayout;
+
+UpdateShopPage.Layout = resLayout();
 
 export const getServerSideProps = async ({ locale }: any) => ({
   props: {
     ...(await serverSideTranslations(locale, ['form', 'common'])),
   },
 });
+
+export default UpdateShopPage;

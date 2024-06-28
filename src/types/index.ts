@@ -172,10 +172,10 @@ export enum Permission {
 
 export interface GetParams {
   slug: string;
-  userId: string;
+  userId?: string;
   language: string;
-  categoryId: number;
-  shopId: number;
+  categoryId?: number;
+  shopId?: number;
 }
 
 export interface QueryOptions {
@@ -498,6 +498,7 @@ export interface User {
   email_verified: boolean;
   shop_id: number;
   dealer?: any;
+  UsrBy?: any;
 }
 
 export interface UpdateUser {
@@ -1504,7 +1505,7 @@ export interface SubCategoryQueryOptions extends QueryOptions {
   type: string;
   name: string;
   categoryId: number | null;
-  shopId: string | null;
+  shopSlug: string | null;
 }
 
 export interface ConversationQueryOptions extends QueryOptions {
@@ -1621,6 +1622,7 @@ export interface OrderQueryOptions extends QueryOptions {
   shop_id: string;
   tracking_number: string;
   customer_id: number;
+  search: any
 }
 
 export interface CouponQueryOptions extends QueryOptions {

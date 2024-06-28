@@ -19,6 +19,7 @@ export const useOrdersQuery = (
   params: Partial<OrderQueryOptions>,
   options: any = {}
 ) => {
+  console.log('first ** params 22', params)
   const { data, error, isLoading } = useQuery<OrderPaginator, Error>(
     [API_ENDPOINTS.ORDERS, params],
     ({ queryKey, pageParam }) =>

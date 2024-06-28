@@ -7,6 +7,7 @@ import SidebarItem from '@/components/layouts/navigation/sidebar-item';
 import { useRouter } from 'next/router';
 import { useMeQuery } from '@/data/user';
 import { getAuthCredentials } from '@/utils/auth-utils';
+import { OWNER } from '@/utils/constants';
 
 const OwnerLayout: React.FC<{ children?: React.ReactNode }> = ({
   children,
@@ -14,13 +15,14 @@ const OwnerLayout: React.FC<{ children?: React.ReactNode }> = ({
   const { t } = useTranslation();
   const { locale } = useRouter();
   const { permissions } = getAuthCredentials();
+
   const router = useRouter();
   const dir = locale === 'ar' || locale === 'he' ? 'rtl' : 'ltr';
 
-  if (permissions?.[0] === 'owner') {
+  if (permissions?.includes(OWNER)) {
     var matchedLinks = siteSettings.sidebarLinks.owner;
   } else {
-    matchedLinks = siteSettings.sidebarLinks.admin;
+    var matchedLinks = siteSettings.sidebarLinks.admin;
   }
 
   const SidebarItemMap = () => (
@@ -30,7 +32,6 @@ const OwnerLayout: React.FC<{ children?: React.ReactNode }> = ({
       ))}
     </Fragment>
   );
-
   return (
     <div
       className="flex min-h-screen flex-col bg-gray-100 transition-colors duration-150"

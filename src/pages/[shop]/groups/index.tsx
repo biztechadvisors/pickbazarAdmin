@@ -24,9 +24,9 @@ import { useAtom } from 'jotai';
 import { newPermission } from '@/contexts/permission/storepermission';
 import { siteSettings } from '@/settings/site.settings';
 import { useMeQuery } from '@/data/user';
-import ShopLayout from '@/components/layouts/shop';
 import { useShopQuery } from '@/data/shop';
 import { AllPermission } from '@/utils/AllPermission';
+import AdminLayout from '@/components/layouts/admin';
 
 export default function TypesPage() {
   const router = useRouter();
@@ -47,8 +47,8 @@ export default function TypesPage() {
 
   const shopId = shopData?.id!;
 
-  const shop: string | undefined = meData?.shops?.[0]?.id;
-  const shopSlug: string | undefined = meData?.shops?.[0]?.slug;
+  const shop: string | undefined = meData?.managed_shop?.id;
+  const shopSlug: string | undefined = meData?.managed_shop?.slug;
   const { types, loading, error } = useTypesQuery({
     name: searchTerm,
     language: locale,
@@ -125,7 +125,7 @@ TypesPage.authenticate = {
   permissions: adminOwnerAndStaffOnly,
 };
 
-TypesPage.Layout = ShopLayout;
+TypesPage.Layout = AdminLayout;
 
 // export const getStaticProps: GetStaticProps = async ({ locale }) => ({
 //   props: {

@@ -16,6 +16,8 @@ import { useIsRTL } from '@/utils/locals';
 import { useState } from 'react';
 import TitleWithSort from '@/components/ui/title-with-sort';
 import { AllPermission } from '@/utils/AllPermission';
+import { getAuthCredentials } from '@/utils/auth-utils';
+import { OWNER } from '@/utils/constants';
 
 type IProps = {
   customers: User[] | undefined;
@@ -34,11 +36,12 @@ const CustomerList = ({
   const { t } = useTranslation();
   const { alignLeft } = useIsRTL();
 
+  const { permissions } = getAuthCredentials();
   const permissionTypes = AllPermission();
+  const canWrite =
+    permissionTypes.includes('sidebar-nav-item-users') ||
+    permissions?.[0] === OWNER;
 
-  console.log('customers', customers);
-
-  const canWrite = permissionTypes.includes('sidebar-nav-item-users');
   const [sortingObj, setSortingObj] = useState<{
     sort: SortOrder;
     column: any | null;
@@ -131,27 +134,27 @@ const CustomerList = ({
     {
       ...(canWrite
         ? {
-            title: t('table:table-item-actions'),
-            dataIndex: 'id',
-            key: 'actions',
-            align: 'right',
-            render: function Render(id: string, { is_active }: any) {
-              const { data } = useMeQuery();
-              return (
-                <>
-                  {data?.id != id && (
-                    <ActionButtons
-                      id={id}
-                      userStatus={true}
-                      isUserActive={is_active}
-                      showAddWalletPoints={true}
-                      showMakeAdminButton={true}
-                    />
-                  )}
-                </>
-              );
-            },
-          }
+          title: t('table:table-item-actions'),
+          dataIndex: 'id',
+          key: 'actions',
+          align: 'right',
+          render: function Render(id: string, { is_active }: any) {
+            const { data } = useMeQuery();
+            return (
+              <>
+                {data?.id != id && (
+                  <ActionButtons
+                    id={id}
+                    userStatus={true}
+                    isUserActive={is_active}
+                    showAddWalletPoints={true}
+                    showMakeAdminButton={true}
+                  />
+                )}
+              </>
+            );
+          },
+        }
         : null),
     },
   ];

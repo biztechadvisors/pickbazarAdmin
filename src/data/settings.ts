@@ -57,7 +57,6 @@ export const useSettingsQuery = ({ language }: { language: string }) => {
       setShopSlug(slug);
     }
   }, []);
-
   const { data, error, isLoading } = useQuery(
     ['settings', { language, shopSlug }],
     () => settingsClient.all({ language, shopSlug }),

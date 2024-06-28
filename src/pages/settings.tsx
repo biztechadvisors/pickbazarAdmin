@@ -16,7 +16,7 @@ const Settings: React.FC = () => {
   const { t } = useTranslation();
   const { locale } = useRouter();
   const { data: meData } = useMeQuery();
-  const shop_id = meData?.shops?.[0]?.id;
+  const shop_id = meData?.managed_shop?.id;
 
   const { settings, loading: settingsLoading, error: settingsError, shopSlug } = useSettingsQuery({
     language: locale!,

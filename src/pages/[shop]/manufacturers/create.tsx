@@ -1,7 +1,7 @@
 import ManufacturerCreateOrUpdateForm from '@/components/manufacturer/manufacturer-form';
 import { useTranslation } from 'next-i18next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
-import ShopLayout from '@/components/layouts/shop';
+
 import {
   adminOnly,
   adminOwnerAndStaffOnly,
@@ -12,6 +12,7 @@ import { Routes } from '@/config/routes';
 import { useShopQuery } from '@/data/shop';
 import { useMeQuery } from '@/data/user';
 import { useRouter } from 'next/router';
+import AdminLayout from '@/components/layouts/admin';
 
 export default function CreateManufacturerPage() {
   const { t } = useTranslation();
@@ -46,7 +47,7 @@ export default function CreateManufacturerPage() {
 CreateManufacturerPage.authenticate = {
   permissions: adminOwnerAndStaffOnly,
 };
-CreateManufacturerPage.Layout = ShopLayout;
+CreateManufacturerPage.Layout = AdminLayout;
 
 export const getServerSideProps = async ({ locale }: any) => ({
   props: {

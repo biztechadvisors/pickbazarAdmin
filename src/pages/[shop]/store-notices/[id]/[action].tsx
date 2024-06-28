@@ -1,4 +1,4 @@
-import ShopLayout from '@/components/layouts/shop';
+
 import StoreNoticeCreateOrUpdateForm from '@/components/store-notice/store-notice-form';
 import ErrorMessage from '@/components/ui/error-message';
 import Loader from '@/components/ui/loader/loader';
@@ -17,6 +17,7 @@ import shop from '@/components/layouts/shop';
 import { Routes } from '@/config/routes';
 import { useShopQuery } from '@/data/shop';
 import { useMeQuery } from '@/data/user';
+import AdminLayout from '@/components/layouts/admin';
 
 export default function UpdateStoreNoticePage() {
   const { query, locale } = useRouter();
@@ -59,7 +60,7 @@ export default function UpdateStoreNoticePage() {
 UpdateStoreNoticePage.authenticate = {
   permissions: adminOwnerAndStaffOnly,
 };
-UpdateStoreNoticePage.Layout = ShopLayout;
+UpdateStoreNoticePage.Layout = AdminLayout;
 
 export const getServerSideProps = async ({ locale }: any) => ({
   props: {

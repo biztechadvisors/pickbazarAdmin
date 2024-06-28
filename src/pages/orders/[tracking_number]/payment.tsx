@@ -14,41 +14,40 @@ export { getServerSideProps } from '@/framework/rest/order.ssr';
 const getLayout = Component.getLayout ?? ((page: any) => page);
 
 export default function OrderPage() {
-  const { openModal } = useModalAction();
-  const { query } = useRouter();
-  const { order, isLoading, isFetching } = useOrder({
-    tracking_number: query.tracking_number!.toString(),
-  });
+    const { openModal } = useModalAction();
+    const { query } = useRouter();
+    const { order, isLoading, isFetching } = useOrder({
+        tracking_number: query.tracking_number!.toString(),
+    });
 
-  // @ts-ignore
-  const { payment_status, payment_intent, tracking_number } = order ?? {};
-  const isPaymentModalEnabled =
-    payment_status === PaymentStatus.PENDING &&
-    payment_intent?.payment_intent_info &&
-    !payment_intent?.payment_intent_info?.is_redirect;
+    // @ts-ignore
+    const { payment_status, payment_intent, tracking_number } = order ?? {};
+    const isPaymentModalEnabled =
+        payment_status === PaymentStatus.PENDING &&
+        payment_intent?.payment_intent_info &&
+        !payment_intent?.payment_intent_info?.is_redirect;
 
-  useEffect(() => {
-    if (isPaymentModalEnabled) {
-      openModal('PAYMENT_MODAL', {
-        paymentGateway: payment_intent?.payment_gateway,
-        paymentIntentInfo: payment_intent?.payment_intent_info,
-        trackingNumber: tracking_number,
-      });
+    useEffect(() => {
+        if (isPaymentModalEnabled) {
+            openModal('PAYMENT_MODAL', {
+                paymentGateway: payment_intent?.payment_gateway,
+                paymentIntentInfo: payment_intent?.payment_intent_info,
+                trackingNumber: tracking_number,
+            });
+        }
+    }, [order, payment_status, payment_intent?.payment_intent_info]);
+
+    if (isLoading) {
+        return <Spinner showText={false} />;
     }
-  }, [order, payment_status, payment_intent?.payment_intent_info]);
 
-  if (isLoading) {
-    return <Spinner showText={false} />;
-  }
-
-  return (
-    <>
-      {/* <Seo noindex={true} nofollow={true} /> */}
-      {/* <Order order={order} loadingStatus={!isLoading && isFetching} /> */}
-      <Order order={order} loadingStatus={!isLoading && isFetching} />
-    </>
-  );
+    return (
+        <>
+            {/* <Seo noindex={true} nofollow={true} /> */}
+            {/* <Order order={order} loadingStatus={!isLoading && isFetching} /> */}
+            <Order order={order} loadingStatus={!isLoading && isFetching} />
+        </>
+    );
 }
 
 OrderPage.getLayout = getLayout;
-

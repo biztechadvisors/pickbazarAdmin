@@ -1,4 +1,4 @@
-import ShopLayout from '@/components/layouts/shop';
+
 import { useRouter } from 'next/router';
 import ErrorMessage from '@/components/ui/error-message';
 import Loader from '@/components/ui/loader/loader';
@@ -16,6 +16,7 @@ import shop from '@/components/layouts/shop';
 import { Routes } from '@/config/routes';
 import { useShopQuery } from '@/data/shop';
 import { useMeQuery } from '@/data/user';
+import AdminLayout from '@/components/layouts/admin';
 
 export default function RefundDetailsPage() {
   const { t } = useTranslation();
@@ -49,7 +50,7 @@ export default function RefundDetailsPage() {
 RefundDetailsPage.authenticate = {
   permissions: adminOwnerAndStaffOnly,
 };
-RefundDetailsPage.Layout = ShopLayout;
+RefundDetailsPage.Layout = AdminLayout;
 
 export const getServerSideProps = async ({ locale }: any) => ({
   props: {

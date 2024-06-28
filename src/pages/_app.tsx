@@ -15,15 +15,13 @@ import { ModalProvider } from '@/components/ui/modal/modal.context';
 import DefaultSeo from '@/components/ui/default-seo';
 import ManagedModal from '@/components/ui/modal/managed-modal';
 import { CartProvider } from '@/contexts/quick-cart/cart.context';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { NextPageWithLayout, SortOrder } from '@/types';
 import { useRouter } from 'next/router';
 import PrivateRoute from '@/utils/private-route';
 import { Config } from '@/config';
 import 'react-toastify/dist/ReactToastify.css';
 import { StockProvider } from '@/contexts/quick-cart/stock.context';
-import { useMeQuery } from '@/data/user';
-import { useShopQuery, useShopsQuery } from '@/data/shop';
 
 const Noop: React.FC<{ children?: React.ReactNode }> = ({ children }) => (
   <>{children}</>
@@ -31,12 +29,23 @@ const Noop: React.FC<{ children?: React.ReactNode }> = ({ children }) => (
 
 const AppSettings: React.FC<{ children?: React.ReactNode }> = (props) => {
   const { locale } = useRouter();
-  const { settings, loading, error } = useSettingsQuery({ language: locale! });
+  const authToken = typeof window !== 'undefined' ? localStorage.getItem('authToken') : null;
+
+  let settings = null;
+  let loading = false;
+  let error = null;
+
+  if (authToken) {
+    const queryResult = useSettingsQuery({ language: locale! });
+    settings = queryResult.settings;
+    loading = queryResult.loading;
+    error = queryResult.error;
+  }
+
   if (loading) return <PageLoader />;
   if (error) return <ErrorMessage message={error.message} />;
-  // TODO: fix it
-  // @ts-ignore
-  return <SettingsProvider initialValue={settings?.options} {...props} />;
+
+  return <SettingsProvider initialValue={settings?.options || null} {...props} />;
 };
 type AppPropsWithLayout = AppProps & {
   Component: NextPageWithLayout;
@@ -57,24 +66,26 @@ const CustomApp = ({ Component, pageProps }: AppPropsWithLayout) => {
           <AppSettings>
             <UIProvider>
               <ModalProvider>
-                <StockProvider>
-                  <CartProvider>
-                    <DefaultSeo />
-                    {authProps ? (
-                      <PrivateRoute authProps={authProps}>
+                <>
+                  <StockProvider>
+                    <CartProvider>
+                      <DefaultSeo />
+                      {authProps ? (
+                        <PrivateRoute authProps={authProps}>
+                          <Layout {...pageProps}>
+                            <Component {...pageProps} />
+                          </Layout>
+                        </PrivateRoute>
+                      ) : (
                         <Layout {...pageProps}>
                           <Component {...pageProps} />
                         </Layout>
-                      </PrivateRoute>
-                    ) : (
-                      <Layout {...pageProps}>
-                        <Component {...pageProps} />
-                      </Layout>
-                    )}
-                    <ToastContainer autoClose={2000} theme="colored" />
-                    <ManagedModal />
-                  </CartProvider>
-                </StockProvider>
+                      )}
+                      <ToastContainer autoClose={2000} theme="colored" />
+                      <ManagedModal />
+                    </CartProvider>
+                  </StockProvider>
+                </>
               </ModalProvider>
             </UIProvider>
           </AppSettings>

@@ -1,7 +1,7 @@
 import CreateOrUpdateAttributeForm from '@/components/attribute/attribute-form';
 import { useTranslation } from 'next-i18next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
-import ShopLayout from '@/components/layouts/shop';
+
 import {
   adminOnly,
   adminOwnerAndStaffOnly,
@@ -12,6 +12,7 @@ import { Routes } from '@/config/routes';
 import { useMeQuery } from '@/data/user';
 import { useRouter } from 'next/router';
 import { useShopQuery } from '@/data/shop';
+import AdminLayout from '@/components/layouts/admin';
 
 export default function CreateAttributePage() {
   const { t } = useTranslation();
@@ -48,7 +49,7 @@ export default function CreateAttributePage() {
 CreateAttributePage.authenticate = {
   permissions: adminOwnerAndStaffOnly,
 };
-CreateAttributePage.Layout = ShopLayout;
+CreateAttributePage.Layout = AdminLayout;
 export const getServerSideProps = async ({ locale }: any) => ({
   props: {
     ...(await serverSideTranslations(locale, ['common', 'form'])),

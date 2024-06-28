@@ -25,7 +25,9 @@ const InventoryDropdown = () => {
     setNewShopSlug(newShopSlug);
   };
 
- 
+  const buildUrl = (path) => {
+    return `/${newShopSlug}${path}`;
+  };
 
   return (
     <div className="flex flex-col">
@@ -39,7 +41,7 @@ const InventoryDropdown = () => {
         <div className="space-y-1 border-0 border-l border-dashed border-slate-300 ltr:pl-1 rtl:pr-1">
           <div>
             <Link
-              href={`/${newShopSlug}`}
+              href={buildUrl('')}
               className="relative flex w-full cursor-pointer items-center rounded-lg py-2 px-5 text-sm text-body-dark text-start before:absolute before:-left-0.5 before:top-[18px] before:h-px before:w-3 before:border-t before:border-dashed before:border-gray-300 before:content-[''] hover:text-accent focus:text-accent"
               onClick={() => handleSetNewShopSlug(newShopSlug)}
             >
@@ -48,7 +50,7 @@ const InventoryDropdown = () => {
           </div>
           <div>
             <Link
-              href={`/${newShopSlug}/attributes`}
+              href={buildUrl('/attributes')}
               className="relative flex w-full cursor-pointer items-center rounded-lg py-2 px-5 text-sm text-body-dark text-start before:absolute before:-left-0.5 before:top-[18px] before:h-px before:w-3 before:border-t before:border-dashed before:border-gray-300 before:content-[''] hover:text-accent focus:text-accent"
               onClick={() => handleSetNewShopSlug(newShopSlug)}
             >
@@ -57,7 +59,7 @@ const InventoryDropdown = () => {
           </div>
           <div>
             <Link
-              href={`/${newShopSlug}/groups`}
+              href={buildUrl('/groups')}
               className="relative flex w-full cursor-pointer items-center rounded-lg py-2 px-5 text-sm text-body-dark text-start before:absolute before:-left-0.5 before:top-[18px] before:h-px before:w-3 before:border-t before:border-dashed before:border-gray-300 before:content-[''] hover:text-accent focus:text-accent"
               onClick={() => handleSetNewShopSlug(newShopSlug)}
             >
@@ -66,7 +68,7 @@ const InventoryDropdown = () => {
           </div>
           <div>
             <Link
-              href={`/${newShopSlug}/categories`}
+              href={buildUrl('/categories')}
               className="relative flex w-full cursor-pointer items-center rounded-lg py-2 px-5 text-sm text-body-dark text-start before:absolute before:-left-0.5 before:top-[18px] before:h-px before:w-3 before:border-t before:border-dashed before:border-gray-300 before:content-[''] hover:text-accent focus:text-accent"
               onClick={() => handleSetNewShopSlug(newShopSlug)}
             >
@@ -75,7 +77,7 @@ const InventoryDropdown = () => {
           </div>
           <div>
             <Link
-              href={`/${newShopSlug}/subCategories`}
+              href={buildUrl('/subCategories')}
               className="relative flex w-full cursor-pointer items-center rounded-lg py-2 px-5 text-sm text-body-dark text-start before:absolute before:-left-0.5 before:top-[18px] before:h-px before:w-3 before:border-t before:border-dashed before:border-gray-300 before:content-[''] hover:text-accent focus:text-accent"
               onClick={() => handleSetNewShopSlug(newShopSlug)}
             >
@@ -84,7 +86,7 @@ const InventoryDropdown = () => {
           </div>
           <div>
             <Link
-              href={`/${newShopSlug}/products`}
+              href={buildUrl('/products')}
               className="relative flex w-full cursor-pointer items-center rounded-lg py-2 px-5 text-sm text-body-dark text-start before:absolute before:-left-0.5 before:top-[18px] before:h-px before:w-3 before:border-t before:border-dashed before:border-gray-300 before:content-[''] hover:text-accent focus:text-accent"
               onClick={() => handleSetNewShopSlug(newShopSlug)}
             >
@@ -93,7 +95,7 @@ const InventoryDropdown = () => {
           </div>
           <div>
             <Link
-              href={`/${newShopSlug}/reviews`}
+              href={buildUrl('/reviews')}
               className="relative flex w-full cursor-pointer items-center rounded-lg py-2 px-5 text-sm text-body-dark text-start before:absolute before:-left-0.5 before:top-[18px] before:h-px before:w-3 before:border-t before:border-dashed before:border-gray-300 before:content-[''] hover:text-accent focus:text-accent"
               onClick={() => handleSetNewShopSlug(newShopSlug)}
             >
@@ -102,7 +104,7 @@ const InventoryDropdown = () => {
           </div>
           <div>
             <Link
-              href={`/${newShopSlug}/tags`}
+              href={buildUrl('/tags')}
               className="relative flex w-full cursor-pointer items-center rounded-lg py-2 px-5 text-sm text-body-dark text-start before:absolute before:-left-0.5 before:top-[18px] before:h-px before:w-3 before:border-t before:border-dashed before:border-gray-300 before:content-[''] hover:text-accent focus:text-accent"
               onClick={() => handleSetNewShopSlug(newShopSlug)}
             >
@@ -116,4 +118,3 @@ const InventoryDropdown = () => {
 };
 
 export default InventoryDropdown;
-

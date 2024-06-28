@@ -11,7 +11,6 @@ import { useUI } from '@/contexts/ui.context';
 import { Routes } from '@/config/routes';
 import usePrice from '@/utils/use-price';
 import { useCart } from '@/contexts/quick-cart/cart.context';
-import CheckoutForm from '../checkout/CheckoutForm';
 import { useMeQuery } from '@/data/user';
 
 const Cart = () => {

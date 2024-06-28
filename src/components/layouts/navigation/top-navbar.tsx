@@ -7,33 +7,29 @@ import { motion } from 'framer-motion';
 import { useTranslation } from 'next-i18next';
 import { Routes } from '@/config/routes';
 import {
-  adminAndOwnerOnly,
   getAuthCredentials,
-  hasAccess,
 } from '@/utils/auth-utils';
 import LanguageSwitcher from './language-switer';
 import { Config } from '@/config';
-import React, { useState } from 'react';
-import { newPermission } from '@/contexts/permission/storepermission';
-import { useAtom } from 'jotai';
-import { siteSettings } from '@/settings/site.settings';
+import React from 'react';
 import { AllPermission } from '@/utils/AllPermission';
+import { OWNER } from '@/utils/constants';
 
-const Navbar = () => {
+const Navbar: React.FC = () => {
   const { t } = useTranslation();
   const { toggleSidebar } = useUI();
 
-  const { permissions, type_name } = getAuthCredentials();
-  const permissionTypes = AllPermission();
-  // const canWrite = permissionTypes.includes('sidebar-nav-item-dealerlist');
+  const { permissions } = getAuthCredentials();
 
-  const canWrite = permissions?.includes('owner');
+  // Check if the user has OWNER permission
+  const canWrite = permissions?.includes(OWNER);
 
   const { enableMultiLang } = Config;
+
   return (
     <header className="fixed z-40 w-full bg-white shadow">
       <nav className="flex items-center justify-between px-5 py-4 md:px-8">
-        {/* <!-- Mobile menu button --> */}
+        {/* Mobile menu button */}
         <motion.button
           whileTap={{ scale: 0.88 }}
           onClick={toggleSidebar}
@@ -46,9 +42,8 @@ const Navbar = () => {
           <Logo />
         </div>
 
-        <div className="flex items-center space-s-8">
-          {/* {hasAccess(adminAndOwnerOnly, permissions) && ( */}
-          {canWrite ? (
+        <div className="flex items-center space-x-8">
+          {canWrite && (
             <LinkButton
               href={Routes.shop.create}
               className="ms-4 md:ms-6"
@@ -56,9 +51,8 @@ const Navbar = () => {
             >
               {t('common:text-create-shop')}
             </LinkButton>
-          ) : null}
-          {/* )} */}
-          {enableMultiLang ? <LanguageSwitcher /> : null}
+          )}
+          {enableMultiLang && <LanguageSwitcher />}
           <AuthorizedMenu />
         </div>
       </nav>

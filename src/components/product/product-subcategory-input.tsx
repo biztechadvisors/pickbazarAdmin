@@ -27,12 +27,13 @@ const ProductSubCategoryInput = ({ control, setValue }: Props) => {
     }
   }, [type?.slug]);
 
+
+
   const { subcategories, loading } = useSubCategoriesQuery({
     limit: 999,
     type: type?.slug,
     language: locale,
-    categoryId: 2,
-    shopId: '9',
+    categoryId: null,
   });
 
   return (
@@ -46,7 +47,7 @@ const ProductSubCategoryInput = ({ control, setValue }: Props) => {
         getOptionValue={(option: any) => option.id}
         // @ts-ignore
         options={subcategories}
-        isLoading={loading} defaultValue={[]}      />
+        isLoading={loading} defaultValue={[]} />
     </div>
   );
 };

@@ -141,8 +141,8 @@ export default function CreateOrUpdateTypeForm({ initialValues }: IProps) {
       },
       icon: initialValues?.icon
         ? typeIconList.find(
-            (singleIcon) => singleIcon.value === initialValues?.icon
-          )
+          (singleIcon) => singleIcon.value === initialValues?.icon
+        )
         : '',
     },
   });
@@ -191,13 +191,13 @@ export default function CreateOrUpdateTypeForm({ initialValues }: IProps) {
       createType({
         ...input,
         ...(initialValues?.slug && { slug: initialValues.slug }),
-        shop_id: meData?.shops?.[0]?.id || initialValues?.shop_id,
+        shop_id: meData?.managed_shop?.id || initialValues?.shop_id,
       });
     } else {
       updateType({
         ...input,
         id: initialValues.id!,
-        shop_id: meData?.shops?.[0]?.id,
+        shop_id: meData?.managed_shop?.id,
       });
     }
   };
@@ -206,11 +206,10 @@ export default function CreateOrUpdateTypeForm({ initialValues }: IProps) {
       <div className="my-5 flex flex-wrap sm:my-8">
         <Description
           title={t('form:item-description')}
-          details={`${
-            initialValues
+          details={`${initialValues
               ? t('form:item-description-update')
               : t('form:item-description-add')
-          } ${t('form:type-description-help-text')}`}
+            } ${t('form:type-description-help-text')}`}
           className="w-full px-0 pb-5 sm:w-4/12 sm:py-8 sm:pe-4 md:w-1/3 md:pe-5"
         />
 
@@ -221,7 +220,7 @@ export default function CreateOrUpdateTypeForm({ initialValues }: IProps) {
             error={t(errors.name?.message!)}
             variant="outline"
             className="mb-5"
-            // disabled={[].includes(Config.defaultLanguage)}
+          // disabled={[].includes(Config.defaultLanguage)}
           />
 
           <div className="mb-5">

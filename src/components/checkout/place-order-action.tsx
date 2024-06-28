@@ -132,7 +132,6 @@ export const PlaceOrderAction: React.FC<{
       saleBy: selectedAddress.address,
     };
 
-    console.log('place-order-action 135', input.products)
     createOrder(input);
   };
 

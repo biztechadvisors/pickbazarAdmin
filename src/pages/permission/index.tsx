@@ -12,13 +12,12 @@ import { usePermissionData } from '@/data/permission';
 import { useMeQuery } from '@/data/user';
 import { AllPermission } from '@/utils/AllPermission';
 import OwnerLayout from '@/components/layouts/owner';
+import { OWNER } from '@/utils/constants';
 
-// Define PermissionComponentProps interface to include Layout property
 interface PermissionComponentProps {
-  Layout: React.FC; // Layout should be a valid React functional component
+  Layout: React.FC;
 }
 
-// PermissionComponent is a function that also has Layout property
 const PermissionComponent: React.FC & PermissionComponentProps = () => {
   const { t } = useTranslation();
   const { permissions } = getAuthCredentials();
@@ -29,7 +28,7 @@ const PermissionComponent: React.FC & PermissionComponentProps = () => {
 
   const canWrite =
     permissionTypes.includes('sidebar-nav-item-permissions') ||
-    permissions?.[0] === 'owner';
+    permissions?.[0] === OWNER;
 
   const {
     isLoading,
