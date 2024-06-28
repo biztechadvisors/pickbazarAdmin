@@ -198,6 +198,21 @@ export function getCartesianProduct(values: any) {
   if (isEmpty(formattedValues)) return [];
   return cartesian(...formattedValues);
 }
+// export function getCartesianProduct(values: any, thirdDropdownValue: any) {
+//   const formattedValues = values
+//     ?.map((v: any) =>
+//       v?.value?.map((a: any) => ({ name: v?.attribute?.name, value: a?.value }))
+//     )
+//     .filter((i: any) => i !== undefined);
+
+//   // Include the selected value of the third dropdown
+//   if (thirdDropdownValue) {
+//     formattedValues.push([{ name: 'Third Dropdown', value: thirdDropdownValue }]);
+//   }
+
+//   if (isEmpty(formattedValues)) return [];
+//   return cartesian(...formattedValues);
+// }
 
 export function processFileWithName(file_input: any) {
   // Process Digital File Name section

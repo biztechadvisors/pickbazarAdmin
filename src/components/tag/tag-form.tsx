@@ -20,9 +20,11 @@ import { useCreateTagMutation, useUpdateTagMutation } from '@/data/tag';
 import { useTypesQuery } from '@/data/type';
 import OpenAIButton from '../openAI/openAI.button';
 import { useSettingsQuery } from '@/data/settings';
-import { useCallback, useMemo } from 'react';
-import { ItemProps } from '@/types';
+import { useCallback, useMemo, useState } from 'react';
+import { ItemProps, SortOrder } from '@/types';
 import { useModalAction } from '../ui/modal/modal.context';
+import { useShopsQuery } from '@/data/shop';
+import { useMeQuery } from '@/data/user';
 
 export const chatbotAutoSuggestion = ({ name }: { name: string }) => {
   return [
@@ -140,6 +142,14 @@ export default function CreateOrUpdateTagForm({ initialValues }: IProps) {
   const router = useRouter();
   const { t } = useTranslation();
   const isNewTranslation = router?.query?.action === 'translate';
+  const [searchTerm, setSearchTerm] = useState('');
+  const [page, setPage] = useState(1);
+  const [orderBy, setOrder] = useState('created_at');
+  const [sortedBy, setColumn] = useState<SortOrder>(SortOrder.Desc);
+
+  const { data: meData } = useMeQuery();
+
+  const shopSlug = meData?.managed_shop.slug;
 
   const {
     register,
@@ -152,16 +162,16 @@ export default function CreateOrUpdateTagForm({ initialValues }: IProps) {
     //@ts-ignore
     defaultValues: initialValues
       ? {
-          ...initialValues,
-          icon: initialValues?.icon
-            ? tagIcons.find(
-                (singleIcon) => singleIcon.value === initialValues?.icon!
-              )
-            : '',
-          ...(isNewTranslation && {
-            type: null,
-          }),
-        }
+        ...initialValues,
+        icon: initialValues?.icon
+          ? tagIcons.find(
+            (singleIcon) => singleIcon.value === initialValues?.icon!
+          )
+          : '',
+        ...(isNewTranslation && {
+          type: null,
+        }),
+      }
       : defaultValues,
 
     resolver: yupResolver(tagValidationSchema),
@@ -173,7 +183,7 @@ export default function CreateOrUpdateTagForm({ initialValues }: IProps) {
     // @ts-ignore
     settings: { options },
   } = useSettingsQuery({
-    language: locale!,
+    language: locale!
   });
 
   const generateName = watch('name');
@@ -206,6 +216,7 @@ export default function CreateOrUpdateTagForm({ initialValues }: IProps) {
       },
       icon: values.icon?.value ?? '',
       type_id: values.type?.id,
+      shop: shopSlug,
     };
 
     try {
@@ -245,11 +256,10 @@ export default function CreateOrUpdateTagForm({ initialValues }: IProps) {
       <div className="my-5 flex flex-wrap sm:my-8">
         <Description
           title={t('form:input-label-description')}
-          details={`${
-            initialValues
-              ? t('form:item-description-edit')
-              : t('form:item-description-add')
-          } ${t('form:tag-description-helper-text')}`}
+          details={`${initialValues
+            ? t('form:item-description-edit')
+            : t('form:item-description-add')
+            } ${t('form:tag-description-helper-text')}`}
           className="w-full px-0 pb-5 sm:w-4/12 sm:py-8 sm:pe-4 md:w-1/3 md:pe-5 "
         />
 
@@ -292,14 +302,14 @@ export default function CreateOrUpdateTagForm({ initialValues }: IProps) {
       </div>
       <div className="mb-4 text-end">
         {/* {initialValues && ( */}
-          <Button
-            variant="outline"
-            onClick={router.back}
-            className="me-4"
-            type="button"
-          >
-            {t('form:button-label-back')}
-          </Button>
+        <Button
+          variant="outline"
+          onClick={router.back}
+          className="me-4"
+          type="button"
+        >
+          {t('form:button-label-back')}
+        </Button>
         {/* )} */}
 
         <Button loading={creating || updating}>

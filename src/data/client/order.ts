@@ -26,24 +26,16 @@ export const orderClient = {
     ...params
   }: Partial<OrderQueryOptions>) => {
     return HttpClient.get<OrderPaginator>(API_ENDPOINTS.ORDERS, {
-      searchJoin: 'and',
+      searchJoin: customer_id,
       ...params,
       search: HttpClient.formatSearchParams({ tracking_number, customer_id }),
     });
   },
 
   downloadInvoice: (input: GenerateInvoiceDownloadUrlInput) => {
-    console.log('downloadInvoice***', input);
     return HttpClient.post<string>(
       `${API_ENDPOINTS.ORDER_INVOICE_DOWNLOAD}`,
       input
     );
   },
-  // downloadInvoicee: (input: GenerateInvoiceDownloadUrlInput) => {
-  //   console.log('downloadInvoice***', input);
-  //   return HttpClient.post<string>(
-  //     `${API_ENDPOINTS.INVOICE_DOWNLOAD}`,
-  //     input
-  //   );
-  // },
 };

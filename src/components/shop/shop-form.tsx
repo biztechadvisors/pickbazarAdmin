@@ -22,6 +22,7 @@ import {
   ItemProps,
   ShopSettings,
   ShopSocialInput,
+  User,
   UserAddressInput,
 } from '@/types';
 import GooglePlacesAutocomplete from '@/components/form/google-places-autocomplete';
@@ -32,12 +33,11 @@ import * as socialIcons from '@/components/icons/social';
 import omit from 'lodash/omit';
 import SwitchInput from '@/components/ui/switch-input';
 import { getAuthCredentials } from '@/utils/auth-utils';
-import { SUPER_ADMIN, STORE_OWNER } from '@/utils/constants';
+import { SUPER_ADMIN, STORE_OWNER, OWNER } from '@/utils/constants';
 import { useModalAction } from '../ui/modal/modal.context';
 import OpenAIButton from '../openAI/openAI.button';
 import { useCallback, useMemo } from 'react';
 import { useSettingsQuery } from '@/data/settings';
-import Select from '../ui/select/select';
 import { useMeQuery, useUserQuery, useVendorQuery } from '@/data/user';
 import ValidationError from '../ui/form-validation-error';
 
@@ -132,25 +132,24 @@ type FormValues = {
   settings: ShopSettings;
 };
 
-function SelectUser({
-  control,
-  errors,
-}: {
-  control: Control<FormValues>;
+type SelectUserProps = {
+  control: Control<User>;
   errors: FieldErrors;
-}) {
-  const { t } = useTranslation();
+};
 
+function SelectUser({ control, errors }: SelectUserProps) {
+  const { t } = useTranslation();
   const { data } = useMeQuery();
   const usrById = data?.id;
-
+  const { permissions } = getAuthCredentials();
+  const isOwner = permissions?.[0].includes(OWNER);
   const { data: users, isLoading } = useVendorQuery(usrById);
-
   const options: any = users || [];
+  const shouldDisable = control._defaultValues.owner != null || !isOwner;
 
   return (
     <div className="mb-5">
-      <Label>{t('form:input-label-search')}</Label>
+      <Label>{t('form:input-label-user-select')}</Label>
       <SelectInput
         name="user"
         control={control}
@@ -160,25 +159,25 @@ function SelectUser({
         isLoading={isLoading}
         isSearchable={true}
         filterOption={(option: any, inputValue: any) => {
-          // Customize the filter logic as needed
           const searchValue = inputValue.toLowerCase();
           return (
             option.name.toLowerCase().includes(searchValue) ||
             option.email.toLowerCase().includes(searchValue)
           );
         }}
-        defaultValue={[]}
+        defaultValue={control._defaultValues.owner}
+        disabled={shouldDisable}
       />
       <ValidationError message={t(errors.user?.message)} />
     </div>
   );
 }
 
+
 const ShopForm = ({ initialValues }: { initialValues?: any }) => {
   const { mutate: createShop, isLoading: creating } = useCreateShopMutation();
   const { mutate: updateShop, isLoading: updating } = useUpdateShopMutation();
-  // const { permissions } = getAuthCredentials();
-  // let permission = hasAccess(adminAndOwnerOnly, permissions);
+
   const { permissions } = getAuthCredentials();
   const {
     register,
@@ -242,7 +241,8 @@ const ShopForm = ({ initialValues }: { initialValues?: any }) => {
     control,
     name: 'settings.socials',
   });
-  function onSubmit(values: FormValues) {
+
+  async function onSubmit(values: FormValues) {
     const settings = {
       ...values?.settings,
       location: { ...omit(values?.settings?.location, '__typename') },
@@ -253,26 +253,31 @@ const ShopForm = ({ initialValues }: { initialValues?: any }) => {
         }))
         : [],
     };
-    if (initialValues) {
-      const { ...restAddress } = values.address;
-      updateShop({
-        id: initialValues.id,
-        ...values,
-        address: restAddress,
-        settings,
-        balance: {
-          id: initialValues.balance?.id,
-          ...values.balance,
-        },
-      });
-    } else {
-      createShop({
-        ...values,
-        settings,
-        balance: {
-          ...values.balance,
-        },
-      });
+    try {
+      if (initialValues) {
+        const { ...restAddress } = values.address;
+        await updateShop({
+          id: initialValues.id,
+          ...values,
+          address: restAddress,
+          settings,
+          balance: {
+            id: initialValues.balance?.id,
+            ...values.balance,
+          },
+        });
+      } else {
+        await createShop({
+          ...values,
+          settings,
+          balance: {
+            ...values.balance,
+          },
+        });
+      }
+      router.push('/shops'); // Navigate to the shops list or appropriate page
+    } catch (error) {
+      console.error('Error while saving the shop:', error);
     }
   }
 
@@ -324,8 +329,9 @@ const ShopForm = ({ initialValues }: { initialValues?: any }) => {
               className="mb-5"
               error={t(errors.name?.message!)}
             />
-
-            <SelectUser control={control} errors={errors} />
+            {
+              <SelectUser control={control} errors={errors} />
+            }
 
             <div className="relative">
               {options?.useAi && (
@@ -473,6 +479,7 @@ const ShopForm = ({ initialValues }: { initialValues?: any }) => {
                 name="settings.location"
                 render={({ field: { onChange } }) => (
                   <GooglePlacesAutocomplete
+                    apiKey={process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY}
                     onChange={onChange}
                     data={getValues('settings.location')!}
                   />
@@ -511,13 +518,6 @@ const ShopForm = ({ initialValues }: { initialValues?: any }) => {
                           defaultValue={item?.icon!}
                         />
                       </div>
-                      {/* <Input
-                        className="sm:col-span-2"
-                        label={t("form:input-label-icon")}
-                        variant="outline"
-                        {...register(`settings.socials.${index}.icon` as const)}
-                        defaultValue={item?.icon!} // make sure to set up defaultValue
-                      /> */}
                       <Input
                         className="sm:col-span-2"
                         label={t('form:input-label-url')}

@@ -1,4 +1,3 @@
-import ShopLayout from '@/components/layouts/shop';
 import LinkButton from '@/components/ui/link-button';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import Image from 'next/image';
@@ -12,7 +11,6 @@ import { CloseFillIcon } from '@/components/icons/close-fill';
 import { EditIcon } from '@/components/icons/edit';
 import { formatAddress } from '@/utils/format-address';
 import {
-  adminAndOwnerOnly,
   adminOwnerAndStaffOnly,
   adminOnly,
   getAuthCredentials,
@@ -32,37 +30,27 @@ import { DollarIcon } from '@/components/icons/shops/dollar';
 import ReadMore from '@/components/ui/truncate';
 import { useMeQuery } from '@/data/user';
 import { Routes } from '@/config/routes';
-import AccessDeniedPage from '@/components/common/access-denied';
-import React, { useState } from 'react';
-import { useAtom } from 'jotai';
-import { newPermission } from '@/contexts/permission/storepermission';
-import { siteSettings } from '@/settings/site.settings';
+import React from 'react';
 import { AllPermission } from '@/utils/AllPermission';
-
-
+import AdminLayout from '@/components/layouts/admin';
+import { OWNER } from '@/utils/constants';
+import OwnerLayout from '@/components/layouts/owner';
 
 export default function ShopPage() {
   const router = useRouter();
   const { t } = useTranslation();
-  const { permissions } = getAuthCredentials();
   const { data: me } = useMeQuery();
-  const { query: { shop }, locale, } = useRouter();
-  const { data, isLoading: loading, error, } = useShopQuery({ slug: shop!.toString(), });
+  const { query: { shop }, locale } = useRouter();
+  const { data, isLoading: loading, error } = useShopQuery({ slug: shop!.toString() });
 
-  const { price: totalEarnings } = usePrice(data && { amount: data?.balance?.total_earnings!, });
-  const { price: currentBalance } = usePrice(data && { amount: data?.balance?.current_balance!, });
+  const { price: totalEarnings } = usePrice(data && { amount: data?.balance?.total_earnings! });
+  const { price: currentBalance } = usePrice(data && { amount: data?.balance?.current_balance! });
 
-  // const [getPermission, _] = useAtom(newPermission)
-  // const canWrite = permissions?.includes('super_admin')
-  //   ? siteSettings.sidebarLinks
-  //   : getPermission?.find(
-  //     (permission) => permission.type === 'sidebar-nav-item-my-shops'
-  //     // (permission) => permission.type === 'sidebar-nav-item-dashboard'
-  //   )?.write;
-
-  const permissionTypes = AllPermission(); 
-
-  const canWrite = permissionTypes.includes('sidebar-nav-item-my-shops');
+  const { permissions } = getAuthCredentials();
+  const permissionTypes = AllPermission();
+  const canWrite =
+    permissionTypes.includes('sidebar-nav-item-my-shops') ||
+    permissions?.[0] === OWNER;
 
   if (loading) return <Loader text={t('common:text-loading')} />;
   if (error) return <ErrorMessage message={error.message} />;
@@ -90,10 +78,6 @@ export default function ShopPage() {
     router.replace(Routes.dashboard);
   }
 
-  console.log("data******", data)
-  console.log("me***********", me)
-  console.log("shop*********", shop)
-
   return (
     <div className="grid grid-cols-12 gap-6">
       {!is_active && (
@@ -107,8 +91,7 @@ export default function ShopPage() {
           <div className="relative mb-5 h-36 w-36 rounded-full">
             <div className="relative flex h-full w-full items-center justify-center overflow-hidden rounded-full border border-gray-100">
               <Image
-                // src={`https://localhost:5000/api/${logo?.thumbnail ?? '/avatar-placeholder.svg'}`}
-                src={`${process?.env?.NEXT_PUBLIC_REST_API_ENDPOINT}/${logo?.thumbnail ?? '/avatar-placeholder.svg'}`}
+                src={`${logo?.thumbnail ?? '/avatar-placeholder.svg'}`}
                 fill
                 sizes="(max-width: 768px) 100vw"
                 alt={String(name)}
@@ -350,16 +333,24 @@ export default function ShopPage() {
     </div>
   );
 }
-ShopPage.Layout = ShopLayout;
+
+const { permissions } = getAuthCredentials();
+const resLayout = () => {
+  return permissions?.[0] === OWNER ? OwnerLayout : AdminLayout;
+};
+
+ShopPage.Layout = resLayout()
+
 ShopPage.authenticate = {
   permissions: adminOwnerAndStaffOnly,
 };
 
-export const getStaticProps = async ({ locale }: any) => ({
+export const getStaticProps: GetStaticProps = async ({ locale }) => ({
   props: {
     ...(await serverSideTranslations(locale, ['form', 'common', 'table'])),
   },
 });
+
 export const getStaticPaths: GetStaticPaths = async () => {
   return { paths: [], fallback: 'blocking' };
 };

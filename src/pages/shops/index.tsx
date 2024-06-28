@@ -14,6 +14,7 @@ import permission from '../permission';
 import OwnerLayout from '@/components/layouts/owner';
 import LinkButton from '@/components/ui/link-button';
 import { Routes } from '@/config/routes';
+import { OWNER } from '@/utils/constants';
 
 export default function AllShopPage() {
   const { t } = useTranslation();
@@ -32,7 +33,7 @@ export default function AllShopPage() {
     sortedBy,
   });
 
-  const canWrite = permissions?.includes('owner');
+  const canWrite = permissions?.includes(OWNER);
 
   if (loading) return <Loader text={t('common:text-loading')} />;
   if (error) return <ErrorMessage message={error.message} />;
@@ -59,14 +60,13 @@ export default function AllShopPage() {
             <Search onSearch={handleSearch} />
             {canWrite ? (
               <LinkButton
-              href={Routes.shop.create}
-              className="h-12 ms-4 md:ms-6"
-            >
-              <span className="hidden md:block">
-              {t('common:text-create-shop')}
-              </span>
-            </LinkButton>
-              
+                href={Routes.shop.create}
+                className="h-12 ms-4 md:ms-6"
+              >
+                <span className="hidden md:block">
+                  {t('common:text-create-shop')}
+                </span>
+              </LinkButton>
             ) : null}
           </div>
         </div>

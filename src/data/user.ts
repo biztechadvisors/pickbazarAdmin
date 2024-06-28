@@ -37,7 +37,7 @@ function getCookie(name: string): string | null {
 export class UserService {
   static getUserDetails() {
     // Extract token from cookie or localStorage
-    let authToken = getCookie('AUTH_CRED') || localStorage.getItem('authToken');
+    let authToken = getCookie('AUTH_CRED');
     let username: string | null = null;
     let sub: string | null = null;
 
@@ -49,7 +49,7 @@ export class UserService {
         const jsonPayload = decodeURIComponent(
           atob(base64)
             .split('')
-            .map(c => '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2))
+            .map((c) => '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2))
             .join('')
         );
 
@@ -59,7 +59,7 @@ export class UserService {
         username = data.username;
         sub = data.sub;
       } catch (error) {
-        console.error("Error parsing JWT token:", error);
+        console.error('Error parsing JWT token:', error);
       }
     }
 
@@ -70,7 +70,9 @@ export class UserService {
 export const useMeQuery = () => {
   const router = useRouter();
   const queryClient = useQueryClient();
-  const [userDetails, setUserDetails] = useState(() => UserService.getUserDetails());
+  const [userDetails, setUserDetails] = useState(() =>
+    UserService.getUserDetails()
+  );
 
   useEffect(() => {
     const user = UserService.getUserDetails();
@@ -85,7 +87,10 @@ export const useMeQuery = () => {
     {
       enabled: !!username && !!sub,
       initialData: () => {
-        const cachedData = queryClient.getQueryData<User>([API_ENDPOINTS.ME, { username, sub }]);
+        const cachedData = queryClient.getQueryData<User>([
+          API_ENDPOINTS.ME,
+          { username, sub },
+        ]);
         return cachedData;
       },
       retry: false,
@@ -127,23 +132,22 @@ export const useLogoutMutation = () => {
 
   const logoutMutation = useMutation(userClient.logout, {
     onSuccess: () => {
-      // Check if logout occurred due to a window refresh
-      const isWindowRefresh = !router.query.noredirect;
-
-      if (isWindowRefresh) {
-        console.log('Logout: Window Refresh');
-      } else {
-        console.log('Logout: Route Change');
-      }
-
-      // Remove auth credentials and redirect to login route
+      // Remove auth credentials and clear all local storage items
       Cookies.remove(AUTH_CRED);
+      localStorage.clear();
+
+      // Redirect to login route
       router.replace(Routes.login);
+
+      // Show success toast
       toast.success(t('common:successfully-logout'));
     },
     onError: (error) => {
+      // Show error toast
+      toast.error(t('common:logout-failed', { error: error.message }));
+
       console.error('Logout Error:', error);
-    }
+    },
   });
 
   return logoutMutation;
@@ -153,8 +157,6 @@ export const useRegisterMutation = () => {
   const router = useRouter();
   const queryClient = useQueryClient();
   const { t } = useTranslation();
-  // console.log(t, queryClient)
-
   return useMutation(userClient.register, {
     onSuccess: () => {
       const queryParams = new URLSearchParams(window.location.search);
@@ -307,12 +309,18 @@ export const useUserQuery = ({ id }: { id: string }) => {
 };
 
 export const useVendorQuery = (usrById: number) => {
-  const type: string = API_ENDPOINTS.VENDOR_LIST;
+  const type: string = API_ENDPOINTS.STORE_OWNER;
+
   return useQuery<User, Error>(
     [API_ENDPOINTS.USERS, type, usrById],
-    () => userClient.fetchVendor({ type, usrById }),
+    () => {
+      if (isNaN(usrById)) {
+        throw new Error('usrById must be a valid number');
+      }
+      return userClient.fetchVendor({ type, usrById });
+    },
     {
-      enabled: Boolean(type),
+      enabled: !isNaN(usrById) && Boolean(type), // Enable query only if usrById is a valid number and type is truthy
     }
   );
 };
@@ -351,10 +359,8 @@ export const useAdminsQuery = (params: Partial<QueryOptionsType>) => {
   };
 };
 
-
 //  profile update function
 export const useUpdateProfileMutation = () => {
-
   const { t } = useTranslation();
   const queryClient = useQueryClient();
   return useMutation(userClient.update, {
@@ -366,5 +372,5 @@ export const useUpdateProfileMutation = () => {
       queryClient.invalidateQueries(API_ENDPOINTS.ME);
       queryClient.invalidateQueries(API_ENDPOINTS.PROFILE_UPDATE);
     },
-  })
-}
+  });
+};

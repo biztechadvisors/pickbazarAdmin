@@ -8,6 +8,8 @@ import CreateOrUpdateTagForm from '@/components/tag/tag-form';
 import { adminOnly } from '@/utils/auth-utils';
 import { useTagQuery } from '@/data/tag';
 import { Config } from '@/config';
+import AdminLayout from '@/components/layouts/admin';
+
 
 export default function UpdateTagPage() {
   const { query, locale } = useRouter();
@@ -36,7 +38,7 @@ export default function UpdateTagPage() {
 UpdateTagPage.authenticate = {
   permissions: adminOnly,
 };
-UpdateTagPage.Layout = Layout;
+UpdateTagPage.Layout = AdminLayout;
 
 export const getServerSideProps = async ({ locale }: any) => ({
   props: {

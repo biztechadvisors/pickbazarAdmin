@@ -1,35 +1,10 @@
-// import Link from '@/components/ui/link';
-// import { getIcon } from '@/utils/get-icon';
-// import * as sidebarIcons from '@/components/icons/sidebar';
-// import { useUI } from '@/contexts/ui.context';
-
-// const SidebarItem = ({ href, icon, label }: any) => {
-//   console.log("label", label)
-
-//   const { closeSidebar } = useUI();
-//   return (
-//     <Link
-//       href={href}
-//       className="flex w-full items-center text-base text-body-dark text-start focus:text-accent"
-//     >
-//       {getIcon({
-//         iconList: sidebarIcons,
-//         iconName: icon,
-//         className: 'w-5 h-5 me-4',
-//       })}
-//       <span onClick={() => closeSidebar()}>{label}</span>
-//     </Link>
-//   );
-// };
-
-// export default SidebarItem;
-
 import Link from '@/components/ui/link';
 import { getIcon } from '@/utils/get-icon';
 import * as sidebarIcons from '@/components/icons/sidebar';
 import { useUI } from '@/contexts/ui.context';
 import Dropdown from './Dropdown';
-// Import your Dropdown component here
+import InventoryDropdown from './InventoryDropdown';
+
 
 const SidebarItem = ({ href, icon, label }: any) => {
   const { closeSidebar } = useUI();
@@ -44,6 +19,19 @@ const SidebarItem = ({ href, icon, label }: any) => {
           className: 'w-5 h-5 me-4',
         })}
         <Dropdown />
+      </div>
+    );
+  }
+
+  if (label === 'Inventory') {
+    return (
+      <div className="flex w-full items-center text-base text-body-dark text-start focus:text-accent cursor-pointer">
+        {getIcon({
+          iconList: sidebarIcons,
+          iconName: icon,
+          className: 'w-5 h-5 me-4',
+        })}
+        <InventoryDropdown />
       </div>
     );
   }

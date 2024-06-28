@@ -29,12 +29,12 @@ const SubCategoryList = ({
   onSort,
   onOrder,
 }: IProps) => {
-  console.log("secound$$$$$$$",subcategories)
+
   const { t } = useTranslation();
   const rowExpandable = (record: any) => record.children?.length;
-  const { alignLeft, alignRight } = useIsRTL();  
-  
-  const permissionTypes = AllPermission(); 
+  const { alignLeft, alignRight } = useIsRTL();
+
+  const permissionTypes = AllPermission();
 
   const canWrite = permissionTypes.includes('sidebar-nav-item-categories');
 
@@ -118,25 +118,6 @@ const SubCategoryList = ({
         );
       },
     },
-    // {
-    //   title: t('table:table-item-icon'),
-    //   dataIndex: 'icon',
-    //   key: 'icon',
-    //   align: 'center',
-    //   width: 120,
-    //   render: (icon: string) => {
-    //     if (!icon) return null;
-    //     return (
-    //       <span className="flex items-center justify-center">
-    //         {getIcon({
-    //           iconList: categoriesIcon,
-    //           iconName: icon,
-    //           className: 'w-5 h-5 max-h-full max-w-full',
-    //         })}
-    //       </span>
-    //     );
-    //   },
-    // },
     {
       title: t('table:table-item-slug'),
       dataIndex: 'slug',
@@ -168,26 +149,26 @@ const SubCategoryList = ({
         </div>
       ),
     },
-    {      
+    {
       ...(canWrite
-        ?  {
+        ? {
           title: t('table:table-item-actions'),
           dataIndex: 'slug',
           key: 'actions',
           align: alignRight,
           width: 290,
-          render: (slug: string, record: SubCategory) =>  (
+          render: (slug: string, record: SubCategory) => (
             <LanguageSwitcher
               slug={slug}
               record={record}
               deleteModalView="DELETE_SUBCATEGORY"
               routes={Routes?.subcategory}
             />
-            ) ,
-        }        
+          ),
+        }
         : null),
-    }, 
-   
+    },
+
   ];
 
   return (

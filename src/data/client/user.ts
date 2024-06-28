@@ -24,36 +24,29 @@ export const userClient = {
       `${API_ENDPOINTS.ME}?username=${params.username}&sub=${params.sub}`
     );
   },
-
-  login: (variables: LoginInput) => {
-    const result = HttpClient.post<AuthResponse>(
-      API_ENDPOINTS.TOKEN,
-      variables
-    );
-    result
-      .then((response) => {
-        // Assuming the token is in the response object
-        const token = response.token;
-        if (token) {
-          localStorage.setItem('authToken', token);
-        }
-        console.log('result*****', response);
-      })
-      .catch((error) => {
-        console.error('Error during login:', error);
-      });
-    return result;
+  login: async (variables: LoginInput) => {
+    try {
+      const response = await HttpClient.post<AuthResponse>(
+        API_ENDPOINTS.TOKEN,
+        variables
+      );
+      const token = response.token;
+      if (token) {
+        localStorage.setItem('authToken', token);
+      }
+      return response;
+    } catch (error) {
+      console.error('Error during login:', error);
+      throw error;
+    }
   },
-
   logout: () => {
     return HttpClient.post<any>(API_ENDPOINTS.LOGOUT, {});
   },
   register: (variables: RegisterInput) => {
-    // console.log('variables', variables)
     return HttpClient.post<AuthResponse>(API_ENDPOINTS.REGISTER, variables);
   },
   update: ({ id, input }: { id: string; input: UpdateUser }) => {
-    // console.log('myUpdateUser', input);
     return HttpClient.put<User>(`${API_ENDPOINTS.USERS}/${id}`, input);
   },
   changePassword: (variables: ChangePasswordInput) => {
@@ -92,10 +85,8 @@ export const userClient = {
       search: HttpClient.formatSearchParams({ email }),
     });
   },
-  fetchVendor: ({ type, usrById }: { type: string, usrById: number }) => {
-    return HttpClient.get<User>(
-      `${API_ENDPOINTS.USERS}?type=${type}&usrById=${usrById}`
-    );
+  fetchVendor: ({ type, usrById }: { type: string; usrById: number }) => {
+    return HttpClient.get<User>(`${API_ENDPOINTS.USERS}?type=${type}&usrById=${usrById}`);
   },
   fetchAdmins: ({ ...params }: Partial<UserQueryOptions>) => {
     return HttpClient.get<UserPaginator>(API_ENDPOINTS.ADMIN_LIST, {
@@ -104,7 +95,6 @@ export const userClient = {
     });
   },
   fetchUser: ({ id }: { id: string }) => {
-    console.log('id******', id);
     return HttpClient.get<User>(`${API_ENDPOINTS.USERS}/${id}`);
   },
   resendVerificationEmail: () => {

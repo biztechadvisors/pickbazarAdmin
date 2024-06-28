@@ -24,8 +24,9 @@ import { useAtom } from 'jotai';
 import { siteSettings } from '@/settings/site.settings';
 import { useQuery } from 'react-query';
 import { useMeQuery } from '@/data/user';
-import ShopLayout from '@/components/layouts/shop';
+
 import { AllPermission } from '@/utils/AllPermission';
+import AdminLayout from '@/components/layouts/admin';
 
 export default function SubCategories() {
   const { locale } = useRouter();
@@ -37,14 +38,12 @@ export default function SubCategories() {
   const [sortedBy, setColumn] = useState<SortOrder>(SortOrder.Desc);
   const { data: meData } = useMeQuery();
 
-  const shop: string | undefined = meData?.shops?.[0]?.id;
-  const shopSlug = meData?.shops?.[0]?.slug;
+  const shop: string | undefined = meData?.managed_shop?.id;
+  const shopSlug = meData?.managed_shop?.slug;
 
-  const permissionTypes = AllPermission(); 
+  const permissionTypes = AllPermission();
 
   const canWrite = permissionTypes.includes('sidebar-nav-item-subcategories');
-  
-  console.log("canwrite", canWrite)
 
   const { subcategories, paginatorInfo, loading, error } = useSubCategoriesQuery({
     limit: 20,
@@ -55,17 +54,7 @@ export default function SubCategories() {
     sortedBy,
     categoryId: null,
     language: locale,
-    shopId: shop,
   });
-console.log("shopID++++++++++++", shop, subcategories)
-  // const [getPermission, _] = useAtom(newPermission);
-  // const { permissions } = getAuthCredentials();
-  // const canWrite = permissions?.includes('super_admin')
-  //   ? siteSettings.sidebarLinks
-  //   : getPermission?.find(
-  //       (permission) => permission.type === 'sidebar-nav-item-subcategories'
-  //     )?.write;
-
 
   if (loading) return <Loader text={t('common:text-loading')} />;
   if (error) return <ErrorMessage message={error.message} />;
@@ -91,14 +80,6 @@ console.log("shopID++++++++++++", shop, subcategories)
 
           <div className="flex w-full flex-col items-center space-y-4 ms-auto md:flex-row md:space-y-0 xl:w-3/4">
             <Search onSearch={handleSearch} />
-
-            {/* <TypeFilter
-              className="md:ms-6"
-              onTypeFilter={({ slug }: { slug: string }) => {
-                setType(slug);
-                setPage(1);
-              }}
-            /> */}
 
             {canWrite && locale === Config.defaultLanguage && (
               <LinkButton
@@ -130,13 +111,7 @@ console.log("shopID++++++++++++", shop, subcategories)
 SubCategories.authenticate = {
   permissions: adminOwnerAndStaffOnly,
 };
-SubCategories.Layout = ShopLayout;
-
-// export const getStaticProps = async ({ locale }: any) => ({
-//   props: {
-//     ...(await serverSideTranslations(locale, ['form', 'common', 'table'])),
-//   },
-// });
+SubCategories.Layout = AdminLayout;
 
 export const getServerSideProps = async ({ locale }: any) => ({
   props: {

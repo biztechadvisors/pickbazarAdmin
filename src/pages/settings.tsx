@@ -5,28 +5,41 @@ import Loader from '@/components/ui/loader/loader';
 import { useSettingsQuery } from '@/data/settings';
 import { useShippingClassesQuery } from '@/data/shipping';
 import { useTaxesQuery } from '@/data/tax';
+import { useMeQuery } from '@/data/user';
 import { adminOnly } from '@/utils/auth-utils';
+import { GetStaticProps } from 'next';
 import { useTranslation } from 'next-i18next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import { useRouter } from 'next/router';
 
-export default function Settings() {
+const Settings: React.FC = () => {
   const { t } = useTranslation();
   const { locale } = useRouter();
-  const { taxes, loading: taxLoading } = useTaxesQuery({
-    limit: 999,
-  });
+  const { data: meData } = useMeQuery();
+  const shop_id = meData?.managed_shop?.id;
 
-  const { shippingClasses, loading: shippingLoading } =
-    useShippingClassesQuery();
-
-  const { settings, loading, error } = useSettingsQuery({
+  const { settings, loading: settingsLoading, error: settingsError, shopSlug } = useSettingsQuery({
     language: locale!,
   });
 
-  if (loading || shippingLoading || taxLoading)
+  const { taxes, loading: taxLoading } = useTaxesQuery({
+    limit: 999,
+    shop_id: shop_id,
+  });
+
+  const { shippingClasses, loading: shippingLoading } = useShippingClassesQuery();
+
+  if (!shopSlug) {
     return <Loader text={t('common:text-loading')} />;
-  if (error) return <ErrorMessage message={error.message} />;
+  }
+
+  if (settingsLoading || taxLoading || shippingLoading) {
+    return <Loader text={t('common:text-loading')} />;
+  }
+
+  if (settingsError) {
+    return <ErrorMessage message={settingsError.message} />;
+  }
 
   return (
     <>
@@ -36,22 +49,24 @@ export default function Settings() {
         </h1>
       </div>
       <SettingsForm
-        // TODO: fix it
-        // @ts-ignore
         settings={settings}
         taxClasses={taxes}
         shippingClasses={shippingClasses}
       />
     </>
   );
-}
+};
+
 Settings.authenticate = {
   permissions: adminOnly,
 };
+
 Settings.Layout = AdminLayout;
 
-export const getStaticProps = async ({ locale }: any) => ({
+export const getStaticProps: GetStaticProps = async ({ locale }) => ({
   props: {
-    ...(await serverSideTranslations(locale, ['form', 'common'])),
+    ...(await serverSideTranslations(locale || 'en', ['form', 'common'])),
   },
 });
+
+export default Settings;

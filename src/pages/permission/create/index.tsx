@@ -1,10 +1,9 @@
 import React, { useEffect, useState } from 'react';
-import AdminLayout from '@/components/layouts/admin';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import Card from '@/components/common/card';
 import { useTranslation } from 'react-i18next';
 import { useRouter } from 'next/router';
-import { ToastContainer, toast } from 'react-toastify';
+import { toast } from 'react-toastify';
 import Button from '@/components/ui/button';
 import { useQuery } from 'react-query';
 import { permissionClient } from '@/data/client/permission';
@@ -15,6 +14,7 @@ import { getAuthCredentials } from '@/utils/auth-utils';
 import { newPermission } from '@/contexts/permission/storepermission';
 import { useAtom } from 'jotai';
 import OwnerLayout from '@/components/layouts/owner';
+import { ADMIN, DEALER, OWNER, STAFF, STORE_OWNER } from '@/utils/constants';
 
 const CreatePermission = () => {
   const router = useRouter();
@@ -145,7 +145,7 @@ const CreatePermission = () => {
   };
 
   const filteredData = () => {
-    if (permissions.includes('owner')) {
+    if (permissions?.includes(OWNER)) {
       return Object.entries(menusData).map(([key, value], index) => ({
         [key]: value,
         id: index + 1,
@@ -169,7 +169,7 @@ const CreatePermission = () => {
   };
 
   useEffect(() => {
-    if (permissions.includes('owner')) {
+    if (permissions.includes(OWNER)) {
       setTypeName(PermissionJson.type_name);
     } else {
       const permList = permissions;
@@ -180,23 +180,23 @@ const CreatePermission = () => {
 
       for (let i = 0; i < filteredArray.length; i++) {
         switch (filteredArray[i]) {
-          case 'owner':
+          case OWNER:
             updatedTypeName.push(
-              'owner',
-              'admin',
-              'store_owner',
-              'dealer',
-              'staff'
+              OWNER,
+              ADMIN,
+              STORE_OWNER,
+              DEALER,
+              STAFF,
             );
             break;
-          case 'admin':
-            updatedTypeName.push('admin', 'store_owner', 'dealer', 'staff');
+          case ADMIN:
+            updatedTypeName.push(ADMIN, STORE_OWNER, DEALER, STAFF);
             break;
-          case 'store_owner':
-            updatedTypeName.push('store_owner', 'dealer', 'staff');
+          case STORE_OWNER:
+            updatedTypeName.push(STORE_OWNER, DEALER, STAFF);
             break;
-          case 'dealer':
-            updatedTypeName.push('dealer', 'staff');
+          case DEALER:
+            updatedTypeName.push(DEALER, STAFF);
             break;
           default:
             updatedTypeName = [];
@@ -226,9 +226,8 @@ const CreatePermission = () => {
           <select
             id="typename"
             name="typename"
-            className={`mt-1 block w-full rounded-md border bg-gray-100 p-2 ${
-              typeError && 'border-red-500'
-            }`}
+            className={`mt-1 block w-full rounded-md border bg-gray-100 p-2 ${typeError && 'border-red-500'
+              }`}
             onChange={(e) => handleChange(e)}
           >
             {Object.values(typeName).map((type, index) => (
@@ -253,9 +252,8 @@ const CreatePermission = () => {
             type="text"
             id="permission"
             name="permission"
-            className={`mt-1 block w-full rounded-md border bg-gray-100 p-2 ${
-              permissionError && 'border-red-500'
-            }`}
+            className={`mt-1 block w-full rounded-md border bg-gray-100 p-2 ${permissionError && 'border-red-500'
+              }`}
             placeholder="Enter permissions"
             value={permissionName}
             onChange={(e) => handlePermissionNameChange(e)}

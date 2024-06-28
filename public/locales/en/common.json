@@ -50,7 +50,7 @@
   "sidebar-nav-item-products": "Products",
   "sidebar-nav-item-attributes": "Attributes",
   "sidebar-nav-item-attribute-value": "Attribute Values",
-  "sidebar-nav-item-groups": "Groups",
+  "sidebar-nav-item-groups": "Collections",
   "sidebar-nav-item-total-sale": "Total Sale​",
   "sidebar-nav-item-categories": "Categories",
   "sidebar-nav-item-sub-categories": "SubCategories",
@@ -396,5 +396,6 @@
   "text-paid-from-wallet": "Paid From Wallet",
   "text-total-item": "Total Item",
   "text-deliver-time": "Delivery Time",
-  "text-order-failed": "Order Failed"
+  "text-order-failed": "Order Failed",
+  "form:input-label-number-of-dealers":"Total dealers"
 }

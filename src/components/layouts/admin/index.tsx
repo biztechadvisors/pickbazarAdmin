@@ -12,6 +12,7 @@ import { getAuthCredentials } from '@/utils/auth-utils';
 import { useMeQuery } from '@/data/user';
 import { Routes } from '@/config/routes';
 import { shopSlugAtom } from '@/utils/atoms';
+import { DEALER } from '@/utils/constants';
 
 const AdminLayout: React.FC<{ children?: React.ReactNode }> = ({
   children,
@@ -24,19 +25,25 @@ const AdminLayout: React.FC<{ children?: React.ReactNode }> = ({
 
   const [matched, _] = useAtom(newPermission);
   const { permissions } = getAuthCredentials();
-
   const { data, isLoading: loading, error } = useMeQuery();
-
   const [shopSlug, setShopSlug] = useAtom(shopSlugAtom);
 
   useEffect(() => {
-    if (data && data.shops && data.shops.length > 0) {
-      const newShopSlug = data.shops[0].slug;
+    if (data) {
+      let newShopSlug = null;
 
-      setShopSlug(newShopSlug);
-      localStorage.setItem('shopSlug', newShopSlug);
+      if (permissions?.[0].includes(DEALER) && data.UsrBy?.managed_shop?.slug) {
+        newShopSlug = data.UsrBy.managed_shop.slug;
+      } else if (data.managed_shop) {
+        newShopSlug = data.managed_shop.slug;
+      }
+
+      if (newShopSlug) {
+        setShopSlug(newShopSlug);
+        localStorage.setItem('shopSlug', newShopSlug);
+      }
     }
-  }, [data]);
+  }, [data, permissions, setShopSlug]);
 
   let matchedLinks = [];
 
@@ -418,8 +425,8 @@ const AdminLayout: React.FC<{ children?: React.ReactNode }> = ({
     matchedLinks = permissions?.includes('super_admin')
       ? siteSettings.sidebarLinks.admin
       : siteSettings.sidebarLinks.admin.filter((link) =>
-          matched.some((newItem) => newItem.type === link.label)
-        );
+        matched.some((newItem) => newItem.type === link.label)
+      );
 
     matchedLinks = matchedLinks.filter(
       (link) =>

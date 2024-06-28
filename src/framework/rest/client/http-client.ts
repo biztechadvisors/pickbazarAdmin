@@ -22,7 +22,6 @@ Axios.interceptors.request.use((config) => {
     Authorization: `Bearer ${token.token ? token.token : ''}`,
   };
 
-  // console.log("config****", config)
   return config;
 });
 

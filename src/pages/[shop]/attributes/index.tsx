@@ -5,7 +5,7 @@ import LinkButton from '@/components/ui/link-button';
 import Loader from '@/components/ui/loader/loader';
 import { useTranslation } from 'next-i18next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
-import ShopLayout from '@/components/layouts/shop';
+
 import router, { useRouter } from 'next/router';
 import {
   adminOnly,
@@ -24,6 +24,8 @@ import { Config } from '@/config';
 import { useMeQuery } from '@/data/user';
 import { Routes } from '@/config/routes';
 import { AllPermission } from '@/utils/AllPermission';
+import Search from '@/components/common/search';
+import AdminLayout from '@/components/layouts/admin';
 
 export default function AttributePage() {
   const router = useRouter();
@@ -32,6 +34,8 @@ export default function AttributePage() {
     locale,
   } = useRouter();
   const { permissions } = getAuthCredentials();
+  const [searchTerm, setSearchTerm] = useState('');
+  const [page, setPage] = useState(1);
   const { t } = useTranslation();
   const { openModal } = useModalAction();
   const [orderBy, setOrder] = useState('updated_at');
@@ -58,9 +62,7 @@ export default function AttributePage() {
     }
   );
 
- 
-
-  const permissionTypes = AllPermission(); 
+  const permissionTypes = AllPermission();
 
   const canWrite = permissionTypes.includes('sidebar-nav-item-attributes');
 
@@ -76,6 +78,15 @@ export default function AttributePage() {
     router.replace(Routes.dashboard);
   }
 
+  function handleSearch({ searchText }: { searchText: string }) {
+    setSearchTerm(searchText);
+    setPage(1);
+  }
+
+  function handlePagination(current: any) {
+    setPage(current);
+  }
+
   return (
     <>
       <Card className="mb-8 flex flex-col items-center justify-between md:flex-row">
@@ -86,10 +97,13 @@ export default function AttributePage() {
         </div>
 
         <div className="flex w-full flex-col items-center ms-auto md:w-3/4 md:flex-row xl:w-2/4">
+          <Search onSearch={handleSearch} />
+
           {canWrite && locale === Config.defaultLanguage && (
             <LinkButton
               href={`/${shop}/attributes/create`}
-              className="mt-5 h-12 w-full md:mt-0 md:w-auto md:ms-auto"
+              // className="mt-5 h-12 w-full md:mt-0 md:w-auto md:ms-auto"
+              className="h-12 w-full md:w-auto md:ms-6"
             >
               <span>
                 + {t('form:button-label-add')} {t('common:attribute')}
@@ -100,19 +114,20 @@ export default function AttributePage() {
           <Button onClick={handleImportModal} className="mt-5 w-full md:hidden">
             {t('common:text-export-import')}
           </Button>
-          
+
           <button
             onClick={handleImportModal}
             className="hidden h-8 w-8 flex-shrink-0 items-center justify-center rounded-full bg-gray-50 transition duration-300 ms-6 hover:bg-gray-100 md:flex"
           >
             {canWrite && (
-            <MoreIcon className="w-3.5 text-body" />
+              <MoreIcon className="w-3.5 text-body" />
             )}
           </button>
         </div>
       </Card>
       <AttributeList
         attributes={attributes}
+        onPagination={handlePagination}
         onOrder={setOrder}
         onSort={setColumn}
       />
@@ -122,7 +137,7 @@ export default function AttributePage() {
 AttributePage.authenticate = {
   permissions: adminOwnerAndStaffOnly,
 };
-AttributePage.Layout = ShopLayout;
+AttributePage.Layout = AdminLayout;
 export const getServerSideProps = async ({ locale }: any) => ({
   props: {
     ...(await serverSideTranslations(locale, ['table', 'common', 'form'])),

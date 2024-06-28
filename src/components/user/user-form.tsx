@@ -8,22 +8,22 @@ import { useMeQuery, useRegisterMutation } from '@/data/user';
 import { useTranslation } from 'next-i18next';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { customerValidationSchema } from './user-validation-schema';
-import { Permission } from '@/types';
 import Select from '../ui/select/select';
 import Label from '../ui/label';
 import { useRouter } from 'next/router';
 import { usePermissionData } from '@/data/permission';
 import { getAuthCredentials } from '@/utils/auth-utils';
 import Loader from '../ui/loader/loader';
+import { DEALER } from '@/utils/constants';
 
 type FormValues = {
   name: string;
   email: string;
   password: string;
   contact: string;
-  type: { value: string; label: string };
-  permission: Permission;
+  type: { value: string, label: string };
   UsrBy: string;
+  numberOfDealers: number;  // Added new field type
 };
 
 const defaultValues = {
@@ -32,6 +32,7 @@ const defaultValues = {
   password: '',
   contact: '',
   type: { value: '', label: '' },
+  numberOfDealers: 0,  // Added default value for new field
 };
 
 const CustomerCreateForm = () => {
@@ -58,15 +59,19 @@ const CustomerCreateForm = () => {
     return <Loader />;
   }
 
-  const permissionNames =
-    permissionData?.map(
-      (permission: { permission_name: string }) => permission.permission_name
-    ) ?? [];
+  const permissionOptions =
+    permissionData?.map((permission: { id: any, permission_name: string }) => ({
+      value: permission.permission_name,
+      label: permission.permission_name,
+      id: permission.id,
+    })) ?? [];
 
-  const permissionOptions = permissionNames.map((name: string) => ({
-    value: name,
-    label: name,
-  }));
+  if (permissions[0] === DEALER) {
+    permissionOptions.push(
+      { value: 'customer', label: 'customer', id: 'customer_id' },
+      { value: 'staff', label: 'staff', id: 'staff_id' }
+    );
+  }
 
   async function onSubmit({
     name,
@@ -74,6 +79,7 @@ const CustomerCreateForm = () => {
     password,
     contact,
     type,
+    numberOfDealers,  // Added new field to destructure
   }: FormValues) {
     registerUser(
       {
@@ -83,6 +89,7 @@ const CustomerCreateForm = () => {
         contact,
         UsrBy: id,
         type: type?.value,
+        numberOfDealers,  // Added new field to payload
       },
       {
         onError: (error: any) => {
@@ -156,6 +163,14 @@ const CustomerCreateForm = () => {
               </>
             )}
           />
+          <Input
+            label={t('form:input-label-dealers')}
+            {...register('numberOfDealers')}
+            type="number"
+            variant="outline"
+            className="mb-4"
+            error={t(errors.numberOfDealers?.message!)}
+          />
         </Card>
       </div>
 
@@ -176,5 +191,4 @@ const CustomerCreateForm = () => {
     </form>
   );
 };
-
 export default CustomerCreateForm;

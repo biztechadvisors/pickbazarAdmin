@@ -9,8 +9,6 @@ import { useIsRTL } from '@/utils/locals';
 import { useState } from 'react';
 import TitleWithSort from '@/components/ui/title-with-sort';
 import { Category, MappedPaginatorInfo } from '@/types';
-import { Config } from '@/config';
-import Link from '@/components/ui/link';
 import { Routes } from '@/config/routes';
 import LanguageSwitcher from '@/components/ui/lang-action/action';
 import { AllPermission } from '@/utils/AllPermission';
@@ -29,12 +27,12 @@ const CategoryList = ({
   onSort,
   onOrder,
 }: IProps) => {
-  console.log("$$$$$$$",categories)
   const { t } = useTranslation();
   const rowExpandable = (record: any) => record.children?.length;
-  const { alignLeft, alignRight } = useIsRTL();   
+  const { alignLeft, alignRight } = useIsRTL();
 
-  const permissionTypes = AllPermission(); 
+
+  const permissionTypes = AllPermission();
 
   const canWrite = permissionTypes.includes('sidebar-nav-item-categories');
 

@@ -2,7 +2,8 @@ import Layout from '@/components/layouts/admin';
 import CreateOrUpdateCategoriesForm from '@/components/category/category-form';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import { useTranslation } from 'next-i18next';
-import ShopLayout from '@/components/layouts/shop';
+import AdminLayout from '@/components/layouts/admin';
+
 
 export default function CreateCategoriesPage() {
   const { t } = useTranslation();
@@ -18,7 +19,7 @@ export default function CreateCategoriesPage() {
   );
 }
 
-CreateCategoriesPage.Layout = ShopLayout;
+CreateCategoriesPage.Layout = AdminLayout;
 
 // export const getStaticProps = async ({ locale }: any) => ({
 //   props: {

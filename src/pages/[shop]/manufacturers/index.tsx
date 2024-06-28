@@ -10,7 +10,7 @@ import Loader from '@/components/ui/loader/loader';
 import { useTranslation } from 'next-i18next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import { Routes } from '@/config/routes';
-import ShopLayout from '@/components/layouts/shop';
+
 import {
   adminOnly,
   adminOwnerAndStaffOnly,
@@ -24,6 +24,7 @@ import { Config } from '@/config';
 import { useMeQuery } from '@/data/user';
 import { useShopQuery } from '@/data/shop';
 import { AllPermission } from '@/utils/AllPermission';
+import AdminLayout from '@/components/layouts/admin';
 
 export default function Manufacturers() {
   const router = useRouter();
@@ -53,7 +54,7 @@ export default function Manufacturers() {
   });
   const { id: shop_id } = shopData ?? {};
 
-  const permissionTypes = AllPermission(); 
+  const permissionTypes = AllPermission();
 
   const canWrite = permissionTypes.includes('sidebar-nav-item-manufacturers');
 
@@ -115,7 +116,7 @@ export default function Manufacturers() {
 Manufacturers.authenticate = {
   permissions: adminOwnerAndStaffOnly,
 };
-Manufacturers.Layout = ShopLayout;
+Manufacturers.Layout = AdminLayout;
 
 export const getServerSideProps = async ({ locale }: any) => ({
   props: {

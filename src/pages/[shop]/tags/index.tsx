@@ -21,9 +21,10 @@ import { Config } from '@/config';
 import { newPermission } from '@/contexts/permission/storepermission';
 import { useAtom } from 'jotai';
 import { siteSettings } from '@/settings/site.settings';
-import ShopLayout from '@/components/layouts/shop';
+
 import { useMeQuery } from '@/data/user';
 import { AllPermission } from '@/utils/AllPermission';
+import AdminLayout from '@/components/layouts/admin';
 
 export default function Tags() {
   const { t } = useTranslation();
@@ -32,6 +33,8 @@ export default function Tags() {
   const [page, setPage] = useState(1);
   const [orderBy, setOrder] = useState('created_at');
   const [sortedBy, setColumn] = useState<SortOrder>(SortOrder.Desc);
+  const { data: meData } = useMeQuery();
+  const shopSlug = meData?.managed_shop?.slug;
   const {
     tags,
     loading: loading,
@@ -44,11 +47,10 @@ export default function Tags() {
     name: searchTerm,
     page,
     language: locale,
+    shopSlug
   });
 
-  const { data: meData } = useMeQuery();
 
-  const shopSlug = meData?.shops?.[0]?.slug;
 
   // const [getPermission, _] = useAtom(newPermission);
   // const { permissions } = getAuthCredentials();
@@ -58,7 +60,7 @@ export default function Tags() {
   //       (permission) => permission.type === 'sidebar-nav-item-tags'
   //     )?.write;
 
-  const permissionTypes = AllPermission(); 
+  const permissionTypes = AllPermission();
 
   const canWrite = permissionTypes.includes('sidebar-nav-item-tags');
 
@@ -114,7 +116,7 @@ export default function Tags() {
 Tags.authenticate = {
   permissions: adminOwnerAndStaffOnly,
 };
-Tags.Layout = ShopLayout;
+Tags.Layout = AdminLayout;
 
 // export const getStaticProps = async ({ locale }: any) => ({
 //   props: {

@@ -29,7 +29,11 @@ export default function Dashboard() {
     state: '',
   };
 
-  const { data: analyticsData, isLoading: analyticsLoading, error: analyticsError } = useAnalyticsQuery(analyticsQuery);
+  const {
+    data: analyticsData,
+    isLoading: analyticsLoading,
+    error: analyticsError,
+  } = useAnalyticsQuery(analyticsQuery);
 
   // const { data: orderData, error: orderError, isLoading: orderLoading } = useOrdersQuery({
   //   customer_id: customerId,
@@ -38,10 +42,25 @@ export default function Dashboard() {
   //   page: 1,
   // });
 
-  const { data: popularProductData, isLoading: popularProductLoading, error: popularProductError } = usePopularProductsQuery({
+  if (orderError) {
+    console.error('Error fetching orders:', orderError);
+  }
+
+  if (orderLoading) {
+    console.log('Loading orders...');
+  }
+
+  console.log('Order Data:', orderData);
+  console.log('Paginator Info:', paginatorInfo);
+
+  const {
+    data: popularProductData,
+    isLoading: popularProductLoading,
+    error: popularProductError,
+  } = usePopularProductsQuery({
     limit: 10,
     language: locale,
-    shop_id: meData?.shop_id ? meData.shops : meData?.managed_shop?.id
+    shop_id: meData?.managed_shop?.id,
   });
 
   // const { data: withdrawData, isLoading: withdrawLoading } = useWithdrawsQuery({
