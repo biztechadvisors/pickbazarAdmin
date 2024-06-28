@@ -102,6 +102,8 @@ export default function Sales() {
     (order) => order?.customer_id == order?.dealer?.id
   );
 
+  console.log("orders******************", orders)
+
   return (
     <>
       <Card className="mb-8 flex flex-col items-center justify-between md:flex-row">

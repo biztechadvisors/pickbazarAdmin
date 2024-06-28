@@ -26,7 +26,7 @@ export const orderClient = {
     ...params
   }: Partial<OrderQueryOptions>) => {
     return HttpClient.get<OrderPaginator>(API_ENDPOINTS.ORDERS, {
-      searchJoin: 'and',
+      searchJoin: customer_id,
       ...params,
       search: HttpClient.formatSearchParams({ tracking_number, customer_id }),
     });

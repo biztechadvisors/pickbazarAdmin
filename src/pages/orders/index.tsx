@@ -42,6 +42,8 @@ export default function Orders() {
     console.log("query**42", shop)
     const { data: me } = useMeQuery();
 
+    console.log("me", me)
+
     const { data: shopData, isLoading: fetchingShop } = useShopQuery(
         {
             slug: shop as string,

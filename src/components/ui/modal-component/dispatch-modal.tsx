@@ -19,11 +19,12 @@ const DispatchModal: React.FC<DispatchModalProps> = ({
   onClose,
   order,
   updateDispatch,
+  dealerId,
 }) => {
   const { t } = useTranslation();
   const { handleSubmit, control } = useForm();
 
-  const user_id = 99;
+  const user_id = dealerId;
   const { mutate: updateStockDataById } = useUpdateStockDataById(user_id);
 
   const onSubmit = (rowData: any) => (data: any) => {

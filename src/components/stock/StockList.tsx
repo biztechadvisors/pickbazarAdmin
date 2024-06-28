@@ -66,7 +66,7 @@ const StockList = ({
   //       (permission) => permission.type === 'sidebar-nav-item-orders'
   //     )?.write;
 
-  const permissionTypes = AllPermission(); 
+  const permissionTypes = AllPermission();
 
   const canWrite = permissionTypes.includes('sidebar-nav-item-orders');
 
