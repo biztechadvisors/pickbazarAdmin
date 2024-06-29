@@ -1620,6 +1620,7 @@ export interface OrderQueryOptions extends QueryOptions {
   type: string;
   name: string;
   shop_id: string;
+  shop_slug: string;
   tracking_number: string;
   customer_id: number;
   search: any

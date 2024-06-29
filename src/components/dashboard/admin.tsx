@@ -43,6 +43,7 @@ export default function Dashboard() {
   } = useOrdersQuery({
     customer_id: customerId,
     shop_id: meData?.managed_shop?.id,
+    shop_slug: meData?.managed_shop?.slug,
     language: locale,
     limit: 10,
     page: 1,
