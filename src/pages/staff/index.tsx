@@ -20,6 +20,7 @@ import { SortOrder } from '@/types';
 import { Routes } from '@/config/routes';
 import { useMeQuery } from '@/data/user';
 import { AllPermission } from '@/utils/AllPermission';
+import AdminLayout from '@/components/layouts/admin';
 
 export default function StaffsPage() {
   const router = useRouter();

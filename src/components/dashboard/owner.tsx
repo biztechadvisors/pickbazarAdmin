@@ -8,9 +8,10 @@ import { useMeQuery, useUsersQuery } from '@/data/user';
 import { useShopsQuery } from '@/data/shop';
 import { useState } from 'react';
 import { SortOrder } from '@/types';
+import { CustomerIcon } from '../icons/sidebar/customer';
 
 
-export default function OwnerDashboard(user: any) {
+export default function OwnerDashboard(users: any) {
   const { t } = useTranslation();
   const { locale } = useRouter();
   const [searchTerm, setSearchTerm] = useState('');
@@ -36,7 +37,7 @@ export default function OwnerDashboard(user: any) {
   return (
     <>
       <div className="mb-6 grid w-full grid-cols-1 gap-5 sm:grid-cols-2 xl:grid-cols-4">
-        <div className="w-full ">
+        {/* <div className="w-full ">
           <StickerCard
             titleTransKey="sticker-card-title-shops"
             subtitleTransKey="sticker-card-subtitle-shops"
@@ -51,7 +52,7 @@ export default function OwnerDashboard(user: any) {
             icon={<CartIconBig />}
             price={total_users}
           />
-        </div> */}
+        </div>  */}
         {/* <div className="w-full ">
           <StickerCard
             titleTransKey="sticker-card-title-today-rev"
@@ -110,7 +111,7 @@ export default function OwnerDashboard(user: any) {
         />
       </div> */}
 
-      <div className="mb-6 flex w-full flex-wrap space-y-6 rtl:space-x-reverse xl:flex-nowrap xl:space-y-0 xl:space-x-5">
+      {/* <div className="mb-6 flex w-full flex-wrap space-y-6 rtl:space-x-reverse xl:flex-nowrap xl:space-y-0 xl:space-x-5"> */}
         {/* <div className="w-full">
           <RecentOrders
             orders={orderData}
@@ -124,7 +125,7 @@ export default function OwnerDashboard(user: any) {
             title={t('table:withdraw-table-title')}
           />
         </div> */}
-      </div>
+      {/* </div> */}
       {/* <div className="mb-6 w-full xl:mb-0">
         <PopularProductList
           products={popularProductData}
