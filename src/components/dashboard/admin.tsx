@@ -42,16 +42,16 @@ export default function Dashboard() {
   //   page: 1,
   // });
 
-  if (orderError) {
-    console.error('Error fetching orders:', orderError);
-  }
+  // if (orderError) {
+  //   console.error('Error fetching orders:', orderError);
+  // }
 
-  if (orderLoading) {
-    console.log('Loading orders...');
-  }
+  // if (orderLoading) {
+  //   console.log('Loading orders...');
+  // }
 
-  console.log('Order Data:', orderData);
-  console.log('Paginator Info:', paginatorInfo);
+  // console.log('Order Data:', orderData);
+  // console.log('Paginator Info:', paginatorInfo);
 
   const {
     data: popularProductData,
