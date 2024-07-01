@@ -5,14 +5,15 @@ import { useUI } from '@/contexts/ui.context';
 import Dropdown from './Dropdown';
 import InventoryDropdown from './InventoryDropdown';
 
-
 const SidebarItem = ({ href, icon, label }: any) => {
   const { closeSidebar } = useUI();
+
+  console.log('href', href);
 
   // Check if the label is "Orders" and render the Dropdown component if true
   if (label === 'Orders') {
     return (
-      <div className="flex w-full items-center text-base text-body-dark text-start focus:text-accent cursor-pointer">
+      <div className="flex w-full cursor-pointer items-center text-base text-body-dark text-start focus:text-accent">
         {getIcon({
           iconList: sidebarIcons,
           iconName: icon,
@@ -25,7 +26,7 @@ const SidebarItem = ({ href, icon, label }: any) => {
 
   if (label === 'Inventory') {
     return (
-      <div className="flex w-full items-center text-base text-body-dark text-start focus:text-accent cursor-pointer">
+      <div className="flex w-full cursor-pointer items-center text-base text-body-dark text-start focus:text-accent">
         {getIcon({
           iconList: sidebarIcons,
           iconName: icon,
@@ -46,8 +47,11 @@ const SidebarItem = ({ href, icon, label }: any) => {
         iconList: sidebarIcons,
         iconName: icon,
         className: 'w-5 h-5 me-4',
-      })} 
-      <span onClick={() => closeSidebar()}>{label}</span>
+      })}
+      <span onClick={() => closeSidebar()}>
+        {label}
+        {console.log(label)}
+      </span>
     </Link>
   );
 };
