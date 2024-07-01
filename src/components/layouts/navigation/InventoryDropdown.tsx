@@ -26,7 +26,7 @@ const InventoryDropdown = () => {
   };
 
   const buildUrl = (path) => {
-    return `/${newShopSlug}${path}`;
+    return `/${newShopSlug}/${path}`;
   };
 
   return (

@@ -50,7 +50,7 @@ const LinkButton: React.FC<NextLinkProps & ButtonProps> = ({
   );
 
   return (
-    <NextLink href={href} {...props} className={cn(rootClassName, className)}>
+    <NextLink href={href} {...props} className={cn(rootClassName, className)} suppressHydrationWarning={true}>
       {children}
     </NextLink>
   );

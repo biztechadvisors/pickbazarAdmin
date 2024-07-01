@@ -71,5 +71,6 @@ export const useSettingsQuery = ({ language }: { language: string }) => {
     error,
     loading: isLoading,
     shopSlug,
+
   };
 };
