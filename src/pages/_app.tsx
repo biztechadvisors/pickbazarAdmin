@@ -23,11 +23,12 @@ import { Config } from '@/config';
 import 'react-toastify/dist/ReactToastify.css';
 import { StockProvider } from '@/contexts/quick-cart/stock.context';
 
+
 const Noop: React.FC<{ children?: React.ReactNode }> = ({ children }) => (
   <>{children}</>
-);
-
-const AppSettings: React.FC<{ children?: React.ReactNode }> = (props) => {
+  );
+  
+  const AppSettings: React.FC<{ children?: React.ReactNode }> = (props) => {
   const { locale } = useRouter();
   const authToken = typeof window !== 'undefined' ? localStorage.getItem('authToken') : null;
 

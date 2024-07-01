@@ -42,6 +42,21 @@ export default function Orders() {
 
     const { data: me } = useMeQuery();
 
+<<<<<<< HEAD
+=======
+    console.log("me", me)
+
+    const { data: shopData, isLoading: fetchingShop } = useShopQuery(
+        {
+            slug: shop as string,
+        },
+        {
+            enabled: !!shop,
+        }
+    );
+
+    const shopId = shopData?.id!;
+>>>>>>> 440644f96e5b76b78e7c521f281c62ef28920de9
     const { orders, loading, paginatorInfo, error } = useOrdersQuery({
         language: locale,
         limit: 20,
