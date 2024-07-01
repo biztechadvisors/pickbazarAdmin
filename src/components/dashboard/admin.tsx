@@ -36,15 +36,28 @@ export default function Dashboard() {
   } = useAnalyticsQuery(analyticsQuery);
 
   const {
-    data: orderData,
+    orders: orderData,
+    paginatorInfo,
     error: orderError,
-    isLoading: orderLoading,
+    loading: orderLoading,
   } = useOrdersQuery({
     customer_id: customerId,
+    shop_id: meData?.managed_shop?.id,
     language: locale,
     limit: 10,
     page: 1,
   });
+
+  if (orderError) {
+    console.error('Error fetching orders:', orderError);
+  }
+
+  if (orderLoading) {
+    console.log('Loading orders...');
+  }
+
+  console.log('Order Data:', orderData);
+  console.log('Paginator Info:', paginatorInfo);
 
   const {
     data: popularProductData,

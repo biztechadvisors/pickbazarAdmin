@@ -132,13 +132,10 @@ export default function OrderDetailsPage() {
     0
   );
 
+  const dealerId = order?.customer_id;
+
   const { orderId } = query;
-
   const { data: meData } = useMeQuery();
-
-  const dealerId = 99;
-
-  const userId = order?.customer_id;
 
   const { data, isLoading, isError } = useFetchStockOrderData({
     dealerId,
@@ -241,7 +238,6 @@ export default function OrderDetailsPage() {
                     options={ORDER_STATUS.slice(0, 6)}
                     placeholder={t('form:input-placeholder-order-status')}
                   />
-
                   <ValidationError message={t(errors?.order_status?.message)} />
                 </div>
                 <div className="flex w-full gap-x-1 max-sm:flex-col-reverse max-sm:gap-y-1">
@@ -386,6 +382,7 @@ export default function OrderDetailsPage() {
         onClose={() => setDispatchModalOpen(false)}
         order={data}
         updateDispatch={handleDispatchUpdate}
+        dealerId={dealerId}
       />
     </>
   );
