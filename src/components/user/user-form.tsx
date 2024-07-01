@@ -15,6 +15,7 @@ import { usePermissionData } from '@/data/permission';
 import { getAuthCredentials } from '@/utils/auth-utils';
 import Loader from '../ui/loader/loader';
 import { DEALER } from '@/utils/constants';
+import InputMask from 'react-input-mask';
 
 type FormValues = {
   name: string;
@@ -137,14 +138,33 @@ const CustomerCreateForm = () => {
             variant="outline"
             className="mb-4"
           />
-          <Input
+          {/* <Input
             label={t('form:input-label-contact')}
             {...register('contact')}
             type="text"
             variant="outline"
             className="mb-4"
             error={t(errors.contact?.message!)}
+          /> */}
+           <InputMask
+        mask="+91 9999999999"
+        maskChar=""
+        {...register('contact', {
+          required: t('form:error-contact-required'),
+          validate: value => value.replace(/\D/g, '').length === 12 || t('form:error-contact-invalid')
+        })}
+      >
+        {(inputProps) => (
+          <Input
+            label={t('form:input-label-contact')}
+            {...inputProps}
+            type="text"
+            variant="outline"
+            className="mb-4"
+            error={t(errors.contact?.message)}
           />
+        )}
+      </InputMask>
           <Controller
             name="type"
             control={control}

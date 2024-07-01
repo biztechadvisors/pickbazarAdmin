@@ -45,6 +45,7 @@ export const API_ENDPOINTS = {
   STAFFS: 'staffs',
   ADD_STAFF: 'staffs',
   REMOVE_STAFF: 'staffs',
+  MODEL_IMPORT:'uploadxl-products/upload',
   IMPORT_PRODUCTS: 'import-products/',
   IMPORT_ATTRIBUTES: 'import-attributes/',
   IMPORT_VARIATION_OPTIONS: 'import-variation-options/',
