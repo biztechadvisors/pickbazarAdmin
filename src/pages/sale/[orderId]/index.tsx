@@ -141,9 +141,8 @@ export default function OrderDetailsPage() {
   console.log("data@@@@@", meData)
   
 
-  const dealerId = 11;
-
-  const userId = order?.customer_id;
+  const dealerId = order?.customer_id
+  // const userId = order?.customer_id;
 
   const { data, isLoading, isError } = useFetchStockOrderData({
     dealerId,
@@ -267,7 +266,26 @@ console.log("Dispatech", DispatchButton)
                 </div>
               </form>
             )}
-            {DispatchButton && (
+            {DispatchButton ? (
+            <Button onClick={() => setDispatchModalOpen(true)}>
+              <span className="hidden sm:block">
+                {t('form:button-label-change-dispatch')}
+              </span>
+              <span className="block sm:hidden">
+                {t('form:button-label-change-dispatch')}
+              </span>
+            </Button>
+          ) : (
+            <Button onClick={() => setDispatchModalOpen(true)}>
+              <span className="hidden sm:block">
+                {t('Received')}
+              </span>
+              <span className="block sm:hidden">
+                {t('Received')}
+              </span>
+            </Button>
+          )}
+            {/* {DispatchButton && (
           <Button onClick={() => setDispatchModalOpen(true)}>
             <span className="hidden sm:block">
               {t('form:button-label-change-dispatch')}
@@ -276,7 +294,7 @@ console.log("Dispatech", DispatchButton)
               {t('form:button-label-change-dispatch')}
             </span>
           </Button>
-        )}
+        )} */}
          
         </div>
 
@@ -399,6 +417,7 @@ console.log("Dispatech", DispatchButton)
         isOpen={isDispatchModalOpen}
         onClose={() => setDispatchModalOpen(false)}
         order={data}
+        dealerId={dealerId}
         updateDispatch={handleDispatchUpdate}
       />
     </>
