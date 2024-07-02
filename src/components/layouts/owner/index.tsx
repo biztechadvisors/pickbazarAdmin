@@ -36,6 +36,7 @@ const OwnerLayout: React.FC<{ children?: React.ReactNode }> = ({
     <div
       className="flex min-h-screen flex-col bg-gray-100 transition-colors duration-150"
       dir={dir}
+      suppressHydrationWarning={true}
     >
       <Navbar />
       <MobileNavigation>

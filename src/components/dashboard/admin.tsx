@@ -35,23 +35,29 @@ export default function Dashboard() {
     error: analyticsError,
   } = useAnalyticsQuery(analyticsQuery);
 
-  // const { data: orderData, error: orderError, isLoading: orderLoading } = useOrdersQuery({
-  //   customer_id: customerId,
-  //   language: locale,
-  //   limit: 10,
-  //   page: 1,
-  // });
+  const {
+    orders: orderData,
+    paginatorInfo,
+    error: orderError,
+    loading: orderLoading,
+  } = useOrdersQuery({
+    customer_id: customerId,
+    shop_id: meData?.managed_shop?.id,
+    language: locale,
+    limit: 10,
+    page: 1,
+  });
 
-  // if (orderError) {
-  //   console.error('Error fetching orders:', orderError);
-  // }
+  if (orderError) {
+    console.error('Error fetching orders:', orderError);
+  }
 
-  // if (orderLoading) {
-  //   console.log('Loading orders...');
-  // }
+  if (orderLoading) {
+    console.log('Loading orders...');
+  }
 
-  // console.log('Order Data:', orderData);
-  // console.log('Paginator Info:', paginatorInfo);
+  console.log('Order Data:', orderData);
+  console.log('Paginator Info:', paginatorInfo);
 
   const {
     data: popularProductData,
@@ -63,23 +69,24 @@ export default function Dashboard() {
     shop_id: meData?.managed_shop?.id,
   });
 
-  // const { data: withdrawData, isLoading: withdrawLoading } = useWithdrawsQuery({
-  //   limit: 10,
-  // });
+  if (analyticsLoading || orderLoading || popularProductLoading) {
+    return <Loader text={t('common:text-loading')} />;
+  }
 
-  // if (analyticsLoading || orderLoading || popularProductLoading || withdrawLoading) {
-  //   return <Loader text={t('common:text-loading')} />;
-  // }
+  const salesByYear =
+    analyticsData?.totalYearSaleByMonth?.map((item) => item.total.toFixed(2)) ||
+    Array(12).fill(0);
 
-  // const salesByYear = analyticsData?.totalYearSaleByMonth?.map((item) => item.total.toFixed(2)) || Array(12).fill(0);
-
-  // const errorMessage = analyticsError?.message || orderError?.message || popularProductError?.message;
+  const errorMessage =
+    analyticsError?.message ||
+    orderError?.message ||
+    popularProductError?.message;
 
   return (
     <>
-      {/* {errorMessage && <ErrorMessage message={errorMessage} />} */}
+      {errorMessage && <ErrorMessage message={errorMessage} />}
 
-       <div className="mb-6 grid w-full grid-cols-1 gap-5 sm:grid-cols-2 xl:grid-cols-4">
+      <div className="mb-6 grid w-full grid-cols-1 gap-5 sm:grid-cols-2 xl:grid-cols-4">
         <StickerCard
           titleTransKey="sticker-card-title-rev"
           subtitleTransKey="sticker-card-subtitle-rev"
@@ -98,30 +105,29 @@ export default function Dashboard() {
           icon={<CoinIcon />}
           price={analyticsData?.todaysRevenue ?? 0}
         />
-        {/* <StickerCard
-          titleTransKey={canWrite ? "sticker-card-title-total-shops" : "sticker-card-title-total-cutomer"}
-          icon={canWrite ? <ShopIcon className="w-6" color="#1D4ED8" /> : <CustomerIcon className="w-6" color="#1D4ED8" />}
+        <StickerCard
+          titleTransKey={
+            canWrite
+              ? 'sticker-card-title-total-shops'
+              : 'sticker-card-title-total-cutomer'
+          }
+          icon={
+            canWrite ? (
+              <ShopIcon className="w-6" color="#1D4ED8" />
+            ) : (
+              <CustomerIcon className="w-6" color="#1D4ED8" />
+            )
+          }
           iconBgStyle={{ backgroundColor: '#93C5FD' }}
-          price={canWrite ? analyticsData?.totalShops ?? 0 : analyticsData?.totalCustomers ?? 0}
-        />  */}
-        {canWrite ? (
-          <StickerCard
-            titleTransKey="sticker-card-title-total-shops"
-            icon={<ShopIcon className="w-6" color="#1D4ED8" />}
-            iconBgStyle={{ backgroundColor: '#93C5FD' }}
-            price={analyticsData?.totalShops}
-          />
-        ) : (
-          <StickerCard
-            titleTransKey="sticker-card-title-total-customer"
-            icon={<CustomerIcon className="w-6" color="#1D4ED8" />}
-            iconBgStyle={{ backgroundColor: '#93C5FD' }}
-            price={analyticsData?.totalCustomers}
-          />
-        )}
-      </div> 
+          price={
+            canWrite
+              ? analyticsData?.totalShops ?? 0
+              : analyticsData?.totalCustomers ?? 0
+          }
+        />
+      </div>
 
-      {/* <div className="mb-6 flex w-full flex-wrap md:flex-nowrap">
+      <div className="mb-6 flex w-full flex-wrap md:flex-nowrap">
         <ColumnChart
           widgetTitle={t('common:sale-history')}
           colors={['#03D3B5']}
@@ -141,30 +147,20 @@ export default function Dashboard() {
             t('common:december'),
           ]}
         />
-      </div> */}
+      </div>
 
-      <div className="mb-6 flex w-full flex-wrap space-y-6 xl:flex-nowrap xl:space-y-0 xl:space-x-5">
-        <div className="w-full">
-          <RecentOrders
-            // orders={orderData}
-            title={t('table:recent-order-table-title')}
-          />
-        </div>
-       
-        {/* <RecentOrders
+      <div className="mb-6  w-full flex-wrap space-y-6 xl:flex-nowrap xl:space-y-0 xl:space-x-5">
+        <RecentOrders
           orders={orderData}
           title={t('table:recent-order-table-title')}
-        /> */}
-        {/* Uncomment the following block if WithdrawTable is needed */}
-        {/* <WithdrawTable
-          withdraws={withdrawData}
-          title={t('table:withdraw-table-title')}
-        /> */}
+        />
+        </div>
+        <div className="mb-6 w-full flex-wrap space-y-6 xl:flex-nowrap xl:space-y-0 xl:space-x-5">
+        <PopularProductList
+          products={popularProductData}
+          title={t('table:popular-products-table-title')}
+        />
       </div>
-       <PopularProductList
-        // products={popularProductData}
-        title={t('table:popular-products-table-title')}
-      /> 
     </>
   );
 }

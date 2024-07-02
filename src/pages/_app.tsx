@@ -23,14 +23,14 @@ import { Config } from '@/config';
 import 'react-toastify/dist/ReactToastify.css';
 import { StockProvider } from '@/contexts/quick-cart/stock.context';
 
-
 const Noop: React.FC<{ children?: React.ReactNode }> = ({ children }) => (
   <>{children}</>
-  );
-  
-  const AppSettings: React.FC<{ children?: React.ReactNode }> = (props) => {
+);
+
+const AppSettings: React.FC<{ children?: React.ReactNode }> = (props) => {
   const { locale } = useRouter();
-  const authToken = typeof window !== 'undefined' ? localStorage.getItem('authToken') : null;
+  const authToken =
+    typeof window !== 'undefined' ? localStorage.getItem('authToken') : null;
 
   let settings = null;
   let loading = false;
@@ -38,15 +38,19 @@ const Noop: React.FC<{ children?: React.ReactNode }> = ({ children }) => (
 
   if (authToken) {
     const queryResult = useSettingsQuery({ language: locale! });
+    console.log("queryResult&&&&", queryResult)
     settings = queryResult.settings;
     loading = queryResult.loading;
     error = queryResult.error;
+
   }
 
   if (loading) return <PageLoader />;
   if (error) return <ErrorMessage message={error.message} />;
 
-  return <SettingsProvider initialValue={settings?.options || null} {...props} />;
+  return (
+    <SettingsProvider initialValue={settings?.options || null} {...props} />
+  );
 };
 type AppPropsWithLayout = AppProps & {
   Component: NextPageWithLayout;
@@ -62,8 +66,8 @@ const CustomApp = ({ Component, pageProps }: AppPropsWithLayout) => {
 
   return (
     <div dir={dir}>
-      <QueryClientProvider client={queryClient}>
-        <Hydrate state={pageProps?.dehydratedState}>
+      <QueryClientProvider client={queryClient} >
+        <Hydrate state={pageProps?.dehydratedState}  >
           <AppSettings>
             <UIProvider>
               <ModalProvider>

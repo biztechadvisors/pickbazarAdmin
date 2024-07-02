@@ -4,7 +4,7 @@ import { useSettings } from '@/contexts/settings.context';
 
 export function formatPrice({
   amount,
-  currencyCode = 'USD', // Default value for currencyCode
+  currencyCode = 'IND', // Default value for currencyCode
   locale,
   fractions = 2,
 }: {

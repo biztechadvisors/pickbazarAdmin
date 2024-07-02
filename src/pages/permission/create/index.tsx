@@ -221,7 +221,7 @@ const CreatePermission = () => {
             htmlFor="typename"
             className="block text-sm font-medium text-gray-700"
           >
-            {t('TYPENAMES')}
+            {t('PERMISSION TYPE')}
           </label>
           <select
             id="typename"
@@ -246,7 +246,7 @@ const CreatePermission = () => {
             htmlFor="permission"
             className="block text-sm font-medium text-gray-700"
           >
-            {t('PERMISSIONS')}
+            {t('PERMISSIONS NAME')}
           </label>
           <input
             type="text"

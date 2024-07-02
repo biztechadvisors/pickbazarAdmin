@@ -37,7 +37,6 @@ export default function DealerPage() {
 
   const userdealer = users.filter((user) => user?.type?.type_name === DEALER)
 
-  console.log('userdealer *** 40', userdealer)
   const permissionTypes = AllPermission();
 
   const canWrite = permissionTypes.includes('sidebar-nav-item-dealerlist');

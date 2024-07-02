@@ -56,7 +56,7 @@ const Logo: React.FC<React.AnchorHTMLAttributes<{}>> = ({
       <span className="relative h-10 w-32 overflow-hidden md:w-40">
         <Image
           // src={logo?.original ?? siteSettings.logo.url}
-          src={`${process?.env?.NEXT_PUBLIC_REST_API_ENDPOINT}/${logo?.original ?? siteSettings.logo.url}`}
+          src="/icons/Frame.png"
           alt={siteTitle ?? 'PickBazar Logo'}
           fill
           sizes="(max-width: 768px) 100vw"
