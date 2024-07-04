@@ -132,25 +132,56 @@ const InventoryDropdown = () => {
   const { permissions } = getAuthCredentials();
   const permission = hasAccess(dealerOnly, permissions);
 
+  // useEffect(() => {
+  //   const storedShopSlug = localStorage.getItem('shopSlug');
+  //   const storedIsOpen = localStorage.getItem('isOpen') === 'true';
+  //   if (storedShopSlug) {
+  //     setNewShopSlug(storedShopSlug);
+  //   }
+  //   setIsOpen(storedIsOpen);
+  // }, []);
+
   useEffect(() => {
-    const storedShopSlug = localStorage.getItem('shopSlug');
-    const storedIsOpen = localStorage.getItem('isOpen') === 'true';
-    if (storedShopSlug) {
-      setNewShopSlug(storedShopSlug);
+    if (typeof window !== 'undefined') { // Ensure we're in the browser environment
+      const storedShopSlug = localStorage.getItem('shopSlug');
+      const storedIsOpen = localStorage.getItem('isOpen') === 'true';
+      if (storedShopSlug) {
+        setNewShopSlug(storedShopSlug);
+      }
+      setIsOpen(storedIsOpen);
     }
-    setIsOpen(storedIsOpen);
   }, []);
+  
+
+  // const toggleMenu = () => {
+  //   const newIsOpen = !isOpen;
+  //   setIsOpen(newIsOpen);
+  //   localStorage.setItem('isOpen', newIsOpen);
+  // };
+
+  // const handleSetNewShopSlug = (newShopSlug) => {
+  //   localStorage.setItem('shopSlug', newShopSlug);
+  //   setNewShopSlug(newShopSlug);
+  // };
+
+
+
 
   const toggleMenu = () => {
     const newIsOpen = !isOpen;
     setIsOpen(newIsOpen);
-    localStorage.setItem('isOpen', newIsOpen);
+    if (typeof window !== 'undefined') { // Ensure we're in the browser environment
+      localStorage.setItem('isOpen', newIsOpen);
+    }
   };
-
+  
   const handleSetNewShopSlug = (newShopSlug) => {
-    localStorage.setItem('shopSlug', newShopSlug);
+    if (typeof window !== 'undefined') { // Ensure we're in the browser environment
+      localStorage.setItem('shopSlug', newShopSlug);
+    }
     setNewShopSlug(newShopSlug);
   };
+  
 
   const buildUrl = (path) => {
     return `/${newShopSlug}/${path}`;

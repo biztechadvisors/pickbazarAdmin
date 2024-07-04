@@ -28,22 +28,42 @@ const AdminLayout: React.FC<{ children?: React.ReactNode }> = ({
   const { data, isLoading: loading, error } = useMeQuery();
   const [shopSlug, setShopSlug] = useAtom(shopSlugAtom);
 
-  useEffect(() => {
-    if (data) {
-      let newShopSlug = null;
+  // useEffect(() => {
+  //   if (data) {
+  //     let newShopSlug = null;
 
+  //     if (permissions?.[0].includes(DEALER) && data.UsrBy?.managed_shop?.slug) {
+  //       newShopSlug = data.UsrBy.managed_shop.slug;
+  //     } else if (data.managed_shop) {
+  //       newShopSlug = data.managed_shop.slug;
+  //     }
+
+  //     if (newShopSlug) {
+  //       setShopSlug(newShopSlug);
+  //       localStorage.setItem('shopSlug', newShopSlug);
+  //     }
+  //   }
+  // }, [data, permissions, setShopSlug]);
+
+
+
+  useEffect(() => {
+    if (typeof window !== 'undefined' && data) { // Ensure we're in the browser environment
+      let newShopSlug = null;
+  
       if (permissions?.[0].includes(DEALER) && data.UsrBy?.managed_shop?.slug) {
         newShopSlug = data.UsrBy.managed_shop.slug;
       } else if (data.managed_shop) {
         newShopSlug = data.managed_shop.slug;
       }
-
+  
       if (newShopSlug) {
         setShopSlug(newShopSlug);
         localStorage.setItem('shopSlug', newShopSlug);
       }
     }
   }, [data, permissions, setShopSlug]);
+  
 
   let matchedLinks = [];
 

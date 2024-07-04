@@ -73,10 +73,19 @@ const Dropdown = () => {
   let identify = permissions;
   const matching: any = 'dealer';
 
+  // useEffect(() => {
+  //   const storedIsOpen = localStorage.getItem('ordersDropdownIsOpen') === 'true';
+  //   setIsOpen(storedIsOpen);
+  // }, []);
+
+
   useEffect(() => {
-    const storedIsOpen = localStorage.getItem('ordersDropdownIsOpen') === 'true';
-    setIsOpen(storedIsOpen);
+    if (typeof window !== 'undefined') { // Ensure we're in the browser environment
+      const storedIsOpen = localStorage.getItem('ordersDropdownIsOpen') === 'true';
+      setIsOpen(storedIsOpen);
+    }
   }, []);
+  
 
   const toggleMenu = () => {
     const newIsOpen = !isOpen;

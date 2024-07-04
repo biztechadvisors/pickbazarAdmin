@@ -31,15 +31,18 @@ export const userClient = {
         variables
       );
       const token = response.token;
-      if (token) {
+      
+      if (typeof window !== 'undefined' && token) { // Check if we're in the browser environment
         localStorage.setItem('authToken', token);
       }
+      
       return response;
     } catch (error) {
       console.error('Error during login:', error);
       throw error;
     }
-  },
+  }
+  ,
   logout: () => {
     return HttpClient.post<any>(API_ENDPOINTS.LOGOUT, {});
   },
