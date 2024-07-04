@@ -31,10 +31,15 @@ const InventoryDropdown = () => {
 
   return (
     <div className="flex flex-col">
-      <button className="flex w-full items-center text-base text-body-dark text-start focus:text-accent" onClick={toggleMenu}>
+      <button
+        className="flex w-full items-center text-base text-body-dark text-start focus:text-accent"
+        onClick={toggleMenu}
+      >
         <h3>Inventory</h3>
         <ChevronDownIcon
-          className={`h-3.5 w-3.5 shrink-0 opacity-75 transition-transform duration-300 ${isOpen ? 'rotate-90' : ''}`}
+          className={`h-3.5 w-3.5 shrink-0 opacity-75 transition-transform duration-300 ${
+            isOpen ? 'rotate-90' : ''
+          }`}
         />
       </button>
       <div className={`${isOpen ? '' : 'hidden'} mt-0`}>

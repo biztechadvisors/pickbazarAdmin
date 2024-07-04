@@ -113,13 +113,13 @@ export const Routes = {
     ...routesFactory('/withdraws'),
   },
   staff: {
-    ...routesFactory('/staffs'),
+    ...routesFactory('/staff'),
   },
   stock: {
     ...routesFactory('/stocks'),
   },
   refund: {
-    ...routesFactory('/refunds'),
+    ...routesFactory(`${getAdminMyShopsRoute()}/refunds`),
   },
   question: {
     ...routesFactory('/questions'),
