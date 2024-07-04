@@ -220,15 +220,6 @@ const InventoryDropdown = () => {
           </div>
           <div>
             <Link
-              href={buildUrl('/groups')}
-              className="relative flex w-full cursor-pointer items-center rounded-lg py-2 px-5 text-sm text-body-dark text-start before:absolute before:-left-0.5 before:top-[18px] before:h-px before:w-3 before:border-t before:border-dashed before:border-gray-300 before:content-[''] hover:text-accent focus:text-accent"
-              onClick={() => handleSetNewShopSlug(newShopSlug)}
-            >
-              <span>Groups</span>
-            </Link>
-          </div>
-          <div>
-            <Link
               href={buildUrl('/categories')}
               className="relative flex w-full cursor-pointer items-center rounded-lg py-2 px-5 text-sm text-body-dark text-start before:absolute before:-left-0.5 before:top-[18px] before:h-px before:w-3 before:border-t before:border-dashed before:border-gray-300 before:content-[''] hover:text-accent focus:text-accent"
               onClick={() => handleSetNewShopSlug(newShopSlug)}
@@ -243,6 +234,15 @@ const InventoryDropdown = () => {
               onClick={() => handleSetNewShopSlug(newShopSlug)}
             >
               <span>SubCategories</span>
+            </Link>
+          </div>
+          <div>
+            <Link
+              href={buildUrl('/groups')}
+              className="relative flex w-full cursor-pointer items-center rounded-lg py-2 px-5 text-sm text-body-dark text-start before:absolute before:-left-0.5 before:top-[18px] before:h-px before:w-3 before:border-t before:border-dashed before:border-gray-300 before:content-[''] hover:text-accent focus:text-accent"
+              onClick={() => handleSetNewShopSlug(newShopSlug)}
+            >
+              <span>Collections</span>
             </Link>
           </div>
           <div>

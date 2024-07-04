@@ -253,7 +253,7 @@ export default function ShopPage() {
             </div>
           </div>
 
-          <div className="space-y-3">
+          {/* <div className="space-y-3">
             <h2 className="text-lg font-semibold text-heading">
               {t('common:text-others')}
             </h2>
@@ -274,7 +274,7 @@ export default function ShopPage() {
                 </div>
               </div>
             </div>
-          </div>
+          </div> */}
         </div>
       </div>
 

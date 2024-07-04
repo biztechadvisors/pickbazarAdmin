@@ -12,6 +12,7 @@ import { Routes } from '@/config/routes';
 import { useShopQuery } from '@/data/shop';
 import { useMeQuery } from '@/data/user';
 import { useRouter } from 'next/router';
+import AdminLayout from '@/components/layouts/admin';
 
 export default function AddStaffPage() {
   const { t } = useTranslation();
