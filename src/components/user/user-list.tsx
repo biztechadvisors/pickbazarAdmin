@@ -68,6 +68,13 @@ const CustomerList = ({
 
   const columns = [
     {
+      title: t('table:table-item-id'),
+      dataIndex: 'id',
+      key: 'id',
+      align: 'left',
+      width: 60,
+    },
+    {
       title: t('table:table-item-avatar'),
       dataIndex: 'profile',
       key: 'profile',

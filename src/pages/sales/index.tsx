@@ -19,6 +19,7 @@ import { useOrdersSalesQuery } from '@/data/stocks';
 import StockList from '@/components/stock/StockList';
 import { useOrdersQuery } from '@/data/order';
 import { useMeQuery } from '@/data/user';
+import { formatAddress } from '@/utils/format-address';
 
 export default function Sales() {
   const router = useRouter();
@@ -87,16 +88,308 @@ export default function Sales() {
   if (loading) return <Loader text={t('common:text-loading')} />;
   if (error) return <ErrorMessage message={error.message} />;
 
-  async function handleExportOrder() {
-    const { data } = await refetch();
+  // async function handleExportOrder() {
 
-    if (data) {
-      const a = document.createElement('a');
-      a.href = data;
-      a.setAttribute('download', 'export-order');
-      a.click();
+  //   const { data } = await refetch();
+
+  //   if (data) {
+  //     const a = document.createElement('a');
+  //     a.href = data;
+  //     a.setAttribute('download', 'export-order');
+  //     a.click();
+  //   }
+  // }
+  
+//   async function handleExportOrder() {
+//     try {
+//       const ordersData = orders.filter(
+//         (order) => order?.customer_id === order?.dealer?.id
+//       );
+  
+//       if (!ordersData.length) {
+//         console.error('No matching orders found for export.');
+//         return; // Handle no data scenario (e.g., display message to user)
+//       }
+  
+//       const formattedData = transformForExcel(ordersData);
+  
+//       const contentType = 'text/csv;charset=utf-8'; // Consistent with CSV export
+//       const filename = generateFilename(contentType);
+  
+//       const blob = new Blob([formattedData], { type: contentType });
+//       const link = document.createElement('a');
+//       link.href = URL.createObjectURL(blob);
+//       link.download = filename;
+//       link.click();
+  
+//       setTimeout(() => URL.revokeObjectURL(link.href), 10000); // Revoke after 10 seconds
+//     } catch (error) {
+//       console.error('Error fetching or formatting data:', error);
+//       // Handle error gracefully (e.g., display error message to user)
+//     }
+
+// //     function formateData(orders:any){
+// //       var ordersData = orders.filter(
+// //         (order:any) => order?.customer_id == order?.dealer?.id
+// //       );
+
+// // var format = ordersData.map((order:any) => { return order})
+// // console.log("orderDAta", format)
+// //         var formatedData: any = {
+// //           OrderId: format.map((id:any) =>{id.payment_intent}) ? ordersData.map((id:any) =>{id.payment_intent}) : null,
+// //           Email: format.map((id:any)=> {id.customer.email}) ? ordersData.map((id:any)=> {id.customer.email}) : null,
+// //           OrderDate: format.created_at,
+// //           DeliveryTime: format.delivery_time,
+// //           OrderStatus: format.order_status,
+// //           TrakingNo: format.traking_number,
+// //           CouponId: format.coupon_id,
+// //           Amount: format.amount,
+// //           Discount: format.discount,
+// //           Paid: format.paid_total,
+// //           Total: format.total,
+// //           SaleTax: format.sales_tax,
+// //           DeliveryFee: format.delivery_fee,
+// //           PaymentId: format.map((id:any)=>{id.payment_intent}) ? ordersData.map((id:any)=>{id.payment_intent}) : null,
+// //           PaymentGateway: format.payment_gateway,
+// //           BillingAddress: format.map((id:any)=>{id.billing_address.street_address, id.billing_address.country, id.billing_address.city, id.billing_address.state, id.billing_address.zip}) ? ordersData.map((id:any)=>{id.billing_address.street_address, id.billing_address.country, id.billing_address.city, id.billing_address.state, id.billing_address.zip}) : null,
+// //           ShippingAddress: format.map((id:any)=> {id.shipping_address.street_address, id.shipping_address.country, id.shipping_address.city, id.shipping_address.state, id.shipping_address.zip}) ? ordersData.map((id:any)=> {id.shipping_address.street_address, id.shipping_address.country, id.shipping_address.city, id.shipping_address.state, id.shipping_address.zip}) : null,
+// //           CustomerContact: format.customer_contact,
+// //           LogisticProvider: format.logistics_provider,
+  
+// //         }      
+
+// //         console.log("formated data", formatedData)
+
+// //         return formatedData;
+      
+// //     }
+// //     function getContentType(data:any) {
+// //       // Logic to determine data type based on data structure or headers
+// //       // Example (assuming data is an array of objects):
+// //       if (Array.isArray(data) && data.length > 0 && Object.keys(data[0]).length > 0) {
+// //         return 'text/csv;charset=utf-8'; // CSV for tabular data
+// //       } else {
+// //         return 'application/json;charset=utf-8'; // JSON for other structures
+// //       }
+// //     }
+    
+//     function generateFilename(contentType:any) {
+//       const dateString = new Date().toISOString().slice(0, 10); // YYYY-MM-DD format
+//       let extension;
+//       switch (contentType) {
+//         case 'text/csv;charset=utf-8':
+//           extension = '.csv';
+//           break;
+//         case 'application/pdf': // Add PDF case if PDF export is implemented
+//           extension = '.pdf';
+//           break;
+//         default:
+//           extension = '.csv';
+//       }
+//       return `export-data-${dateString}${extension}`;
+//     }
+    
+//     function transformForExcel(ordersData:any) {
+//       // Create an array with column headers
+//       const headerRow = [
+//         'OrderId',
+//         'Email',
+//         'Order Date',
+//         'Delivery Time',
+//         'Order Status',
+//         'Traking Number',
+//         'CouponId',
+//         'Amount',
+//         'Discount',
+//         'Paid',
+//         'Total',
+//         'Sale Tax',
+//         'Delivery Fee',
+//         'PaymentId',
+//         'Payment Gateway',
+//         'Billing Address',
+//         'Shipping Address',
+//         'Customer Contact',
+//         'Logistic Provider',
+//       ];
+    
+//       // console.log("order data", ordersData)
+//       // Create an array of data rows with corresponding values
+//       const dataRows = ordersData.map((order:any) => {
+//         const billingAddress = order.billing_address
+//           ? `${order.billing_address.street_address}, ${order.billing_address.country}, ${order.billing_address.city}, ${order.billing_address.state}, ${order.billing_address.zip}`
+//           : '';
+//         const shippingAddress = order.shipping_address
+//           ? `${order.shipping_address.street_address}, ${order.shipping_address.country}, ${order.shipping_address.city}, ${order.shipping_address.state}, ${order.shipping_address.zip}`
+//           : '';
+
+//            // Combine billing address components into a single string (optional)
+//   const formattedBillingAddress = billingAddress ? billingAddress.split(',') : ['', '', '', '', '']; // Set empty values for missing properties
+
+//   // Combine shipping address components into a single string (optional)
+//   const formattedShippingAddress = shippingAddress ? shippingAddress.split(',') : ['', '', '', '', '']; // Set empty values for missing properties
+//           console.log("order data", dataRows)
+//         return [
+//           order.payment_intent || null, // Handle potential missing values
+//           order.customer?.email || null,
+//           order.created_at,
+//           order.delivery_time,
+//           order.order_status,
+//           order.traking_number,
+//           order.coupon_id,
+//           order.amount,
+//           order.discount,
+//           order.paid_total,
+//           order.total,
+//           order.sales_tax,
+//           order.delivery_fee || 0,
+//           order.payment_intent || null,
+//           order.payment_gateway,
+//           formattedBillingAddress,
+//           formattedShippingAddress,
+//           order.customer_contact,
+//           order.logistics_provider,
+//         ];
+//       });
+    
+//       // Combine header row and data rows into a single string
+//       const csvContent = [headerRow.join(',')].concat(dataRows.map((row:any) => row.join(','))).join('\n');
+    
+//       return csvContent;
+//     }
+//     // function transformForExport(data:any, contentType:any) {
+//     //   // Logic to prepare data for specific export format (e.g., CSV string, PDF structure)
+//     //   // Example (assuming CSV export):
+//     //   if (contentType === 'text/csv;charset=utf-8') {
+//     //     const csvContent = data.map(row => Object.values(row).join(',')).join('\n');
+//     //     return csvContent;
+//     //   } else {
+//     //     return JSON.stringify(data, null, 2); // Pretty-printed JSON for readability
+//     //   }
+//     // }
+
+//   }
+
+async function handleExportOrder() {
+  try {
+    const ordersData = orders.filter(
+      (order) => order?.customer_id === order?.dealer?.id
+    );
+
+    if (!ordersData.length) {
+      console.error('No matching orders found for export.');
+      return; // Handle no data scenario (e.g., display message to user)
     }
+
+    const formattedData = transformForExcel(ordersData);
+
+    const contentType = 'text/csv;charset=utf-8'; // Consistent with CSV export
+    const filename = generateFilename(contentType);
+
+    const blob = new Blob([formattedData], { type: contentType });
+    const link = document.createElement('a');
+    link.href = URL.createObjectURL(blob);
+    link.download = filename;
+    link.click();
+
+    setTimeout(() => URL.revokeObjectURL(link.href), 10000); // Revoke after 10 seconds
+  } catch (error) {
+    console.error('Error fetching or formatting data:', error);
+    // Handle error gracefully (e.g., display message to user)
   }
+}
+
+function transformForExcel(ordersData:any) {
+  // Create an array with column headers
+  const headerRow = [
+    'OrderId',
+    'Email',
+    'Order Date',
+    'Delivery Time',
+    'Order Status',
+    'Traking Nunmber',
+    'CouponId',
+    'Amount',
+    'Discount',
+    'Paid',
+    'Total',
+    'Sale Tax',
+    'Delivery Fee',
+    'PaymentId',
+    'Payment Gateway',
+    'Customer Contact',
+    'Billing Address',
+    'Shipping Address',
+    'Logistic Provider',
+  ];
+
+  // Create an array of data rows with corresponding values
+  const dataRows = ordersData.map((order:any) => {
+    const billingAddress = order.billing_address
+    ? `${order.billing_address.street_address} ${order.billing_address.country} ${order.billing_address.city} ${order.billing_address.state} ${order.billing_address.zip}`
+    : '';
+  const shippingAddress = order.shipping_address
+    ? `${order.shipping_address.street_address} ${order.shipping_address.country} ${order.shipping_address.city} ${order.shipping_address.state} ${order.shipping_address.zip}`
+    : '';
+      
+
+    
+
+      console.log("shipping", shippingAddress, billingAddress)
+
+    return [
+      order.payment_intent?.order_id || null, // Handle potential missing values
+      order.customer?.email || null,
+      order.created_at,
+      order.delivery_time,
+      order.order_status,
+      order.tracking_number,
+      order.coupon_id,
+      order.amount,
+      order.discount,
+      order.paid_total,
+      order.total,
+      order.sales_tax,
+      order.delivery_fee || 0,
+      order.payment_intent?.payment_intent_info.payment_id || null,
+      order.payment_gateway,
+      order.customer_contact,
+      billingAddress,
+      shippingAddress,
+      order.logistics_provider,
+    ];
+  });
+
+  // Combine header row and data rows into a single string
+  const csvContent = [headerRow.join(',')].concat(dataRows.map((row:any) => row.join(','))).join('\n');
+
+  return csvContent;
+}
+
+// Placeholder functions (can be implemented based on your requirements)
+// function getContentType(data) {
+//   // ... (Logic to determine data type based on data structure or headers)
+// }
+
+    function generateFilename(contentType:any) {
+      const dateString = new Date().toISOString().slice(0, 10); // YYYY-MM-DD format
+      let extension;
+      switch (contentType) {
+        case 'text/csv;charset=utf-8':
+          extension = '.csv';
+          break;
+        case 'application/pdf': // Add PDF case if PDF export is implemented
+          extension = '.pdf';
+          break;
+        default:
+          extension = '.csv';
+      }
+      return `export-data-${dateString}${extension}`;
+    }
+
+  
+  // ... other functions remain the same (getContentType, generateFilename, transformForExport)
+  
 
   var ordersData = orders.filter(
     (order) => order?.customer_id == order?.dealer?.id
