@@ -19,6 +19,7 @@ import { useOrdersSalesQuery } from '@/data/stocks';
 import StockList from '@/components/stock/StockList';
 import { useOrdersQuery } from '@/data/order';
 import { useMeQuery } from '@/data/user';
+import OrderList from '@/components/order/order-list';
 
 export default function Sales() {
   const router = useRouter();
@@ -98,9 +99,16 @@ export default function Sales() {
     }
   }
 
+  const DealerSalesList = orders.filter(
+    (order) => order?.customer_id !== order?.dealer?.id
+);
+
   var ordersData = orders.filter(
     (order) => order?.customer_id == order?.dealer?.id
   );
+
+  const ShopShow = me?.type.type_name === "Store_Owner";
+
 
   return (
     <>
@@ -156,13 +164,31 @@ export default function Sales() {
         </Menu>
       </Card>
 
-      <StockList
+      {ShopShow ? (
+            <StockList
+            orders={ordersData}
+            paginatorInfo={paginatorInfo}
+            onPagination={handlePagination}
+            onOrder={setOrder}
+            onSort={setColumn}
+          />
+          ) : (
+            <OrderList
+            orders={DealerSalesList}
+            paginatorInfo={paginatorInfo}
+            onPagination={handlePagination}
+            onOrder={setOrder}
+            onSort={setColumn}
+        />
+          )}
+
+      {/* <StockList
         orders={ordersData}
         paginatorInfo={paginatorInfo}
         onPagination={handlePagination}
         onOrder={setOrder}
         onSort={setColumn}
-      />
+      /> */}
     </>
   );
 }

@@ -138,7 +138,7 @@ export default function OrderDetailsPage() {
 
   const { data: meData } = useMeQuery();
 
-  console.log("data@@@@@", meData)
+  // console.log("data@@@@@", meData)
   
 
   const dealerId = order?.customer_id
@@ -148,7 +148,7 @@ export default function OrderDetailsPage() {
     dealerId,
     orderId,
   });
-  console.log("data",data)
+  // console.log("data",data)
 
   if (loading) return <Loader text={t('common:text-loading')} />;
   if (error) return <ErrorMessage message={error.message} />;
@@ -210,10 +210,10 @@ export default function OrderDetailsPage() {
     },
   ];
 
-  console.log("meData", meData?.type.type_name)
+  
 
 const DispatchButton = meData?.type.type_name === "Store_Owner";
-console.log("Dispatech", DispatchButton)
+// console.log("Dispatech", DispatchButton)
 
   return (
     <>

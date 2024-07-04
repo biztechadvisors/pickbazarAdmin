@@ -18,6 +18,7 @@ import { Menu, Transition } from '@headlessui/react';
 import classNames from 'classnames';
 import { DownloadIcon } from '@/components/icons/download-icon';
 import { useMeQuery } from '@/data/user';
+import StockList from '@/components/stock/StockList';
 
 export default function Orders() {
     const router = useRouter();
@@ -39,7 +40,7 @@ export default function Orders() {
     function handlePagination(current: any) {
         setPage(current);
     }
-    console.log("query**42", shop)
+    // console.log("query**42", shop)
     const { data: me } = useMeQuery();
 
     const { data: shopData, isLoading: fetchingShop } = useShopQuery(
@@ -60,7 +61,7 @@ export default function Orders() {
         customer_id: me?.id,
         shop_id: shopId ? shopId : null
     });
-    console.log('orders ** 57', orders)
+    // console.log('orders ** 57', orders)
     const { refetch } = useExportOrderQuery(
         {
             ...(shopId && { shop_id: shopId }),
@@ -87,6 +88,17 @@ export default function Orders() {
     const customerOrderList = orders.filter(
         (order) => order?.customer_id !== order?.dealer?.id
     );
+
+    var ordersData = orders.filter(
+        (order) => order?.customer_id == order?.dealer?.id
+      );
+
+     
+
+    //   console.log("meD", me?.type.type_name)
+
+      const DealerShow = me?.type.type_name === "Dealer";
+    //   console.log("Dispatech", DealerShow)
     return (
         <>
             <Card className="mb-8 flex flex-col items-center justify-between md:flex-row">
@@ -143,13 +155,39 @@ export default function Orders() {
                 </Menu>
             </Card>
 
+            {DealerShow ? (
+            <StockList
+            orders={ordersData}
+            paginatorInfo={paginatorInfo}
+            onPagination={handlePagination}
+            onOrder={setOrder}
+            onSort={setColumn}
+          />
+          ) : (
             <OrderList
+            orders={customerOrderList}
+            paginatorInfo={paginatorInfo}
+            onPagination={handlePagination}
+            onOrder={setOrder}
+            onSort={setColumn}
+        />
+          )}
+
+            {/* <StockList
+        orders={ordersData}
+        paginatorInfo={paginatorInfo}
+        onPagination={handlePagination}
+        onOrder={setOrder}
+        onSort={setColumn}
+      /> */}
+
+            {/* <OrderList
                 orders={customerOrderList}
                 paginatorInfo={paginatorInfo}
                 onPagination={handlePagination}
                 onOrder={setOrder}
                 onSort={setColumn}
-            />
+            /> */}
         </>
     );
 }
