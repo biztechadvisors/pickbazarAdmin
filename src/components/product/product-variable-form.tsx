@@ -103,8 +103,6 @@
 //   //     });
 //   //   }
 //   // }, [initialValues, append]);
-
-//   console.log("variations", variations)
 //   return (
 
 //     <div className="my-5 flex flex-wrap sm:my-8">
@@ -384,10 +382,6 @@
 
 
 
-
-
-
-
 import Input from '@/components/ui/input';
 import { useFieldArray, useFormContext } from 'react-hook-form';
 import Button from '@/components/ui/button';
@@ -419,6 +413,8 @@ export default function ProductVariableForm({
   initialValues,
   settings,
 }: IProps) {
+
+  console.log("shopId,initialValues,settings",shopId,  initialValues,  settings)
  
   const { t } = useTranslation();
   const { locale } = useRouter();
@@ -472,8 +468,11 @@ export default function ProductVariableForm({
   });
  
   const variations = [watch('variations')];
+
+  console.log("variations",variations)
  
   const cartesianProduct = getCartesianProduct(getValues('variations')) || [];
+  console.log("cartesianProduct", cartesianProduct)
   const value = attributes.find(option => option.name === initialValues?.variation_options[0]?.options[0]?.name);
   if (value) {
     variations.push(value);
@@ -484,18 +483,16 @@ export default function ProductVariableForm({
   // const [autoFill, setAutoFill] = useState(false);
  
  
-  // const combinedVariationOptions = [
-  //   ...(initialValues?.variation_options || []),
-  //   ...cartesianProduct,
-  // ];
+  const combinedVariationOptions = [
+    ...(initialValues?.variation_options || []),
+    ...cartesianProduct,
+  ];
  
-  const combinedVariationOptions = initialValues?.variation_options
-  ? [...initialValues.variation_options]
-  : [...cartesianProduct];
+  // const combinedVariationOptions = initialValues?.variation_options
+  // ? [...initialValues.variation_options]
+  // : [...cartesianProduct];
  
   console.log("DATA combinedVariationOptions",combinedVariationOptions);
-
-  console.log("cartesianProduct", cartesianProduct)
  
  
  

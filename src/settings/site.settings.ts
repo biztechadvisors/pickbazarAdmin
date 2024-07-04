@@ -13,6 +13,7 @@ const { permissions }: any = getAuthCredentials();
 let permission = hasAccess(dealerOnly, permissions);
 let identify = permissions;
 const matching: any = Type.Dealer;
+
 export const siteSettings = {
   name: 'PickBazar',
   description: '',
@@ -171,20 +172,26 @@ export const siteSettings = {
         label: 'sidebar-nav-item-settings',
         icon: 'SettingsIcon',
       },
-
       {
-        ...(permission && identify == matching
-          ? {
-            href: `${Routes.stock.list}/dealer`,
-            label: 'sidebar-nav-item-stocks',
-            icon: 'ProductsIcon',
-          }
-          : {
-            href: Routes.stock.list,
-            label: 'sidebar-nav-item-stocks',
-            icon: 'ProductsIcon',
-          }),
+        href: permission && identify.includes(matching) ? `${Routes.stock.list}/dealer` : Routes.stock.list,
+        label: 'sidebar-nav-item-stocks',
+        icon: 'ProductsIcon',
       },
+      
+
+      // {
+      //   ...(permission && identify == matching
+      //     ? {
+      //       href: `${Routes.stock.list}/dealer`,
+      //       label: 'sidebar-nav-item-stocks',
+      //       icon: 'ProductsIcon',
+      //     }
+      //     : {
+      //       href: Routes.stock.list,
+      //       label: 'sidebar-nav-item-stocks',
+      //       icon: 'ProductsIcon',
+      //     }),
+      // },
     ],
     shop: [
       {
@@ -236,6 +243,7 @@ export const siteSettings = {
         permissions: adminOwnerAndStaffOnly,
       },
     ]
+
 
   },
   product: {
