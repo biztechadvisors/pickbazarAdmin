@@ -70,13 +70,13 @@ export default function ShopPage() {
     id: shop_id,
   } = data ?? {};
 
-  if (
-    !hasAccess(adminOnly, permissions) &&
-    !me?.shops?.map((shop) => shop.id).includes(shop_id) &&
-    me?.managed_shop?.id != shop_id
-  ) {
-    router.replace(Routes.dashboard);
-  }
+  // if (
+  //   !hasAccess(adminOnly, permissions) &&
+  //   !me?.shops?.map((shop) => shop.id).includes(shop_id) &&
+  //   me?.managed_shop?.id != shop_id
+  // ) {
+  //   router.replace(Routes.dashboard);
+  // }
 
   return (
     <div className="grid grid-cols-12 gap-6">
