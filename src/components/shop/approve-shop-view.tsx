@@ -161,7 +161,7 @@ const ApproveShopView = () => {
     <div className="m-auto w-full max-w-sm rounded-md bg-light p-4 pb-6 sm:w-[24rem] md:rounded-xl">
       <div className="h-full w-full text-center">
         <div className="flex h-full flex-col justify-between">
-          <p className="mt-4 text-xl font-bold text-heading">You want to active your shop?</p>
+          <p className="mt-4 text-xl font-bold text-heading">You want to Active this Company</p>
           <div className="space-s-4 mt-8 flex w-full items-center justify-between">
             <div className="w-1/2">
               <Button

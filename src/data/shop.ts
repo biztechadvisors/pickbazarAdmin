@@ -18,7 +18,7 @@ export const useApproveShopMutation = () => {
     },
     // Always refetch after error or success:
     onSettled: () => {
-      queryClient.invalidateQueries(API_ENDPOINTS.APPROVE_SHOP);
+      queryClient.invalidateQueries(API_ENDPOINTS.SHOPS);
     },
   });
 };
@@ -32,7 +32,7 @@ export const useDisApproveShopMutation = () => {
     },
     // Always refetch after error or success:
     onSettled: () => {
-      queryClient.invalidateQueries(API_ENDPOINTS.DISAPPROVE_SHOP);
+      queryClient.invalidateQueries(API_ENDPOINTS.SHOPS);
     },
   });
 };
