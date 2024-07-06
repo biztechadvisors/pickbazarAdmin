@@ -15,8 +15,11 @@ import { usePermissionData } from '@/data/permission';
 import { getAuthCredentials } from '@/utils/auth-utils';
 import Loader from '../ui/loader/loader';
 import { DEALER, OWNER } from '@/utils/constants';
-import InputMask from 'react-input-mask';
+// import InputMask from 'react-input-mask';
 import { useShopQuery } from '@/data/shop';
+import PhoneInput from 'react-phone-input-2';
+import 'react-phone-input-2/lib/style.css';
+import { useState } from 'react';
 
 type FormValues = {
   name: string;
@@ -45,6 +48,8 @@ const CustomerCreateForm = () => {
   const { id } = meData || {};
   const { data: permissionData } = usePermissionData(id);
   const { permissions } = getAuthCredentials();
+  // const phoneRegex = /^\+91[0-9]{10}$/;
+  const [value, setValue] = useState('');
 
   const shopSlug =
     typeof window !== 'undefined' ? localStorage.getItem('shopSlug') : null;
@@ -154,33 +159,33 @@ const CustomerCreateForm = () => {
             className="mb-4"
             error={t(errors.contact?.message!)}
           /> */}
-          <InputMask
-            mask="+91 9999999999"
-            maskChar=""
-            {...register('contact', {
-              required: t('form:error-contact-required'),
-              validate: (value) =>
-                value.replace(/\D/g, '').length === 12 ||
-                t('form:error-contact-invalid'),
-            })}
-          >
-            {(inputProps) => (
-              <Input
-                label={t('form:input-label-contact')}
-                {...inputProps}
-                type="text"
-                variant="outline"
-                className="mb-4"
-                error={t(errors.contact?.message)}
+                 <Controller
+            name="contact"
+            control={control}
+            render={({ field: { onChange, value } }) => (
+              <PhoneInput
+                country="in"
+                value={value}
+                onChange={onChange}
+                inputStyle={{
+                  width: '100%',
+                  height: '40px',
+                  border: '1px solid #e2e8f0',
+                  borderRadius: '0.375rem',
+                  padding: '0.5rem',
+                  fontSize: '0.875rem',
+                  outline: 'none',
+                  paddingLeft:'50px',
+                }}
               />
             )}
-          </InputMask>
+          />
           <Controller
             name="type"
             control={control}
             render={({ field }) => (
               <>
-                <Label>{t('form:input-label-type')}</Label>
+                <Label className='mt-4'>{t('form:input-label-type')}</Label>
                 <Select
                   {...field}
                   getOptionLabel={(option: { label: string }) => option.label}

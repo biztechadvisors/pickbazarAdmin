@@ -14,6 +14,7 @@ import { Shop, MappedPaginatorInfo } from '@/types';
 import { getAuthCredentials } from '@/utils/auth-utils';
 import { AllPermission } from '@/utils/AllPermission';
 import { OWNER } from '@/utils/constants';
+import { Routes } from '@/config/routes';
 
 type IProps = {
   shops: Shop[] | undefined;
@@ -166,22 +167,23 @@ const ShopList = ({
     {
       ...(canWrite
         ? {
-            title: t('table:table-item-actions'),
-            dataIndex: 'id',
-            key: 'actions',
-            align: alignRight,
-            render: (id: string, { slug, is_active }: any) => {
-              return (
-                <ActionButtons
-                  id={id}
-                  approveButton={true}
-                  detailsUrl={`/${slug}`}
-                  isShopActive={is_active}
-                />
-              );
-            },
-          }
-        : {}),
+          title: t('table:table-item-actions'),
+          dataIndex: 'id',
+          key: 'actions',
+          align: alignRight,
+          render: (id: string, { slug, is_active }: any) => {
+            console.log("SLUG____",slug);
+            return (
+              <ActionButtons
+                id={id}
+                approveButton={true}
+                detailsUrl={`/${slug}`}
+                // detailsUrl={`${Routes.shop.edit}/${id}`}
+                isShopActive={is_active}
+              />
+            );
+          },
+        } : {}),
     },
   ];
 

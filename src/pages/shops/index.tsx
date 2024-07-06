@@ -7,12 +7,7 @@ import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import ShopList from '@/components/shop/shop-list';
 import { useState } from 'react';
 import Search from '@/components/common/search';
-import {
-  adminAndOwnerOnly,
-  adminOnly,
-  getAuthCredentials,
-  ownerOnly,
-} from '@/utils/auth-utils';
+import { adminAndOwnerOnly, adminOnly, getAuthCredentials, ownerOnly } from '@/utils/auth-utils';
 import { useShopsQuery } from '@/data/shop';
 import { SortOrder } from '@/types';
 import permission from '../permission';
