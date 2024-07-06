@@ -166,23 +166,26 @@ const ShopList = ({
     {
       ...(canWrite
         ? {
-          title: t('table:table-item-actions'),
-          dataIndex: 'id',
-          key: 'actions',
-          align: alignRight,
-          render: (id: string, { slug, is_active }: any) => {
-            return (
-              <ActionButtons
-                id={id}
-                approveButton={true}
-                detailsUrl={`/${slug}`}
-                isShopActive={is_active}
-              />
-            );
-          },
-        } : {}),
+            title: t('table:table-item-actions'),
+            dataIndex: 'id',
+            key: 'actions',
+            align: alignRight,
+            render: (id: string, { slug, is_active }: any) => {
+              return (
+                <ActionButtons
+                  id={id}
+                  approveButton={true}
+                  detailsUrl={`/${slug}`}
+                  isShopActive={is_active}
+                />
+              );
+            },
+          }
+        : {}),
     },
   ];
+
+  console.log('shops', shops);
 
   return (
     <>
@@ -211,7 +214,6 @@ const ShopList = ({
 };
 
 export default ShopList;
-
 
 // import { useState } from 'react';
 // import Pagination from '@/components/ui/pagination';

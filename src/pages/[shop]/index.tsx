@@ -21,7 +21,7 @@ import usePrice from '@/utils/use-price';
 import { useTranslation } from 'next-i18next';
 import isEmpty from 'lodash/isEmpty';
 import { useShopQuery } from '@/data/shop';
-import { GetStaticPaths } from 'next';
+import { GetStaticPaths, GetStaticProps } from 'next';
 import { CubeIcon } from '@/components/icons/shops/cube';
 import { OrdersIcon } from '@/components/icons/sidebar';
 import { PriceWalletIcon } from '@/components/icons/shops/price-wallet';
@@ -70,13 +70,13 @@ export default function ShopPage() {
     id: shop_id,
   } = data ?? {};
 
-  if (
-    !hasAccess(adminOnly, permissions) &&
-    !me?.shops?.map((shop) => shop.id).includes(shop_id) &&
-    me?.managed_shop?.id != shop_id
-  ) {
-    router.replace(Routes.dashboard);
-  }
+  // if (
+  //   !hasAccess(adminOnly, permissions) &&
+  //   !me?.shops?.map((shop) => shop.id).includes(shop_id) &&
+  //   me?.managed_shop?.id != shop_id
+  // ) {
+  //   router.replace(Routes.dashboard);
+  // }
 
   return (
     <div className="grid grid-cols-12 gap-6">

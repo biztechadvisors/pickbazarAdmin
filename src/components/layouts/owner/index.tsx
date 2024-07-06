@@ -69,6 +69,7 @@ import { useMeQuery } from '@/data/user';
 import { getAuthCredentials } from '@/utils/auth-utils';
 import { OWNER } from '@/utils/constants';
 import Loader from '@/components/ui/loader/loader';
+import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 
 const OwnerLayout: React.FC<{ children?: React.ReactNode }> = ({
   children,
@@ -93,7 +94,7 @@ const OwnerLayout: React.FC<{ children?: React.ReactNode }> = ({
   if (isLoading) {
     return (
       <div>
-        <Loader />
+        <Loader text={t('common:text-loading')} />
       </div>
     ); // Replace with your loading indicator
   }
@@ -135,3 +136,7 @@ const OwnerLayout: React.FC<{ children?: React.ReactNode }> = ({
 };
 
 export default OwnerLayout;
+
+
+
+

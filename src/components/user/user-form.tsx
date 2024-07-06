@@ -113,12 +113,6 @@ const CustomerCreateForm = () => {
       }
     );
   }
-
-  console.log('permissions-------------', permissions);
-
-  console.log('permissionData', permissionData);
-
-  console.log('shopData++++++++++++++', shopData);
   return (
     <form onSubmit={handleSubmit(onSubmit)} noValidate>
       <div className="my-5 flex flex-wrap sm:my-8">
