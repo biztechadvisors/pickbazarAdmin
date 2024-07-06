@@ -132,25 +132,56 @@ const InventoryDropdown = () => {
   const { permissions } = getAuthCredentials();
   const permission = hasAccess(dealerOnly, permissions);
 
+  // useEffect(() => {
+  //   const storedShopSlug = localStorage.getItem('shopSlug');
+  //   const storedIsOpen = localStorage.getItem('isOpen') === 'true';
+  //   if (storedShopSlug) {
+  //     setNewShopSlug(storedShopSlug);
+  //   }
+  //   setIsOpen(storedIsOpen);
+  // }, []);
+
   useEffect(() => {
-    const storedShopSlug = localStorage.getItem('shopSlug');
-    const storedIsOpen = localStorage.getItem('isOpen') === 'true';
-    if (storedShopSlug) {
-      setNewShopSlug(storedShopSlug);
+    if (typeof window !== 'undefined') { // Ensure we're in the browser environment
+      const storedShopSlug = localStorage.getItem('shopSlug');
+      const storedIsOpen = localStorage.getItem('isOpen') === 'true';
+      if (storedShopSlug) {
+        setNewShopSlug(storedShopSlug);
+      }
+      setIsOpen(storedIsOpen);
     }
-    setIsOpen(storedIsOpen);
   }, []);
+  
+
+  // const toggleMenu = () => {
+  //   const newIsOpen = !isOpen;
+  //   setIsOpen(newIsOpen);
+  //   localStorage.setItem('isOpen', newIsOpen);
+  // };
+
+  // const handleSetNewShopSlug = (newShopSlug) => {
+  //   localStorage.setItem('shopSlug', newShopSlug);
+  //   setNewShopSlug(newShopSlug);
+  // };
+
+
+
 
   const toggleMenu = () => {
     const newIsOpen = !isOpen;
     setIsOpen(newIsOpen);
-    localStorage.setItem('isOpen', newIsOpen);
+    if (typeof window !== 'undefined') { // Ensure we're in the browser environment
+      localStorage.setItem('isOpen', newIsOpen);
+    }
   };
-
+  
   const handleSetNewShopSlug = (newShopSlug) => {
-    localStorage.setItem('shopSlug', newShopSlug);
+    if (typeof window !== 'undefined') { // Ensure we're in the browser environment
+      localStorage.setItem('shopSlug', newShopSlug);
+    }
     setNewShopSlug(newShopSlug);
   };
+  
 
   const buildUrl = (path) => {
     return `/${newShopSlug}/${path}`;
@@ -189,15 +220,6 @@ const InventoryDropdown = () => {
           </div>
           <div>
             <Link
-              href={buildUrl('/groups')}
-              className="relative flex w-full cursor-pointer items-center rounded-lg py-2 px-5 text-sm text-body-dark text-start before:absolute before:-left-0.5 before:top-[18px] before:h-px before:w-3 before:border-t before:border-dashed before:border-gray-300 before:content-[''] hover:text-accent focus:text-accent"
-              onClick={() => handleSetNewShopSlug(newShopSlug)}
-            >
-              <span>Groups</span>
-            </Link>
-          </div>
-          <div>
-            <Link
               href={buildUrl('/categories')}
               className="relative flex w-full cursor-pointer items-center rounded-lg py-2 px-5 text-sm text-body-dark text-start before:absolute before:-left-0.5 before:top-[18px] before:h-px before:w-3 before:border-t before:border-dashed before:border-gray-300 before:content-[''] hover:text-accent focus:text-accent"
               onClick={() => handleSetNewShopSlug(newShopSlug)}
@@ -212,6 +234,15 @@ const InventoryDropdown = () => {
               onClick={() => handleSetNewShopSlug(newShopSlug)}
             >
               <span>SubCategories</span>
+            </Link>
+          </div>
+          <div>
+            <Link
+              href={buildUrl('/groups')}
+              className="relative flex w-full cursor-pointer items-center rounded-lg py-2 px-5 text-sm text-body-dark text-start before:absolute before:-left-0.5 before:top-[18px] before:h-px before:w-3 before:border-t before:border-dashed before:border-gray-300 before:content-[''] hover:text-accent focus:text-accent"
+              onClick={() => handleSetNewShopSlug(newShopSlug)}
+            >
+              <span>Collections</span>
             </Link>
           </div>
           <div>

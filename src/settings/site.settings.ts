@@ -1,4 +1,8 @@
-import { adminAndOwnerOnly, adminOwnerAndStaffOnly, ownerOnly } from '@/utils/auth-utils';
+import {
+  adminAndOwnerOnly,
+  adminOwnerAndStaffOnly,
+  ownerOnly,
+} from '@/utils/auth-utils';
 import { Routes } from '@/config/routes';
 import { dealerOnly, getAuthCredentials, hasAccess } from '@/utils/auth-utils';
 
@@ -53,7 +57,7 @@ export const siteSettings = {
       {
         href: Routes.shop.list,
         label: 'sidebar-nav-item-shops',
-        icon: 'ShopIcon',
+        icon: 'MyShopIcon',
         permissions: ownerOnly,
       },
       {
@@ -86,27 +90,6 @@ export const siteSettings = {
         icon: 'MyShopIcon',
       },
       {
-        href: Routes.dealerlist.list,
-        label: 'sidebar-nav-item-dealerlist',
-        icon: 'DealerListIcon',
-      },
-
-      {
-        href: Routes.totalsale.list,
-        label: 'sidebar-nav-item-total-sale',
-        icon: 'TotalSaleIcon',
-      },
-      {
-        href: Routes.order.list,
-        label: 'sidebar-nav-item-orders',
-        icon: 'OrdersIcon',
-      },
-      {
-        href: Routes.order.create,
-        label: 'sidebar-nav-item-create-order',
-        icon: 'CalendarScheduleIcon',
-      },
-      {
         href: Routes.permission.list,
         label: 'sidebar-nav-item-permissions',
         icon: 'CalendarScheduleIcon',
@@ -117,30 +100,55 @@ export const siteSettings = {
         icon: 'UsersIcon',
       },
       {
-        ...(permission && identify == matching
-          ? {
-            href: Routes.createSales,
-            label: 'sidebar-nav-item-create-sales',
-            icon: 'OrderListIcon',
-          }
-          : {
-            href: Routes.coupon.list,
-            label: 'sidebar-nav-item-coupons',
-            icon: 'CouponsIcon',
-          }),
+        href: Routes.staff.list,
+        label: 'sidebar-nav-item-staffs',
+        icon: 'UsersIcon',
+      },
+      {
+        href: Routes.dealerlist.list,
+        label: 'sidebar-nav-item-dealerlist',
+        icon: 'DealerListIcon',
+      },
+      {
+        href: Routes.order.create,
+        label: 'sidebar-nav-item-create-order',
+        icon: 'CalendarScheduleIcon',
+      },
+      {
+        href: Routes.order.list,
+        label: 'sidebar-nav-item-orders',
+        icon: 'OrdersIcon',
+      },
+      {
+        href: Routes.totalsale.list,
+        label: 'sidebar-nav-item-total-sale',
+        icon: 'TotalSaleIcon',
       },
       {
         ...(permission && identify == matching
           ? {
-            href: Routes.sales,
-            label: 'sidebar-nav-item-sales',
-            icon: 'SalesIcon',
-          }
+              href: Routes.createSales,
+              label: 'sidebar-nav-item-create-sales',
+              icon: 'OrderListIcon',
+            }
           : {
-            href: Routes.tax.list,
-            label: 'sidebar-nav-item-taxes',
-            icon: 'TaxesIcon',
-          }),
+              href: Routes.coupon.list,
+              label: 'sidebar-nav-item-coupons',
+              icon: 'CouponsIcon',
+            }),
+      },
+      {
+        ...(permission && identify == matching
+          ? {
+              href: Routes.sales,
+              label: 'sidebar-nav-item-sales',
+              icon: 'SalesIcon',
+            }
+          : {
+              href: Routes.tax.list,
+              label: 'sidebar-nav-item-taxes',
+              icon: 'TaxesIcon',
+            }),
       },
       {
         href: Routes.shipping.list,
@@ -153,14 +161,22 @@ export const siteSettings = {
         icon: 'ChatIcon',
       },
       {
+        ...(permission && identify == matching
+          ? {
+              href: `${Routes.stock.list}/dealer`,
+              label: 'sidebar-nav-item-stocks',
+              icon: 'ProductsIcon',
+            }
+          : {
+              href: Routes.stock.list,
+              label: 'sidebar-nav-item-stocks',
+              icon: 'ProductsIcon',
+            }),
+      },
+      {
         href: Routes.refund.list,
         label: 'sidebar-nav-item-refunds',
         icon: 'RefundsIcon',
-      },
-      {
-        href: Routes.staff.list,
-        label: 'sidebar-nav-item-staffs',
-        icon: 'UsersIcon',
       },
       {
         href: Routes.reviews.list,
@@ -172,26 +188,6 @@ export const siteSettings = {
         label: 'sidebar-nav-item-settings',
         icon: 'SettingsIcon',
       },
-      {
-        href: permission && identify.includes(matching) ? `${Routes.stock.list}/dealer` : Routes.stock.list,
-        label: 'sidebar-nav-item-stocks',
-        icon: 'ProductsIcon',
-      },
-      
-
-      // {
-      //   ...(permission && identify == matching
-      //     ? {
-      //       href: `${Routes.stock.list}/dealer`,
-      //       label: 'sidebar-nav-item-stocks',
-      //       icon: 'ProductsIcon',
-      //     }
-      //     : {
-      //       href: Routes.stock.list,
-      //       label: 'sidebar-nav-item-stocks',
-      //       icon: 'ProductsIcon',
-      //     }),
-      // },
     ],
     shop: [
       {
@@ -219,12 +215,6 @@ export const siteSettings = {
         permissions: adminOwnerAndStaffOnly,
       },
       {
-        href: (shop: string) => `/${shop}${Routes.subcategory.list}`,
-        label: 'sidebar-nav-item-sub-categories',
-        icon: 'CategoriesIcon',
-        permissions: adminOwnerAndStaffOnly,
-      },
-      {
         href: (shop: string) => `/${shop}${Routes.product.list}`,
         label: 'sidebar-nav-item-products',
         icon: 'ProductsIcon',
@@ -237,14 +227,18 @@ export const siteSettings = {
         permissions: adminOwnerAndStaffOnly,
       },
       {
+        href: (shop: string) => `/${shop}${Routes.subcategory.list}`,
+        label: 'sidebar-nav-item-sub-categories',
+        icon: 'CategoriesIcon',
+        permissions: adminOwnerAndStaffOnly,
+      },
+      {
         href: (shop: string) => `/${shop}${Routes.tag.list}`,
         label: 'sidebar-nav-item-tags',
         icon: 'TagIcon',
         permissions: adminOwnerAndStaffOnly,
       },
-    ]
-
-
+    ],
   },
   product: {
     placeholder: '/product-placeholder.svg',

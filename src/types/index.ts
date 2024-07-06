@@ -134,6 +134,7 @@ export type QueryOptionsType = {
   name?: string;
   orderBy?: string;
   sortedBy?: SortOrder;
+
 };
 
 export enum OrderStatus {
