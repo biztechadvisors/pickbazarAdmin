@@ -58,8 +58,8 @@ export default function Customers() {
             {t('common:sidebar-nav-item-users')}
           </h1>
         </div>
-
-        <div className="flex w-full items-center ms-auto md:w-3/4">
+        <div className="flex w-full flex-col items-center ms-auto md:w-1/2 md:flex-row">
+        <div className="flex w-full items-center">
           <Search onSearch={handleSearch} />
           <LinkButton
             href={`${Routes.user.create}`}
@@ -67,6 +67,7 @@ export default function Customers() {
           >
             <span>+ {t('form:button-label-add-user')}</span>
           </LinkButton>
+        </div>
         </div>
       </Card>
 

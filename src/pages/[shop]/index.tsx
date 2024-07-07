@@ -45,7 +45,7 @@ export default function ShopPage() {
 
   const { price: totalEarnings } = usePrice(data && { amount: data?.balance?.total_earnings! });
   const { price: currentBalance } = usePrice(data && { amount: data?.balance?.current_balance! });
-
+ 
   const { permissions } = getAuthCredentials();
   const permissionTypes = AllPermission();
   const canWrite =
@@ -70,13 +70,15 @@ export default function ShopPage() {
     id: shop_id,
   } = data ?? {};
 
-  if (
-    !hasAccess(adminOnly, permissions) &&
-    !me?.shops?.map((shop) => shop.id).includes(shop_id) &&
-    me?.managed_shop?.id != shop_id
-  ) {
-    router.replace(Routes.dashboard);
-  }
+  // if (
+  //   !hasAccess(adminOnly, permissions) &&
+  //   !me?.shops?.map((shop) => shop.id).includes(shop_id) &&
+  //   me?.managed_shop?.id != shop_id
+  // ) {
+  //   router.replace(Routes.dashboard);
+  // }
+
+  
 
   return (
     <div className="grid grid-cols-12 gap-6">
