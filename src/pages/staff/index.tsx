@@ -3,12 +3,12 @@ import LinkButton from '@/components/ui/link-button';
 import Loader from '@/components/ui/loader/loader';
 import { useTranslation } from 'next-i18next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
-
 import { useRouter } from 'next/router';
 import StaffList from '@/components/shop/staff-list';
 import {
   adminAndOwnerOnly,
   adminOnly,
+  adminOwnerAndStaffOnly,
   getAuthCredentials,
   hasAccess,
 } from '@/utils/auth-utils';
@@ -18,7 +18,7 @@ import { useStaffsQuery } from '@/data/staff';
 import { useState } from 'react';
 import { SortOrder } from '@/types';
 import { Routes } from '@/config/routes';
-import { useMeQuery } from '@/data/user';
+import { useMeQuery, useUsersQuery } from '@/data/user';
 import { AllPermission } from '@/utils/AllPermission';
 import AdminLayout from '@/components/layouts/admin';
 
@@ -33,13 +33,27 @@ export default function StaffsPage() {
   const [page, setPage] = useState(1);
   const [orderBy, setOrder] = useState('created_at');
   const [sortedBy, setColumn] = useState<SortOrder>(SortOrder.Desc);
-  
-  const permissionTypes = AllPermission(); 
+  const [searchTerm, setSearchTerm] = useState('');
+
+  const shopSlug =
+    typeof window !== 'undefined' ? localStorage.getItem('shopSlug') : null;
+
+  const permissionTypes = AllPermission();
 
   const canWrite = permissionTypes.includes('sidebar-nav-item-staffs');
 
   const { data: shopData, isLoading: fetchingShopId } = useShopQuery({
-    slug: shop as string,
+    slug: shopSlug as string,
+  });
+
+  const { users } = useUsersQuery({
+    limit: 20,
+    usrById: me?.id,
+    email: searchTerm,
+    page,
+    name: searchTerm,
+    orderBy,
+    sortedBy,
   });
 
   const shopId = shopData?.id!;
@@ -59,6 +73,7 @@ export default function StaffsPage() {
       enabled: Boolean(shopId),
     }
   );
+
   if (fetchingShopId || loading)
     return <Loader text={t('common:text-loading')} />;
   if (error) return <ErrorMessage message={error?.message} />;
@@ -75,6 +90,12 @@ export default function StaffsPage() {
     router.replace(Routes.dashboard);
   }
 
+  const filteredUsers = users?.filter(
+    (user) => user.type?.type_name === 'Staff'
+  );
+
+  console.log('filteredUsers', filteredUsers);
+
   return (
     <>
       <Card className="mb-8 flex flex-row items-center justify-between">
@@ -85,8 +106,11 @@ export default function StaffsPage() {
         </div>
 
         <div className="flex w-3/4 items-center ms-auto xl:w-2/4">
-        {canWrite ? (
-            <LinkButton href={`/${shop}/staffs/create`} className="h-12 ms-auto">
+          {canWrite ? (
+            <LinkButton
+              href={`/users/create`}
+              className="h-12 ms-auto"
+            >
               <span>+ {t('form:button-label-add-staff')}</span>
             </LinkButton>
           ) : null}
@@ -94,7 +118,7 @@ export default function StaffsPage() {
       </Card>
 
       <StaffList
-        staffs={staffs}
+        staffs={filteredUsers}
         onPagination={handlePagination}
         paginatorInfo={paginatorInfo}
         onOrder={setOrder}
@@ -104,7 +128,7 @@ export default function StaffsPage() {
   );
 }
 StaffsPage.authenticate = {
-  permissions: adminAndOwnerOnly,
+  permissions: adminOwnerAndStaffOnly,
 };
 StaffsPage.Layout = AdminLayout;
 

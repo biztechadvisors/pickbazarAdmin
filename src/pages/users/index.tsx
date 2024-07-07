@@ -46,6 +46,10 @@ export default function Customers() {
     setPage(current);
   }
 
+  console.log("users", users)
+
+  console.log("data", data)
+
   return (
     <>
       <Card className="mb-8 flex flex-col items-center md:flex-row">

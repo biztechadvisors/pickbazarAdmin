@@ -126,27 +126,59 @@ export function useLogin() {
   return useMutation(userClient.login);
 }
 
+// export const useLogoutMutation = () => {
+//   const router = useRouter();
+//   const { t } = useTranslation();
+
+//   const logoutMutation = useMutation(userClient.logout, {
+//     onSuccess: () => {
+//       // Remove auth credentials and clear all local storage items
+//       Cookies.remove(AUTH_CRED);
+//       localStorage.clear();
+
+//       // Redirect to login route
+//       router.replace(Routes.login);
+
+//       // Show success toast
+//       toast.success(t('common:successfully-logout'));
+//     },
+//     onError: (error) => {
+//       // Show error toast
+//       toast.error(t('common:logout-failed', { error: error.message }));
+
+//       console.error('Logout Error:', error);
+//     },
+//   });
+
+//   return logoutMutation;
+// };
+
+
 export const useLogoutMutation = () => {
   const router = useRouter();
   const { t } = useTranslation();
 
   const logoutMutation = useMutation(userClient.logout, {
     onSuccess: () => {
-      // Remove auth credentials and clear all local storage items
-      Cookies.remove(AUTH_CRED);
-      localStorage.clear();
+      if (typeof window !== 'undefined') { // Ensure we're in the browser environment
+        // Remove auth credentials and clear all local storage items
+        Cookies.remove(AUTH_CRED);
+        localStorage.clear();
 
-      // Redirect to login route
-      router.replace(Routes.login);
+        // Redirect to login route
+        router.replace(Routes.login);
 
-      // Show success toast
-      toast.success(t('common:successfully-logout'));
+        // Show success toast
+        toast.success(t('common:successfully-logout'));
+      }
     },
     onError: (error) => {
-      // Show error toast
-      toast.error(t('common:logout-failed', { error: error.message }));
+      if (typeof window !== 'undefined') { // Ensure we're in the browser environment
+        // Show error toast
+        toast.error(t('common:logout-failed', { error: error.message }));
 
-      console.error('Logout Error:', error);
+        console.error('Logout Error:', error);
+      }
     },
   });
 

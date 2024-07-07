@@ -19,7 +19,7 @@ import { useOrdersSalesQuery } from '@/data/stocks';
 import StockList from '@/components/stock/StockList';
 import { useOrdersQuery } from '@/data/order';
 import { useMeQuery } from '@/data/user';
-import { formatAddress } from '@/utils/format-address';
+import OrderList from '@/components/order/order-list';
 
 export default function Sales() {
   const router = useRouter();
@@ -270,12 +270,12 @@ export default function Sales() {
 
 //   }
 
-async function handleExportOrder() {
+  async function handleExportOrder() {
   try {
     const ordersData = orders.filter(
       (order) => order?.customer_id === order?.dealer?.id
     );
-
+console.log("order+++", ordersData)
     if (!ordersData.length) {
       console.error('No matching orders found for export.');
       return; // Handle no data scenario (e.g., display message to user)
@@ -297,105 +297,111 @@ async function handleExportOrder() {
     console.error('Error fetching or formatting data:', error);
     // Handle error gracefully (e.g., display message to user)
   }
-}
+   }
 
-function transformForExcel(ordersData:any) {
-  // Create an array with column headers
-  const headerRow = [
-    'OrderId',
-    'Email',
-    'Order Date',
-    'Delivery Time',
-    'Order Status',
-    'Traking Nunmber',
-    'CouponId',
-    'Amount',
-    'Discount',
-    'Paid',
-    'Total',
-    'Sale Tax',
-    'Delivery Fee',
-    'PaymentId',
-    'Payment Gateway',
-    'Customer Contact',
-    'Billing Address',
-    'Shipping Address',
-    'Logistic Provider',
-  ];
+  function transformForExcel(ordersData:any) {
+    // Create an array with column headers
+    const headerRow = [
+      'OrderId',
+      'Email',
+      'Order Date',
+      'Delivery Time',
+      'Order Status',
+      'Traking Nunmber',
+      'CouponId',
+      'Amount',
+      'Discount',
+      'Paid',
+      'Total',
+      'Sale Tax',
+      'Delivery Fee',
+      'PaymentId',
+      'Payment Gateway',
+      'Customer Contact',
+      'Billing Address',
+      'Shipping Address',
+      'Logistic Provider',
+    ];
 
-  // Create an array of data rows with corresponding values
-  const dataRows = ordersData.map((order:any) => {
-    const billingAddress = order.billing_address
-    ? `${order.billing_address.street_address} ${order.billing_address.country} ${order.billing_address.city} ${order.billing_address.state} ${order.billing_address.zip}`
-    : '';
-  const shippingAddress = order.shipping_address
-    ? `${order.shipping_address.street_address} ${order.shipping_address.country} ${order.shipping_address.city} ${order.shipping_address.state} ${order.shipping_address.zip}`
-    : '';
+    // Create an array of data rows with corresponding values
+    const dataRows = ordersData.map((order:any) => {
+      const billingAddress = order.billing_address
+      ? `${order.billing_address.street_address} ${order.billing_address.country} ${order.billing_address.city} ${order.billing_address.state} ${order.billing_address.zip}`
+      : '';
+    const shippingAddress = order.shipping_address
+      ? `${order.shipping_address.street_address} ${order.shipping_address.country} ${order.shipping_address.city} ${order.shipping_address.state} ${order.shipping_address.zip}`
+      : '';
+        
+      const escapedBillingAddress = billingAddress.replace(/,/g, '');
+      const escapedShippingAddress = shippingAddress.replace(/,/g, '');
+
+      // Extract and format contact number with country code (assuming country code is in a separate field)
+      const contactNumber = order.customer_contact
+        ? order.customer_contact // Remove non-digits
+        : '';
+
+      // Remove non-digits from tracking number
+      const trackingNumber = order.tracking_number ? order.tracking_number : '';
       
 
-    
+        console.log("shipping", trackingNumber, contactNumber,escapedShippingAddress, escapedBillingAddress )
 
-      console.log("shipping", shippingAddress, billingAddress)
+      return [
+        order.payment_intent?.order_id || null, // Handle potential missing values
+        order.customer?.email || null,
+        order.created_at,
+        order.delivery_time,
+        order.order_status,
+        trackingNumber,
+        order.coupon_id,
+        order.amount,
+        order.discount,
+        order.paid_total,
+        order.total,
+        order.sales_tax,
+        order.delivery_fee || 0,
+        order.payment_intent?.payment_intent_info.payment_id || null,
+        order.payment_gateway,
+        contactNumber,
+        escapedBillingAddress,
+        escapedShippingAddress,
+        order.logistics_provider,
+      ];
+    });
 
-    return [
-      order.payment_intent?.order_id || null, // Handle potential missing values
-      order.customer?.email || null,
-      order.created_at,
-      order.delivery_time,
-      order.order_status,
-      order.tracking_number,
-      order.coupon_id,
-      order.amount,
-      order.discount,
-      order.paid_total,
-      order.total,
-      order.sales_tax,
-      order.delivery_fee || 0,
-      order.payment_intent?.payment_intent_info.payment_id || null,
-      order.payment_gateway,
-      order.customer_contact,
-      billingAddress,
-      shippingAddress,
-      order.logistics_provider,
-    ];
-  });
+    // Combine header row and data rows into a single string
+    const csvContent = [headerRow.join(',')].concat(dataRows.map((row:any) => row.join(','))).join('\n');
 
-  // Combine header row and data rows into a single string
-  const csvContent = [headerRow.join(',')].concat(dataRows.map((row:any) => row.join(','))).join('\n');
+    return csvContent;
+  }
 
-  return csvContent;
-}
-
-// Placeholder functions (can be implemented based on your requirements)
-// function getContentType(data) {
-//   // ... (Logic to determine data type based on data structure or headers)
-// }
-
-    function generateFilename(contentType:any) {
-      const dateString = new Date().toISOString().slice(0, 10); // YYYY-MM-DD format
-      let extension;
-      switch (contentType) {
-        case 'text/csv;charset=utf-8':
-          extension = '.csv';
-          break;
-        case 'application/pdf': // Add PDF case if PDF export is implemented
-          extension = '.pdf';
-          break;
-        default:
-          extension = '.csv';
+  function generateFilename(contentType:any) {
+        const dateString = new Date().toISOString().slice(0, 10); // YYYY-MM-DD format
+        let extension;
+        switch (contentType) {
+          case 'text/csv;charset=utf-8':
+            extension = '.csv';
+            break;
+          case 'application/pdf': // Add PDF case if PDF export is implemented
+            extension = '.pdf';
+            break;
+          default:
+            extension = '.csv';
+        }
+        return `export-data-${dateString}${extension}`;
       }
-      return `export-data-${dateString}${extension}`;
-    }
+  
 
-  
-  // ... other functions remain the same (getContentType, generateFilename, transformForExport)
-  
+  const DealerSalesList = orders.filter(
+    (order) => order?.customer_id !== order?.dealer?.id
+);
 
   var ordersData = orders.filter(
     (order) => order?.customer_id == order?.dealer?.id
   );
 
-  console.log("orders******************", orders)
+  const ShopShow = me?.type.type_name === "Store_Owner";
+
 
   return (
     <>
@@ -451,13 +457,31 @@ function transformForExcel(ordersData:any) {
         </Menu>
       </Card>
 
-      <StockList
+      {ShopShow ? (
+            <StockList
+            orders={ordersData}
+            paginatorInfo={paginatorInfo}
+            onPagination={handlePagination}
+            onOrder={setOrder}
+            onSort={setColumn}
+          />
+          ) : (
+            <OrderList
+            orders={DealerSalesList}
+            paginatorInfo={paginatorInfo}
+            onPagination={handlePagination}
+            onOrder={setOrder}
+            onSort={setColumn}
+        />
+          )}
+
+      {/* <StockList
         orders={ordersData}
         paginatorInfo={paginatorInfo}
         onPagination={handlePagination}
         onOrder={setOrder}
         onSort={setColumn}
-      />
+      /> */}
     </>
   );
 }

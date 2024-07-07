@@ -18,6 +18,7 @@ import { Menu, Transition } from '@headlessui/react';
 import classNames from 'classnames';
 import { DownloadIcon } from '@/components/icons/download-icon';
 import { useMeQuery } from '@/data/user';
+import StockList from '@/components/stock/StockList';
 
 export default function Orders() {
     const router = useRouter();
@@ -39,7 +40,7 @@ export default function Orders() {
     function handlePagination(current: any) {
         setPage(current);
     }
-    console.log("query**42", shop)
+    // console.log("query**42", shop)
     const { data: me } = useMeQuery();
 
     console.log("me", me)
@@ -70,25 +71,157 @@ export default function Orders() {
         { enabled: false }
     );
 
+    async function handleExportOrder() {
+        try {
+          const ordersData = orders.filter(
+            (order) => order?.customer_id !== order?.dealer?.id
+          );
+      console.log("order+++", ordersData)
+          if (!ordersData.length) {
+            console.error('No matching orders found for export.');
+            return; // Handle no data scenario (e.g., display message to user)
+          }
+      
+          const formattedData = transformForExcel(ordersData);
+      
+          const contentType = 'text/csv;charset=utf-8'; // Consistent with CSV export
+          const filename = generateFilename(contentType);
+      
+          const blob = new Blob([formattedData], { type: contentType });
+          const link = document.createElement('a');
+          link.href = URL.createObjectURL(blob);
+          link.download = filename;
+          link.click();
+      
+          setTimeout(() => URL.revokeObjectURL(link.href), 10000); // Revoke after 10 seconds
+        } catch (error) {
+          console.error('Error fetching or formatting data:', error);
+          // Handle error gracefully (e.g., display message to user)
+        }
+         }
+      
+        function transformForExcel(ordersData:any) {
+          // Create an array with column headers
+          const headerRow = [
+            'OrderId',
+            'Email',
+            'Order Date',
+            'Delivery Time',
+            'Order Status',
+            'Traking Nunmber',
+            'CouponId',
+            'Amount',
+            'Discount',
+            'Paid',
+            'Total',
+            'Sale Tax',
+            'Delivery Fee',
+            'PaymentId',
+            'Payment Gateway',
+            'Customer Contact',
+            'Billing Address',
+            'Shipping Address',
+            'Logistic Provider',
+          ];
+      
+          // Create an array of data rows with corresponding values
+          const dataRows = ordersData.map((order:any) => {
+            const billingAddress = order.billing_address
+            ? `${order.billing_address.street_address} ${order.billing_address.country} ${order.billing_address.city} ${order.billing_address.state} ${order.billing_address.zip}`
+            : '';
+          const shippingAddress = order.shipping_address
+            ? `${order.shipping_address.street_address} ${order.shipping_address.country} ${order.shipping_address.city} ${order.shipping_address.state} ${order.shipping_address.zip}`
+            : '';
+              
+            const escapedBillingAddress = billingAddress.replace(/,/g, '');
+            const escapedShippingAddress = shippingAddress.replace(/,/g, '');
+      
+            // Extract and format contact number with country code (assuming country code is in a separate field)
+            const contactNumber = order.customer_contact
+              ? order.customer_contact // Remove non-digits
+              : '';
+      
+            // Remove non-digits from tracking number
+            const trackingNumber = order.tracking_number ? order.tracking_number : '';
+            
+      
+              console.log("shipping", trackingNumber, contactNumber,escapedShippingAddress, escapedBillingAddress )
+      
+            return [
+              order.payment_intent?.order_id || null, // Handle potential missing values
+              order.customer?.email || null,
+              order.created_at,
+              order.delivery_time,
+              order.order_status,
+              trackingNumber,
+              order.coupon_id,
+              order.amount,
+              order.discount,
+              order.paid_total,
+              order.total,
+              order.sales_tax,
+              order.delivery_fee || 0,
+              order.payment_intent?.payment_intent_info.payment_id || null,
+              order.payment_gateway,
+              contactNumber,
+              escapedBillingAddress,
+              escapedShippingAddress,
+              order.logistics_provider,
+            ];
+          });
+      
+          // Combine header row and data rows into a single string
+          const csvContent = [headerRow.join(',')].concat(dataRows.map((row:any) => row.join(','))).join('\n');
+      
+          return csvContent;
+        }
+      
+        function generateFilename(contentType:any) {
+              const dateString = new Date().toISOString().slice(0, 10); // YYYY-MM-DD format
+              let extension;
+              switch (contentType) {
+                case 'text/csv;charset=utf-8':
+                  extension = '.csv';
+                  break;
+                case 'application/pdf': // Add PDF case if PDF export is implemented
+                  extension = '.pdf';
+                  break;
+                default:
+                  extension = '.csv';
+              }
+              return `export-data-${dateString}${extension}`;
+            }
+
     if (loading) return <Loader text={t('common:text-loading')} />;
 
     if (loading) return <Loader text={t('common:text-loading')} />;
     if (error) return <ErrorMessage message={error.message} />;
 
-    async function handleExportOrder() {
-        const { data } = await refetch();
+    // async function handleExportOrder() {
+    //     const { data } = await refetch();
 
-        if (data) {
-            const a = document.createElement('a');
-            a.href = data;
-            a.setAttribute('download', 'export-order');
-            a.click();
-        }
-    }
+    //     if (data) {
+    //         const a = document.createElement('a');
+    //         a.href = data;
+    //         a.setAttribute('download', 'export-order');
+    //         a.click();
+    //     }
+    // }
 
     const customerOrderList = orders.filter(
         (order) => order?.customer_id !== order?.dealer?.id
     );
+
+    var ordersData = orders.filter(
+        (order) => order?.customer_id == order?.dealer?.id
+      );
+
+     
+
+    //   console.log("meD", me?.type.type_name)
+
+      const DealerShow = me?.type.type_name === "Dealer";
+    //   console.log("Dispatech", DealerShow)
     return (
         <>
             <Card className="mb-8 flex flex-col items-center justify-between md:flex-row">
@@ -145,13 +278,39 @@ export default function Orders() {
                 </Menu>
             </Card>
 
+            {DealerShow ? (
+            <StockList
+            orders={ordersData}
+            paginatorInfo={paginatorInfo}
+            onPagination={handlePagination}
+            onOrder={setOrder}
+            onSort={setColumn}
+          />
+          ) : (
             <OrderList
+            orders={customerOrderList}
+            paginatorInfo={paginatorInfo}
+            onPagination={handlePagination}
+            onOrder={setOrder}
+            onSort={setColumn}
+        />
+          )}
+
+            {/* <StockList
+        orders={ordersData}
+        paginatorInfo={paginatorInfo}
+        onPagination={handlePagination}
+        onOrder={setOrder}
+        onSort={setColumn}
+      /> */}
+
+            {/* <OrderList
                 orders={customerOrderList}
                 paginatorInfo={paginatorInfo}
                 onPagination={handlePagination}
                 onOrder={setOrder}
                 onSort={setColumn}
-            />
+            /> */}
         </>
     );
 }

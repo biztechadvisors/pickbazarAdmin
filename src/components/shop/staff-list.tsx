@@ -27,7 +27,7 @@ const StaffList = ({
   const { t } = useTranslation();
   const { alignLeft, alignRight } = useIsRTL();
 
-const permissionTypes = AllPermission(); 
+  const permissionTypes = AllPermission(); 
 
   const canWrite = permissionTypes.includes('sidebar-nav-item-staffs');
 
@@ -85,18 +85,17 @@ const permissionTypes = AllPermission();
       render: (is_active: boolean) =>
         is_active ? t('common:text-active') : t('common:text-inactive'),
     },
-    {
-        ...(canWrite
-        ?{
-        title: t('table:table-item-actions'),
-        dataIndex: 'id',
-        key: 'actions',
-        align: alignRight,
-        render: (id: string) => {
-          return <ActionButtons id={id} deleteModalView="DELETE_STAFF" />;
-        },
-      } : null),
-    },
+    ...(canWrite
+      ? [{
+          title: t('table:table-item-actions'),
+          dataIndex: 'id',
+          key: 'actions',
+          align: alignRight,
+          render: (id: string) => {
+            return <ActionButtons id={id} deleteModalView="DELETE_STAFF" />;
+          },
+        }]
+      : []),
   ];
 
   return (

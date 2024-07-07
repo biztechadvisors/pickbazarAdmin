@@ -128,6 +128,9 @@ export default function CreateOrUpdateProductForm({
       enabled: !!router.query.shop,
     }
   );
+  console.log("shopData",shopData)
+
+
 
   const {
     // @ts-ignore
@@ -212,6 +215,8 @@ export default function CreateOrUpdateProductForm({
     name: 'video',
   });
   const productName = watch('name');
+
+  console.log("product_type",product_type)
 
   const autoSuggestionList = useMemo(() => {
     return chatbotAutoSuggestion({ name: productName ?? '' });
@@ -509,7 +514,7 @@ export default function CreateOrUpdateProductForm({
                   getOptionLabel={(option: any) => `${option?.name}-${option?.hsn_no}`}
                   getOptionValue={(option: any) => option}
                   control={control}
-                  name={'hsn'}
+                  name={'taxes'}
                   defaultValue={[]} />
                 <ValidationError message={errors.address?.state?.message} />
               </div>

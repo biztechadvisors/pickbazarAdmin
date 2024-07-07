@@ -14,17 +14,18 @@ import { useRouter } from 'next/router';
 import { usePermissionData } from '@/data/permission';
 import { getAuthCredentials } from '@/utils/auth-utils';
 import Loader from '../ui/loader/loader';
-import { DEALER } from '@/utils/constants';
+import { DEALER, OWNER } from '@/utils/constants';
 import InputMask from 'react-input-mask';
+import { useShopQuery } from '@/data/shop';
 
 type FormValues = {
   name: string;
   email: string;
   password: string;
   contact: string;
-  type: { value: string, label: string };
+  type: { value: string; label: string };
   UsrBy: string;
-  numberOfDealers: number;  // Added new field type
+  numberOfDealers: number; // Added new field type
 };
 
 const defaultValues = {
@@ -33,7 +34,7 @@ const defaultValues = {
   password: '',
   contact: '',
   type: { value: '', label: '' },
-  numberOfDealers: 0,  // Added default value for new field
+  numberOfDealers: 0, // Added default value for new field
 };
 
 const CustomerCreateForm = () => {
@@ -44,6 +45,13 @@ const CustomerCreateForm = () => {
   const { id } = meData || {};
   const { data: permissionData } = usePermissionData(id);
   const { permissions } = getAuthCredentials();
+
+  const shopSlug =
+    typeof window !== 'undefined' ? localStorage.getItem('shopSlug') : null;
+
+  const { data: shopData, isLoading: fetchingShopId } = useShopQuery({
+    slug: shopSlug as string,
+  });
 
   const {
     register,
@@ -61,7 +69,7 @@ const CustomerCreateForm = () => {
   }
 
   const permissionOptions =
-    permissionData?.map((permission: { id: any, permission_name: string }) => ({
+    permissionData?.map((permission: { id: any; permission_name: string }) => ({
       value: permission.permission_name,
       label: permission.permission_name,
       id: permission.id,
@@ -80,7 +88,7 @@ const CustomerCreateForm = () => {
     password,
     contact,
     type,
-    numberOfDealers,  // Added new field to destructure
+    numberOfDealers, // Added new field to destructure
   }: FormValues) {
     registerUser(
       {
@@ -90,7 +98,8 @@ const CustomerCreateForm = () => {
         contact,
         UsrBy: id,
         type: type?.value,
-        numberOfDealers,  // Added new field to payload
+        numberOfDealers,
+        managed_shop: shopData, // Added new field to payload
       },
       {
         onError: (error: any) => {
@@ -105,6 +114,11 @@ const CustomerCreateForm = () => {
     );
   }
 
+  console.log('permissions-------------', permissions);
+
+  console.log('permissionData', permissionData);
+
+  console.log('shopData++++++++++++++', shopData);
   return (
     <form onSubmit={handleSubmit(onSubmit)} noValidate>
       <div className="my-5 flex flex-wrap sm:my-8">
@@ -146,25 +160,27 @@ const CustomerCreateForm = () => {
             className="mb-4"
             error={t(errors.contact?.message!)}
           /> */}
-           <InputMask
-        mask="+91 9999999999"
-        maskChar=""
-        {...register('contact', {
-          required: t('form:error-contact-required'),
-          validate: value => value.replace(/\D/g, '').length === 12 || t('form:error-contact-invalid')
-        })}
-      >
-        {(inputProps) => (
-          <Input
-            label={t('form:input-label-contact')}
-            {...inputProps}
-            type="text"
-            variant="outline"
-            className="mb-4"
-            error={t(errors.contact?.message)}
-          />
-        )}
-      </InputMask>
+          <InputMask
+            mask="+91 9999999999"
+            maskChar=""
+            {...register('contact', {
+              required: t('form:error-contact-required'),
+              validate: (value) =>
+                value.replace(/\D/g, '').length === 12 ||
+                t('form:error-contact-invalid'),
+            })}
+          >
+            {(inputProps) => (
+              <Input
+                label={t('form:input-label-contact')}
+                {...inputProps}
+                type="text"
+                variant="outline"
+                className="mb-4"
+                error={t(errors.contact?.message)}
+              />
+            )}
+          </InputMask>
           <Controller
             name="type"
             control={control}
@@ -183,14 +199,16 @@ const CustomerCreateForm = () => {
               </>
             )}
           />
-          <Input
-            label={t('form:input-label-dealers')}
-            {...register('numberOfDealers')}
-            type="number"
-            variant="outline"
-            className="mb-4"
-            error={t(errors.numberOfDealers?.message!)}
-          />
+          {permissions[0] === OWNER ? (
+            <Input
+              label={t('form:input-label-dealers')}
+              {...register('numberOfDealers')}
+              type="number"
+              variant="outline"
+              className="mb-4"
+              error={t(errors.numberOfDealers?.message!)}
+            />
+          ) : null}
         </Card>
       </div>
 
