@@ -142,7 +142,7 @@ const InventoryDropdown = () => {
   // }, []);
 
   useEffect(() => {
-    if (typeof window !== 'undefined') { // Ensure we're in the browser environment
+    if (typeof window !== 'undefined') { 
       const storedShopSlug = localStorage.getItem('shopSlug');
       const storedIsOpen = localStorage.getItem('isOpen') === 'true';
       if (storedShopSlug) {
@@ -170,13 +170,13 @@ const InventoryDropdown = () => {
   const toggleMenu = () => {
     const newIsOpen = !isOpen;
     setIsOpen(newIsOpen);
-    if (typeof window !== 'undefined') { // Ensure we're in the browser environment
+    if (typeof window !== 'undefined') { 
       localStorage.setItem('isOpen', newIsOpen);
     }
   };
   
   const handleSetNewShopSlug = (newShopSlug) => {
-    if (typeof window !== 'undefined') { // Ensure we're in the browser environment
+    if (typeof window !== 'undefined') { 
       localStorage.setItem('shopSlug', newShopSlug);
     }
     setNewShopSlug(newShopSlug);
