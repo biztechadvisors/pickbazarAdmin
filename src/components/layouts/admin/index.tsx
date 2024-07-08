@@ -30,7 +30,8 @@ const AdminLayout: React.FC<{ children?: React.ReactNode }> = ({
   const { permissions } = getAuthCredentials();
   const { data, isLoading: loading, error } = useMeQuery();
   const [shopSlug, setShopSlug] = useAtom(shopSlugAtom);
- const shopStatus = data?.managed_shop?.is_active ? 'active' : 'inactive';
+  
+ const shopStatus = data?.managed_shop?.is_active ? 'active' : 'inactive' || data?.dealer?.id?.is_active ? 'active' : 'inactive';
  const isDisabled = shopStatus !== 'active';
   // useEffect(() => {
   //   if (data) {

@@ -147,8 +147,10 @@ const CustomerList = ({
                     id={id}
                     userStatus={true}
                     isUserActive={is_active}
-                    showAddWalletPoints={true}
-                    showMakeAdminButton={true}
+                    // editModalView={true}
+                    editUrl='/user-details'
+                    // showAddWalletPoints={true}
+                    // showMakeAdminButton={true}
                   />
                 )}
               </>
@@ -168,8 +170,8 @@ const CustomerList = ({
           // @ts-ignore
           columns={columns}
           emptyText={t('table:empty-table-data')}
-          // data={customers}
-          data={filteredCustomers}
+          data={customers}
+          // data={filteredCustomers}
           rowKey="id"
           scroll={{ x: 800 }}
         />
