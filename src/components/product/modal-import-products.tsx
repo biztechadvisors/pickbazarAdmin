@@ -38,7 +38,7 @@ export default function ModalImportProducts() {
         title={t('text-import-products')}
       />
       <div style={{ marginTop: '20px' }}>
-        <ProgressBar now={progress} label={`${progress}%`} variant={progress > 0 ? 'success' : 'info'} />
+        {/* <ProgressBar now={progress} label={`${progress}%`} variant={progress > 0 ? 'success' : 'info'} /> */}
       </div>
       {loading && <p>{t('Loading...')}</p>}
     </div>

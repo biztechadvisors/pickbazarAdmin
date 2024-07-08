@@ -5890,10 +5890,10 @@ rc-pagination@3.2.0:
     "@babel/runtime" "^7.10.1"
     classnames "^2.2.1"
 
-rc-progress@3.4.1:
-  version "3.4.1"
-  resolved "https://registry.yarnpkg.com/rc-progress/-/rc-progress-3.4.1.tgz#a9ffe099e88a4fc03afb09d8603162bf0760d743"
-  integrity sha512-eAFDHXlk8aWpoXl0llrenPMt9qKHQXphxcVsnKs0FHC6eCSk1ebJtyaVjJUzKe0233ogiLDeEFK1Uihz3s67hw==
+rc-progress@^4.0.0:
+  version "4.0.0"
+  resolved "https://registry.yarnpkg.com/rc-progress/-/rc-progress-4.0.0.tgz#5382147d9add33d3a5fbd264001373df6440e126"
+  integrity sha512-oofVMMafOCokIUIBnZLNcOZFsABaUw8PPrf1/y0ZBvKZNpOiu5h4AO9vv11Sw0p4Hb3D0yGWuEattcQGtNJ/aw==
   dependencies:
     "@babel/runtime" "^7.10.1"
     classnames "^2.2.6"
@@ -5935,10 +5935,10 @@ react-apexcharts@1.4.0:
   dependencies:
     prop-types "^15.5.7"
 
-react-bootstrap@^2.10.3:
-  version "2.10.3"
-  resolved "https://registry.yarnpkg.com/react-bootstrap/-/react-bootstrap-2.10.3.tgz#612c7b987bd1b386cf7169f65b7945f2552400e3"
-  integrity sha512-cc1KAaQyj6Gr3AfA0eRRiUMSlRi3brDVcjc/o0E9y9XNW7ISo8TITrq8G8G3QTFe7VIhCiDt38k99AEFoLOolw==
+react-bootstrap@^2.10.4:
+  version "2.10.4"
+  resolved "https://registry.yarnpkg.com/react-bootstrap/-/react-bootstrap-2.10.4.tgz#ed92f5f8225a44919a7707829bac879558b71b70"
+  integrity sha512-W3398nBM2CBfmGP2evneEO3ZZwEMPtHs72q++eNw60uDGDAdiGn0f9yNys91eo7/y8CTF5Ke1C0QO8JFVPU40Q==
   dependencies:
     "@babel/runtime" "^7.24.7"
     "@restart/hooks" "^0.4.9"
