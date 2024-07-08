@@ -45,6 +45,7 @@ export const AddressGrid: React.FC<AddressesProps> = ({
     openModal('ADD_OR_UPDATE_ADDRESS', { customerId: userId, type });
   }
 
+  console.log("selectedAddress", selectedAddress)
   return (
     <div className={className}>
       <AddressHeader onAdd={onAdd} count={count} label={label} />

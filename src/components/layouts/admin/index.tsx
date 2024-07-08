@@ -22,7 +22,9 @@ const AdminLayout: React.FC<{ children?: React.ReactNode }> = ({
   const { locale } = useRouter();
 
   const router = useRouter();
-  const { query: { shop } } = router;
+  const {
+    query: { shop },
+  } = router;
   // const { data, isLoading, error } = useShopQuery({ slug: shop?.toString() });
   const dir = locale === 'ar' || locale === 'he' ? 'rtl' : 'ltr';
 
@@ -30,8 +32,12 @@ const AdminLayout: React.FC<{ children?: React.ReactNode }> = ({
   const { permissions } = getAuthCredentials();
   const { data, isLoading: loading, error } = useMeQuery();
   const [shopSlug, setShopSlug] = useAtom(shopSlugAtom);
- const shopStatus = data?.managed_shop?.is_active ? 'active' : 'inactive';
- const isDisabled = shopStatus !== 'active';
+  const shopStatus = data?.managed_shop?.is_active
+    ? 'active'
+    : 'inactive' || data?.dealer?.id?.is_active
+    ? 'active'
+    : 'inactive';
+  const isDisabled = shopStatus !== 'active';
   // useEffect(() => {
   //   if (data) {
   //     let newShopSlug = null;
@@ -48,7 +54,6 @@ const AdminLayout: React.FC<{ children?: React.ReactNode }> = ({
   //     }
   //   }
   // }, [data, permissions, setShopSlug]);
-
 
   useEffect(() => {
     if (typeof window !== 'undefined' && data) {
@@ -68,7 +73,6 @@ const AdminLayout: React.FC<{ children?: React.ReactNode }> = ({
   }, [data, permissions, setShopSlug]);
 
   let matchedLinks = [];
-
 
   if (router.pathname === Routes.adminMyShops) {
     matchedLinks = [
@@ -473,7 +477,13 @@ const AdminLayout: React.FC<{ children?: React.ReactNode }> = ({
   const SidebarItemMap = () => (
     <Fragment>
       {matchedLinks.map(({ href, label, icon }) => (
-        <SidebarItem  href={isDisabled ? '#' : href} label={t(label)} icon={icon} key={href} shopStatus={shopStatus} />
+        <SidebarItem
+          href={isDisabled ? '#' : href}
+          label={t(label)}
+          icon={icon}
+          key={href}
+          shopStatus={shopStatus}
+        />
       ))}
     </Fragment>
   );
@@ -503,4 +513,3 @@ const AdminLayout: React.FC<{ children?: React.ReactNode }> = ({
 };
 
 export default AdminLayout;
-

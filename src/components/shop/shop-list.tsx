@@ -187,6 +187,8 @@ const ShopList = ({
     },
   ];
 
+  console.log('shops', shops);
+
   return (
     <>
       <div className="mb-6 overflow-hidden rounded shadow">
@@ -214,7 +216,6 @@ const ShopList = ({
 };
 
 export default ShopList;
-
 
 // import { useState } from 'react';
 // import Pagination from '@/components/ui/pagination';

@@ -21,7 +21,7 @@ import usePrice from '@/utils/use-price';
 import { useTranslation } from 'next-i18next';
 import isEmpty from 'lodash/isEmpty';
 import { useShopQuery } from '@/data/shop';
-import { GetStaticPaths } from 'next';
+import { GetStaticPaths, GetStaticProps } from 'next';
 import { CubeIcon } from '@/components/icons/shops/cube';
 import { OrdersIcon } from '@/components/icons/sidebar';
 import { PriceWalletIcon } from '@/components/icons/shops/price-wallet';
