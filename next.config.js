@@ -27,6 +27,7 @@ module.exports = withPWA({
       'images.pexels.com',
       'codenoxtestbucket.s3.ap-south-1.amazonaws.com',
       'server.codenoxx.com',
+      's3.ap-south-1.amazonaws.com',
     ],
   },
   ...(process.env.APPLICATION_MODE === 'production' && {
