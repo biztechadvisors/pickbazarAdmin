@@ -45,7 +45,7 @@ export default function ShopPage() {
 
   const { price: totalEarnings } = usePrice(data && { amount: data?.balance?.total_earnings! });
   const { price: currentBalance } = usePrice(data && { amount: data?.balance?.current_balance! });
-
+ 
   const { permissions } = getAuthCredentials();
   const permissionTypes = AllPermission();
   const canWrite =
@@ -77,6 +77,8 @@ export default function ShopPage() {
   // ) {
   //   router.replace(Routes.dashboard);
   // }
+
+  
 
   return (
     <div className="grid grid-cols-12 gap-6">

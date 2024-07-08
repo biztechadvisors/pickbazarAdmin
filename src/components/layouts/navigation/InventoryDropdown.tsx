@@ -1,13 +1,11 @@
 // import React, { useState, useEffect } from 'react';
-// import { useRouter } from 'next/router';
 // import { ChevronDownIcon } from '@heroicons/react/solid';
 // import { dealerOnly, getAuthCredentials, hasAccess } from '@/utils/auth-utils';
 // import Link from '@/components/ui/link';
 
 // const InventoryDropdown = () => {
-//   const router = useRouter();
 //   const [isOpen, setIsOpen] = useState(false);
-//   const [newShopSlug, setNewShopSlug] = useState('');
+//   const [newShopSlug, setNewShopSlug] = useState(''); // State for newShopSlug
 //   const { permissions } = getAuthCredentials();
 //   const permission = hasAccess(dealerOnly, permissions);
 
@@ -17,20 +15,6 @@
 //       setNewShopSlug(storedShopSlug);
 //     }
 //   }, []);
-
-//   useEffect(() => {
-//     const handleRouteChange = () => {
-//       // Keep the dropdown open after navigation
-//       setIsOpen(true);
-//     };
-
-//     router.events.on('routeChangeComplete', handleRouteChange);
-
-//     // Cleanup on component unmount
-//     return () => {
-//       router.events.off('routeChangeComplete', handleRouteChange);
-//     };
-//   }, [router.events]);
 
 //   const toggleMenu = () => {
 //     setIsOpen(!isOpen);
@@ -137,7 +121,6 @@
 
 
 
-
 import React, { useState, useEffect } from 'react';
 import { ChevronDownIcon } from '@heroicons/react/solid';
 import { dealerOnly, getAuthCredentials, hasAccess } from '@/utils/auth-utils';
@@ -159,7 +142,7 @@ const InventoryDropdown = () => {
   // }, []);
 
   useEffect(() => {
-    if (typeof window !== 'undefined') { // Ensure we're in the browser environment
+    if (typeof window !== 'undefined') { 
       const storedShopSlug = localStorage.getItem('shopSlug');
       const storedIsOpen = localStorage.getItem('isOpen') === 'true';
       if (storedShopSlug) {
@@ -187,13 +170,13 @@ const InventoryDropdown = () => {
   const toggleMenu = () => {
     const newIsOpen = !isOpen;
     setIsOpen(newIsOpen);
-    if (typeof window !== 'undefined') { // Ensure we're in the browser environment
+    if (typeof window !== 'undefined') { 
       localStorage.setItem('isOpen', newIsOpen);
     }
   };
   
   const handleSetNewShopSlug = (newShopSlug) => {
-    if (typeof window !== 'undefined') { // Ensure we're in the browser environment
+    if (typeof window !== 'undefined') { 
       localStorage.setItem('shopSlug', newShopSlug);
     }
     setNewShopSlug(newShopSlug);

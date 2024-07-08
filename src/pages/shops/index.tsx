@@ -64,7 +64,7 @@ export default function AllShopPage() {
                 className="h-12 ms-4 md:ms-6"
               >
                 <span className="hidden md:block">
-                  {t('common:text-create-shop')}
+                  {t('text-create-company')}
                 </span>
               </LinkButton>
             ) : null}
