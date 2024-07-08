@@ -52,6 +52,8 @@ export default function OrderDetailsPage() {
   const [, resetCheckout] = useAtom(clearCheckoutAtom);
   const [isDispatchModalOpen, setDispatchModalOpen] = useState(false);
 
+  
+
   const handleDispatchUpdate = (data: any) => {
     // Logic to update the dispatch product
   };
@@ -132,15 +134,21 @@ export default function OrderDetailsPage() {
     0
   );
 
-  const dealerId = order?.customer_id;
 
   const { orderId } = query;
   const { data: meData } = useMeQuery();
+
+  // console.log("data@@@@@", meData)
+  
+
+  const dealerId = order?.customer_id
+  // const userId = order?.customer_id;
 
   const { data, isLoading, isError } = useFetchStockOrderData({
     dealerId,
     orderId,
   });
+  // console.log("data",data)
 
   if (loading) return <Loader text={t('common:text-loading')} />;
   if (error) return <ErrorMessage message={error.message} />;
@@ -202,6 +210,11 @@ export default function OrderDetailsPage() {
     },
   ];
 
+  
+
+const DispatchButton = meData?.type.type_name === "Store_Owner";
+// console.log("Dispatech", DispatchButton)
+
   return (
     <>
       <Card className="relative overflow-hidden">
@@ -252,6 +265,26 @@ export default function OrderDetailsPage() {
                 </div>
               </form>
             )}
+            {DispatchButton ? (
+            <Button onClick={() => setDispatchModalOpen(true)}>
+              <span className="hidden sm:block">
+                {t('form:button-label-change-dispatch')}
+              </span>
+              <span className="block sm:hidden">
+                {t('form:button-label-change-dispatch')}
+              </span>
+            </Button>
+          ) : (
+            <Button onClick={() => setDispatchModalOpen(true)}>
+              <span className="hidden sm:block">
+                {t('Received')}
+              </span>
+              <span className="block sm:hidden">
+                {t('Received')}
+              </span>
+            </Button>
+          )}
+            {/* {DispatchButton && (
           <Button onClick={() => setDispatchModalOpen(true)}>
             <span className="hidden sm:block">
               {t('form:button-label-change-dispatch')}
@@ -260,6 +293,8 @@ export default function OrderDetailsPage() {
               {t('form:button-label-change-dispatch')}
             </span>
           </Button>
+        )} */}
+         
         </div>
 
         <div className="my-5 flex items-center justify-center lg:my-10">
@@ -381,6 +416,7 @@ export default function OrderDetailsPage() {
         isOpen={isDispatchModalOpen}
         onClose={() => setDispatchModalOpen(false)}
         order={data}
+        dealerId={dealerId}
         updateDispatch={handleDispatchUpdate}
         dealerId={dealerId}
       />

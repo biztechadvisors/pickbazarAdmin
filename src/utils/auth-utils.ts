@@ -31,7 +31,7 @@ export const adminAndOwnerOnly = [
 export const adminOwnerAndStaffOnly = [SUPER_ADMIN, Company, STAFF, OWNER];
 export const superAdminOnly = [SUPER_ADMIN];
 export const adminOnly = [OWNER, SUPER_ADMIN, ADMIN, DEALER, Company];
-export const ownerOnly = [SUPER_ADMIN, OWNER, DEALER, Company];
+export const ownerOnly = [SUPER_ADMIN, OWNER, DEALER, Company, STAFF];
 export const dealerOnly = [DEALER];
 export const ownerAndStaffOnly = [Company, STAFF];
 

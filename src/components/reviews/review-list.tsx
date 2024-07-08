@@ -73,6 +73,13 @@ const ReviewList = ({
 
   let columns = [
     {
+      title: t('table:table-item-id'),
+      dataIndex: 'id',
+      key: 'id',
+      align: 'center',
+      width: 60,
+    },
+    {
       title: t('table:table-item-image'),
       dataIndex: 'product',
       key: 'product-image',

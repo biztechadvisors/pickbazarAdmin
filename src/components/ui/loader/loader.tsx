@@ -13,7 +13,7 @@ const Loader = (props: Props) => {
   return (
     <>
       {simple ? (
-        <div className={cn(className, styles.simple_loading)} />
+        <div className={cn(className, styles.simple_loading)} suppressHydrationWarning={true} />
       ) : (
         <div
           className={cn(

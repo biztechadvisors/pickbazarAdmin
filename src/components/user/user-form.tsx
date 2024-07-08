@@ -14,16 +14,21 @@ import { useRouter } from 'next/router';
 import { usePermissionData } from '@/data/permission';
 import { getAuthCredentials } from '@/utils/auth-utils';
 import Loader from '../ui/loader/loader';
-import { DEALER } from '@/utils/constants';
+import { DEALER, OWNER } from '@/utils/constants';
+// import InputMask from 'react-input-mask';
+import { useShopQuery } from '@/data/shop';
+import PhoneInput from 'react-phone-input-2';
+import 'react-phone-input-2/lib/style.css';
+import { useState } from 'react';
 
 type FormValues = {
   name: string;
   email: string;
   password: string;
   contact: string;
-  type: { value: string, label: string };
+  type: { value: string; label: string };
   UsrBy: string;
-  numberOfDealers: number;  // Added new field type
+  numberOfDealers: number; // Added new field type
 };
 
 const defaultValues = {
@@ -32,7 +37,7 @@ const defaultValues = {
   password: '',
   contact: '',
   type: { value: '', label: '' },
-  numberOfDealers: 0,  // Added default value for new field
+  numberOfDealers: 0, // Added default value for new field
 };
 
 const CustomerCreateForm = () => {
@@ -43,6 +48,15 @@ const CustomerCreateForm = () => {
   const { id } = meData || {};
   const { data: permissionData } = usePermissionData(id);
   const { permissions } = getAuthCredentials();
+  // const phoneRegex = /^\+91[0-9]{10}$/;
+  const [value, setValue] = useState('');
+
+  const shopSlug =
+    typeof window !== 'undefined' ? localStorage.getItem('shopSlug') : null;
+
+  const { data: shopData, isLoading: fetchingShopId } = useShopQuery({
+    slug: shopSlug as string,
+  });
 
   const {
     register,
@@ -60,11 +74,13 @@ const CustomerCreateForm = () => {
   }
 
   const permissionOptions =
-    permissionData?.map((permission: { id: any, permission_name: string }) => ({
+    permissionData?.map((permission: { id: any; permission_name: string }) => ({
       value: permission.permission_name,
       label: permission.permission_name,
       id: permission.id,
     })) ?? [];
+ 
+    console.log("RadhikaVarfa",permissionOptions);
 
   if (permissions[0] === DEALER) {
     permissionOptions.push(
@@ -79,7 +95,7 @@ const CustomerCreateForm = () => {
     password,
     contact,
     type,
-    numberOfDealers,  // Added new field to destructure
+    numberOfDealers, // Added new field to destructure
   }: FormValues) {
     registerUser(
       {
@@ -89,7 +105,8 @@ const CustomerCreateForm = () => {
         contact,
         UsrBy: id,
         type: type?.value,
-        numberOfDealers,  // Added new field to payload
+        numberOfDealers,
+        managed_shop: shopData, // Added new field to payload
       },
       {
         onError: (error: any) => {
@@ -104,6 +121,11 @@ const CustomerCreateForm = () => {
     );
   }
 
+  console.log('permissions-------------', permissions);
+
+  console.log('permissionData', permissionData);
+
+  console.log('shopData++++++++++++++', shopData);
   return (
     <form onSubmit={handleSubmit(onSubmit)} noValidate>
       <div className="my-5 flex flex-wrap sm:my-8">
@@ -137,20 +159,41 @@ const CustomerCreateForm = () => {
             variant="outline"
             className="mb-4"
           />
-          <Input
+          {/* <Input
             label={t('form:input-label-contact')}
             {...register('contact')}
             type="text"
             variant="outline"
             className="mb-4"
             error={t(errors.contact?.message!)}
+          /> */}
+                 <Controller
+            name="contact"
+            control={control}
+            render={({ field: { onChange, value } }) => (
+              <PhoneInput
+                country="in"
+                value={value}
+                onChange={onChange}
+                inputStyle={{
+                  width: '100%',
+                  height: '40px',
+                  border: '1px solid #e2e8f0',
+                  borderRadius: '0.375rem',
+                  padding: '0.5rem',
+                  fontSize: '0.875rem',
+                  outline: 'none',
+                  paddingLeft:'50px',
+                }}
+              />
+            )}
           />
           <Controller
             name="type"
             control={control}
             render={({ field }) => (
               <>
-                <Label>{t('form:input-label-type')}</Label>
+                <Label className='mt-4'>{t('form:input-label-type')}</Label>
                 <Select
                   {...field}
                   getOptionLabel={(option: { label: string }) => option.label}
@@ -163,14 +206,16 @@ const CustomerCreateForm = () => {
               </>
             )}
           />
-          <Input
-            label={t('form:input-label-dealers')}
-            {...register('numberOfDealers')}
-            type="number"
-            variant="outline"
-            className="mb-4"
-            error={t(errors.numberOfDealers?.message!)}
-          />
+          {permissions[0] === OWNER ? (
+            <Input
+              label={t('form:input-label-dealers')}
+              {...register('numberOfDealers')}
+              type="number"
+              variant="outline"
+              className="mb-4"
+              error={t(errors.numberOfDealers?.message!)}
+            />
+          ) : null}
         </Card>
       </div>
 

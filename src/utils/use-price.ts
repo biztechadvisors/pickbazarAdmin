@@ -4,7 +4,7 @@ import { useSettings } from '@/contexts/settings.context';
 
 export function formatPrice({
   amount,
-  currencyCode = 'USD', // Default value for currencyCode
+  currencyCode = 'IND', // Default value for currencyCode
   locale,
   fractions = 2,
 }: {
@@ -23,7 +23,7 @@ export function formatPrice({
     maximumFractionDigits: fractions > 20 || fractions < 0 ? 2 : fractions,
   });
 
-  return formatCurrency.format(amount);
+  return formatCurrency?.format(amount);
 }
 
 export function formatVariantPrice({

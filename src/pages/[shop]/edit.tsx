@@ -35,13 +35,13 @@ const UpdateShopPage: FC = () => {
 
   if (loading) return <Loader text={t('common:text-loading')} />;
   if (error) return <ErrorMessage message={error.message} />;
-  if (
-    !hasAccess(adminOnly, permissions) &&
-    !me?.shops?.map((shop) => shop.id).includes(data?.id) &&
-    me?.managed_shop?.id != data?.id
-  ) {
-    router.replace(Routes.dashboard);
-  }
+  // if (
+  //   !hasAccess(adminOnly, permissions) &&
+  //   !me?.shops?.map((shop) => shop.id).includes(data?.id) &&
+  //   me?.managed_shop?.id != data?.id
+  // ) {
+  //   router.replace(Routes.dashboard);
+  // }
 
   return (
     <>

@@ -27,7 +27,7 @@ const DealerList = ({ users, onSort, onOrder }: IProps) => {
 const permissionTypes = AllPermission(); 
 
   const canWrite = permissionTypes.includes('sidebar-nav-item-dealerlist');
-  
+
   const [sortingObj, setSortingObj] = useState<{
     sort: SortOrder;
     column: string | null;
@@ -61,24 +61,24 @@ const permissionTypes = AllPermission();
       width: 60,
     },
 
-    {
-      title: t('table:table-item-icon'),
-      dataIndex: 'icon',
-      key: 'profile',
-      align: 'center',
-      render: (icon: string) => {
-        if (!icon) return null;
-        return (
-          <span className="flex items-center justify-center">
-            {getIcon({
-              iconList: typeIcons,
-              iconName: icon,
-              className: 'w-5 h-5 max-h-full max-w-full',
-            })}
-          </span>
-        );
-      },
-    },
+    // {
+    //   title: t('table:table-item-icon'),
+    //   dataIndex: 'icon',
+    //   key: 'profile',
+    //   align: 'center',
+    //   render: (icon: string) => {
+    //     if (!icon) return null;
+    //     return (
+    //       <span className="flex items-center justify-center">
+    //         {getIcon({
+    //           iconList: typeIcons,
+    //           iconName: icon,
+    //           className: 'w-5 h-5 max-h-full max-w-full',
+    //         })}
+    //       </span>
+    //     );
+    //   },
+    // },
 
     {
       title: (
@@ -134,16 +134,13 @@ const permissionTypes = AllPermission();
     
     {
       title: t('table:table-item-permissions'),
-      dataIndex: 'permissions',
-      key: 'permissions',
+      dataIndex: 'type',
+      key: 'type',
       align: 'center',
-      render: (permissions: any, record: any) => {
-        return (
-          <div>
-            {permissions?.map(({ name }: { name: string }) => name).join(', ')}
-          </div>
-        );
+      render: (type: any, record: any) => {
+        return <div>{type?.type_name}</div>;
       },
+     
     },
 
     {

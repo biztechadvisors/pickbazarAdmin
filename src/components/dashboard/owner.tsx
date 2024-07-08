@@ -7,6 +7,8 @@ import { useMeQuery, useUsersQuery } from '@/data/user';
 import { useShopsQuery } from '@/data/shop';
 import { useState } from 'react';
 import { SortOrder } from '@/types';
+import { CustomerIcon } from '../icons/sidebar/customer';
+import { MyShopIcon } from '../icons/sidebar';
 
 export default function OwnerDashboard(user: any) {
   const { t } = useTranslation();
@@ -44,17 +46,18 @@ export default function OwnerDashboard(user: any) {
       <div className="mb-6 grid w-full grid-cols-1 gap-5 sm:grid-cols-2 xl:grid-cols-4">
         <div className="w-full ">
           <StickerCard
-            titleTransKey="sticker-card-title-shops"
-            subtitleTransKey="sticker-card-subtitle-shops"
-            icon={<DollarIcon className="h-7 w-7" color="#047857" />}
-            iconBgStyle={{ backgroundColor: '#A7F3D0' }}
+            titleTransKey="sticker-card-title-company"
+            // subtitleTransKey="sticker-card-subtitle-company"
+            icon={<MyShopIcon className="h-7 w-7" color="#1D4ED8" />}
+            iconBgStyle={{ backgroundColor: '#93C5FD' }}
             price={total_shops}
           />
         </div>
         <div className="w-full ">
           <StickerCard
             titleTransKey="sticker-card-title-users"
-            icon={<CartIconBig />}
+            icon={ <CustomerIcon className="w-8 h-8" color="#1D4ED8" />}
+            iconBgStyle={{ backgroundColor: '#93C5FD' }}
             price={total_users}
           />
         </div>
