@@ -11,6 +11,7 @@ import {
   adminOwnerAndStaffOnly,
   getAuthCredentials,
   hasAccess,
+  ownerOnly,
 } from '@/utils/auth-utils';
 import ErrorMessage from '@/components/ui/error-message';
 import { useShopQuery } from '@/data/shop';
@@ -106,7 +107,7 @@ export default function StaffsPage() {
         </div>
 
         <div className="flex w-3/4 items-center ms-auto xl:w-2/4">
-          {canWrite ? (
+          {canWrite || ownerOnly ? (
             <LinkButton
               href={`/users/create`}
               className="h-12 ms-auto"

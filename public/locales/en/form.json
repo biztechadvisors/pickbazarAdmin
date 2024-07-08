@@ -107,7 +107,7 @@
   "input-label-color": "Color",
   "button-label-back": "Back",
   "input-label-image": "Image",
-  "input-label-user-select": "Shop Owner",
+  "input-label-user-select": "Company Owner",
   "input-label-taxes": "Taxes",
   "input-label-rate": "Rate",
   "input-label-hsn_no": "HSN Number (Goods)",
@@ -434,6 +434,11 @@
   "input-label-select-ai": "Select AI",
   "enter-notice-heading": "Enter your notice title/heading",
   "enter-notice-description": "Enter your notice description",
-  "form:input-label-number-of-dealers": "Total dealers",
-  "input-label-dealers": "Total dealers"
+  "input-label-number-of-dealers": "Total dealers",
+  "input-label-dealers": "Total dealers",
+  "input-label-comapny-type": "Select Company & Permission",
+  "shop-company-help-text": "Select the company you want to create with additional permission",
+  "input-label-select-company": "Company Type",
+  "input-label-extra-permission": "Add More Permission (Optional)",
+  "button-label-more-permission": "Add More"
 }

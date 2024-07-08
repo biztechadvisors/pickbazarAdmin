@@ -40,6 +40,8 @@ import { useCallback, useMemo } from 'react';
 import { useSettingsQuery } from '@/data/settings';
 import { useMeQuery, useUserQuery, useVendorQuery } from '@/data/user';
 import ValidationError from '../ui/form-validation-error';
+import { Routes } from '@/config/routes';
+import LinkButton from '../ui/link-button';
 
 export const chatbotAutoSuggestion = ({ name }: { name: string }) => {
   return [
@@ -150,6 +152,12 @@ function SelectUser({ control, errors }: SelectUserProps) {
   return (
     <div className="mb-5">
       <Label>{t('form:input-label-user-select')}</Label>
+      <LinkButton 
+      className='mb-5'
+      href={Routes.user.create}
+      >
+        {t('form:form-title-create-user')}
+        </LinkButton>
       <SelectInput
         name="user"
         control={control}
@@ -292,6 +300,41 @@ const ShopForm = ({ initialValues }: { initialValues?: any }) => {
   return (
     <>
       <form onSubmit={handleSubmit(onSubmit)} noValidate>
+        <div className="my-5 flex flex-wrap border-b border-dashed border-border-base pb-8 sm:my-8">
+        <Description
+            title={t('form:input-label-comapny-type')}
+            details={t('form:shop-company-help-text')}
+            className="w-full px-0 pb-5 sm:w-4/12 sm:py-8 sm:pe-4 md:w-1/3 md:pe-5"
+          />
+        <Card className="w-full sm:w-8/12 md:w-2/3">
+        <div className='relative mb-5'>
+        <Label>{t('form:input-label-select-company')}</Label>
+        <SelectInput
+        name="companyType"
+        control={control}
+        getOptionLabel={(option: any) => `${option.name} - ${option.email}`}
+        getOptionValue={(option: any) => option}
+        options={options}
+        // isLoading={isLoading}
+        isSearchable={true}
+        filterOption={(option: any, inputValue: any) => {
+          const searchValue = inputValue.toLowerCase();
+          return (
+            option.name.toLowerCase().includes(searchValue) ||
+            option.email.toLowerCase().includes(searchValue)
+          );
+        }}
+        defaultValue={control._defaultValues.owner}
+      />
+      </div>
+      <div className="relative">
+      <Label>{t('form:input-label-extra-permission')}</Label>
+      <a href='/src/pages/permission/create/index.tsx'>
+      <Button>{t('form:button-label-more-permission')}</Button>
+      </a>
+      </div>
+      </Card>
+        </div>
         <div className="my-5 flex flex-wrap border-b border-dashed border-border-base pb-8 sm:my-8">
           <Description
             title={t('form:input-label-logo')}

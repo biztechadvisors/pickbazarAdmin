@@ -133,8 +133,8 @@ export default function Orders() {
             ? `${order.shipping_address.street_address} ${order.shipping_address.country} ${order.shipping_address.city} ${order.shipping_address.state} ${order.shipping_address.zip}`
             : '';
               
-            const escapedBillingAddress = billingAddress.replace(/,/g, '');
-            const escapedShippingAddress = shippingAddress.replace(/,/g, '');
+            const escapedBillingAddress = billingAddress.replace(/,\r\n/g, '');
+            const escapedShippingAddress = shippingAddress.replace(/,\r\n/g, '');
       
             // Extract and format contact number with country code (assuming country code is in a separate field)
             const contactNumber = order.customer_contact

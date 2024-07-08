@@ -72,6 +72,11 @@ export const siteSettings = {
         icon: 'UsersIcon',
         permissions: ownerOnly,
       },
+      {
+        href: Routes.staff.list,
+        label: 'sidebar-nav-item-staffs',
+        icon: 'UsersIcon',
+      },
     ],
     admin: [
       {
