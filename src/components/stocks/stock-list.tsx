@@ -35,14 +35,9 @@ const StockList = ({ me, onSort, onOrder }: IProps) => {
   const { alignLeft, alignRight } = useIsRTL();
   const { mutate: updateQuantity, isLoading: updating } =
     useUpdateStockQuantity();
-  // const { permissions } = getAuthCredentials();
-  // const [getPermission, _] = useAtom(newPermission);
+
   const { data: stocks, isLoading: loading, error } = useGetStock(me?.id);
-  // const canWrite = permissions.includes('super_admin')
-  //   ? siteSettings.sidebarLinks.admin
-  //   : getPermission?.find(
-  //       (permission: any) => permission.type === 'sidebar-nav-item-products'
-  //     )?.write;
+ 
 
   const permissionTypes = AllPermission(); 
 
@@ -52,6 +47,9 @@ const StockList = ({ me, onSort, onOrder }: IProps) => {
     sort: SortOrder.Desc,
     column: null,
   });
+
+  console.log('sortingObj',sortingObj)
+  console.log("Product",Product)
 
   const onHeaderClick = (column: string | null) => ({
     onClick: () => {
@@ -99,6 +97,40 @@ const StockList = ({ me, onSort, onOrder }: IProps) => {
     },
 
     {
+      title: (
+        <TitleWithSort
+          title={t('Product Type')}
+          // ascending={
+          //   sortingObj.sort === SortOrder.Asc && sortingObj.column === 'product_type'
+          // }
+          // isActive={sortingObj.column === 'product_type'}
+        />
+      ),
+      className: 'cursor-pointer',
+      dataIndex: 'product',
+      key: 'product_type',
+      align: alignLeft,
+      width: 300,
+      ellipsis: true,
+      onHeaderCell: () => onHeaderClick('product_type'),
+      render: (text: any) => <span>{text.product_type}</span>,
+    },
+
+    // {
+    //   title: t('Product Variation'),
+    //   dataIndex: 'inStock',
+    //   key: 'inStock',
+    //   align: 'center',
+    //   render: (inStock: boolean) => (
+    //     <Badge
+    //       text={t(inStock ? 'In Stock' : 'Out Of Stock')}
+    //       color={inStock ? 'bg-accent' : 'bg-red-500'}
+    //     />
+    //   ),
+    // },
+    
+
+    {
       title: t('Stock Available'),
       dataIndex: 'inStock',
       key: 'inStock',
@@ -111,15 +143,6 @@ const StockList = ({ me, onSort, onOrder }: IProps) => {
       ),
     },
 
-    // {
-    //   title: t('Status'),
-    //   dataIndex: 'status',
-    //   key: 'status',
-    //   align: 'center',
-    //   render: (status: boolean) => (
-    //     <span>{status ? "true" : "false"}</span>
-    //   ),
-    // },
 
     {
       title: t('Status'),
