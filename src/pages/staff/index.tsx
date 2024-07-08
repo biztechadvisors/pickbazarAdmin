@@ -11,6 +11,7 @@ import {
   adminOwnerAndStaffOnly,
   getAuthCredentials,
   hasAccess,
+  ownerOnly,
 } from '@/utils/auth-utils';
 import ErrorMessage from '@/components/ui/error-message';
 import { useShopQuery } from '@/data/shop';
@@ -21,6 +22,7 @@ import { Routes } from '@/config/routes';
 import { useMeQuery, useUsersQuery } from '@/data/user';
 import { AllPermission } from '@/utils/AllPermission';
 import AdminLayout from '@/components/layouts/admin';
+import OwnerLayout from '@/components/layouts/owner';
 
 export default function StaffsPage() {
   const router = useRouter();
@@ -106,7 +108,7 @@ export default function StaffsPage() {
         </div>
 
         <div className="flex w-3/4 items-center ms-auto xl:w-2/4">
-          {canWrite ? (
+          {canWrite || ownerOnly ? (
             <LinkButton
               href={`/users/create`}
               className="h-12 ms-auto"
@@ -130,7 +132,7 @@ export default function StaffsPage() {
 StaffsPage.authenticate = {
   permissions: adminOwnerAndStaffOnly,
 };
-StaffsPage.Layout = AdminLayout;
+StaffsPage.Layout = OwnerLayout;
 
 export const getServerSideProps = async ({ locale }: any) => ({
   props: {

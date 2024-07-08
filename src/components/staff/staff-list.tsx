@@ -129,8 +129,8 @@ const StaffList = ({
       render: (is_active: boolean) => (is_active ? 'Active' : 'Inactive'),
     },
     {
-      ...(canWrite
-      ?{
+      ...(canWrite?
+        {
         title: t('table:table-item-actions'),
         dataIndex: 'id',
         key: 'actions',

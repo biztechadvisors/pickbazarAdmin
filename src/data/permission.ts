@@ -15,7 +15,6 @@ export const usePermissionData = (userId: string) => {
     const response = await permissionClient.getAllPermission(userId);
     return response;
   });
-
   return { data, isLoading, error, refetch };
 };
 

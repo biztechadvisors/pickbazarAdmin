@@ -17,6 +17,14 @@ import { useAddDealerMutation, useUpdateDealerMutation } from '@/data/dealer';
 import { useUserQuery } from '@/data/user';
 import Loader from '../ui/loader/loader';
 import ErrorMessage from '../ui/error-message';
+import dynamic from 'next/dynamic';
+import {
+  billingAddressAtom,
+  // customerAtom,
+  shippingAddressAtom,
+} from '@/contexts/checkout';
+import { AddressType } from '@/types';
+import { useAtomValue } from 'jotai';
 
 type FormValues = {
   category: any;
@@ -293,8 +301,11 @@ export default function CreateOrUpdateDealerForm({ initialValues, id }: IProps) 
 
   const { mutate: createDealer, isLoading: creating } = useAddDealerMutation();
   const { mutate: updateDealer, isLoading: updating } = useUpdateDealerMutation();
+  const AddressGrid = dynamic(() => import('@/components/checkout/address-grid'));
   const onSubmit = (values: FormValues) => {
-    const isActiveVal: any = values.isActive
+    const isActiveVal: any = values.isActive;
+    const billingAddresses = useAtomValue(billingAddressAtom);
+    const shippingAddresses = useAtomValue(shippingAddressAtom);
     const input = {
       language: router.locale!,
       name: values.name!,
@@ -309,9 +320,11 @@ export default function CreateOrUpdateDealerForm({ initialValues, id }: IProps) 
       dealerProductMargins: values.dealerProductMargins,
       gst: values.gst,
       pan: values.pan,
+      billingAddresses: billingAddresses,
+      shippingAddresses: shippingAddresses,
     };
 
-
+console.log("ONSUMBIT_DATA_______",onSubmit);
     if (!initialValues) {
       createDealer({
         ...input,
@@ -394,6 +407,29 @@ export default function CreateOrUpdateDealerForm({ initialValues, id }: IProps) 
           <SelectStatus control={control} errors={errors} defaultValue={initialValues} />
           <SelectCategory register={register} control={control} errors={errors} defaultValue={marcategory} />
           <SelectProduct register={register} control={control} errors={errors} defaultValue={marproduct} />
+          <AddressGrid
+                        userId={user?.id!}
+                        className="shadow-700 bg-light p-5 md:p-8"
+                        label={t('text-billing-address')}
+                        // count={3}
+                        // addresses={user?.address?.filter(
+                        //     (address) => address?.type === AddressType.Billing
+                        // )}
+                        atom={billingAddressAtom}
+                        type={AddressType.Billing}
+                    />
+
+                    <AddressGrid
+                        userId={user?.id!}
+                        className="shadow-700 bg-light p-5 md:p-8"
+                        label={t('text-shipping-address')}
+                        // count={4}
+                        // addresses={user?.address?.filter(
+                        //     (address) => address?.type === AddressType.Shipping
+                        // )}
+                        atom={shippingAddressAtom}
+                        type={AddressType.Shipping}
+                    />
         </Card>
       </div>
 
