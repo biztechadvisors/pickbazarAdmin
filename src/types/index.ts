@@ -163,7 +163,7 @@ export interface NameAndValueType {
 }
 export enum Permission {
   SuperAdmin = 'super_admin',
-  StoreOwner = 'store_owner',
+  StoreOwner = 'Company',
   Staff = 'staff',
   Customer = 'customer',
   Admin = 'admin',

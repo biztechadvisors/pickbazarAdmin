@@ -7,7 +7,7 @@ import { userClient } from '@/data/client/user';
 import { useMeQuery } from '@/data/user';
 import { PlusIcon } from '@/components/icons/plus-icon';
 import { useRouter } from 'next/router';
-import { ADMIN, DEALER, STAFF, STORE_OWNER, SUPER_ADMIN } from '@/utils/constants';
+import { ADMIN, DEALER, STAFF, Company, SUPER_ADMIN } from '@/utils/constants';
 import { getAuthCredentials } from '@/utils/auth-utils';
 
 const CustomerEmail = ({ count }) => {
@@ -21,7 +21,7 @@ const CustomerEmail = ({ count }) => {
   const router = useRouter();
   const { permissions } = getAuthCredentials();
   const isPermission = permissions?.some(role =>
-    [DEALER, SUPER_ADMIN, STAFF, STORE_OWNER, ADMIN].includes(role)
+    [DEALER, SUPER_ADMIN, STAFF, Company, ADMIN].includes(role)
   );
 
   const { data: meData } = useMeQuery();

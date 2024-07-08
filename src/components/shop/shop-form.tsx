@@ -33,7 +33,7 @@ import * as socialIcons from '@/components/icons/social';
 import omit from 'lodash/omit';
 import SwitchInput from '@/components/ui/switch-input';
 import { getAuthCredentials } from '@/utils/auth-utils';
-import { SUPER_ADMIN, STORE_OWNER, OWNER } from '@/utils/constants';
+import { SUPER_ADMIN, Company, OWNER } from '@/utils/constants';
 import { useModalAction } from '../ui/modal/modal.context';
 import OpenAIButton from '../openAI/openAI.button';
 import { useCallback, useMemo } from 'react';
@@ -431,7 +431,7 @@ const ShopForm = ({ initialValues }: { initialValues?: any }) => {
           </Card>
         </div>
 
-        {permissions?.includes(STORE_OWNER) ? (
+        {permissions?.includes(Company) ? (
           <div className="my-5 flex flex-wrap border-b border-dashed border-border-base pb-8 sm:my-8">
             <Description
               title={t('form:form-notification-title')}
