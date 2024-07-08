@@ -329,9 +329,12 @@ const ShopForm = ({ initialValues }: { initialValues?: any }) => {
       </div>
       <div className="relative">
       <Label>{t('form:input-label-extra-permission')}</Label>
-      <a href='/src/pages/permission/create/index.tsx'>
-      <Button>{t('form:button-label-more-permission')}</Button>
-      </a>
+      {/* <a href='/src/pages/permission/create/index.tsx'> */}
+      <LinkButton 
+      href={Routes.permission.create}
+      >
+        {t('form:button-label-more-permission')}</LinkButton>
+      {/* </a> */}
       </div>
       </Card>
         </div>
