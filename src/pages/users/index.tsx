@@ -32,6 +32,7 @@ export default function Customers() {
     name: searchTerm,
     orderBy,
     sortedBy,
+    role: 'user'
   });
 
   if (loading) return <Loader text={t('common:text-loading')} />;

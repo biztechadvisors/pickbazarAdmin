@@ -79,6 +79,8 @@ const CustomerCreateForm = () => {
       label: permission.permission_name,
       id: permission.id,
     })) ?? [];
+ 
+    console.log("RadhikaVarfa",permissionOptions);
 
   if (permissions[0] === DEALER) {
     permissionOptions.push(

@@ -22,6 +22,7 @@ import { Routes } from '@/config/routes';
 import { useMeQuery, useUsersQuery } from '@/data/user';
 import { AllPermission } from '@/utils/AllPermission';
 import AdminLayout from '@/components/layouts/admin';
+import OwnerLayout from '@/components/layouts/owner';
 
 export default function StaffsPage() {
   const router = useRouter();
@@ -131,7 +132,7 @@ export default function StaffsPage() {
 StaffsPage.authenticate = {
   permissions: adminOwnerAndStaffOnly,
 };
-StaffsPage.Layout = AdminLayout;
+StaffsPage.Layout = OwnerLayout;
 
 export const getServerSideProps = async ({ locale }: any) => ({
   props: {
