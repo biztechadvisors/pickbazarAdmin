@@ -96,6 +96,13 @@ const StockList = ({
 
   const columns = [
     {
+      title: t('table:table-item-id'),
+      dataIndex: 'id',
+      key: 'id',
+      align: 'center',
+      width: 60,
+    },
+    {
       title: t('table:table-item-tracking-number'),
       dataIndex: 'tracking_number',
       key: 'tracking_number',
