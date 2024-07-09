@@ -10,7 +10,7 @@ export const API_ENDPOINTS = {
   USERS: 'users',
   REGISTER: 'register',
   VENDOR_LIST: 'Vendor',
-  STORE_OWNER: 'Store_Owner',
+  STORE_OWNER: 'company',
   PRODUCTS: 'products',
   POPULAR_PRODUCTS: 'popular-products',
   COUPONS: 'coupons',

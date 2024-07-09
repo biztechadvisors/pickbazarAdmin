@@ -36,12 +36,22 @@ import { getAuthCredentials } from '@/utils/auth-utils';
 import { SUPER_ADMIN, STORE_OWNER, OWNER } from '@/utils/constants';
 import { useModalAction } from '../ui/modal/modal.context';
 import OpenAIButton from '../openAI/openAI.button';
-import { useCallback, useMemo } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import { useSettingsQuery } from '@/data/settings';
-import { useMeQuery, useUserQuery, useVendorQuery } from '@/data/user';
+import {
+  useMeQuery,
+  useUserQuery,
+  useUsersQuery,
+  useVendorQuery,
+} from '@/data/user';
 import ValidationError from '../ui/form-validation-error';
 import { Routes } from '@/config/routes';
 import LinkButton from '../ui/link-button';
+import { usePermissionData } from '@/data/permission';
+import Loader from '../ui/loader/loader';
+import UserModal from '../ui/modal/user-modal';
+import Modal from '../ui/modal/modal';
+import CustomerCreateForm from '../user/user-form';
 
 export const chatbotAutoSuggestion = ({ name }: { name: string }) => {
   return [
@@ -149,38 +159,46 @@ function SelectUser({ control, errors }: SelectUserProps) {
   const options: any = users || [];
   const shouldDisable = control._defaultValues.owner != null || !isOwner;
 
+
+  const [isModalOpen, setModalOpen] = useState(false);
+
+  const openModal = () => setModalOpen(true);
+  const closeModal = () => setModalOpen(false);
+
   return (
-    <div className="mb-5">
-      <Label>{t('form:input-label-user-select')}</Label>
-      <LinkButton 
-      className='mb-5'
-      href={Routes.user.create}
-      >
-        {t('form:form-title-create-user')}
-        </LinkButton>
-      <SelectInput
-        name="user"
-        control={control}
-        getOptionLabel={(option: any) => `${option.name} - ${option.email}`}
-        getOptionValue={(option: any) => option}
-        options={options.data}
-        isLoading={isLoading}
-        isSearchable={true}
-        filterOption={(option: any, inputValue: any) => {
-          const searchValue = inputValue.toLowerCase();
-          return (
-            option.name.toLowerCase().includes(searchValue) ||
-            option.email.toLowerCase().includes(searchValue)
-          );
-        }}
-        defaultValue={control._defaultValues.owner}
-        disabled={shouldDisable}
-      />
+    <div className="mb-5 flex gap-2 justify-between w-full">
+      <div className="w-4/5">
+        <SelectInput
+          name="user"
+          control={control}
+          getOptionLabel={(option) => `${option.name} - ${option.email}`}
+          getOptionValue={(option) => option}
+          options={options.data}
+          isLoading={isLoading}
+          isSearchable={true}
+          filterOption={(option, inputValue) => {
+            const searchValue = inputValue.toLowerCase();
+            return (
+              option.name.toLowerCase().includes(searchValue) ||
+              option.email.toLowerCase().includes(searchValue)
+            );
+          }}
+          defaultValue={control._defaultValues.owner}
+          disabled={shouldDisable}
+        />
+      </div>
+      <div className="w-1/5">
+        <Button className="mb-5" onClick={openModal}>
+          {t('form:form-title-create-user')}
+        </Button>
+      </div>
       <ValidationError message={t(errors.user?.message)} />
+      <Modal open={isModalOpen} onClose={closeModal}>
+        <CustomerCreateForm />
+      </Modal>
     </div>
   );
 }
-
 
 const ShopForm = ({ initialValues }: { initialValues?: any }) => {
   const { mutate: createShop, isLoading: creating } = useCreateShopMutation();
@@ -199,29 +217,30 @@ const ShopForm = ({ initialValues }: { initialValues?: any }) => {
     shouldUnregister: true,
     ...(initialValues
       ? {
-        defaultValues: {
-          ...initialValues,
-          logo: getFormattedImage(initialValues.logo),
-          cover_image: getFormattedImage(initialValues.cover_image),
-          settings: {
-            ...initialValues?.settings,
-            socials: initialValues?.settings?.socials
-              ? initialValues?.settings?.socials.map((social: any) => ({
-                icon: updatedIcons?.find(
-                  (icon) => icon?.value === social?.icon
-                ),
-                url: social?.url,
-              }))
-              : [],
+          defaultValues: {
+            ...initialValues,
+            logo: getFormattedImage(initialValues.logo),
+            cover_image: getFormattedImage(initialValues.cover_image),
+            settings: {
+              ...initialValues?.settings,
+              socials: initialValues?.settings?.socials
+                ? initialValues?.settings?.socials.map((social: any) => ({
+                    icon: updatedIcons?.find(
+                      (icon) => icon?.value === social?.icon
+                    ),
+                    url: social?.url,
+                  }))
+                : [],
+            },
           },
-        },
-      }
+        }
       : {}),
     resolver: yupResolver(shopValidationSchema),
   });
   const router = useRouter();
   const { openModal } = useModalAction();
   const { locale } = router;
+  const { data, isLoading: loading, isError } = useMeQuery();
   const {
     // @ts-ignore
     settings: { options },
@@ -233,6 +252,25 @@ const ShopForm = ({ initialValues }: { initialValues?: any }) => {
   const autoSuggestionList = useMemo(() => {
     return chatbotAutoSuggestion({ name: generateName ?? '' });
   }, [generateName]);
+
+  const {
+    isLoading,
+    error,
+    data: permissionData,
+  } = usePermissionData(data?.id);
+
+  console.log('permissionData+++++', permissionData);
+
+  const filterdEcomm = permissionData?.filter(
+    (e: any) =>
+      (e.type_name == 'Company' && e.permission_name === 'E-commerce') ||
+      e.permission_name === 'Non-ecommerce'
+  );
+
+  const option = filterdEcomm?.map((e: any) => ({
+    name: e.permission_name,
+    email: e.type_name,
+  }));
 
   const handleGenerateDescription = useCallback(() => {
     openModal('GENERATE_DESCRIPTION', {
@@ -256,9 +294,9 @@ const ShopForm = ({ initialValues }: { initialValues?: any }) => {
       location: { ...omit(values?.settings?.location, '__typename') },
       socials: values?.settings?.socials
         ? values?.settings?.socials?.map((social: any) => ({
-          icon: social?.icon?.value,
-          url: social?.url,
-        }))
+            icon: social?.icon?.value,
+            url: social?.url,
+          }))
         : [],
     };
     try {
@@ -297,46 +335,52 @@ const ShopForm = ({ initialValues }: { initialValues?: any }) => {
     </span>
   );
 
+  if (isLoading) {
+    return (
+      <div>
+        <Loader text="...loading" />
+      </div>
+    );
+  }
+
   return (
     <>
       <form onSubmit={handleSubmit(onSubmit)} noValidate>
         <div className="my-5 flex flex-wrap border-b border-dashed border-border-base pb-8 sm:my-8">
-        <Description
+          <Description
             title={t('form:input-label-comapny-type')}
             details={t('form:shop-company-help-text')}
             className="w-full px-0 pb-5 sm:w-4/12 sm:py-8 sm:pe-4 md:w-1/3 md:pe-5"
           />
-        <Card className="w-full sm:w-8/12 md:w-2/3">
-        <div className='relative mb-5'>
-        <Label>{t('form:input-label-select-company')}</Label>
-        <SelectInput
-        name="companyType"
-        control={control}
-        getOptionLabel={(option: any) => `${option.name} - ${option.email}`}
-        getOptionValue={(option: any) => option}
-        options={options}
-        // isLoading={isLoading}
-        isSearchable={true}
-        filterOption={(option: any, inputValue: any) => {
-          const searchValue = inputValue.toLowerCase();
-          return (
-            option.name.toLowerCase().includes(searchValue) ||
-            option.email.toLowerCase().includes(searchValue)
-          );
-        }}
-        defaultValue={control._defaultValues.owner}
-      />
-      </div>
-      <div className="relative">
-      <Label>{t('form:input-label-extra-permission')}</Label>
-      {/* <a href='/src/pages/permission/create/index.tsx'> */}
-      <LinkButton 
-      href={Routes.permission.create}
-      >
-        {t('form:button-label-more-permission')}</LinkButton>
-      {/* </a> */}
-      </div>
-      </Card>
+          <Card className="w-full sm:w-8/12 md:w-2/3">
+            <div className="relative mb-5">
+              <Label>{t('form:input-label-select-company')}</Label>
+              <SelectInput
+                name="companyType"
+                control={control}
+                getOptionLabel={(option: any) =>
+                  `${option.name} - ${option.email}`
+                }
+                getOptionValue={(option: any) => option}
+                options={option}
+                isSearchable={true}
+                filterOption={(option: any, inputValue: any) => {
+                  const searchValue = inputValue.toLowerCase();
+                  return (
+                    option.name.toLowerCase().includes(searchValue) ||
+                    option.email.toLowerCase().includes(searchValue)
+                  );
+                }}
+                defaultValue={control._defaultValues.owner}
+              />
+            </div>
+            <div className="relative">
+              <Label>{t('form:input-label-extra-permission')}</Label>
+              <LinkButton href={Routes.permission.create}>
+                {t('form:button-label-more-permission')}
+              </LinkButton>
+            </div>
+          </Card>
         </div>
         <div className="my-5 flex flex-wrap border-b border-dashed border-border-base pb-8 sm:my-8">
           <Description
@@ -375,9 +419,7 @@ const ShopForm = ({ initialValues }: { initialValues?: any }) => {
               className="mb-5"
               error={t(errors.name?.message!)}
             />
-            {
-              <SelectUser control={control} errors={errors} />
-            }
+            {<SelectUser control={control} errors={errors} />}
 
             <div className="relative">
               {options?.useAi && (
