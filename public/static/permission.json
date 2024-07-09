@@ -2,7 +2,7 @@
   "type_name": {
     "OWNER": "Owner",
     "SUPER_ADMIN": "Super_Admin",
-    "STORE_OWNER": "Store_Owner",
+    "Company": "Company",
     "ADMIN": "Admin",
     "DEALER": "Dealer",
     "STAFF": "Staff"

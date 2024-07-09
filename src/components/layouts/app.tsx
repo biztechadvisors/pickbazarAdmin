@@ -2,7 +2,7 @@ import {
   ADMIN,
   DEALER,
   STAFF,
-  STORE_OWNER,
+  Company,
   SUPER_ADMIN,
   OWNER,
 } from '@/utils/constants';
@@ -19,7 +19,7 @@ export default function AppLayout({
 }) {
   if (
     userPermissions?.some((permission) =>
-      [DEALER, STAFF, STORE_OWNER, SUPER_ADMIN, ADMIN].includes(permission)
+      [DEALER, STAFF, Company, SUPER_ADMIN, ADMIN].includes(permission)
     )
   ) {
     return <AdminLayout {...props} />;

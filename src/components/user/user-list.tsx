@@ -18,6 +18,7 @@ import TitleWithSort from '@/components/ui/title-with-sort';
 import { AllPermission } from '@/utils/AllPermission';
 import { getAuthCredentials } from '@/utils/auth-utils';
 import { OWNER } from '@/utils/constants';
+import { filter } from 'lodash';
 
 type IProps = {
   customers: User[] | undefined;
@@ -35,7 +36,6 @@ const CustomerList = ({
 }: IProps) => {
   const { t } = useTranslation();
   const { alignLeft } = useIsRTL();
-
   const { permissions } = getAuthCredentials();
   const permissionTypes = AllPermission();
   const canWrite =
@@ -67,6 +67,13 @@ const CustomerList = ({
   });
 
   const columns = [
+    {
+      title: t('table:table-item-id'),
+      dataIndex: 'id',
+      key: 'id',
+      align: 'left',
+      width: 60,
+    },
     {
       title: t('table:table-item-avatar'),
       dataIndex: 'profile',
@@ -158,7 +165,9 @@ const CustomerList = ({
         : null),
     },
   ];
-
+  const filteredCustomers = customers?.filter(
+    (customer) => customer.type?.type_name === 'Customer' // Adjust the condition as needed
+  );
   return (
     <>
       <div className="mb-6 overflow-hidden rounded shadow">
@@ -166,7 +175,8 @@ const CustomerList = ({
           // @ts-ignore
           columns={columns}
           emptyText={t('table:empty-table-data')}
-          data={customers}
+          // data={customers}
+          data={filteredCustomers}
           rowKey="id"
           scroll={{ x: 800 }}
         />

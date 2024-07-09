@@ -14,6 +14,7 @@ import { Shop, MappedPaginatorInfo } from '@/types';
 import { getAuthCredentials } from '@/utils/auth-utils';
 import { AllPermission } from '@/utils/AllPermission';
 import { OWNER } from '@/utils/constants';
+import { Routes } from '@/config/routes';
 
 type IProps = {
   shops: Shop[] | undefined;
@@ -171,11 +172,13 @@ const ShopList = ({
           key: 'actions',
           align: alignRight,
           render: (id: string, { slug, is_active }: any) => {
+            console.log("SLUG____",slug);
             return (
               <ActionButtons
                 id={id}
                 approveButton={true}
                 detailsUrl={`/${slug}`}
+                // detailsUrl={`${Routes.shop.edit}/${id}`}
                 isShopActive={is_active}
               />
             );
@@ -183,6 +186,8 @@ const ShopList = ({
         } : {}),
     },
   ];
+
+  console.log('shops', shops);
 
   return (
     <>
@@ -211,7 +216,6 @@ const ShopList = ({
 };
 
 export default ShopList;
-
 
 // import { useState } from 'react';
 // import Pagination from '@/components/ui/pagination';

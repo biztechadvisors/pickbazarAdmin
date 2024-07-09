@@ -43,6 +43,7 @@ export default function Dashboard() {
   } = useOrdersQuery({
     customer_id: customerId,
     shop_id: meData?.managed_shop?.id,
+    shop_slug: meData?.managed_shop?.slug,
     language: locale,
     limit: 10,
     page: 1,
@@ -154,8 +155,8 @@ export default function Dashboard() {
           orders={orderData}
           title={t('table:recent-order-table-title')}
         />
-        </div>
-        <div className="mb-6 w-full flex-wrap space-y-6 xl:flex-nowrap xl:space-y-0 xl:space-x-5">
+      </div>
+      <div className="mb-6 w-full flex-wrap space-y-6 xl:flex-nowrap xl:space-y-0 xl:space-x-5">
         <PopularProductList
           products={popularProductData}
           title={t('table:popular-products-table-title')}
