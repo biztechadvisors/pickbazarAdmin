@@ -6,16 +6,22 @@ import { orderClient } from './client/order';
 import { mapPaginatorData } from '@/utils/data-mappers';
 import { toast } from 'react-toastify';
 
-export const useGetStock = (id: any) => {
-  return useQuery<any, Error>([API_ENDPOINTS.STOCK, id], async () => {
-    try {
-      const response = await stockClient.getById(id);
-      return response;
-    } catch (error) {
-      throw new Error(error.message);
-    }
-  });
-};
+// export const useGetStock = (id: any) => {
+//   return useQuery<any, Error>([API_ENDPOINTS.STOCK, id], async () => {
+//     try {
+//       const response = await stockClient.getById(id);
+//       return response;
+      
+//     } catch (error) {
+//       throw new Error(error.message);
+//     }
+    
+//   });
+// };
+
+
+
+
 
 export const useOrdersSalesQuery = (
   params: Partial<OrderQueryOptions>,
