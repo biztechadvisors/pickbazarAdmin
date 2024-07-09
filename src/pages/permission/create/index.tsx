@@ -14,7 +14,7 @@ import { getAuthCredentials } from '@/utils/auth-utils';
 import { newPermission } from '@/contexts/permission/storepermission';
 import { useAtom } from 'jotai';
 import OwnerLayout from '@/components/layouts/owner';
-import { ADMIN, DEALER, OWNER, STAFF, STORE_OWNER } from '@/utils/constants';
+import { ADMIN, DEALER, OWNER, STAFF, Company } from '@/utils/constants';
 
 const CreatePermission = () => {
   const router = useRouter();
@@ -184,16 +184,16 @@ const CreatePermission = () => {
             updatedTypeName.push(
               OWNER,
               ADMIN,
-              STORE_OWNER,
+              Company,
               DEALER,
               STAFF,
             );
             break;
           case ADMIN:
-            updatedTypeName.push(ADMIN, STORE_OWNER, DEALER, STAFF);
+            updatedTypeName.push(ADMIN, Company, DEALER, STAFF);
             break;
-          case STORE_OWNER:
-            updatedTypeName.push(STORE_OWNER, DEALER, STAFF);
+          case Company:
+            updatedTypeName.push(Company, DEALER, STAFF);
             break;
           case DEALER:
             updatedTypeName.push(DEALER, STAFF);

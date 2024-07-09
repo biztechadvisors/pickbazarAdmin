@@ -33,7 +33,7 @@ import * as socialIcons from '@/components/icons/social';
 import omit from 'lodash/omit';
 import SwitchInput from '@/components/ui/switch-input';
 import { getAuthCredentials } from '@/utils/auth-utils';
-import { SUPER_ADMIN, STORE_OWNER, OWNER } from '@/utils/constants';
+import { SUPER_ADMIN, Company, OWNER } from '@/utils/constants';
 import { useModalAction } from '../ui/modal/modal.context';
 import OpenAIButton from '../openAI/openAI.button';
 import { useCallback, useMemo, useState } from 'react';
@@ -52,6 +52,7 @@ import Loader from '../ui/loader/loader';
 import UserModal from '../ui/modal/user-modal';
 import Modal from '../ui/modal/modal';
 import CustomerCreateForm from '../user/user-form';
+import CustForm from '../user/custForm';
 
 export const chatbotAutoSuggestion = ({ name }: { name: string }) => {
   return [
@@ -159,14 +160,13 @@ function SelectUser({ control, errors }: SelectUserProps) {
   const options: any = users || [];
   const shouldDisable = control._defaultValues.owner != null || !isOwner;
 
-
   const [isModalOpen, setModalOpen] = useState(false);
 
   const openModal = () => setModalOpen(true);
   const closeModal = () => setModalOpen(false);
 
   return (
-    <div className="mb-5 flex gap-2 justify-between w-full">
+    <div className="mb-5 flex w-full justify-between gap-2">
       <div className="w-4/5">
         <SelectInput
           name="user"
@@ -187,14 +187,15 @@ function SelectUser({ control, errors }: SelectUserProps) {
           disabled={shouldDisable}
         />
       </div>
-      <div className="w-1/5">
+      <div>
         <Button className="mb-5" onClick={openModal}>
           {t('form:form-title-create-user')}
         </Button>
       </div>
       <ValidationError message={t(errors.user?.message)} />
       <Modal open={isModalOpen} onClose={closeModal}>
-        <CustomerCreateForm />
+        {/* <CustomerCreateForm /> */}
+        <CustForm/>
       </Modal>
     </div>
   );
@@ -519,7 +520,7 @@ const ShopForm = ({ initialValues }: { initialValues?: any }) => {
           </Card>
         </div>
 
-        {permissions?.includes(STORE_OWNER) ? (
+        {permissions?.includes(Company) ? (
           <div className="my-5 flex flex-wrap border-b border-dashed border-border-base pb-8 sm:my-8">
             <Description
               title={t('form:form-notification-title')}

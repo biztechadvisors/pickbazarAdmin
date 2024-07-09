@@ -1,9 +1,9 @@
+// components/CustForm.tsx
 import Button from '@/components/ui/button';
 import Input from '@/components/ui/input';
 import PasswordInput from '@/components/ui/password-input';
 import { Controller, useForm } from 'react-hook-form';
 import Card from '@/components/common/card';
-import Description from '@/components/ui/description';
 import { useMeQuery, useRegisterMutation } from '@/data/user';
 import { useTranslation } from 'next-i18next';
 import { yupResolver } from '@hookform/resolvers/yup';
@@ -15,7 +15,6 @@ import { usePermissionData } from '@/data/permission';
 import { getAuthCredentials } from '@/utils/auth-utils';
 import Loader from '../ui/loader/loader';
 import { DEALER, OWNER } from '@/utils/constants';
-// import InputMask from 'react-input-mask';
 import { useShopQuery } from '@/data/shop';
 import PhoneInput from 'react-phone-input-2';
 import 'react-phone-input-2/lib/style.css';
@@ -40,7 +39,7 @@ const defaultValues = {
   numberOfDealers: 0, // Added default value for new field
 };
 
-const CustomerCreateForm = () => {
+const CustForm = () => {
   const { t } = useTranslation();
   const router = useRouter();
   const { data: meData, isLoading: meLoading } = useMeQuery();
@@ -48,7 +47,6 @@ const CustomerCreateForm = () => {
   const { id } = meData || {};
   const { data: permissionData } = usePermissionData(id);
   const { permissions } = getAuthCredentials();
-  // const phoneRegex = /^\+91[0-9]{10}$/;
   const [value, setValue] = useState('');
 
   const shopSlug =
@@ -80,8 +78,6 @@ const CustomerCreateForm = () => {
       id: permission.id,
     })) ?? [];
 
-  console.log('RadhikaVarfa', permissionOptions);
-
   if (permissions[0] === DEALER) {
     permissionOptions.push(
       { value: 'customer', label: 'customer', id: 'customer_id' },
@@ -95,7 +91,7 @@ const CustomerCreateForm = () => {
     password,
     contact,
     type,
-    numberOfDealers, // Added new field to destructure
+    numberOfDealers,
   }: FormValues) {
     registerUser(
       {
@@ -106,7 +102,7 @@ const CustomerCreateForm = () => {
         UsrBy: id,
         type: type?.value,
         numberOfDealers,
-        managed_shop: shopData, // Added new field to payload
+        managed_shop: shopData,
       },
       {
         onError: (error: any) => {
@@ -120,100 +116,85 @@ const CustomerCreateForm = () => {
       }
     );
   }
+
   return (
     <form onSubmit={handleSubmit(onSubmit)} noValidate>
-      <div className="my-5 flex flex-wrap sm:my-8">
-        <Description
-          title={t('form:form-title-information')}
-          details={t('form:customer-form-info-help-text')}
-          className="w-full px-0 pb-5 sm:w-4/12 sm:py-8 sm:pe-4 md:w-1/3 md:pe-5"
+      <Card className="w-full">
+        <Input
+          label={t('form:input-label-name')}
+          {...register('name')}
+          type="text"
+          variant="outline"
+          className="mb-4"
+          error={t(errors.name?.message!)}
         />
-
-        <Card className="w-full sm:w-8/12 md:w-2/3">
-          <Input
-            label={t('form:input-label-name')}
-            {...register('name')}
-            type="text"
-            variant="outline"
-            className="mb-4"
-            error={t(errors.name?.message!)}
-          />
-          <Input
-            label={t('form:input-label-email')}
-            {...register('email')}
-            type="email"
-            variant="outline"
-            className="mb-4"
-            error={t(errors.email?.message!)}
-          />
-          <PasswordInput
-            label={t('form:input-label-password')}
-            {...register('password')}
-            error={t(errors.password?.message!)}
-            variant="outline"
-            className="mb-4"
-          />
-          {/* <Input
-            label={t('form:input-label-contact')}
-            {...register('contact')}
-            type="text"
-            variant="outline"
-            className="mb-4"
-            error={t(errors.contact?.message!)}
-          /> */}
-          <Controller
-            name="contact"
-            control={control}
-            render={({ field: { onChange, value } }) => (
-              <PhoneInput
-                country="in"
-                value={value}
-                onChange={onChange}
-                inputStyle={{
-                  width: '100%',
-                  height: '40px',
-                  border: '1px solid #e2e8f0',
-                  borderRadius: '0.375rem',
-                  padding: '0.5rem',
-                  fontSize: '0.875rem',
-                  outline: 'none',
-                  paddingLeft: '50px',
-                }}
-              />
-            )}
-          />
-          <Controller
-            name="type"
-            control={control}
-            render={({ field }) => (
-              <>
-                <Label className="mt-4">{t('form:input-label-type')}</Label>
-                <Select
-                  {...field}
-                  getOptionLabel={(option: { label: string }) => option.label}
-                  getOptionValue={(option: { value: string }) => option.value}
-                  options={permissionOptions}
-                  isClearable={true}
-                  isLoading={loading}
-                  className="mb-4"
-                />
-              </>
-            )}
-          />
-          {permissions[0] === OWNER ? (
-            <Input
-              label={t('form:input-label-dealers')}
-              {...register('numberOfDealers')}
-              type="number"
-              variant="outline"
-              className="mb-4"
-              error={t(errors.numberOfDealers?.message!)}
+        <Input
+          label={t('form:input-label-email')}
+          {...register('email')}
+          type="email"
+          variant="outline"
+          className="mb-4"
+          error={t(errors.email?.message!)}
+        />
+        <PasswordInput
+          label={t('form:input-label-password')}
+          {...register('password')}
+          error={t(errors.password?.message!)}
+          variant="outline"
+          className="mb-4"
+        />
+        <Controller
+          name="contact"
+          control={control}
+          render={({ field: { onChange, value } }) => (
+            <PhoneInput
+              country="in"
+              value={value}
+              onChange={onChange}
+              inputStyle={{
+                width: '100%',
+                height: '40px',
+                border: '1px solid #e2e8f0',
+                borderRadius: '0.375rem',
+                padding: '0.5rem',
+                fontSize: '0.875rem',
+                outline: 'none',
+                paddingLeft: '50px',
+              }}
             />
-          ) : null}
-        </Card>
-      </div>
+          )}
+        />
+        <Controller
+          name="type"
+          control={control}
+          render={({ field }) => (
+            <>
+              <Label className="mt-4">{t('form:input-label-type')}</Label>
+              <Select
+                {...field}
+                getOptionLabel={(option: { label: string }) => option.label}
+                getOptionValue={(option: { value: string }) => option.value}
+                options={permissionOptions}
+                isClearable={true}
+                isLoading={loading}
+                className="mb-4"
+              />
+            </>
+          )}
+        />
+        {permissions[0] === OWNER ? (
+          <Input
+            label={t('form:input-label-dealers')}
+            {...register('numberOfDealers')}
+            type="number"
+            variant="outline"
+            className="mb-4"
+            error={t(errors.numberOfDealers?.message!)}
+          />
+        ) : null}
+      </Card>
 
-      <div className="mb-4 text-end">
+      <div className="flex justify-end mt-4 space-x-4">
         <Button
           variant="outline"
           onClick={router.back}
@@ -222,7 +203,6 @@ const CustomerCreateForm = () => {
         >
           {t('form:button-label-back')}
         </Button>
-
         <Button loading={loading} disabled={loading}>
           {t('form:button-label-create-customer')}
         </Button>
@@ -230,4 +210,5 @@ const CustomerCreateForm = () => {
     </form>
   );
 };
-export default CustomerCreateForm;
+
+export default CustForm;

@@ -42,43 +42,21 @@ export default function Sales() {
     setPage(current);
   }
 
-  const { data: shopData, isLoading: fetchingShop } = useShopQuery(
-    {
-      slug: shop as string,
-    },
-    {
-      enabled: !!shop,
-    }
-  );
-  // const shopId = shopData?.id!;
-  // const { orders, loading, paginatorInfo, error } = useOrdersSalesQuery({
-  //   language: locale,
-  //   limit: 20,
-  //   page,
-  //   tracking_number: searchTerm,
-  // });
-  // const { refetch } = useExportOrderQuery(
-  //   {
-  //     ...(shopId && { shop_id: shopId }),
-  //   },
-  //   { enabled: false }
-  // );
-
   const { data: me } = useMeQuery();
 
-  const shopId = shopData?.id!;
   const { orders, loading, paginatorInfo, error } = useOrdersQuery({
     language: locale,
     limit: 20,
     page,
     tracking_number: searchTerm,
     customer_id: me?.id,
-    shop_id: shopId ? shopId : null
+    shop_id: me?.UsrBy.managed_shop?.id,
+    shop_slug: me?.UsrBy.managed_shop?.slug,
   });
 
   const { refetch } = useExportOrderQuery(
     {
-      ...(shopId && { shop_id: shopId }),
+      ...(me?.UsrBy.managed_shop?.id && { shop_id: me?.UsrBy.managed_shop?.id }),
     },
     { enabled: false }
   );

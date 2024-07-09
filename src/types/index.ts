@@ -164,7 +164,7 @@ export interface NameAndValueType {
 }
 export enum Permission {
   SuperAdmin = 'super_admin',
-  StoreOwner = 'store_owner',
+  StoreOwner = 'Company',
   Staff = 'staff',
   Customer = 'customer',
   Admin = 'admin',
@@ -1621,6 +1621,7 @@ export interface OrderQueryOptions extends QueryOptions {
   type: string;
   name: string;
   shop_id: string;
+  shop_slug: string;
   tracking_number: string;
   customer_id: number;
   search: any
