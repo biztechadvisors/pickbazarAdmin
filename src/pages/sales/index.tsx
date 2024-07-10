@@ -20,6 +20,7 @@ import StockList from '@/components/stock/StockList';
 import { useOrdersQuery } from '@/data/order';
 import { useMeQuery } from '@/data/user';
 import OrderList from '@/components/order/order-list';
+import { Company } from '@/utils/constants';
 
 export default function Sales() {
   const router = useRouter();
@@ -378,7 +379,10 @@ console.log("order+++", ordersData)
     (order) => order?.customer_id == order?.dealer?.id
   );
 
-  const ShopShow = me?.type.type_name === "Store_Owner";
+
+
+  const ShopShow = me?.type.type_name === Company ;
+  
 
 
   return (

@@ -75,5 +75,6 @@ export const API_ENDPOINTS = {
   PERMISSION: 'permission',
   CART: 'carts',
   STOCK: '/stocks',
+  STOCK_DEALER_UPDATE: '/stocks/update/inventory',
   STOCKBYID: '/orders',
 };

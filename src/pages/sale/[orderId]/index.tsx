@@ -38,6 +38,7 @@ import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import DispatchModal from '@/components/ui/modal-component/dispatch-modal';
 import { useMeQuery } from '@/data/user';
+import { Company } from '@/utils/constants';
 // import { jsPDF } from 'jspdf';
 // import 'jspdf-autotable';
 
@@ -212,7 +213,7 @@ export default function OrderDetailsPage() {
 
   
 
-const DispatchButton = meData?.type.type_name === "Store_Owner";
+const DispatchButton = meData?.type.type_name === Company;
 // console.log("Dispatech", DispatchButton)
 
   return (

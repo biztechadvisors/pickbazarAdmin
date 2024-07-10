@@ -19,6 +19,7 @@ import classNames from 'classnames';
 import { DownloadIcon } from '@/components/icons/download-icon';
 import { useMeQuery } from '@/data/user';
 import StockList from '@/components/stock/StockList';
+import { DEALER } from '@/utils/constants';
 
 export default function Orders() {
     const router = useRouter();
@@ -219,9 +220,9 @@ export default function Orders() {
 
 
 
-    //   console.log("meD", me?.type.type_name)
+    
 
-    const DealerShow = me?.type.type_name === "Dealer";
+    const DealerShow = me?.type.type_name === DEALER;
     //   console.log("Dispatech", DealerShow)
     return (
         <>
@@ -297,21 +298,7 @@ export default function Orders() {
                 />
             )}
 
-            {/* <StockList
-        orders={ordersData}
-        paginatorInfo={paginatorInfo}
-        onPagination={handlePagination}
-        onOrder={setOrder}
-        onSort={setColumn}
-      /> */}
-
-            {/* <OrderList
-                orders={customerOrderList}
-                paginatorInfo={paginatorInfo}
-                onPagination={handlePagination}
-                onOrder={setOrder}
-                onSort={setColumn}
-            /> */}
+         
         </>
     );
 }

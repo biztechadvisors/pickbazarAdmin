@@ -60,4 +60,14 @@ export const stockClient = {
       updatedData
     );
   },
+
+
+ // update stock by dealer
+
+ updateStockDataByDealer: async (user_id: any, updatedData: any) => {
+  return await HttpClient.put(
+    `${API_ENDPOINTS.STOCK_DEALER_UPDATE}/${user_id}`,
+    updatedData
+  );
+},
 };

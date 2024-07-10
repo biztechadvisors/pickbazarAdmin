@@ -55,9 +55,11 @@ export const API_ENDPOINTS = {
   USERS_UPDATE_EMAIL: '/update-email',
   STORE_NOTICES: 'store-notices',
   NEAR_SHOPS: '/near-by-shop',
-  ORDER_BY_STOCK:'/stocks/ord',
+  ORDER_BY_STOCK:'/stocks/order',
 
   // Stocks API
   STOCKS: '/stocks',
+  STOCK_DEALER_UPDATE: '/stocks/update/inventory',
+
 
 };
