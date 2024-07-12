@@ -35,7 +35,7 @@ export default function DealerPage() {
     sortedBy,
   });
 
-  const userdealer = users.filter((user) => user?.type?.type_name === DEALER)
+  const userdealer = users.filter((user) => user?.permission?.type_name === DEALER)
 
   const permissionTypes = AllPermission();
 

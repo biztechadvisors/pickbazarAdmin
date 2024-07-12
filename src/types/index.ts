@@ -484,7 +484,7 @@ export interface MakeAdminInput {
 }
 
 export interface User {
-  type: any;
+  permission: any;
   id: string;
   name: string;
   shops: Shop[];
@@ -499,7 +499,7 @@ export interface User {
   email_verified: boolean;
   shop_id: number;
   dealer?: any;
-  UsrBy?: any;
+  createdBy?: any;
 }
 
 export interface UpdateUser {
@@ -1363,7 +1363,7 @@ export interface RegisterInput {
   shop_id?: number;
   permission: Permission;
   contact: string;
-  UsrBy: any;
+  createdBy: any;
 }
 
 export interface ChangePasswordInput {

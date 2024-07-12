@@ -19,6 +19,7 @@ import classNames from 'classnames';
 import { DownloadIcon } from '@/components/icons/download-icon';
 import { useMeQuery } from '@/data/user';
 import StockList from '@/components/stock/StockList';
+import { DEALER } from '@/utils/constants';
 
 export default function Orders() {
     const router = useRouter();
@@ -61,13 +62,13 @@ export default function Orders() {
         page,
         tracking_number: searchTerm,
         customer_id: me?.id,
-        shop_id: me?.UsrBy.managed_shop?.id,
-        shop_slug: me?.UsrBy.managed_shop?.slug,
+        shop_id: me?.createdBy.managed_shop?.id,
+        shop_slug: me?.createdBy.managed_shop?.slug,
     });
     console.log('orders ** 57', orders)
     const { refetch } = useExportOrderQuery(
         {
-            ...(me?.UsrBy.managed_shop?.id && { shop_id: me?.UsrBy.managed_shop?.id }),
+            ...(me?.createdBy.managed_shop?.id && { shop_id: me?.createdBy.managed_shop?.id }),
         },
         { enabled: false }
     );
@@ -221,7 +222,7 @@ export default function Orders() {
 
     //   console.log("meD", me?.type.type_name)
 
-    const DealerShow = me?.type.type_name === "Dealer";
+    const DealerShow = me?.permission.type_name === DEALER;
     //   console.log("Dispatech", DealerShow)
     return (
         <>

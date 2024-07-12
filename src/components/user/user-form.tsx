@@ -27,7 +27,7 @@ type FormValues = {
   password: string;
   contact: string;
   type: { value: string; label: string };
-  UsrBy: string;
+  createdBy: string;
   numberOfDealers: number; // Added new field type
 };
 
@@ -79,8 +79,8 @@ const CustomerCreateForm = () => {
       label: permission.permission_name,
       id: permission.id,
     })) ?? [];
- 
-    console.log("RadhikaVarfa",permissionOptions);
+
+  console.log("RadhikaVarfa", permissionOptions);
 
   if (permissions[0] === DEALER) {
     permissionOptions.push(
@@ -103,8 +103,8 @@ const CustomerCreateForm = () => {
         email,
         password,
         contact,
-        UsrBy: id,
-        type: type?.value,
+        createdBy: id,
+        permission: type?.value,
         numberOfDealers,
         managed_shop: shopData, // Added new field to payload
       },
@@ -161,7 +161,7 @@ const CustomerCreateForm = () => {
             className="mb-4"
             error={t(errors.contact?.message!)}
           /> */}
-                 <Controller
+          <Controller
             name="contact"
             control={control}
             render={({ field: { onChange, value } }) => (
@@ -177,7 +177,7 @@ const CustomerCreateForm = () => {
                   padding: '0.5rem',
                   fontSize: '0.875rem',
                   outline: 'none',
-                  paddingLeft:'50px',
+                  paddingLeft: '50px',
                 }}
               />
             )}

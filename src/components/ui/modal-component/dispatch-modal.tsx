@@ -225,6 +225,7 @@ import { useTranslation } from 'next-i18next';
 import { useQuery } from 'react-query';
 import { useUpdateStockDataById } from '@/data/stocks';
 import { useMeQuery } from '@/data/user';
+import { DEALER } from '@/utils/constants';
 
 interface DispatchModalProps {
   isOpen: boolean;
@@ -243,12 +244,12 @@ const DispatchModal: React.FC<DispatchModalProps> = ({
   const { t } = useTranslation();
   const { handleSubmit, control } = useForm();
 
-  const user_id = dealerId;  
+  const user_id = dealerId;
   const { mutate: updateStockDataById } = useUpdateStockDataById(user_id);
 
   const { data: meData } = useMeQuery();
 
-const ReceivedButton = meData?.type.type_name === 'Dealer' || meData?.type.type_name === 'dealer';
+  const ReceivedButton = meData?.permission.type_name === DEALER || meData?.permission.type_name === DEALER;
 
 
   const onSubmit = (rowData: any) => (data: any) => {
@@ -326,7 +327,7 @@ const ReceivedButton = meData?.type.type_name === 'Dealer' || meData?.type.type_
         />
       ),
     },
-    
+
     {
       title: t('Update-Qty'),
       key: 'update_qty',

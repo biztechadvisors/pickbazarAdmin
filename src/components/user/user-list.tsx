@@ -19,6 +19,7 @@ import { AllPermission } from '@/utils/AllPermission';
 import { getAuthCredentials } from '@/utils/auth-utils';
 import { OWNER } from '@/utils/constants';
 import { filter } from 'lodash';
+import { CUSTOMER } from '@/lib/constants';
 
 type IProps = {
   customers: User[] | undefined;
@@ -154,8 +155,10 @@ const CustomerList = ({
                     id={id}
                     userStatus={true}
                     isUserActive={is_active}
-                    showAddWalletPoints={true}
-                    showMakeAdminButton={true}
+                    // editModalView={true}
+                    editUrl='/user-details'
+                  // showAddWalletPoints={true}
+                  // showMakeAdminButton={true}
                   />
                 )}
               </>
@@ -166,7 +169,7 @@ const CustomerList = ({
     },
   ];
   const filteredCustomers = customers?.filter(
-    (customer) => customer.type?.type_name === 'Customer' // Adjust the condition as needed
+    (customer) => customer.permission?.type_name === CUSTOMER // Adjust the condition as needed
   );
   return (
     <>
@@ -175,8 +178,8 @@ const CustomerList = ({
           // @ts-ignore
           columns={columns}
           emptyText={t('table:empty-table-data')}
-          // data={customers}
-          data={filteredCustomers}
+          data={customers}
+          // data={filteredCustomers}
           rowKey="id"
           scroll={{ x: 800 }}
         />
