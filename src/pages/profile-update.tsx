@@ -52,7 +52,7 @@ export default function ProfilePage() {
       <ProfileUpdateFrom me={data} />
       <ChangePasswordForm />
 
-      {data?.type?.type_name==="Dealer" && (
+      {data?.permission?.type_name === DEALER && (
         <div ref={userAddressSelectionRef}>
           <UserAddressSelection
             addresses={data.address}

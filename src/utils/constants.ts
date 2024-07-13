@@ -6,6 +6,7 @@ export const Company = 'Company';
 export const STAFF = 'Staff';
 export const DEALER = 'Dealer';
 export const ADMIN = 'Admin';
+export const CUSTOMER = 'Customer';
 export const TOKEN = 'token';
 export const PERMISSIONS = 'permissions';
 export const AUTH_CRED = 'AUTH_CRED';

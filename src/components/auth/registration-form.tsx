@@ -24,7 +24,7 @@ type FormValues = {
   password: string;
   permission: Permission;
   contact: string;
-  UsrBy: string
+  createdBy: string
 };
 const registrationFormSchema = yup.object().shape({
   name: yup.string().required('form:error-name-required'),
@@ -53,7 +53,7 @@ const RegistrationForm = () => {
   const router = useRouter();
   const { t } = useTranslation();
 
-  async function onSubmit({ name, email, password, permission, contact, UsrBy }: FormValues) {
+  async function onSubmit({ name, email, password, permission, contact, createdBy }: FormValues) {
 
     registerUser(
       {
@@ -62,7 +62,7 @@ const RegistrationForm = () => {
         password,
         permission,
         contact: '',
-        UsrBy: ''
+        createdBy: ''
       },
 
       {

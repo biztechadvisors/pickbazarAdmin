@@ -27,7 +27,7 @@ type FormValues = {
   password: string;
   contact: string;
   type: { value: string; label: string };
-  UsrBy: string;
+  createdBy: string;
   numberOfDealers: number; // Added new field type
 };
 
@@ -80,7 +80,7 @@ const CustomerCreateForm = () => {
       id: permission.id,
     })) ?? [];
 
-  console.log('RadhikaVarfa', permissionOptions);
+
 
   if (permissions[0] === DEALER) {
     permissionOptions.push(
@@ -103,8 +103,8 @@ const CustomerCreateForm = () => {
         email,
         password,
         contact,
-        UsrBy: id,
-        type: type?.value,
+        createdBy: id,
+        permission: type?.value,
         numberOfDealers,
         managed_shop: shopData, // Added new field to payload
       },
