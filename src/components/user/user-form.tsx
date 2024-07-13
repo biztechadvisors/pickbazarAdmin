@@ -200,7 +200,7 @@ const CustomerCreateForm = () => {
               </>
             )}
           />
-          {permissions[0] === OWNER ? (
+          {/* {permissions[0] === OWNER ? (
             <Input
               label={t('form:input-label-dealers')}
               {...register('numberOfDealers')}
@@ -209,7 +209,7 @@ const CustomerCreateForm = () => {
               className="mb-4"
               error={t(errors.numberOfDealers?.message!)}
             />
-          ) : null}
+          ) : null} */}
         </Card>
       </div>
 

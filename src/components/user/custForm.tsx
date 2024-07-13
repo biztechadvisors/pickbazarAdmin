@@ -117,6 +117,8 @@ const CustForm = () => {
     );
   }
 
+  console.log("permissionData", permissionData)
+
   return (
     <form onSubmit={handleSubmit(onSubmit)} noValidate>
       <Card className="w-full">
@@ -192,21 +194,21 @@ const CustForm = () => {
             error={t(errors.numberOfDealers?.message!)}
           />
         ) : null}
-      </Card>
 
-      <div className="flex justify-end mt-4 space-x-4">
-        <Button
-          variant="outline"
-          onClick={router.back}
-          className="me-4"
-          type="button"
-        >
-          {t('form:button-label-back')}
-        </Button>
-        <Button loading={loading} disabled={loading}>
-          {t('form:button-label-create-customer')}
-        </Button>
-      </div>
+        <div className="mt-4 flex justify-end space-x-4">
+          <Button
+            variant="outline"
+            onClick={router.back}
+            className="me-4"
+            type="button"
+          >
+            {t('form:button-label-back')}
+          </Button>
+          <Button loading={loading} disabled={loading}>
+            {t('form:button-label-create-customer')}
+          </Button>
+        </div>
+      </Card>
     </form>
   );
 };

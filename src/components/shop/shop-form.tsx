@@ -53,6 +53,9 @@ import UserModal from '../ui/modal/user-modal';
 import Modal from '../ui/modal/modal';
 import CustomerCreateForm from '../user/user-form';
 import CustForm from '../user/custForm';
+import CreateCustomerPage from '@/pages/users/create';
+import CreatePermission from '@/pages/permission/create';
+import CreatePerm from '../createPerm';
 
 export const chatbotAutoSuggestion = ({ name }: { name: string }) => {
   return [
@@ -165,6 +168,8 @@ function SelectUser({ control, errors }: SelectUserProps) {
   const openModal = () => setModalOpen(true);
   const closeModal = () => setModalOpen(false);
 
+  console.log('users&&&&', users);
+
   return (
     <div className="mb-5 flex w-full justify-between gap-2">
       <div className="w-4/5">
@@ -195,7 +200,7 @@ function SelectUser({ control, errors }: SelectUserProps) {
       <ValidationError message={t(errors.user?.message)} />
       <Modal open={isModalOpen} onClose={closeModal}>
         {/* <CustomerCreateForm /> */}
-        <CustForm/>
+        <CustForm />
       </Modal>
     </div>
   );
@@ -204,6 +209,15 @@ function SelectUser({ control, errors }: SelectUserProps) {
 const ShopForm = ({ initialValues }: { initialValues?: any }) => {
   const { mutate: createShop, isLoading: creating } = useCreateShopMutation();
   const { mutate: updateShop, isLoading: updating } = useUpdateShopMutation();
+  const [modalIsOpen, setIsOpen] = useState(false);
+
+  function openModal() {
+    setIsOpen(true);
+  }
+
+  function closeModal() {
+    setIsOpen(false);
+  }
 
   const { permissions } = getAuthCredentials();
   const {
@@ -239,7 +253,7 @@ const ShopForm = ({ initialValues }: { initialValues?: any }) => {
     resolver: yupResolver(shopValidationSchema),
   });
   const router = useRouter();
-  const { openModal } = useModalAction();
+  // const { openModal } = useModalAction();
   const { locale } = router;
   const { data, isLoading: loading, isError } = useMeQuery();
   const {
@@ -377,9 +391,13 @@ const ShopForm = ({ initialValues }: { initialValues?: any }) => {
             </div>
             <div className="relative">
               <Label>{t('form:input-label-extra-permission')}</Label>
-              <LinkButton href={Routes.permission.create}>
+              <Button onClick={openModal}>
                 {t('form:button-label-more-permission')}
-              </LinkButton>
+              </Button>
+
+              <Modal open={modalIsOpen} onClose={closeModal}>
+                <CreatePerm />
+              </Modal>
             </div>
           </Card>
         </div>

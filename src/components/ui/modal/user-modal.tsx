@@ -25,7 +25,6 @@ const UserModal = ({ isOpen, onRequestClose }) => {
         },
       }}
     >
-        <p>check</p>
       <CustomerCreateForm />
       <button onClick={onRequestClose}>Close</button>
     </Modal>
