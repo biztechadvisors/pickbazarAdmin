@@ -463,7 +463,7 @@ import { useForm, Controller } from 'react-hook-form';
 import Button from '@/components/ui/button';
 import { Table } from '@/components/ui/table';
 import { useTranslation } from 'next-i18next';
-import { useQuery } from 'react-query';
+// import { useQuery } from 'react-query';
 import { useUpdateStockDataByDealer, useUpdateStockDataById } from '@/data/stocks';
 import { useMeQuery } from '@/data/user';
 import { DEALER } from '@/utils/constants';
@@ -578,10 +578,6 @@ const DispatchModal: React.FC<DispatchModalProps> = ({
         />
       ),
     },
-<<<<<<< HEAD
-=======
-
->>>>>>> cb271e35c0918345f13eefbe2b46e1d40075902f
     {
       title: t('Update-Qty'),
       key: 'update_qty',

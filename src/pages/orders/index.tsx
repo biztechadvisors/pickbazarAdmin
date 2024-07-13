@@ -44,7 +44,6 @@ export default function Orders() {
     // console.log("query**42", shop)
     const { data: me } = useMeQuery();
 
-    console.log("me", me)
 
     const { data: shopData, isLoading: fetchingShop } = useShopQuery(
         {
@@ -55,7 +54,7 @@ export default function Orders() {
         }
     );
 
-    console.log("shopData",shopData)
+ 
 
     const shopId = shopData?.id!;
     const { orders, loading, paginatorInfo, error } = useOrdersQuery({
@@ -80,7 +79,7 @@ export default function Orders() {
             const ordersData = orders.filter(
                 (order) => order?.customer_id !== order?.dealer?.id
             );
-            console.log("order+++", ordersData)
+          
             if (!ordersData.length) {
                 console.error('No matching orders found for export.');
                 return; // Handle no data scenario (e.g., display message to user)
@@ -149,7 +148,6 @@ export default function Orders() {
             const trackingNumber = order.tracking_number ? order.tracking_number : '';
 
 
-            console.log("shipping", trackingNumber, contactNumber, escapedShippingAddress, escapedBillingAddress)
 
             return [
                 order.payment_intent?.order_id || null, // Handle potential missing values
@@ -201,16 +199,7 @@ export default function Orders() {
     if (loading) return <Loader text={t('common:text-loading')} />;
     if (error) return <ErrorMessage message={error.message} />;
 
-    // async function handleExportOrder() {
-    //     const { data } = await refetch();
-
-    //     if (data) {
-    //         const a = document.createElement('a');
-    //         a.href = data;
-    //         a.setAttribute('download', 'export-order');
-    //         a.click();
-    //     }
-    // }
+    
 
     const customerOrderList = orders.filter(
         (order) => order?.customer_id !== order?.dealer?.id
@@ -225,9 +214,7 @@ export default function Orders() {
     
 
     const DealerShow = me?.permission.type_name === DEALER;
-    //   console.log("Dispatech", DealerShow)
-
-    // const DealerShow = me?.type.type_name === DEALER;
+    
     return (
         <>
             <Card className="mb-8 flex flex-col items-center justify-between md:flex-row">
