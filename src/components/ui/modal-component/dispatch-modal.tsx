@@ -486,15 +486,15 @@ const DispatchModal: React.FC<DispatchModalProps> = ({
   const { t } = useTranslation();
   const { handleSubmit, control } = useForm();
 
-  const user_id = dealerId;  
+  const user_id = dealerId;
   const { mutate: updateStockDataById } = useUpdateStockDataById(user_id);
   const { mutate: updateStockDataByDealer } = useUpdateStockDataByDealer(user_id);
 
   const { data: meData } = useMeQuery();
 
-  const ReceivedButton = meData?.type.type_name === DEALER;
+  const ReceivedButton = meData?.permission.type_name === DEALER || meData?.permission.type_name === DEALER;
 
- 
+  // const ReceivedButton = meData?.type.type_name === DEALER;
 
   const onSubmit = (rowData: any) => (data: any) => {
     const updatedData = {
@@ -578,6 +578,10 @@ const DispatchModal: React.FC<DispatchModalProps> = ({
         />
       ),
     },
+<<<<<<< HEAD
+=======
+
+>>>>>>> cb271e35c0918345f13eefbe2b46e1d40075902f
     {
       title: t('Update-Qty'),
       key: 'update_qty',

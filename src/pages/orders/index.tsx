@@ -55,6 +55,8 @@ export default function Orders() {
         }
     );
 
+    console.log("shopData",shopData)
+
     const shopId = shopData?.id!;
     const { orders, loading, paginatorInfo, error } = useOrdersQuery({
         language: locale,
@@ -62,13 +64,13 @@ export default function Orders() {
         page,
         tracking_number: searchTerm,
         customer_id: me?.id,
-        shop_id: me?.UsrBy.managed_shop?.id,
-        shop_slug: me?.UsrBy.managed_shop?.slug,
+        shop_id: me?.createdBy.managed_shop?.id,
+        shop_slug: me?.createdBy.managed_shop?.slug,
     });
     console.log('orders ** 57', orders)
     const { refetch } = useExportOrderQuery(
         {
-            ...(me?.UsrBy.managed_shop?.id && { shop_id: me?.UsrBy.managed_shop?.id }),
+            ...(me?.createdBy.managed_shop?.id && { shop_id: me?.createdBy.managed_shop?.id }),
         },
         { enabled: false }
     );
@@ -222,8 +224,10 @@ export default function Orders() {
 
     
 
-    const DealerShow = me?.type.type_name === DEALER;
+    const DealerShow = me?.permission.type_name === DEALER;
     //   console.log("Dispatech", DealerShow)
+
+    // const DealerShow = me?.type.type_name === DEALER;
     return (
         <>
             <Card className="mb-8 flex flex-col items-center justify-between md:flex-row">

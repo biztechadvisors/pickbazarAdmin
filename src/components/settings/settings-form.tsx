@@ -256,7 +256,7 @@ export default function SettingsForm({
 
   const { data } = useMeQuery();
 
-  const shop_id = data?.managed_shop?.id || data?.UsrBy?.managed_shop?.id;
+  const shop_id = data?.managed_shop?.id || data?.createdBy?.managed_shop?.id;
 
   console.log('shop_id ***261', shop_id);
 

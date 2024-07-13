@@ -61,7 +61,7 @@ const AverageRatings: React.FC<AverageRatingsProps> = ({
             totalReviews={totalReviews!}
             colorClassName="bg-teal-400"
           /> */}
-          {/* <RatingProgressBar
+          {/* <Rating
             ratingProgressItem={ratingCount.find(
               (rating) => Number(rating.rating) === 2
             )}

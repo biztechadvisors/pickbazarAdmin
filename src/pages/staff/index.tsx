@@ -23,6 +23,7 @@ import { useMeQuery, useUsersQuery } from '@/data/user';
 import { AllPermission } from '@/utils/AllPermission';
 import AdminLayout from '@/components/layouts/admin';
 import OwnerLayout from '@/components/layouts/owner';
+import { STAFF } from '@/utils/constants';
 
 export default function StaffsPage() {
   const router = useRouter();
@@ -93,7 +94,7 @@ export default function StaffsPage() {
   }
 
   const filteredUsers = users?.filter(
-    (user) => user.type?.type_name === 'Staff'
+    (user) => user.permission?.type_name === STAFF
   );
 
   console.log('filteredUsers', filteredUsers);

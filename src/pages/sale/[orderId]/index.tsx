@@ -53,7 +53,7 @@ export default function OrderDetailsPage() {
   const [, resetCheckout] = useAtom(clearCheckoutAtom);
   const [isDispatchModalOpen, setDispatchModalOpen] = useState(false);
 
-  
+
 
   const handleDispatchUpdate = (data: any) => {
     // Logic to update the dispatch product
@@ -140,7 +140,7 @@ export default function OrderDetailsPage() {
   const { data: meData } = useMeQuery();
 
   // console.log("data@@@@@", meData)
-  
+
 
   const dealerId = order?.customer_id
   // const userId = order?.customer_id;
@@ -211,10 +211,12 @@ export default function OrderDetailsPage() {
     },
   ];
 
-  
 
-const DispatchButton = meData?.type.type_name === Company;
-// console.log("Dispatech", DispatchButton)
+
+  const DispatchButton = meData?.permission.type_name === Company;
+  // console.log("Dispatech", DispatchButton)
+
+  // const DispatchButton = meData?.type.type_name === Company;
 
   return (
     <>
@@ -266,7 +268,7 @@ const DispatchButton = meData?.type.type_name === Company;
                 </div>
               </form>
             )}
-            {DispatchButton ? (
+          {DispatchButton ? (
             <Button onClick={() => setDispatchModalOpen(true)}>
               <span className="hidden sm:block">
                 {t('form:button-label-change-dispatch')}
@@ -285,7 +287,7 @@ const DispatchButton = meData?.type.type_name === Company;
               </span>
             </Button>
           )}
-            {/* {DispatchButton && (
+          {/* {DispatchButton && (
           <Button onClick={() => setDispatchModalOpen(true)}>
             <span className="hidden sm:block">
               {t('form:button-label-change-dispatch')}
@@ -295,7 +297,7 @@ const DispatchButton = meData?.type.type_name === Company;
             </span>
           </Button>
         )} */}
-         
+
         </div>
 
         <div className="my-5 flex items-center justify-center lg:my-10">

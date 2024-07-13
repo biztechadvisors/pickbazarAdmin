@@ -32,18 +32,15 @@ const AdminLayout: React.FC<{ children?: React.ReactNode }> = ({
   const { permissions } = getAuthCredentials();
   const { data, isLoading: loading, error } = useMeQuery();
   const [shopSlug, setShopSlug] = useAtom(shopSlugAtom);
-  const shopStatus = data?.managed_shop?.is_active
-    ? 'active'
-    : 'inactive' || data?.dealer?.id?.is_active
-    ? 'active'
-    : 'inactive';
+
+  const shopStatus = data?.managed_shop?.is_active ? 'active' : 'inactive' || data?.dealer?.id?.is_active ? 'active' : 'inactive';
   const isDisabled = shopStatus !== 'active';
   // useEffect(() => {
   //   if (data) {
   //     let newShopSlug = null;
 
-  //     if (permissions?.[0].includes(DEALER) && data.UsrBy?.managed_shop?.slug) {
-  //       newShopSlug = data.UsrBy.managed_shop.slug;
+  //     if (permissions?.[0].includes(DEALER) && data.createdBy?.managed_shop?.slug) {
+  //       newShopSlug = data.createdBy.managed_shop.slug;
   //     } else if (data.managed_shop) {
   //       newShopSlug = data.managed_shop.slug;
   //     }
@@ -59,8 +56,8 @@ const AdminLayout: React.FC<{ children?: React.ReactNode }> = ({
     if (typeof window !== 'undefined' && data) {
       let newShopSlug = null;
 
-      if (permissions?.[0].includes(DEALER) && data.UsrBy?.managed_shop?.slug) {
-        newShopSlug = data.UsrBy.managed_shop.slug;
+      if (permissions?.[0].includes(DEALER) && data.createdBy?.managed_shop?.slug) {
+        newShopSlug = data.createdBy.managed_shop.slug;
       } else if (data.managed_shop) {
         newShopSlug = data.managed_shop.slug;
       }
@@ -452,8 +449,8 @@ const AdminLayout: React.FC<{ children?: React.ReactNode }> = ({
     matchedLinks = permissions?.includes('super_admin')
       ? siteSettings.sidebarLinks.admin
       : siteSettings.sidebarLinks.admin.filter((link) =>
-          matched.some((newItem) => newItem.type === link.label)
-        );
+        matched.some((newItem) => newItem.type === link.label)
+      );
 
     matchedLinks = matchedLinks.filter(
       (link) =>

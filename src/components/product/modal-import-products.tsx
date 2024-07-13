@@ -4,7 +4,7 @@ import { useTranslation } from 'next-i18next';
 import ImportCsv from '@/components/ui/import-csv';
 import { useShopQuery } from '@/data/shop';
 import { useModelImportMutation } from '@/data/import';
-// import { ProgressBar } from 'react-bootstrap';
+import { ProgressBar } from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 export default function ModalImportProducts() {
@@ -38,7 +38,7 @@ export default function ModalImportProducts() {
         title={t('text-import-products')}
       />
       <div style={{ marginTop: '20px' }}>
-        <ProgressBar now={progress} label={`${progress}%`} variant={progress > 0 ? 'success' : 'info'} />
+        {/* <ProgressBar now={progress} label={`${progress}%`} variant={progress > 0 ? 'success' : 'info'} /> */}
       </div>
       {loading && <p>{t('Loading...')}</p>}
     </div>
