@@ -15,6 +15,10 @@ export const stockClient = {
     return HttpClient.get<any>(`${API_ENDPOINTS.STOCK}/${id}`);
   },
 
+  getByCustomer_id: (customer_id: number) => {
+    return HttpClient.get<any>(`${API_ENDPOINTS.DEALER_SEALS_STOCK}/${customer_id}`);
+  },
+
   get: ({ id, language }: { id: string; language: string }) => {
     return HttpClient.get<Order>(`${API_ENDPOINTS.STOCKBYID}/${id}`, {
       language,

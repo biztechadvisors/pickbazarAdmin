@@ -60,6 +60,7 @@ export const API_ENDPOINTS = {
   // Stocks API
   STOCKS: '/stocks',
   STOCK_DEALER_UPDATE: '/stocks/update/inventory',
+  DEALER_SEALS_STOCK: '/stocks/orders',
 
 
 };
