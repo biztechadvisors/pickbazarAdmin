@@ -21,7 +21,7 @@ import { useOrdersQuery } from '@/data/order';
 import { useMeQuery } from '@/data/user';
 import OrderList from '@/components/order/order-list';
 import { Company } from '@/utils/constants';
-import { GetStockSeals } from '@/data/stock';
+import { GetStockSeals, useGetStockSeals } from '@/data/stock';
 
 
 export default function Sales() {
@@ -54,8 +54,8 @@ export default function Sales() {
     page,
     tracking_number: searchTerm,
     customer_id: me?.id,
-    shop_id: me?.createdBy.managed_shop?.id,
-    shop_slug: me?.createdBy.managed_shop?.slug,
+    shop_id: me?.createdBy?.managed_shop?.id,
+    shop_slug: me?.createdBy?.managed_shop?.slug,
   });
 
   console.log("customer_id",me?.id)
@@ -66,7 +66,7 @@ export default function Sales() {
 
   const customer_id = me?.id
 
-  const { data: response } = GetStockSeals(customer_id);
+  const { data: response } = useGetStockSeals(customer_id);
 
   // console.log("stockData",stockData)
 
@@ -81,7 +81,7 @@ export default function Sales() {
 
   const { refetch } = useExportOrderQuery(
     {
-      ...(me?.createdBy.managed_shop?.id && { shop_id: me?.createdBy.managed_shop?.id }),
+      ...(me?.createdBy?.managed_shop?.id && { shop_id: me?.createdBy.managed_shop?.id }),
     },
     { enabled: false }
   );

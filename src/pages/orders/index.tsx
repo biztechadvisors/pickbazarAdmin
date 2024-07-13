@@ -64,13 +64,13 @@ export default function Orders() {
         page,
         tracking_number: searchTerm,
         customer_id: me?.id,
-        shop_id: me?.createdBy.managed_shop?.id,
-        shop_slug: me?.createdBy.managed_shop?.slug,
+        shop_id: me?.createdBy?.managed_shop?.id,
+        shop_slug: me?.createdBy?.managed_shop?.slug,
     });
     console.log('orders ** 57', orders)
     const { refetch } = useExportOrderQuery(
         {
-            ...(me?.createdBy.managed_shop?.id && { shop_id: me?.createdBy.managed_shop?.id }),
+            ...(me?.createdBy?.managed_shop?.id && { shop_id: me?.createdBy.managed_shop?.id }),
         },
         { enabled: false }
     );

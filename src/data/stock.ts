@@ -14,9 +14,9 @@ export const useGetStock = (id: any) => {
   );
 };
 
-export const GetStockSeals = (customer_id: any) => {
+export const useGetStockSeals = (customer_id: any) => {
   return useQuery<any, Error>(
-    [API_ENDPOINTS.DEALER_SEALS_STOCK],
+    [API_ENDPOINTS.DEALER_SEALS_STOCK, customer_id],
     async () => {
       const response = await stockClient.getByCustomer_id(customer_id);
       return response
