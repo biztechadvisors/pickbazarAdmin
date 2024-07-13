@@ -216,6 +216,8 @@ export default function OrderDetailsPage() {
   const DispatchButton = meData?.permission.type_name === Company;
   // console.log("Dispatech", DispatchButton)
 
+  // const DispatchButton = meData?.type.type_name === Company;
+
   return (
     <>
       <Card className="relative overflow-hidden">

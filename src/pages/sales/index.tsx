@@ -15,12 +15,14 @@ import { useShopQuery } from '@/data/shop';
 import { Menu, Transition } from '@headlessui/react';
 import classNames from 'classnames';
 import { DownloadIcon } from '@/components/icons/download-icon';
-import { useOrdersSalesQuery } from '@/data/stocks';
+import {  useOrdersSalesQuery } from '@/data/stocks';
 import StockList from '@/components/stock/StockList';
 import { useOrdersQuery } from '@/data/order';
 import { useMeQuery } from '@/data/user';
 import OrderList from '@/components/order/order-list';
 import { Company } from '@/utils/constants';
+import { GetStockSeals } from '@/data/stock';
+
 
 export default function Sales() {
   const router = useRouter();
@@ -44,6 +46,7 @@ export default function Sales() {
   }
 
   const { data: me } = useMeQuery();
+  console.log("me",me)
 
   const { orders, loading, paginatorInfo, error } = useOrdersQuery({
     language: locale,
@@ -54,6 +57,27 @@ export default function Sales() {
     shop_id: me?.createdBy.managed_shop?.id,
     shop_slug: me?.createdBy.managed_shop?.slug,
   });
+
+  console.log("customer_id",me?.id)
+
+  // const {  data: stockData } = GetStockSeals({   
+  //   customer_id: me?.id,   
+  // });
+
+  const customer_id = me?.id
+
+  const { data: response } = GetStockSeals(customer_id);
+
+  // console.log("stockData",stockData)
+
+  console.log("sales",response)
+
+ 
+  console.log("orders----------------------------",orders)
+
+ 
+
+  // http://localhost:5000/api/stocks/orders?customer_id=3
 
   const { refetch } = useExportOrderQuery(
     {
@@ -380,6 +404,8 @@ export default function Sales() {
   );
 
   const ShopShow = me?.permission.type_name === Company;
+
+  // const ShopShow = me?.type.type_name === Company ;
 
 
   return (

@@ -55,6 +55,8 @@ export default function Orders() {
         }
     );
 
+    console.log("shopData",shopData)
+
     const shopId = shopData?.id!;
     const { orders, loading, paginatorInfo, error } = useOrdersQuery({
         language: locale,
@@ -220,10 +222,12 @@ export default function Orders() {
 
 
 
-    //   console.log("meD", me?.type.type_name)
+    
 
     const DealerShow = me?.permission.type_name === DEALER;
     //   console.log("Dispatech", DealerShow)
+
+    // const DealerShow = me?.type.type_name === DEALER;
     return (
         <>
             <Card className="mb-8 flex flex-col items-center justify-between md:flex-row">
@@ -298,21 +302,7 @@ export default function Orders() {
                 />
             )}
 
-            {/* <StockList
-        orders={ordersData}
-        paginatorInfo={paginatorInfo}
-        onPagination={handlePagination}
-        onOrder={setOrder}
-        onSort={setColumn}
-      /> */}
-
-            {/* <OrderList
-                orders={customerOrderList}
-                paginatorInfo={paginatorInfo}
-                onPagination={handlePagination}
-                onOrder={setOrder}
-                onSort={setColumn}
-            /> */}
+         
         </>
     );
 }
