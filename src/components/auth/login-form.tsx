@@ -7,19 +7,19 @@ import Link from '@/components/ui/link';
 import Form from '@/components/ui/forms/form';
 import { Routes } from '@/config/routes';
 import { useLogin } from '@/data/user';
-import { withNotification } from './../../utils/notificationService';
 import type { LoginInput } from '@/types';
 import { useState } from 'react';
 import Alert from '@/components/ui/alert';
-import Router from 'next/router';
+import Router from 'next/router'; // Import Router from next/router
 import {
   allowedRoles,
   hasAccess,
   setAuthCredentials,
 } from '@/utils/auth-utils';
 import { useAtom } from 'jotai';
-import { newPermission } from '@/contexts/permission/storepermission';
-
+import {
+  newPermission,
+} from '@/contexts/permission/storepermission';
 const loginFormSchema = yup.object().shape({
   email: yup
     .string()
@@ -32,18 +32,13 @@ const LoginForm = () => {
   const { t } = useTranslation();
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const { mutate: login, isLoading, error } = useLogin();
-
-  // Wrap the login mutation function with the notification HOF
-  const loginWithNotification = withNotification(login);
-
   const [, setPermissionState] = useAtom(newPermission);
 
   function onSubmit({ email, password }: LoginInput) {
-    loginWithNotification(
+    login(
       { email, password },
       {
         onSuccess: (data) => {
-          console.log('exampleApiCallWithNotification **39', data);
           if (data?.token) {
             if (hasAccess(allowedRoles, data?.type_name)) {
               setPermissionState(data?.permissions);
@@ -52,7 +47,7 @@ const LoginForm = () => {
                 data?.permissions,
                 data?.type_name
               );
-              Router.push(Routes.dashboard);
+              Router.push(Routes.dashboard); // Navigate to dashboard
               return;
             }
             setErrorMessage('form:error-enough-permission');
@@ -61,7 +56,7 @@ const LoginForm = () => {
           }
         },
         onError: (error) => {
-          setErrorMessage(error.message);
+          setErrorMessage(error.message); // Handle error by displaying error message
         },
       }
     );

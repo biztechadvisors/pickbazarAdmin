@@ -14,11 +14,11 @@ export const useGetStock = (id: any) => {
   );
 };
 
-export const useGetStockSeals = (customer_id: any) => {
+export const useGetStockSeals = (customer_id: any, shop_id: string) => {
   return useQuery<any, Error>(
-    [API_ENDPOINTS.DEALER_SEALS_STOCK, customer_id],
+    [API_ENDPOINTS.DEALER_SEALS_STOCK, customer_id, shop_id],
     async () => {
-      const response = await stockClient.getByCustomer_id(customer_id);
+      const response = await stockClient.getByCustomer_id(customer_id, shop_id);
       return response
     }
   );
