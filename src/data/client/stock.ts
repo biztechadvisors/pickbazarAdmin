@@ -6,7 +6,7 @@ export const stockClient = {
   getById: (id: number) => {
     return HttpClient.get<any>(`${API_ENDPOINTS.STOCK}/inventory/${id}`);
   },
-  getByCustomer_id: (customer_id: number) => {   
+  getByCustomer_id: (customer_id: number) => {
     return HttpClient.get<any>(`${API_ENDPOINTS.DEALER_SEALS_STOCK}?customer_id=${customer_id}`);
   },
   updateQuantity: (data: any) => {

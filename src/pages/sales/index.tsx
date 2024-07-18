@@ -62,7 +62,7 @@ export default function Sales() {
   const customer_id = me?.id
 
   const { data: response } = useGetStockSeals(customer_id);
- 
+  // http://localhost:5000/api/stocks/orders?customer_id=3
 
   const { refetch } = useExportOrderQuery(
     {
