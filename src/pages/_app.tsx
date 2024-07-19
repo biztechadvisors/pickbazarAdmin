@@ -38,7 +38,6 @@ const AppSettings: React.FC<{ children?: React.ReactNode }> = (props) => {
 
   if (authToken) {
     const queryResult = useSettingsQuery({ language: locale! });
-    console.log('queryResult&&&&', queryResult);
     settings = queryResult.settings;
     loading = queryResult.loading;
     error = queryResult.error;

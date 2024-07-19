@@ -1,19 +1,41 @@
-// notificationService.js
-
 import io from 'socket.io-client';
+
+const getUserId = () => {
+    if (typeof window !== 'undefined' && window.localStorage) {
+        return localStorage.getItem('userId');
+    }
+    return null; // Return null if not found
+};
 
 // Initialize the socket connection
 const initSocketConnection = () => {
-    const userId = localStorage.getItem('userId'); // Retrieve user ID from local storage
+    const userId = getUserId(); // Retrieve user ID from local storage
 
+    if (!userId) {
+        console.error('User ID not found in local storage');
+        return null;
+    }
+    console.log('initSocketConnection ***', `${process.env.NEXT_PUBLIC_REST_API_ENDPOINT}/notifications`)
     const socket = io(`${process.env.NEXT_PUBLIC_REST_API_ENDPOINT}/notifications`, {
         extraHeaders: {
             'x-user-id': userId, // Use the authenticated user's ID
         },
     });
 
+    socket.on('connect', () => {
+        console.log('Connected to socket server');
+    });
+
     socket.on('notification', (message) => {
         console.log('Received notification:', message);
+    });
+
+    socket.on('disconnect', () => {
+        console.log('Disconnected from socket server');
+    });
+
+    socket.on('connect_error', (error) => {
+        console.error('Connection error:', error);
     });
 
     // Subscribe to notifications
@@ -31,10 +53,14 @@ const socket = initSocketConnection();
 const withNotification = (fn) => async (...args) => {
     try {
         const result = await fn(...args);
-        const userId = localStorage.getItem('userId');
+        const userId = getUserId();
         const message = 'Your custom notification message'; // Adjust the message as needed
-
-        socket.emit('notify', { userId, message });
+        console.log("socket ****58", socket)
+        if (socket) {
+            socket.emit('notify', { userId, message });
+        } else {
+            console.error('Socket connection not initialized');
+        }
 
         return result;
     } catch (error) {

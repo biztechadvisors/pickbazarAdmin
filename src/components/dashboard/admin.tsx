@@ -57,9 +57,6 @@ export default function Dashboard() {
     console.log('Loading orders...');
   }
 
-  console.log('Order Data:', orderData);
-  console.log('Paginator Info:', paginatorInfo);
-
   const {
     data: popularProductData,
     isLoading: popularProductLoading,

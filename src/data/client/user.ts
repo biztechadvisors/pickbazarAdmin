@@ -19,10 +19,19 @@ import { API_ENDPOINTS } from './api-endpoints';
 import { HttpClient } from './http-client';
 
 export const userClient = {
+
   me: (params: { username: any; sub: any }) => {
     return HttpClient.get<User>(
       `${API_ENDPOINTS.ME}?username=${params.username}&sub=${params.sub}`
-    );
+    ).then(response => {
+      if (response?.createdBy) {
+        localStorage.setItem('userId', response.createdBy.id);
+      }
+      return response;
+    }).catch(error => {
+      console.error('Error fetching user details:', error);
+      throw error;
+    });
   },
 
   login: async (variables: LoginInput) => {

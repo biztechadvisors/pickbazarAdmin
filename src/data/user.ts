@@ -75,8 +75,12 @@ export const useMeQuery = () => {
   );
 
   useEffect(() => {
-    const user = UserService.getUserDetails();
-    setUserDetails(user);
+    const fetchUserData = async () => {
+      const user = await UserService.getUserDetails();
+      setUserDetails(user);
+    };
+
+    fetchUserData();
   }, []);
 
   const { username, sub } = userDetails;

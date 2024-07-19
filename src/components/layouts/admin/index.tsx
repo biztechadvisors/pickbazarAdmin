@@ -35,22 +35,6 @@ const AdminLayout: React.FC<{ children?: React.ReactNode }> = ({
 
   const shopStatus = data?.managed_shop?.is_active ? 'active' : 'inactive' || data?.dealer?.id?.is_active ? 'active' : 'inactive';
   const isDisabled = shopStatus !== 'active';
-  // useEffect(() => {
-  //   if (data) {
-  //     let newShopSlug = null;
-
-  //     if (permissions?.[0].includes(DEALER) && data.createdBy?.managed_shop?.slug) {
-  //       newShopSlug = data.createdBy.managed_shop.slug;
-  //     } else if (data.managed_shop) {
-  //       newShopSlug = data.managed_shop.slug;
-  //     }
-
-  //     if (newShopSlug) {
-  //       setShopSlug(newShopSlug);
-  //       localStorage.setItem('shopSlug', newShopSlug);
-  //     }
-  //   }
-  // }, [data, permissions, setShopSlug]);
 
   useEffect(() => {
     if (typeof window !== 'undefined' && data) {

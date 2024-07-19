@@ -6,7 +6,7 @@ import * as yup from 'yup';
 import Link from '@/components/ui/link';
 import Form from '@/components/ui/forms/form';
 import { Routes } from '@/config/routes';
-import { useLogin } from '@/data/user';
+import { useLogin, useMeQuery } from '@/data/user';
 import { withNotification } from './../../utils/notificationService';
 import type { LoginInput } from '@/types';
 import { useState } from 'react';
@@ -31,19 +31,17 @@ const loginFormSchema = yup.object().shape({
 const LoginForm = () => {
   const { t } = useTranslation();
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
-  const { mutate: login, isLoading, error } = useLogin();
+  const { mutate: login, isLoading } = useLogin();
+  const [, setPermissionState] = useAtom(newPermission);
 
   // Wrap the login mutation function with the notification HOF
   const loginWithNotification = withNotification(login);
-
-  const [, setPermissionState] = useAtom(newPermission);
 
   function onSubmit({ email, password }: LoginInput) {
     loginWithNotification(
       { email, password },
       {
         onSuccess: (data) => {
-          console.log('exampleApiCallWithNotification **39', data);
           if (data?.token) {
             if (hasAccess(allowedRoles, data?.type_name)) {
               setPermissionState(data?.permissions);
