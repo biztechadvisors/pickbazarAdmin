@@ -139,13 +139,14 @@ export default function OrderDetailsPage() {
   const { orderId } = query;
   const { data: meData } = useMeQuery();
 
+
   const dealerId = order?.customer_id
-  // const userId = order?.customer_id;
 
   const { data, isLoading, isError } = useFetchStockOrderData({
     dealerId,
     orderId,
   });
+
 
   if (loading) return <Loader text={t('common:text-loading')} />;
   if (error) return <ErrorMessage message={error.message} />;

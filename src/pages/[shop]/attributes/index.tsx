@@ -44,7 +44,11 @@ export default function AttributePage() {
   const { data: shopData, isLoading: fetchingShop } = useShopQuery({
     slug: shop as string,
   });
+  console.log('shopData',shopData)
   const shopId = shopData?.id!;
+  const shopSlug = shopData?.slug
+
+ 
 
   // function handleImportModal() {
   //   openModal('EXPORT_IMPORT_ATTRIBUTE', shopId);
@@ -53,6 +57,7 @@ export default function AttributePage() {
   const { attributes, loading, error } = useAttributesQuery(
     {
       shop_id: shopId,
+      slug: shopSlug,
       orderBy,
       sortedBy,
       language: locale,

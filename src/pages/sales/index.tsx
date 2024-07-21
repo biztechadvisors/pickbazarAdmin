@@ -15,12 +15,14 @@ import { useShopQuery } from '@/data/shop';
 import { Menu, Transition } from '@headlessui/react';
 import classNames from 'classnames';
 import { DownloadIcon } from '@/components/icons/download-icon';
-import { useOrdersSalesQuery } from '@/data/stocks';
+import {  useOrdersSalesQuery } from '@/data/stocks';
 import StockList from '@/components/stock/StockList';
 import { useOrdersQuery } from '@/data/order';
 import { useMeQuery } from '@/data/user';
 import OrderList from '@/components/order/order-list';
 import { Company } from '@/utils/constants';
+import { GetStockSeals, useGetStockSeals } from '@/data/stock';
+
 
 export default function Sales() {
   const router = useRouter();
@@ -43,7 +45,8 @@ export default function Sales() {
     setPage(current);
   }
 
-  const { data: me } = useMeQuery();
+  const { data: me } = useMeQuery(); 
+
 
   const { orders, loading, paginatorInfo, error } = useOrdersQuery({
     language: locale,
@@ -51,13 +54,24 @@ export default function Sales() {
     page,
     tracking_number: searchTerm,
     customer_id: me?.id,
-    shop_id: me?.createdBy.managed_shop?.id,
-    shop_slug: me?.createdBy.managed_shop?.slug,
+    shop_id: me?.managed_shop?.id,
+    shop_slug: me?.managed_shop?.slug,
   });
+
+ 
+
+  const customer_id = me?.id
+  const shop_id =  me?.createdBy?.shop_id
+ 
+
+  console.log("shop_id",me?.createdBy?.shop_id)
+
+  const { data: response } = useGetStockSeals(customer_id, shop_id);
+  // http://localhost:5000/api/stocks/orders?customer_id=3
 
   const { refetch } = useExportOrderQuery(
     {
-      ...(me?.createdBy.managed_shop?.id && { shop_id: me?.createdBy.managed_shop?.id }),
+      ...(me?.createdBy?.managed_shop?.id && { shop_id: me?.createdBy.managed_shop?.id }),
     },
     { enabled: false }
   );
@@ -67,12 +81,21 @@ export default function Sales() {
   if (loading) return <Loader text={t('common:text-loading')} />;
   if (error) return <ErrorMessage message={error.message} />;
 
+<<<<<<< HEAD
+=======
+  
+
+>>>>>>> 762015edf571d30cc05980f38afdddd95b00ccef
   async function handleExportOrder() {
     try {
       const ordersData = orders.filter(
         (order) => order?.customer_id === order?.dealer?.id
       );
+<<<<<<< HEAD
 
+=======
+    
+>>>>>>> 762015edf571d30cc05980f38afdddd95b00ccef
       if (!ordersData.length) {
         console.error('No matching orders found for export.');
         return; // Handle no data scenario (e.g., display message to user)
@@ -140,6 +163,12 @@ export default function Sales() {
       // Remove non-digits from tracking number
       const trackingNumber = order.tracking_number ? order.tracking_number : '';
 
+<<<<<<< HEAD
+=======
+
+  
+
+>>>>>>> 762015edf571d30cc05980f38afdddd95b00ccef
       return [
         order.payment_intent?.order_id || null, // Handle potential missing values
         order.customer?.email || null,
@@ -186,15 +215,17 @@ export default function Sales() {
   }
 
 
-  const DealerSalesList = orders.filter(
-    (order) => order?.customer_id !== order?.dealer?.id
-  );
+  const DealerSalesList = response?.data
+
+ 
 
   var ordersData = orders.filter(
     (order) => order?.customer_id == order?.dealer?.id
   );
 
   const ShopShow = me?.permission.type_name === Company;
+
+ 
 
 
   return (
@@ -269,13 +300,7 @@ export default function Sales() {
         />
       )}
 
-      {/* <StockList
-        orders={ordersData}
-        paginatorInfo={paginatorInfo}
-        onPagination={handlePagination}
-        onOrder={setOrder}
-        onSort={setColumn}
-      /> */}
+   
     </>
   );
 }

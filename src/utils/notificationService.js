@@ -1,6 +1,6 @@
 // ${process.env.NEXT_PUBLIC_REST_API_ENDPOINT}/notifications
 
-import io from 'socket.io-client';
+// import io from 'socket.io-client';
 
 // Helper function to get user ID from local storage
 const getUserId = () => {
@@ -47,7 +47,7 @@ const initSocketConnection = () => {
     return socket;
 };
 
-const socket = initSocketConnection();
+// const socket = initSocketConnection();
 
 // Higher-Order Function to send notifications
 const withNotification = (fn) => async (...args) => {
@@ -62,12 +62,6 @@ const withNotification = (fn) => async (...args) => {
             console.error('Socket connection not initialized');
         }
 
-        return result;
-    } catch (error) {
-        console.error('Error during function execution:', error);
-        throw error;
-    }
-};
 
-export { withNotification, socket };
+        export { withNotification, socket };
 

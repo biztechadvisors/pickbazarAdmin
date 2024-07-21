@@ -1627,6 +1627,10 @@ export interface OrderQueryOptions extends QueryOptions {
   search: any
 }
 
+export interface SalesQueryOptions extends QueryOptions { 
+  customer_id: number; 
+}
+
 export interface CouponQueryOptions extends QueryOptions {
   code: string;
 }

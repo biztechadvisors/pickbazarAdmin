@@ -6,16 +6,22 @@ import { orderClient } from './client/order';
 import { mapPaginatorData } from '@/utils/data-mappers';
 import { toast } from 'react-toastify';
 
-export const useGetStock = (id: any) => {
-  return useQuery<any, Error>([API_ENDPOINTS.STOCK, id], async () => {
-    try {
-      const response = await stockClient.getById(id);
-      return response;
-    } catch (error) {
-      throw new Error(error.message);
-    }
-  });
-};
+// export const useGetStock = (id: any) => {
+//   return useQuery<any, Error>([API_ENDPOINTS.STOCK, id], async () => {
+//     try {
+//       const response = await stockClient.getById(id);
+//       return response;
+      
+//     } catch (error) {
+//       throw new Error(error.message);
+//     }
+    
+//   });
+// };
+
+
+
+
 
 export const useOrdersSalesQuery = (
   params: Partial<OrderQueryOptions>,
@@ -131,6 +137,7 @@ export const useFetchStockOrderData = ({ dealerId, orderId }: StockIdS) => {
 
 export const useUpdateStockDataById = (user_id: any) => {
   const queryClient = useQueryClient();
+  console.log("queryClient",queryClient)
 
   return useMutation(
     (updatedData: any) => stockClient.updateStockDataById(user_id, updatedData),
@@ -145,3 +152,21 @@ export const useUpdateStockDataById = (user_id: any) => {
     }
   );
 };
+
+export const useUpdateStockDataByDealer = (user_id: any) => {
+  const queryClient = useQueryClient();
+
+  return useMutation(
+    (updatedData: any) => stockClient.updateStockDataByDealer(user_id, updatedData),
+    {
+      onSuccess: () => {
+        toast.success('Stock data updated successfully');
+        queryClient.invalidateQueries([API_ENDPOINTS.STOCK_DEALER_UPDATE]);
+      },
+      onError: () => {
+        toast.error('Failed to update stock data');
+      },
+    }
+  );
+};
+

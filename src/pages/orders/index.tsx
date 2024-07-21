@@ -42,7 +42,6 @@ export default function Orders() {
         setPage(current);
     }
 
-    const { data: me } = useMeQuery();
 
     const { data: shopData, isLoading: fetchingShop } = useShopQuery(
         {
@@ -53,6 +52,8 @@ export default function Orders() {
         }
     );
 
+ 
+
     const shopId = shopData?.id!;
     const { orders, loading, paginatorInfo, error } = useOrdersQuery({
         language: locale,
@@ -60,13 +61,13 @@ export default function Orders() {
         page,
         tracking_number: searchTerm,
         customer_id: me?.id,
-        shop_id: me?.createdBy.managed_shop?.id,
-        shop_slug: me?.createdBy.managed_shop?.slug,
+        shop_id: me?.createdBy?.managed_shop?.id,
+        shop_slug: me?.createdBy?.managed_shop?.slug,
     });
 
     const { refetch } = useExportOrderQuery(
         {
-            ...(me?.createdBy.managed_shop?.id && { shop_id: me?.createdBy.managed_shop?.id }),
+            ...(me?.createdBy?.managed_shop?.id && { shop_id: me?.createdBy.managed_shop?.id }),
         },
         { enabled: false }
     );
@@ -76,7 +77,7 @@ export default function Orders() {
             const ordersData = orders.filter(
                 (order) => order?.customer_id !== order?.dealer?.id
             );
-
+          
             if (!ordersData.length) {
                 console.error('No matching orders found for export.');
                 return; // Handle no data scenario (e.g., display message to user)
@@ -144,6 +145,8 @@ export default function Orders() {
             // Remove non-digits from tracking number
             const trackingNumber = order.tracking_number ? order.tracking_number : '';
 
+
+
             return [
                 order.payment_intent?.order_id || null, // Handle potential missing values
                 order.customer?.email || null,
@@ -194,16 +197,7 @@ export default function Orders() {
     if (loading) return <Loader text={t('common:text-loading')} />;
     if (error) return <ErrorMessage message={error.message} />;
 
-    // async function handleExportOrder() {
-    //     const { data } = await refetch();
-
-    //     if (data) {
-    //         const a = document.createElement('a');
-    //         a.href = data;
-    //         a.setAttribute('download', 'export-order');
-    //         a.click();
-    //     }
-    // }
+    
 
     const customerOrderList = orders.filter(
         (order) => order?.customer_id !== order?.dealer?.id
@@ -213,8 +207,12 @@ export default function Orders() {
         (order) => order?.customer_id == order?.dealer?.id
     );
 
-    const DealerShow = me?.permission.type_name === DEALER;
 
+
+    
+
+    const DealerShow = me?.permission.type_name === DEALER;
+    
     return (
         <>
             <Card className="mb-8 flex flex-col items-center justify-between md:flex-row">
@@ -289,21 +287,7 @@ export default function Orders() {
                 />
             )}
 
-            {/* <StockList
-        orders={ordersData}
-        paginatorInfo={paginatorInfo}
-        onPagination={handlePagination}
-        onOrder={setOrder}
-        onSort={setColumn}
-      /> */}
-
-            {/* <OrderList
-                orders={customerOrderList}
-                paginatorInfo={paginatorInfo}
-                onPagination={handlePagination}
-                onOrder={setOrder}
-                onSort={setColumn}
-            /> */}
+         
         </>
     );
 }

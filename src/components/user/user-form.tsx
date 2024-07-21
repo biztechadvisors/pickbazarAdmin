@@ -80,6 +80,11 @@ const CustomerCreateForm = () => {
       id: permission.id,
     })) ?? [];
 
+<<<<<<< HEAD
+=======
+
+
+>>>>>>> 762015edf571d30cc05980f38afdddd95b00ccef
   if (permissions[0] === DEALER) {
     permissionOptions.push(
       { value: 'customer', label: 'customer', id: 'customer_id' },
@@ -185,7 +190,7 @@ const CustomerCreateForm = () => {
             control={control}
             render={({ field }) => (
               <>
-                <Label className='mt-4'>{t('form:input-label-type')}</Label>
+                <Label className="mt-4">{t('form:input-label-type')}</Label>
                 <Select
                   {...field}
                   getOptionLabel={(option: { label: string }) => option.label}
@@ -198,7 +203,7 @@ const CustomerCreateForm = () => {
               </>
             )}
           />
-          {permissions[0] === OWNER ? (
+          {/* {permissions[0] === OWNER ? (
             <Input
               label={t('form:input-label-dealers')}
               {...register('numberOfDealers')}
@@ -207,7 +212,7 @@ const CustomerCreateForm = () => {
               className="mb-4"
               error={t(errors.numberOfDealers?.message!)}
             />
-          ) : null}
+          ) : null} */}
         </Card>
       </div>
 
