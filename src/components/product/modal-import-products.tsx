@@ -22,7 +22,6 @@ export default function ModalImportProducts() {
 
   const handleDrop = async (acceptedFiles) => {
     if (acceptedFiles.length) {
-      console.log("File and shopSlug: ", acceptedFiles[0], shopSlug);
       importProducts({
         file: acceptedFiles[0],
         shopSlug,

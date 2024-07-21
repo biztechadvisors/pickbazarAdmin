@@ -17,6 +17,7 @@ import {
 } from '@/utils/auth-utils';
 import { Permission } from '@/types';
 import { useRegisterMutation } from '@/data/user';
+import { withNotification } from '@/utils/notificationService';
 
 type FormValues = {
   name: string;
@@ -24,8 +25,9 @@ type FormValues = {
   password: string;
   permission: Permission;
   contact: string;
-  createdBy: string
+  createdBy: string;
 };
+
 const registrationFormSchema = yup.object().shape({
   name: yup.string().required('form:error-name-required'),
   email: yup
@@ -35,9 +37,13 @@ const registrationFormSchema = yup.object().shape({
   password: yup.string().required('form:error-password-required'),
   permission: yup.string().default('Company').oneOf(['Company']),
 });
+
 const RegistrationForm = () => {
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const { mutate: registerUser, isLoading: loading } = useRegisterMutation();
+
+  // Wrap the registerUser mutation function with the notification HOF
+  const registerUserWithNotification = withNotification(registerUser);
 
   const {
     register,
@@ -54,17 +60,15 @@ const RegistrationForm = () => {
   const { t } = useTranslation();
 
   async function onSubmit({ name, email, password, permission, contact, createdBy }: FormValues) {
-
-    registerUser(
+    registerUserWithNotification(
       {
         name,
         email,
         password,
         permission,
         contact: '',
-        createdBy: ''
+        createdBy: '',
       },
-
       {
         onSuccess: (data) => {
           if (data?.token) {
@@ -93,7 +97,6 @@ const RegistrationForm = () => {
   return (
     <>
       <form onSubmit={handleSubmit(onSubmit)} noValidate>
-
         <Input
           label={t('form:input-label-name')}
           {...register('name')}

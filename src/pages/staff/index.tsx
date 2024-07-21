@@ -97,8 +97,6 @@ export default function StaffsPage() {
     (user) => user.permission?.type_name === STAFF
   );
 
-  console.log('filteredUsers', filteredUsers);
-
   return (
     <>
       <Card className="mb-8 flex flex-row items-center justify-between">

@@ -61,7 +61,6 @@ const CustomApp = ({ Component, pageProps }: AppPropsWithLayout) => {
 
   const { locale } = useRouter();
   const dir = Config.getDirection(locale);
-  console.log('Server-side rendering:', process.browser ? 'false' : 'true');
 
   return (
     <div dir={dir}>

@@ -1,5 +1,8 @@
+// ${process.env.NEXT_PUBLIC_REST_API_ENDPOINT}/notifications
+
 import io from 'socket.io-client';
 
+// Helper function to get user ID from local storage
 const getUserId = () => {
     if (typeof window !== 'undefined' && window.localStorage) {
         return localStorage.getItem('userId');
@@ -15,8 +18,8 @@ const initSocketConnection = () => {
         console.error('User ID not found in local storage');
         return null;
     }
-    console.log('initSocketConnection ***', `${process.env.NEXT_PUBLIC_REST_API_ENDPOINT}/notifications`)
-    const socket = io(`${process.env.NEXT_PUBLIC_REST_API_ENDPOINT}/notifications`, {
+
+    const socket = io(`http://localhost:5050/notifications`, {
         extraHeaders: {
             'x-user-id': userId, // Use the authenticated user's ID
         },
@@ -41,9 +44,6 @@ const initSocketConnection = () => {
     // Subscribe to notifications
     socket.emit('subscribe', { userId });
 
-    // Unsubscribe from notifications (if needed)
-    // socket.emit('unsubscribe', { userId });
-
     return socket;
 };
 
@@ -55,8 +55,8 @@ const withNotification = (fn) => async (...args) => {
         const result = await fn(...args);
         const userId = getUserId();
         const message = 'Your custom notification message'; // Adjust the message as needed
-        console.log("socket ****58", socket)
         if (socket) {
+            console.log('Emitting notify event with userId and message:', userId, message);
             socket.emit('notify', { userId, message });
         } else {
             console.error('Socket connection not initialized');
@@ -70,3 +70,4 @@ const withNotification = (fn) => async (...args) => {
 };
 
 export { withNotification, socket };
+

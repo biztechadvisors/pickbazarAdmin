@@ -258,8 +258,6 @@ export default function SettingsForm({
 
   const shop_id = data?.managed_shop?.id || data?.createdBy?.managed_shop?.id;
 
-  console.log('shop_id ***261', shop_id);
-
   const { mutate: updateSettingsMutation } = useUpdateSettingsMutation();
   const { mutate: createSettingsMutation, isLoading: loading } = useCreateSettingsMutation();
 

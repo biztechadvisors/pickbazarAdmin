@@ -80,8 +80,6 @@ const CustomerCreateForm = () => {
       id: permission.id,
     })) ?? [];
 
-  console.log("RadhikaVarfa", permissionOptions);
-
   if (permissions[0] === DEALER) {
     permissionOptions.push(
       { value: 'customer', label: 'customer', id: 'customer_id' },

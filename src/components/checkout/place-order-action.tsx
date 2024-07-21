@@ -131,7 +131,7 @@ export const PlaceOrderAction: React.FC<{
       shipping_address: {
         ...(shipping_address?.address && shipping_address.address),
       },
-      saleBy: selectedAddress?.address?? null,
+      saleBy: selectedAddress?.address ?? null,
     };
 
     createOrder(input);
@@ -144,19 +144,17 @@ export const PlaceOrderAction: React.FC<{
   const formatRequiredFields = isDigitalCheckout
     ? [customer_contact, payment_gateway, available_items]
     : [
-        customer_contact,
-        payment_gateway,
-        billing_address,
-        shipping_address,
-        delivery_time,
-        available_items,
-      ];
+      customer_contact,
+      payment_gateway,
+      billing_address,
+      shipping_address,
+      delivery_time,
+      available_items,
+    ];
 
   const isAllRequiredFieldSelected = formatRequiredFields.every(
     (item) => !isEmpty(item)
   );
-
-  console.log('meData++++++checking-dealer', meData);
 
   return (
     <>

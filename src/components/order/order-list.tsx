@@ -44,7 +44,6 @@ const OrderList = ({
 }: IProps) => {
   // const { data, paginatorInfo } = orders! ?? {};
 
-  console.log("orders*** 47", orders)
   const router = useRouter();
   const { t } = useTranslation();
   const rowExpandable = (record: any) => record.children?.length;

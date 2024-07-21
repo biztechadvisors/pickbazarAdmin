@@ -41,10 +41,8 @@ export default function Orders() {
     function handlePagination(current: any) {
         setPage(current);
     }
-    // console.log("query**42", shop)
-    const { data: me } = useMeQuery();
 
-    console.log("me", me)
+    const { data: me } = useMeQuery();
 
     const { data: shopData, isLoading: fetchingShop } = useShopQuery(
         {
@@ -65,7 +63,7 @@ export default function Orders() {
         shop_id: me?.createdBy.managed_shop?.id,
         shop_slug: me?.createdBy.managed_shop?.slug,
     });
-    console.log('orders ** 57', orders)
+
     const { refetch } = useExportOrderQuery(
         {
             ...(me?.createdBy.managed_shop?.id && { shop_id: me?.createdBy.managed_shop?.id }),
@@ -78,7 +76,7 @@ export default function Orders() {
             const ordersData = orders.filter(
                 (order) => order?.customer_id !== order?.dealer?.id
             );
-            console.log("order+++", ordersData)
+
             if (!ordersData.length) {
                 console.error('No matching orders found for export.');
                 return; // Handle no data scenario (e.g., display message to user)
@@ -145,9 +143,6 @@ export default function Orders() {
 
             // Remove non-digits from tracking number
             const trackingNumber = order.tracking_number ? order.tracking_number : '';
-
-
-            console.log("shipping", trackingNumber, contactNumber, escapedShippingAddress, escapedBillingAddress)
 
             return [
                 order.payment_intent?.order_id || null, // Handle potential missing values
@@ -218,12 +213,8 @@ export default function Orders() {
         (order) => order?.customer_id == order?.dealer?.id
     );
 
-
-
-    //   console.log("meD", me?.type.type_name)
-
     const DealerShow = me?.permission.type_name === DEALER;
-    //   console.log("Dispatech", DealerShow)
+
     return (
         <>
             <Card className="mb-8 flex flex-col items-center justify-between md:flex-row">

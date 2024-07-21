@@ -62,8 +62,6 @@ export default function ProductsPage() {
         shop_id,
     });
 
-    console.log("products===",products)
-
     const permissionTypes = AllPermission();
 
     const canWrite = permissionTypes.includes('sidebar-nav-item-create-order');

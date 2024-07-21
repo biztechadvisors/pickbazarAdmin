@@ -7,7 +7,6 @@ import Link from '@/components/ui/link';
 import Form from '@/components/ui/forms/form';
 import { Routes } from '@/config/routes';
 import { useLogin, useMeQuery } from '@/data/user';
-import { withNotification } from './../../utils/notificationService';
 import type { LoginInput } from '@/types';
 import { useState } from 'react';
 import Alert from '@/components/ui/alert';
@@ -34,11 +33,8 @@ const LoginForm = () => {
   const { mutate: login, isLoading } = useLogin();
   const [, setPermissionState] = useAtom(newPermission);
 
-  // Wrap the login mutation function with the notification HOF
-  const loginWithNotification = withNotification(login);
-
   function onSubmit({ email, password }: LoginInput) {
-    loginWithNotification(
+    login(
       { email, password },
       {
         onSuccess: (data) => {

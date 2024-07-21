@@ -139,9 +139,6 @@ export default function OrderDetailsPage() {
   const { orderId } = query;
   const { data: meData } = useMeQuery();
 
-  // console.log("data@@@@@", meData)
-
-
   const dealerId = order?.customer_id
   // const userId = order?.customer_id;
 
@@ -149,7 +146,6 @@ export default function OrderDetailsPage() {
     dealerId,
     orderId,
   });
-  // console.log("data",data)
 
   if (loading) return <Loader text={t('common:text-loading')} />;
   if (error) return <ErrorMessage message={error.message} />;
@@ -214,7 +210,6 @@ export default function OrderDetailsPage() {
 
 
   const DispatchButton = meData?.permission.type_name === Company;
-  // console.log("Dispatech", DispatchButton)
 
   return (
     <>
