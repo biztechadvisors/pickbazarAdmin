@@ -56,6 +56,8 @@ import CustForm from '../user/custForm';
 import CreateCustomerPage from '@/pages/users/create';
 import CreatePermission from '@/pages/permission/create';
 import CreatePerm from '../createPerm';
+import { useAtom } from 'jotai';
+import { selectedOption } from '@/utils/atoms';
 
 export const chatbotAutoSuggestion = ({ name }: { name: string }) => {
   return [
@@ -210,6 +212,7 @@ const ShopForm = ({ initialValues }: { initialValues?: any }) => {
   const { mutate: createShop, isLoading: creating } = useCreateShopMutation();
   const { mutate: updateShop, isLoading: updating } = useUpdateShopMutation();
   const [modalIsOpen, setIsOpen] = useState(false);
+  const [permissionSelectedOption] = useAtom(selectedOption);
 
   function openModal() {
     setIsOpen(true);
@@ -274,8 +277,6 @@ const ShopForm = ({ initialValues }: { initialValues?: any }) => {
     data: permissionData,
   } = usePermissionData(data?.id);
 
-  console.log('permissionData+++++', permissionData);
-
   const filterdEcomm = permissionData?.filter(
     (e: any) =>
       (e.type_name == 'Company' && e.permission_name === 'E-commerce') ||
@@ -285,7 +286,10 @@ const ShopForm = ({ initialValues }: { initialValues?: any }) => {
   const option = filterdEcomm?.map((e: any) => ({
     name: e.permission_name,
     email: e.type_name,
+    e,
   }));
+
+  const permissionProps = permissionSelectedOption?.e;
 
   const handleGenerateDescription = useCallback(() => {
     openModal('GENERATE_DESCRIPTION', {
@@ -372,6 +376,7 @@ const ShopForm = ({ initialValues }: { initialValues?: any }) => {
               <Label>{t('form:input-label-select-company')}</Label>
               <SelectInput
                 name="companyType"
+                placeholder="Choose company type"
                 control={control}
                 getOptionLabel={(option: any) =>
                   `${option.name} - ${option.email}`
@@ -396,7 +401,7 @@ const ShopForm = ({ initialValues }: { initialValues?: any }) => {
               </Button>
 
               <Modal open={modalIsOpen} onClose={closeModal}>
-                <CreatePerm />
+                <CreatePerm PermissionDatas={permissionProps} />
               </Modal>
             </div>
           </Card>

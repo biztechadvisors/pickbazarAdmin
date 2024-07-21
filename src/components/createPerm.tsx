@@ -15,7 +15,7 @@ import { useAtom } from 'jotai';
 import OwnerLayout from '@/components/layouts/owner';
 import { ADMIN, DEALER, OWNER, STAFF, Company } from '@/utils/constants';
 
-const CreatePerm = () => {
+const CreatePerm = ({ PermissionDatas }) => {
   const router = useRouter();
   const { t } = useTranslation();
   const [typeName, setTypeName] = useState(PermissionJson.type_name);
@@ -42,6 +42,7 @@ const CreatePerm = () => {
   useEffect(() => {
     if (singlePermissionData) {
       setTypeName([singlePermissionData.type_name]);
+      setSelectedType(singlePermissionData.type_name); // Updated line
       setPermissionName(singlePermissionData.permissionName);
       const formattedPermissions = singlePermissionData.permission.map(
         (perm) => ({
@@ -52,8 +53,13 @@ const CreatePerm = () => {
         })
       );
       setSelectedPermissions(formattedPermissions);
+    } else if (PermissionDatas) {
+      setTypeName([PermissionDatas.type_name]);
+      setSelectedType(PermissionDatas.type_name); // Updated line
+      setPermissionName(PermissionDatas.permission_name);
+      setSelectedPermissions(PermissionDatas.permissions);
     }
-  }, [singlePermissionData]);
+  }, [singlePermissionData, PermissionDatas]);
 
   const handleChange = (e) => {
     setSelectedType(e.target.value);
@@ -117,23 +123,18 @@ const CreatePerm = () => {
       permissionName: permissionName,
       permissions: selectedPermissions,
     };
-    const dataToSend2 = {
-      type_name: typeToSend,
-      user: id,
-      permission_name: permissionName,
-      permissions: selectedPermissions,
-    };
 
     try {
       if (router.query.id) {
         const permissionId = router.query.id;
         await mutateUpdate({ permissionId, dataToSend });
       } else {
-        await mutatePost(dataToSend2);
+        await mutatePost(dataToSend);
       }
+      toast.success('Permission saved successfully');
     } catch (error) {
       console.error('Error saving/updating permission:', error);
-      toast.error('Error');
+      toast.error('Error saving/updating permission');
     }
   };
 
@@ -197,52 +198,63 @@ const CreatePerm = () => {
   return (
     <div style={{ backgroundColor: 'white' }} className="modal">
       <div className="modal-content">
-      <Card className="mb-8 flex flex-col items-center xl:flex-row">
-      <div className="mb-4 md:mb-0 md:w-1/4">
-        <h1 className="font-semibold text-heading">
-          {t('Permission Management')}
-        </h1>
-      </div>
+        <Card className="mb-8 flex flex-col items-center xl:flex-row">
+          <div className="mb-4 md:mb-0 md:w-1/4">
+            <h1 className="font-semibold text-heading">
+              {t('Permission Management')}
+            </h1>
+          </div>
 
-      <div className="mx-4 md:w-1/4">
-        <label htmlFor="typename" className="block text-sm font-medium text-gray-700">
-          {t('Permission Type')}
-        </label>
-        <select
-          id="typename"
-          name="typename"
-          className={`mt-1 block w-full rounded-md border bg-gray-100 p-2 ${typeError && 'border-red-500'}`}
-          onChange={handleChange}
-        >
-          {Object.values(typeName).map((type, index) => (
-            <option key={index} value={type}>
-              {type}
-            </option>
-          ))}
-        </select>
-        {typeError && (
-          <p className="mt-1 text-sm text-red-500">{typeError}</p>
-        )}
-      </div>
+          <div className="mx-4 md:w-1/4">
+            <label
+              htmlFor="typename"
+              className="block text-sm font-medium text-gray-700"
+            >
+              {t('Permission Type')}
+            </label>
+            <select
+              id="typename"
+              name="typename"
+              className={`mt-1 block w-full rounded-md border bg-gray-100 p-2 ${
+                typeError && 'border-red-500'
+              }`}
+              onChange={handleChange}
+              value={selectedType}
+            >
+              {Object.values(typeName).map((type, index) => (
+                <option key={index} value={type}>
+                  {type}
+                </option>
+              ))}
+            </select>
+            {typeError && (
+              <p className="mt-1 text-sm text-red-500">{typeError}</p>
+            )}
+          </div>
 
-      <div className="md:w-1/4">
-        <label htmlFor="permission" className="block text-sm font-medium text-gray-700">
-          {t('Permissions Name')}
-        </label>
-        <input
-          type="text"
-          id="permission"
-          name="permission"
-          className={`mt-1 block w-full rounded-md border bg-gray-100 p-2 ${permissionError && 'border-red-500'}`}
-          placeholder={t('Enter permissions')}
-          value={permissionName}
-          onChange={handlePermissionNameChange}
-        />
-        {permissionError && (
-          <p className="mt-1 text-sm text-red-500">{permissionError}</p>
-        )}
-      </div>
-    </Card>
+          <div className="md:w-1/4">
+            <label
+              htmlFor="permission"
+              className="block text-sm font-medium text-gray-700"
+            >
+              {t('Permissions Name')}
+            </label>
+            <input
+              type="text"
+              id="permission"
+              name="permission"
+              className={`mt-1 block w-full rounded-md border bg-gray-100 p-2 ${
+                permissionError && 'border-red-500'
+              }`}
+              placeholder={t('Enter permissions')}
+              value={permissionName}
+              onChange={handlePermissionNameChange}
+            />
+            {permissionError && (
+              <p className="mt-1 text-sm text-red-500">{permissionError}</p>
+            )}
+          </div>
+        </Card>
 
         <div className="order-2 col-span-12 sm:col-span-6 xl:order-1 xl:col-span-4 3xl:col-span-3">
           <div className="flex flex-col items-center rounded bg-white px-6 py-8">
