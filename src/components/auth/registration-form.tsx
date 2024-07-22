@@ -17,7 +17,6 @@ import {
 } from '@/utils/auth-utils';
 import { Permission } from '@/types';
 import { useRegisterMutation } from '@/data/user';
-import { withNotification } from '@/utils/notificationService';
 
 type FormValues = {
   name: string;
@@ -42,9 +41,6 @@ const RegistrationForm = () => {
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const { mutate: registerUser, isLoading: loading } = useRegisterMutation();
 
-  // Wrap the registerUser mutation function with the notification HOF
-  const registerUserWithNotification = withNotification(registerUser);
-
   const {
     register,
     handleSubmit,
@@ -60,7 +56,7 @@ const RegistrationForm = () => {
   const { t } = useTranslation();
 
   async function onSubmit({ name, email, password, permission, contact, createdBy }: FormValues) {
-    registerUserWithNotification(
+    registerUser(
       {
         name,
         email,

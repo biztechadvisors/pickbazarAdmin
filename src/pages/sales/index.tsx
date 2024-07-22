@@ -81,21 +81,14 @@ export default function Sales() {
   if (loading) return <Loader text={t('common:text-loading')} />;
   if (error) return <ErrorMessage message={error.message} />;
 
-<<<<<<< HEAD
-=======
   
 
->>>>>>> 762015edf571d30cc05980f38afdddd95b00ccef
   async function handleExportOrder() {
     try {
       const ordersData = orders.filter(
         (order) => order?.customer_id === order?.dealer?.id
       );
-<<<<<<< HEAD
-
-=======
     
->>>>>>> 762015edf571d30cc05980f38afdddd95b00ccef
       if (!ordersData.length) {
         console.error('No matching orders found for export.');
         return; // Handle no data scenario (e.g., display message to user)
@@ -163,12 +156,9 @@ export default function Sales() {
       // Remove non-digits from tracking number
       const trackingNumber = order.tracking_number ? order.tracking_number : '';
 
-<<<<<<< HEAD
-=======
 
   
 
->>>>>>> 762015edf571d30cc05980f38afdddd95b00ccef
       return [
         order.payment_intent?.order_id || null, // Handle potential missing values
         order.customer?.email || null,
