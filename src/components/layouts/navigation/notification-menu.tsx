@@ -263,28 +263,28 @@ export default function NotificationMenu() {
     setIsChecked((prevIsChecked) => !prevIsChecked);
   };
 
-  useEffect(() => {
-    if (notifications.length > 0) {
-      const unreadNotifications = notifications.filter(n => !n.read);
-      if (unreadNotifications.length > 0) {
-        const latestNotification = unreadNotifications[0]; // Get the most recent unread notification
-        toast.info(`${latestNotification.title}: ${latestNotification.message}`, {
-          position: "top-right",
-          autoClose: 5000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-        });
-        setNotifications(prevNotifications =>
-          prevNotifications.map(notification =>
-            notification.id === latestNotification.id ? { ...notification, read: true } : notification
-          )
-        );
-      }
-    }
-  }, [notifications]);
+  // useEffect(() => {
+  //   if (notifications.length > 0) {
+  //     const unreadNotifications = notifications.filter(n => !n.read);
+  //     if (unreadNotifications.length > 0) {
+  //       const latestNotification = unreadNotifications[0]; // Get the most recent unread notification
+  //       toast.info(`${latestNotification.title}: ${latestNotification.message}`, {
+  //         position: "top-right",
+  //         autoClose: 5000,
+  //         hideProgressBar: false,
+  //         closeOnClick: true,
+  //         pauseOnHover: true,
+  //         draggable: true,
+  //         progress: undefined,
+  //       });
+  //       setNotifications(prevNotifications =>
+  //         prevNotifications.map(notification =>
+  //           notification.id === latestNotification.id ? { ...notification, read: true } : notification
+  //         )
+  //       );
+  //     }
+  //   }
+  // }, [notifications]);
 
   // Simulate receiving a new notification
   const addNewNotification = () => {
@@ -336,7 +336,7 @@ export default function NotificationMenu() {
         </Transition>
       </Menu>
       <button onClick={addNewNotification} className="mt-4 p-2 bg-blue-500 text-white rounded">
-        Add
+        
       </button>
     </div>
   );
