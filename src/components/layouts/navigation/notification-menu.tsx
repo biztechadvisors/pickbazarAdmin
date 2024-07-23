@@ -335,9 +335,9 @@ export default function NotificationMenu() {
           </Menu.Items>
         </Transition>
       </Menu>
-      <button onClick={addNewNotification} className="mt-4 p-2 bg-blue-500 text-white rounded">
+      {/* <button onClick={addNewNotification} className="mt-4 p-2 bg-blue-500 text-white rounded">
         
-      </button>
+      </button> */}
     </div>
   );
 }
