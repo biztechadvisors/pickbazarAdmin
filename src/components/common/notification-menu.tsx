@@ -13,6 +13,7 @@ type ItemType = {
   title?: string;
   message?: string | React.ReactNode;
   time?: string;
+  read?: boolean;
 };
 
 interface MenuType {
@@ -26,21 +27,19 @@ const NotificationMenu: React.FC<MenuType> = ({ data }) => {
   useEffect(() => {
     let userId;
     if (typeof window !== 'undefined' && window.localStorage) {
-      console.log('NotificationMenu ***29 ')
       userId = localStorage.getItem('userId');
     }
 
-    console.log('userId ***33 ', userId)
-
-    const socket = io('http://localhost:5050/api/notifications', {
+    const socket = io('http://localhost:5050/notifications', {
       query: { userId },
+      transports: ['websocket'], // Ensure using websocket transport
     });
 
     socket.on('connect', () => {
       console.log('Connected to the notification server');
     });
 
-    socket.on('notification', (notification) => {
+    socket.on('notification', (notification: ItemType) => {
       console.log('New notification:', notification.message);
       setNotifications((prev) => [notification, ...prev]);
 
@@ -65,17 +64,16 @@ const NotificationMenu: React.FC<MenuType> = ({ data }) => {
     };
   }, []);
 
-  // helper function to close the menu
-  function close() {
-    setOpen(false);
-  }
+  const handleClearAll = () => {
+    setNotifications((prev) => prev.map((notif) => ({ ...notif, read: true })));
+  };
 
   const { renderLayer, triggerProps, layerProps } = useLayer({
     isOpen,
-    onOutsideClick: close, // close the menu when the user clicks outside
-    onDisappear: close, // close the menu when the menu gets scrolled out of sight
+    onOutsideClick: () => setOpen(false), // close the menu when the user clicks outside
+    onDisappear: () => setOpen(false), // close the menu when the menu gets scrolled out of sight
     overflowContainer: false, // keep the menu positioned inside the container
-    placement: 'bottom-end', // we prefer to place the menu "top-end"
+    placement: 'bottom-end', // we prefer to place the menu "bottom-end"
     triggerOffset: 12, // keep some distance to the trigger
   });
 
@@ -117,7 +115,7 @@ const NotificationMenu: React.FC<MenuType> = ({ data }) => {
 
                 <button
                   className="text-sm font-semibold text-red-500 transition duration-200 hover:text-red-600 focus:outline-none focus:ring-1"
-                  onClick={() => setNotifications([])}
+                  onClick={handleClearAll}
                 >
                   Clear all
                 </button>

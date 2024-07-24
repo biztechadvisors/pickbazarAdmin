@@ -17,6 +17,8 @@ import {
 } from '@/types';
 import { API_ENDPOINTS } from './api-endpoints';
 import { HttpClient } from './http-client';
+import { Company, DEALER, STAFF } from '@/utils/constants';
+import { CUSTOMER } from '@/lib/constants';
 
 export const userClient = {
 
@@ -24,9 +26,18 @@ export const userClient = {
     return HttpClient.get<User>(
       `${API_ENDPOINTS.ME}?username=${params.username}&sub=${params.sub}`
     ).then(response => {
-      if (response?.createdBy) {
+
+      if (response.permission.type_name === Company) {
+        localStorage.setItem('userId', response.id);
+      } else if (
+        (response.permission.type_name === DEALER ||
+          response.permission.type_name === CUSTOMER ||
+          response.permission.type_name === STAFF) &&
+        response?.createdBy
+      ) {
         localStorage.setItem('userId', response.createdBy.id);
       }
+
       return response;
     }).catch(error => {
       console.error('Error fetching user details:', error);
