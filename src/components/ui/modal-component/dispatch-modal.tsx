@@ -578,10 +578,6 @@ const DispatchModal: React.FC<DispatchModalProps> = ({
         />
       ),
     },
-<<<<<<< HEAD
-=======
-
->>>>>>> cb271e35c0918345f13eefbe2b46e1d40075902f
     {
       title: t('Update-Qty'),
       key: 'update_qty',
