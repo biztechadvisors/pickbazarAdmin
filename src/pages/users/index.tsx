@@ -47,10 +47,6 @@ export default function Customers() {
     setPage(current);
   }
 
-  console.log("users", users)
-
-  console.log("data", data)
-
   return (
     <>
       <Card className="mb-8 flex flex-col items-center md:flex-row">
@@ -60,15 +56,15 @@ export default function Customers() {
           </h1>
         </div>
         <div className="flex w-full flex-col items-center ms-auto md:w-1/2 md:flex-row">
-        <div className="flex w-full items-center">
-          <Search onSearch={handleSearch} />
-          <LinkButton
-            href={`${Routes.user.create}`}
-            className="h-12 ms-4 md:ms-6"
-          >
-            <span>+ {t('form:button-label-add-user')}</span>
-          </LinkButton>
-        </div>
+          <div className="flex w-full items-center">
+            <Search onSearch={handleSearch} />
+            <LinkButton
+              href={`${Routes.user.create}`}
+              className="h-12 ms-4 md:ms-6"
+            >
+              <span>+ {t('form:button-label-add-user')}</span>
+            </LinkButton>
+          </div>
         </div>
       </Card>
 

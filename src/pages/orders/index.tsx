@@ -41,8 +41,8 @@ export default function Orders() {
     function handlePagination(current: any) {
         setPage(current);
     }
-    // console.log("query**42", shop)
-    const { data: me } = useMeQuery();
+
+    const { data: me } = useMeQuery(); 
 
 
     const { data: shopData, isLoading: fetchingShop } = useShopQuery(
@@ -66,7 +66,7 @@ export default function Orders() {
         shop_id: me?.createdBy?.managed_shop?.id,
         shop_slug: me?.createdBy?.managed_shop?.slug,
     });
-    console.log('orders ** 57', orders)
+
     const { refetch } = useExportOrderQuery(
         {
             ...(me?.createdBy?.managed_shop?.id && { shop_id: me?.createdBy.managed_shop?.id }),

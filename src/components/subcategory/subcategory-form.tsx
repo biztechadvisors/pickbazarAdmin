@@ -145,7 +145,6 @@ export default function CreateOrUpdateSubCategoriesForm({
   initialValues,
 }: IProps) {
 
-  console.log('initialValues ***148', initialValues)
   const [isSlugDisable, setIsSlugDisable] = useState<boolean>(true);
   const router = useRouter();
   const { t } = useTranslation();

@@ -61,8 +61,6 @@ export default function DealerOrders() {
         customer_id: me?.id
     });
 
-    console.log('Orders: 59', orders);
-
     const { refetch } = useExportOrderQuery(
         {
             ...(shopId && { shop_id: shopId }),

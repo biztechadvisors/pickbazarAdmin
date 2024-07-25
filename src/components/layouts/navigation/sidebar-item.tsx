@@ -8,8 +8,6 @@ import InventoryDropdown from './InventoryDropdown';
 const SidebarItem = ({ href, icon, label }: any) => {
   const { closeSidebar } = useUI();
 
-  console.log('href', href);
-
   // Check if the label is "Orders" and render the Dropdown component if true
   if (label === 'Orders') {
     return (

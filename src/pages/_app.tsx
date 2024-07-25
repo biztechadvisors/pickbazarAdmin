@@ -38,7 +38,6 @@ const AppSettings: React.FC<{ children?: React.ReactNode }> = (props) => {
 
   if (authToken) {
     const queryResult = useSettingsQuery({ language: locale! });
-    console.log('queryResult&&&&', queryResult);
     settings = queryResult.settings;
     loading = queryResult.loading;
     error = queryResult.error;
@@ -62,7 +61,6 @@ const CustomApp = ({ Component, pageProps }: AppPropsWithLayout) => {
 
   const { locale } = useRouter();
   const dir = Config.getDirection(locale);
-  console.log('Server-side rendering:', process.browser ? 'false' : 'true');
 
   return (
     <div dir={dir}>

@@ -31,7 +31,7 @@ export default function Modal({ open, onClose, children }: any) {
             leaveFrom="opacity-100"
             leaveTo="opacity-0"
           >
-            <div className="fixed inset-0 w-full h-full bg-gray-900 bg-opacity-50" />
+            <div className="fixed inset-0 h-full w-full bg-gray-900 bg-opacity-50" />
           </Transition.Child>
 
           {/* This element is to trick the browser into centering the modal contents. */}
@@ -50,15 +50,15 @@ export default function Modal({ open, onClose, children }: any) {
             leaveFrom="opacity-100 scale-100"
             leaveTo="opacity-0 scale-95"
           >
-            <Dialog.Panel className="relative inline-block max-w-full align-middle transition-all min-w-content ltr:text-left rtl:text-right">
+            <Dialog.Panel className="min-w-content relative inline-block max-w-full align-middle transition-all ltr:text-left rtl:text-right">
               <button
                 onClick={onClose}
                 aria-label="Close panel"
                 ref={cancelButtonRef}
-                className="absolute top-4 z-[60] inline-block outline-none focus:outline-none ltr:right-4 rtl:left-4 "
+                className="absolute top-4 z-[60] inline-block outline-none focus:outline-none ltr:right-4 rtl:left-4"
               >
                 <span className="sr-only">{t('text-close')}</span>
-                <CloseIcon className="w-4 h-4" />
+                <CloseIcon className="h-4 w-4" />
               </button>
               {children}
             </Dialog.Panel>

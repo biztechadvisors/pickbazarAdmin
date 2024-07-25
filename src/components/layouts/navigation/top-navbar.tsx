@@ -19,7 +19,6 @@ import NotificationMenu from './notification-menu';
 const Navbar: React.FC = () => {
   const { t } = useTranslation();
   const { toggleSidebar } = useUI();
-  console.log('Server-side rendering:', process.browser? 'false' : 'true');
 
   const { permissions } = getAuthCredentials();
 
@@ -27,7 +26,6 @@ const Navbar: React.FC = () => {
   const canWrite = permissions?.includes(OWNER);
 
   const { enableMultiLang } = Config;
-  console.log('Server-side rendering:', process.browser ? 'false' : 'true');
 
   return (
     <header className="fixed z-40 w-full bg-white shadow">

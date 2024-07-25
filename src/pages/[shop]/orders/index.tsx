@@ -67,8 +67,6 @@ export default function Orders() {
     }
   );
 
-  console.log('Orders: 69', orders);
-
   if (error) {
     console.error('Error fetching orders:', error);
   }
