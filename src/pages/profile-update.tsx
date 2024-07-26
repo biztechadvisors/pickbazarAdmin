@@ -15,6 +15,7 @@ import { dealerAddress } from '@/utils/atoms';
 import { useRouter } from 'next/router';
 import OwnerLayout from '@/components/layouts/owner';
 import AdminLayout from '@/components/layouts/admin';
+import { DEALER } from '@/utils/constants';
 
 export default function ProfilePage() {
   const { t } = useTranslation();

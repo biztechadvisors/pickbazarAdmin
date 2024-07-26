@@ -61,12 +61,7 @@ const OrderList = ({
     column: null,
   });
 
-  // const [getPermission, _] = useAtom(newPermission);
-  // const canWrite = permissions.includes('super_admin')
-  //   ? siteSettings.sidebarLinks
-  //   : getPermission?.find(
-  //       (permission) => permission.type === 'sidebar-nav-item-orders'
-  //     )?.write;
+ 
 
   const permissionTypes = AllPermission();
 

@@ -24,6 +24,7 @@ export const userClient = {
       `${API_ENDPOINTS.ME}?username=${params.username}&sub=${params.sub}`
     );
   },
+
   login: async (variables: LoginInput) => {
     try {
       const response = await HttpClient.post<AuthResponse>(
@@ -31,11 +32,11 @@ export const userClient = {
         variables
       );
       const token = response.token;
-      
+
       if (typeof window !== 'undefined' && token) { // Check if we're in the browser environment
         localStorage.setItem('authToken', token);
       }
-      
+
       return response;
     } catch (error) {
       console.error('Error during login:', error);

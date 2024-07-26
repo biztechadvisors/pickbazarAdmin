@@ -14,41 +14,18 @@ export const useGetStock = (id: any) => {
   );
 };
 
-export const useGetStockSeals = (customer_id: any) => {
+export const useGetStockSeals = (customer_id: any, shop_id: string) => {
   return useQuery<any, Error>(
-    [API_ENDPOINTS.DEALER_SEALS_STOCK, customer_id],
+    [API_ENDPOINTS.DEALER_SEALS_STOCK, customer_id, shop_id],
     async () => {
-      const response = await stockClient.getByCustomer_id(customer_id);
+      const response = await stockClient.getByCustomer_id(customer_id, shop_id);
       return response
     }
   );
 };
 
 
-// export const GetStockSeals = ({ customer_id }) => {
-//   console.log('GetStockSeals customer_id:', customer_id);
 
-//   const { data, error, isLoading } = useQuery<Order, Error>(
-//     [API_ENDPOINTS.DEALER_SEALS_STOCK, customer_id],
-//     () => {
-//       console.log('Fetching seals stock with customer_id:', customer_id);
-//       return orderClient.get({ customer_id });
-//     },
-//     {
-//       enabled: !!customer_id, // Ensure the query runs only if customer_id is defined
-//     }
-//   );
-
-//   console.log('GetStockSeals data:', data);
-//   console.log('GetStockSeals error:', error);
-//   console.log('GetStockSeals isLoading:', isLoading);
-
-//   return {
-//     sales: data,
-//     error,
-//     isLoading,
-//   };
-// };
 
 export const useUpdateStockQuantity = () => {
   const queryClient = useQueryClient();

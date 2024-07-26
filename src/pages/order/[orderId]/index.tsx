@@ -11,9 +11,11 @@ import SelectInput from '@/components/ui/select-input';
 import { Table } from '@/components/ui/table';
 import { clearCheckoutAtom } from '@/contexts/checkout';
 import { useCart } from '@/contexts/quick-cart/cart.context';
-import {
+import {  
+  useDealerStatusChange,
   useDownloadInvoiceMutation,
   useOrderQuery,
+  useOrderStocksQuery,
   useUpdateOrderMutation,
 } from '@/data/order';
 import { siteSettings } from '@/settings/site.settings';
@@ -32,6 +34,8 @@ import Image from 'next/image';
 import { useRouter } from 'next/router';
 import { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
+import { useMeQuery } from '@/data/user';
+import { DEALER } from '@/utils/constants';
 // import html2pdf from 'html2pdf.js'
 
 type FormValues = {
@@ -43,6 +47,8 @@ export default function OrderDetailsPage() {
   const { alignLeft, alignRight, isRTL } = useIsRTL();
   const { resetCart } = useCart();
   const [, resetCheckout] = useAtom(clearCheckoutAtom);
+  const { data: me } = useMeQuery();
+  const DealerShow = me?.permission.type_name === DEALER;
 
   useEffect(() => {
     resetCart();
@@ -50,12 +56,22 @@ export default function OrderDetailsPage() {
     resetCheckout();
   }, [resetCart, resetCheckout]);
 
-  const { mutate: updateOrder, isLoading: updating } = useUpdateOrderMutation();
+  const mutationHooks = DealerShow
+  ? useDealerStatusChange()
+  : useUpdateOrderMutation();
+const { mutate: updateOrder, isLoading: updating, isError, isSuccess } = mutationHooks;
+
+ console.log("DealerShow=======", DealerShow)
   const {
     order,
     isLoading: loading,
     error,
-  } = useOrderQuery({ id: query.orderId as string, language: locale! });
+  } = DealerShow
+    ? useOrderStocksQuery({ id: query.orderId as string, language: locale! })
+    : useOrderQuery({ id: query.orderId as string, language: locale! });
+  
+  
+
   const { refetch } = useDownloadInvoiceMutation(
     {
       order_id: query.orderId as string,

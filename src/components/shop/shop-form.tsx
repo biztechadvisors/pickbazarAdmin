@@ -214,6 +214,8 @@ const ShopForm = ({ initialValues }: { initialValues?: any }) => {
   const [modalIsOpen, setIsOpen] = useState(false);
   const [permissionSelectedOption] = useAtom(selectedOption);
 
+  console.log('permissionSelectedOption', permissionSelectedOption);
+
   function openModal() {
     setIsOpen(true);
   }
@@ -221,6 +223,10 @@ const ShopForm = ({ initialValues }: { initialValues?: any }) => {
   function closeModal() {
     setIsOpen(false);
   }
+
+  const permissionId = permissionSelectedOption?.e?.id;
+
+  console.log('permissionId', permissionId);
 
   const { permissions } = getAuthCredentials();
   const {
@@ -290,6 +296,8 @@ const ShopForm = ({ initialValues }: { initialValues?: any }) => {
   }));
 
   const permissionProps = permissionSelectedOption?.e;
+
+  console.log("permissionProps---------", permissionProps)
 
   const handleGenerateDescription = useCallback(() => {
     openModal('GENERATE_DESCRIPTION', {
@@ -399,9 +407,11 @@ const ShopForm = ({ initialValues }: { initialValues?: any }) => {
               <Button onClick={openModal}>
                 {t('form:button-label-more-permission')}
               </Button>
-
               <Modal open={modalIsOpen} onClose={closeModal}>
-                <CreatePerm PermissionDatas={permissionProps} />
+                <CreatePerm
+                  PermissionDatas={permissionProps}
+                  permissionId={permissionId}
+                />
               </Modal>
             </div>
           </Card>

@@ -14,6 +14,7 @@ import { Config } from '@/config';
 import React from 'react';
 import { AllPermission } from '@/utils/AllPermission';
 import { OWNER } from '@/utils/constants';
+import NotificationMenu from './notification-menu';
 
 const Navbar: React.FC = () => {
   const { t } = useTranslation();
@@ -55,6 +56,7 @@ const Navbar: React.FC = () => {
             </LinkButton>
           )}
           {enableMultiLang && <LanguageSwitcher />}
+          <NotificationMenu/>
           <AuthorizedMenu />
         </div>
       </nav>

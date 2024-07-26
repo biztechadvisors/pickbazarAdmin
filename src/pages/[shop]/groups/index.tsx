@@ -46,6 +46,7 @@ export default function TypesPage() {
   });
 
   const shopId = shopData?.id!;
+  const shop_Slug = shopData?.slug
 
   const shop: string | undefined = meData?.managed_shop?.id;
   const shopSlug: string | undefined = meData?.managed_shop?.slug;
@@ -55,6 +56,7 @@ export default function TypesPage() {
     orderBy,
     sortedBy,
     shop,
+    slug: shop_Slug,
   });
   const { permissions } = getAuthCredentials();
   const permissionTypes = AllPermission();

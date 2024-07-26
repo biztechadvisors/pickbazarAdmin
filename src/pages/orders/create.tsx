@@ -62,7 +62,7 @@ export default function ProductsPage() {
         shop_id,
     });
 
-    console.log("products===",products)
+   
 
     const permissionTypes = AllPermission();
 
