@@ -15,7 +15,7 @@ import { useAtom } from 'jotai';
 import OwnerLayout from '@/components/layouts/owner';
 import { ADMIN, DEALER, OWNER, STAFF, Company } from '@/utils/constants';
 
-const CreatePerm = ({ PermissionDatas, permissionId }) => {
+const CreatePerm = ({ PermissionDatas }) => {
   const router = useRouter();
   const { t } = useTranslation();
   const [typeName, setTypeName] = useState(PermissionJson.type_name);
@@ -28,7 +28,7 @@ const CreatePerm = ({ PermissionDatas, permissionId }) => {
 
   const { permissions } = getAuthCredentials();
   const [matched, _] = useAtom(newPermission);
-  // const permissionId = router.query.id;
+  const permissionId = router.query.id;
   const { data: meData } = useMeQuery();
   const { id } = meData || {};
   const { data: singlePermissionData, isLoading } = useQuery(
@@ -125,7 +125,8 @@ const CreatePerm = ({ PermissionDatas, permissionId }) => {
     };
 
     try {
-      if (permissionId) {
+      if (router.query.id) {
+        const permissionId = router.query.id;
         await mutateUpdate({ permissionId, dataToSend });
       } else {
         await mutatePost(dataToSend);

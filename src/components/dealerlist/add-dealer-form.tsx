@@ -41,12 +41,12 @@ type FormValues = {
   marginPerCat?: String | null;
   marginPerPro?: String | null;
   dealerCategoryMargins: {
-    category: any; 
-    margin: string; 
+    category: any;
+    margin: string;
   }[];
   dealerProductMargins: {
-    product: any; 
-    margin: string; 
+    product: any;
+    margin: string;
   }[];
   gst?: string | null;
   pan?: string | null;
@@ -79,7 +79,7 @@ function SelectCategory({
   defaultValue,
   control,
   errors,
-} : {
+}: {
   register: UseFormRegister<FormValues>;
   control: Control<FormValues>;
   defaultValue: any;
@@ -119,7 +119,7 @@ function SelectCategory({
             className="ml-5 mb-3"
             placeholder={t('margin %')}
           />
-        
+
           <button
             onClick={() => {
               remove(index);
@@ -188,7 +188,7 @@ function SelectProduct({
             className="ml-5 mb-3"
             placeholder={t('margin %')}
           />
-        
+
           <button
             onClick={() => {
               remove(index);
@@ -324,7 +324,6 @@ export default function CreateOrUpdateDealerForm({ initialValues, id }: IProps) 
       shippingAddresses: shippingAddresses,
     };
 
-console.log("ONSUMBIT_DATA_______",onSubmit);
     if (!initialValues) {
       createDealer({
         ...input,
@@ -394,7 +393,7 @@ console.log("ONSUMBIT_DATA_______",onSubmit);
           // disabled={[].includes(Config.defaultLanguage)}
           />
 
-           <Input
+          <Input
             label={t('PAN')}
             {...register('pan')}
             error={t(errors.pan?.message!)}
@@ -408,41 +407,41 @@ console.log("ONSUMBIT_DATA_______",onSubmit);
           <SelectCategory register={register} control={control} errors={errors} defaultValue={marcategory} />
           <SelectProduct register={register} control={control} errors={errors} defaultValue={marproduct} />
           <AddressGrid
-                        userId={user?.id!}
-                        className="shadow-700 bg-light p-5 md:p-8"
-                        label={t('text-billing-address')}
-                        // count={3}
-                        // addresses={user?.address?.filter(
-                        //     (address) => address?.type === AddressType.Billing
-                        // )}
-                        atom={billingAddressAtom}
-                        type={AddressType.Billing}
-                    />
+            userId={user?.id!}
+            className="shadow-700 bg-light p-5 md:p-8"
+            label={t('text-billing-address')}
+            // count={3}
+            // addresses={user?.address?.filter(
+            //     (address) => address?.type === AddressType.Billing
+            // )}
+            atom={billingAddressAtom}
+            type={AddressType.Billing}
+          />
 
-                    <AddressGrid
-                        userId={user?.id!}
-                        className="shadow-700 bg-light p-5 md:p-8"
-                        label={t('text-shipping-address')}
-                        // count={4}
-                        // addresses={user?.address?.filter(
-                        //     (address) => address?.type === AddressType.Shipping
-                        // )}
-                        atom={shippingAddressAtom}
-                        type={AddressType.Shipping}
-                    />
+          <AddressGrid
+            userId={user?.id!}
+            className="shadow-700 bg-light p-5 md:p-8"
+            label={t('text-shipping-address')}
+            // count={4}
+            // addresses={user?.address?.filter(
+            //     (address) => address?.type === AddressType.Shipping
+            // )}
+            atom={shippingAddressAtom}
+            type={AddressType.Shipping}
+          />
         </Card>
       </div>
 
       <div className="mb-4 text-end">
         {/* {initialValues && ( */}
-          <Button
-            variant="outline"
-            onClick={router.back}
-            className="me-4"
-            type="button"
-          >
-            {t('form:button-label-back')}
-          </Button>
+        <Button
+          variant="outline"
+          onClick={router.back}
+          className="me-4"
+          type="button"
+        >
+          {t('form:button-label-back')}
+        </Button>
         {/* )} */}
 
         <Button type="submit" loading={creating || updating} >

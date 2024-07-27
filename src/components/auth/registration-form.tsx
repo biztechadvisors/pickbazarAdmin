@@ -24,8 +24,9 @@ type FormValues = {
   password: string;
   permission: Permission;
   contact: string;
-  createdBy: string
+  createdBy: string;
 };
+
 const registrationFormSchema = yup.object().shape({
   name: yup.string().required('form:error-name-required'),
   email: yup
@@ -35,6 +36,7 @@ const registrationFormSchema = yup.object().shape({
   password: yup.string().required('form:error-password-required'),
   permission: yup.string().default('Company').oneOf(['Company']),
 });
+
 const RegistrationForm = () => {
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const { mutate: registerUser, isLoading: loading } = useRegisterMutation();
@@ -54,7 +56,6 @@ const RegistrationForm = () => {
   const { t } = useTranslation();
 
   async function onSubmit({ name, email, password, permission, contact, createdBy }: FormValues) {
-
     registerUser(
       {
         name,
@@ -62,9 +63,8 @@ const RegistrationForm = () => {
         password,
         permission,
         contact: '',
-        createdBy: ''
+        createdBy: '',
       },
-
       {
         onSuccess: (data) => {
           if (data?.token) {
@@ -93,7 +93,6 @@ const RegistrationForm = () => {
   return (
     <>
       <form onSubmit={handleSubmit(onSubmit)} noValidate>
-
         <Input
           label={t('form:input-label-name')}
           {...register('name')}

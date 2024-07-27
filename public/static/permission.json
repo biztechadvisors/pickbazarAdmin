@@ -35,5 +35,10 @@
     "STOCK": "sidebar-nav-item-stocks",
     "SALES": "sidebar-nav-item-sales",
     "CREATE_SALES": "sidebar-nav-item-create-sales"
+  },
+
+  "Advance_Permission": {
+    "SALES": "sidebar-nav-item-sales",
+    "CREATE_SALES": "sidebar-nav-item-create-sales"
   }
 }

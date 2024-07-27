@@ -106,7 +106,6 @@ const VerifiedItemList: React.FC<Props> = ({ className }) => {
     }
   );
 
-  console.log("shipping", shipping)
   return (
     <div className={className}>
       <div className="mb-4 flex flex-col items-center space-s-4">

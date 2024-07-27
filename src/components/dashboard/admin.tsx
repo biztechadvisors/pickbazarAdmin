@@ -15,6 +15,8 @@ import { useRouter } from 'next/router';
 import { useMeQuery } from '@/data/user';
 import { CustomerIcon } from '../icons/sidebar/customer';
 import { AllPermission } from '@/utils/AllPermission';
+import { useGetStockSeals } from '@/data/stock';
+import { DEALER } from '@/utils/constants';
 
 export default function Dashboard() {
   const { t } = useTranslation();
@@ -23,6 +25,7 @@ export default function Dashboard() {
   const canWrite = permissionTypes.includes('sidebar-nav-item-dealerlist');
   const { data: meData } = useMeQuery();
   const customerId = meData?.id;
+ 
 
   const analyticsQuery = {
     customerId: parseInt(customerId),
@@ -49,6 +52,14 @@ export default function Dashboard() {
     page: 1,
   });
 
+  const customer_id = meData?.id
+  const shop_id =  meData?.managed_shop?.id
+
+  const { data: response } = useGetStockSeals(customer_id, shop_id);
+
+  const DealerSalesList = response?.data
+  const DealerShow = meData?.permission.type_name === DEALER;
+
   if (orderError) {
     console.error('Error fetching orders:', orderError);
   }
@@ -56,9 +67,6 @@ export default function Dashboard() {
   if (orderLoading) {
     console.log('Loading orders...');
   }
-
-  console.log('Order Data:', orderData);
-  console.log('Paginator Info:', paginatorInfo);
 
   const {
     data: popularProductData,
@@ -156,6 +164,18 @@ export default function Dashboard() {
           title={t('table:recent-order-table-title')}
         />
       </div>
+      {DealerShow ? (
+        <div className="mb-6  w-full flex-wrap space-y-6 xl:flex-nowrap xl:space-y-0 xl:space-x-5">
+        <RecentOrders
+          orders={DealerSalesList}
+          title={t('Recent Sales')}
+        />
+      </div>
+      ) : (
+        null
+      )}
+
+     
       <div className="mb-6 w-full flex-wrap space-y-6 xl:flex-nowrap xl:space-y-0 xl:space-x-5">
         <PopularProductList
           products={popularProductData}

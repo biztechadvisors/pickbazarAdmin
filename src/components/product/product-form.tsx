@@ -128,9 +128,6 @@ export default function CreateOrUpdateProductForm({
       enabled: !!router.query.shop,
     }
   );
-  console.log("shopData",shopData)
-
-
 
   const {
     // @ts-ignore
@@ -215,8 +212,6 @@ export default function CreateOrUpdateProductForm({
     name: 'video',
   });
   const productName = watch('name');
-
-  console.log("product_type",product_type)
 
   const autoSuggestionList = useMemo(() => {
     return chatbotAutoSuggestion({ name: productName ?? '' });

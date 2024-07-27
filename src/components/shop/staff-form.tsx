@@ -68,7 +68,6 @@ const AddStaffForm = () => {
   }
 
   const { data } = useMeQuery();
-  console.log("data---------", data)
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} noValidate>
