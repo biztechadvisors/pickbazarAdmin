@@ -38,6 +38,8 @@ export default function Dashboard() {
     error: analyticsError,
   } = useAnalyticsQuery(analyticsQuery);
 
+  console.log("analyticsData",analyticsData)
+
   const {
     orders: orderData,
     paginatorInfo,
