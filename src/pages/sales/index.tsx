@@ -207,11 +207,15 @@ export default function Sales() {
 
   const DealerSalesList = response?.data
 
+  console.log("DealerSalesList",DealerSalesList)
+
  
 
   var ordersData = orders.filter(
     (order) => order?.customer_id == order?.dealer?.id
   );
+
+  console.log("ordersData",ordersData)
 
   const ShopShow = me?.permission.type_name === Company;
 
