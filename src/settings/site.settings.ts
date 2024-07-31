@@ -68,7 +68,7 @@ export const siteSettings = {
       },
       {
         href: Routes.user.list,
-        label: 'sidebar-nav-item-users',
+        label: 'sidebar-nav-item-customer',
         icon: 'UsersIcon',
         permissions: ownerOnly,
       },
@@ -101,7 +101,7 @@ export const siteSettings = {
       },
       {
         href: Routes.user.list,
-        label: 'sidebar-nav-item-users',
+        label: 'sidebar-nav-item-customer',
         icon: 'UsersIcon',
       },
       {
