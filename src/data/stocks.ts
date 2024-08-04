@@ -169,4 +169,23 @@ export const useUpdateStockDataByDealer = (user_id: any) => {
     }
   );
 };
+// export const useUpdateStockDataByDealer = (user_id: any) => {
+//   const queryClient = useQueryClient();
+
+//   return useMutation(
+//     (updatedData: any) => {
+//       console.log('updatedData', updatedData); // Log the updatedData
+//       return stockClient.updateStockDataByDealer(user_id, updatedData);
+//     },
+//     {
+//       onSuccess: () => {
+//         toast.success('Stock data updated successfully');
+//         queryClient.invalidateQueries([API_ENDPOINTS.STOCK_DEALER_UPDATE]);
+//       },
+//       onError: () => {
+//         toast.error('Failed to update stock data');
+//       },
+//     }
+//   );
+// };
 

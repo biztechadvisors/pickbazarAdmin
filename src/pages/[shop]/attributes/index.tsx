@@ -44,15 +44,11 @@ export default function AttributePage() {
   const { data: shopData, isLoading: fetchingShop } = useShopQuery({
     slug: shop as string,
   });
-  console.log('shopData',shopData)
+  
   const shopId = shopData?.id!;
   const shopSlug = shopData?.slug
 
- 
-
-  // function handleImportModal() {
-  //   openModal('EXPORT_IMPORT_ATTRIBUTE', shopId);
-  // }
+  
 
   const { attributes, loading, error } = useAttributesQuery(
     {
@@ -66,6 +62,10 @@ export default function AttributePage() {
       enabled: Boolean(shopId),
     }
   );
+
+
+
+  
 
   const permissionTypes = AllPermission();
 
@@ -83,10 +83,21 @@ export default function AttributePage() {
     router.replace(Routes.dashboard);
   }
 
-  function handleSearch({ searchText }: { searchText: string }) {
+  // function handleSearch({ searchText }: { searchText: string }) {
+  //   setSearchTerm(searchText);
+  //   setPage(1);
+  // }
+
+  function handleSearch({ searchText }) {
     setSearchTerm(searchText);
     setPage(1);
   }
+
+  const filteredAttributes = attributes.filter(attribute =>
+    attribute.name.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
+
 
   function handlePagination(current: any) {
     setPage(current);
