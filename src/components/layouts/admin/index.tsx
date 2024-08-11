@@ -45,7 +45,6 @@ const AdminLayout: React.FC<{ children?: React.ReactNode }> = ({
       } else if (data.managed_shop) {
         newShopSlug = data.managed_shop.slug;
       }
-
       if (newShopSlug) {
         setShopSlug(newShopSlug);
         localStorage.setItem('shopSlug', newShopSlug);

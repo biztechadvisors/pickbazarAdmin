@@ -19,8 +19,8 @@ import classNames from 'classnames';
 import { DownloadIcon } from '@/components/icons/download-icon';
 import { useMeQuery } from '@/data/user';
 import StockList from '@/components/stock/StockList';
-import { DEALER } from '@/utils/constants';
- 
+import { Company, DEALER } from '@/utils/constants';
+
 export default function Orders() {
     const router = useRouter();
     const { locale } = useRouter();
@@ -41,10 +41,14 @@ export default function Orders() {
     function handlePagination(current: any) {
         setPage(current);
     }
- 
-    const { data: me } = useMeQuery();
- 
- 
+
+    const { data: me } = useMeQuery(); 
+    const DealerShow = me?.permission.type_name === DEALER;
+    const ShopShow = me?.permission.type_name === Company;
+
+    console.log("me",me)
+
+
     const { data: shopData, isLoading: fetchingShop } = useShopQuery(
         {
             slug: shop as string,
@@ -53,20 +57,43 @@ export default function Orders() {
             enabled: !!shop,
         }
     );
+
+    console.log("shopData",shopData)
+
  
  
  
     const shopId = shopData?.id!;
-    const { orders, loading, paginatorInfo, error } = useOrdersQuery({
+    
+    const queryConfig = {
         language: locale,
         limit: 20,
         page,
         tracking_number: searchTerm,
         customer_id: me?.id,
-        shop_id: me?.createdBy?.managed_shop?.id,
-        shop_slug: me?.createdBy?.managed_shop?.slug,
-    });
- 
+    };
+
+    if (DealerShow) {
+        queryConfig.shop_slug = me?.createdBy?.managed_shop?.slug;
+    } else if (ShopShow) {
+        queryConfig.shop_id = me?.createdBy?.managed_shop?.id;
+        queryConfig.shop_slug = me?.createdBy?.managed_shop?.slug;
+    }
+
+    const { orders, loading, paginatorInfo, error } = useOrdersQuery(queryConfig);
+
+    // const { orders, loading, paginatorInfo, error } = useOrdersQuery({
+    //     language: locale,
+    //     limit: 20,
+    //     page,
+    //     tracking_number: searchTerm,
+    //     customer_id: me?.id,
+    //     // shop_id: me?.createdBy?.managed_shop?.id,
+    //     shop_slug: me?.createdBy?.managed_shop?.slug,
+    // });
+
+  
+
     const { refetch } = useExportOrderQuery(
         {
             ...(me?.createdBy?.managed_shop?.id && { shop_id: me?.createdBy.managed_shop?.id }),
@@ -208,13 +235,13 @@ export default function Orders() {
     var ordersData = orders.filter(
         (order) => order?.customer_id == order?.dealer?.id
     );
- 
- 
- 
-   
- 
-    const DealerShow = me?.permission.type_name === DEALER;
-   
+
+
+
+    
+
+    
+    
     return (
         <>
             <Card className="mb-8 flex flex-col items-center justify-between md:flex-row">

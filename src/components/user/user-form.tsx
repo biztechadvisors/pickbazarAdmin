@@ -14,7 +14,7 @@ import { useRouter } from 'next/router';
 import { usePermissionData } from '@/data/permission';
 import { getAuthCredentials } from '@/utils/auth-utils';
 import Loader from '../ui/loader/loader';
-import { DEALER, OWNER } from '@/utils/constants';
+import { Company, DEALER, OWNER } from '@/utils/constants';
 // import InputMask from 'react-input-mask';
 import { useShopQuery } from '@/data/shop';
 import PhoneInput from 'react-phone-input-2';
@@ -51,6 +51,8 @@ const CustomerCreateForm = () => {
   // const phoneRegex = /^\+91[0-9]{10}$/;
   const [value, setValue] = useState('');
 
+  console.log("permissionData",permissionData)
+
   const shopSlug =
     typeof window !== 'undefined' ? localStorage.getItem('shopSlug') : null;
 
@@ -80,14 +82,17 @@ const CustomerCreateForm = () => {
       id: permission.id,
     })) ?? [];
 
+    console.log("permissionOptions",permissionOptions)
 
 
-  if (permissions[0] === DEALER) {
-    permissionOptions.push(
-      { value: 'customer', label: 'customer', id: 'customer_id' },
-      { value: 'staff', label: 'staff', id: 'staff_id' }
-    );
-  }
+
+    if (permissions[0] === DEALER || permissions[0] === OWNER || permissions[0] === Company) {
+      permissionOptions.push(
+        { value: 'customer', label: 'customer', id: 'customer_id' },
+        { value: 'staff', label: 'staff', id: 'staff_id' }
+      );
+    }
+    
 
   async function onSubmit({
     name,

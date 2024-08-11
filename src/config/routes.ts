@@ -58,6 +58,9 @@ export const Routes = {
   tag: {
     ...routesFactory('/tags'),
   },
+  blog:{
+    ...routesFactory('/blogs')
+  },
   dealerlist: {
     ...routesFactory('/dealerlist'),
   },

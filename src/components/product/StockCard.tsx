@@ -37,6 +37,7 @@ const StockCard = ({ item, isChecked, inStock }: Props) => {
     sale_price,
     margin,
   } = item ?? {};
+  console.log("item",item)
   const {
     price: currentPrice,
     basePrice,

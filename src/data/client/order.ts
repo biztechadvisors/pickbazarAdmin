@@ -20,17 +20,32 @@ export const orderClient = {
     });
   },
 
-  paginated: ({
-    tracking_number,
+  // paginated: ({
+  //   tracking_number,
+  //   customer_id,
+  //   ...params
+  // }: Partial<OrderQueryOptions>) => {
+  //   return HttpClient.get<OrderPaginator>(API_ENDPOINTS.ORDERS, {
+  //     searchJoin: customer_id,
+  //     ...params,
+  //     customer_id: HttpClient.formatSearchParams({ tracking_number, customer_id }),
+  //   });
+  // },
+
+  paginated: ({    
     customer_id,
     ...params
   }: Partial<OrderQueryOptions>) => {
     return HttpClient.get<OrderPaginator>(API_ENDPOINTS.ORDERS, {
-      searchJoin: customer_id,
       ...params,
-      search: HttpClient.formatSearchParams({ tracking_number, customer_id }),
+      customer_id, 
+      
     });
   },
+
+
+
+
 
   downloadInvoice: (input: GenerateInvoiceDownloadUrlInput) => {
     return HttpClient.post<string>(

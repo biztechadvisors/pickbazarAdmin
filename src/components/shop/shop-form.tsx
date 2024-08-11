@@ -297,7 +297,7 @@ const ShopForm = ({ initialValues }: { initialValues?: any }) => {
 
   const permissionProps = permissionSelectedOption?.e;
 
-  console.log("permissionProps---------", permissionProps)
+  console.log('permissionProps---------', permissionProps);
 
   const handleGenerateDescription = useCallback(() => {
     openModal('GENERATE_DESCRIPTION', {
