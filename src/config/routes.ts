@@ -61,6 +61,9 @@ export const Routes = {
   blog:{
     ...routesFactory('/blogs')
   },
+  event:{
+    ...routesFactory('/events')
+  },
   dealerlist: {
     ...routesFactory('/dealerlist'),
   },

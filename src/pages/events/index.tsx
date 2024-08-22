@@ -2,6 +2,7 @@ import BlogList from '@/components/blog/bloglist';
 import TypeFilter from '@/components/category/type-filter';
 import Card from '@/components/common/card';
 import Search from '@/components/common/search';
+import EventLists from '@/components/eventlists';
 import AdminLayout from '@/components/layouts/admin';
 import LinkButton from '@/components/ui/link-button';
 import { Routes } from '@/config/routes';
@@ -12,7 +13,7 @@ import { useRouter } from 'next/router';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
-const Blogs = () => {
+const Events = () => {
   const { locale } = useRouter();
   const { t } = useTranslation();
   const { data: meData } = useMeQuery();
@@ -32,7 +33,7 @@ const Blogs = () => {
         <div className="flex w-full flex-col items-center md:flex-row">
           <div className="mb-4 md:mb-0 md:w-1/4">
             <h1 className="text-xl font-semibold text-heading">
-              {t('form:input-label-blog')}
+              {t('form:input-label-event')}
             </h1>
           </div>
           <div className="flex w-full flex-col items-center space-y-4 ms-auto md:flex-row md:space-y-0 xl:w-3/4">
@@ -41,26 +42,26 @@ const Blogs = () => {
             <TypeFilter className="md:ms-6" />
 
             <LinkButton
-              href={`/${shopSlug}${Routes.blog.create}`}
+              href={`/${Routes.event.create}`}
               className="h-12 w-full md:w-auto md:ms-6"
             >
               <span className="block md:hidden xl:block">
-                + {t('form:button-label-add-blog')}
+                + {t('form:button-label-add-event')}
               </span>
             </LinkButton>
           </div>
         </div>
       </Card>
-      <BlogList />
+      <EventLists />
     </>
   );
 };
 
-Blogs.authenticate = {
+Events.authenticate = {
   permissions: adminOwnerAndStaffOnly,
 };
 
-Blogs.Layout = AdminLayout;
+Events.Layout = AdminLayout;
 
 export const getServerSideProps = async ({ locale }: any) => ({
   props: {
@@ -68,4 +69,4 @@ export const getServerSideProps = async ({ locale }: any) => ({
   },
 });
 
-export default Blogs;
+export default Events;

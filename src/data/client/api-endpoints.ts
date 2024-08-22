@@ -80,5 +80,6 @@ export const API_ENDPOINTS = {
   DEALER_SEALS_STOCK: '/stocks/orders',
   DEALER_SEALS_STOCK_BY_ID: '/stocks/order',
   DEALER_STATUS_CHANGE: '/stocks',
+  EVENTS:'/events'
   
 };

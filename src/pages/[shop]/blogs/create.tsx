@@ -7,18 +7,18 @@ import { adminOwnerAndStaffOnly } from '@/utils/auth-utils';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { CreateBlogDto } from '@/path/to/CreateBlogDto'; // Adjust path as per your project structure
 import Button from '@/components/ui/button';
 import TextArea from '@/components/ui/text-area';
 import Description from '@/components/ui/description';
 import FileInput from '@/components/ui/file-input';
+import { useForm } from 'react-hook-form';
 
 const BlogCreate = () => {
   const { t } = useTranslation();
   const [formData, setFormData] = useState<CreateBlogDto>({
     title: '',
     content: '',
-    shopId: 0, // Assuming 0 as initial state for shopId, adjust as needed
+    shopId: 0,
     attachmentIds: [],
   });
 
@@ -28,16 +28,17 @@ const BlogCreate = () => {
     const { name, value } = e.target;
     setFormData({
       ...formData,
-      [name]: name === 'shopId' ? parseInt(value, 10) : value, // Parse shopId to number
+      [name]: name === 'shopId' ? parseInt(value, 10) : value,
     });
   };
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    // Handle form submission logic here, such as API calls or further validation
     console.log('Form data:', formData);
   };
-  
+
+  const { control } = useForm();
+
   return (
     <>
       <form>
@@ -48,9 +49,9 @@ const BlogCreate = () => {
             className="w-full px-0 pb-5 sm:w-4/12 sm:py-8 sm:pe-4 md:w-1/3 md:pe-5"
           />
 
-          {/* <Card className="w-full sm:w-8/12 md:w-2/3">
-          <FileInput name="image" control={control} multiple={false} />
-        </Card> */}
+          <Card className="w-full sm:w-8/12 md:w-2/3">
+            <FileInput name="image" control={control} multiple={false} />
+          </Card>
         </div>
         <div className="my-5 flex flex-wrap border-b border-dashed border-border-base pb-8 sm:my-8">
           <Description

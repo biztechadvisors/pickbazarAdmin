@@ -100,6 +100,11 @@ export const siteSettings = {
         icon: 'CalendarScheduleIcon',
       },
       {
+        href: Routes.blog.list,
+        label: 'sidebar-nav-item-blog',
+        icon: 'CalendarScheduleIcon',
+      },
+      {
         href: Routes.user.list,
         label: 'sidebar-nav-item-customer',
         icon: 'UsersIcon',
