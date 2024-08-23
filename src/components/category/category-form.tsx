@@ -114,8 +114,7 @@ function SelectTypes({
         getOptionLabel={(option: any) => option.name}
         getOptionValue={(option: any) => option.slug}
         options={types!}
-        isLoading={loading}
-      />
+        isLoading={loading} defaultValue={[]} />
       <ValidationError message={t(errors.type?.message)} />
     </div>
   );
@@ -157,8 +156,7 @@ function SelectCategories({
         getOptionValue={(option: any) => option.id}
         options={categories}
         isClearable={true}
-        isLoading={loading}
-      />
+        isLoading={loading} defaultValue={[]} />
     </div>
   );
 }
@@ -203,23 +201,21 @@ export default function CreateOrUpdateCategoriesForm({
     //@ts-ignore
     defaultValues: initialValues
       ? {
-          ...initialValues,
-          icon: initialValues?.icon
-            ? categoryIcons.find(
-                (singleIcon) => singleIcon.value === initialValues?.icon!
-              )
-            : '',
-          ...(isNewTranslation && {
-            type: null,
-          }),
-        }
+        ...initialValues,
+        icon: initialValues?.icon
+          ? categoryIcons.find(
+            (singleIcon) => singleIcon.value === initialValues?.icon!
+          )
+          : '',
+        ...(isNewTranslation && {
+          type: null,
+        }),
+      }
       : defaultValues,
     resolver: yupResolver(categoryValidationSchema),
   });
 
   const { data: meData } = useMeQuery();
-
-  console.log('meData', meData);
 
   const { openModal } = useModalAction();
   const { locale } = router;
@@ -264,26 +260,25 @@ export default function CreateOrUpdateCategoriesForm({
       parent: values.parent?.id ?? null,
       type_id: values.type?.id,
     };
+
     if (
       !initialValues ||
       (initialValues.translated_languages &&
-        !initialValues.translated_languages.includes(router.locale!))
+        !initialValues.translated_languages?.includes(router.locale!))
     ) {
       createCategory({
         ...input,
         ...(initialValues?.slug && { slug: initialValues.slug }),
-        shop_id: meData?.shops?.[0]?.id || initialValues?.shop_id,
+        shop_id: meData?.managed_shop?.id || initialValues?.shop_id,
       });
     } else {
       updateCategory({
         ...input,
         id: initialValues.id!,
-        shop_id: meData?.shops?.[0]?.id,
+        shop_id: meData?.managed_shop?.id,
       });
     }
   };
-
-  console.log('shop_id', meData?.shops?.[0]?.id);
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
@@ -302,11 +297,10 @@ export default function CreateOrUpdateCategoriesForm({
       <div className="my-5 flex flex-wrap sm:my-8">
         <Description
           title={t('form:input-label-description')}
-          details={`${
-            initialValues
+          details={`${initialValues
               ? t('form:item-description-edit')
               : t('form:item-description-add')
-          } ${t('form:category-description-helper-text')}`}
+            } ${t('form:category-description-helper-text')}`}
           className="w-full px-0 pb-5 sm:w-4/12 sm:py-8 sm:pe-4 md:w-1/3 md:pe-5 "
         />
 
@@ -340,8 +334,7 @@ export default function CreateOrUpdateCategoriesForm({
               name="icon"
               control={control}
               options={updatedIcons}
-              isClearable={true}
-            />
+              isClearable={true} defaultValue={[]} />
           </div>
           <SelectTypes control={control} errors={errors} />
           <SelectCategories control={control} setValue={setValue} />

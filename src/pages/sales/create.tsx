@@ -28,11 +28,13 @@ import { useAtom } from 'jotai';
 import { siteSettings } from '@/settings/site.settings';
 import { toggleAtom } from '@/utils/atoms';
 import { useMeQuery } from '@/data/user';
-import { useGetStock } from '@/data/stocks';
+// import { useGetStock } from '@/data/stocks';
+import { useGetStock } from '@/data/stock';
 import StockCard from '@/components/product/StockCard';
 import Card from '@/components/common/card';
 import StockCounterButton from '@/components/stock/stock-counter-btn';
 import Stock from '@/components/stock/Stock';
+import { AllPermission } from '@/utils/AllPermission';
 
 export default function SalesPage() {
   const { locale } = useRouter();
@@ -51,13 +53,13 @@ export default function SalesPage() {
   const [isChecked] = useAtom(toggleAtom);
 
   const { data: stockData, isLoading, error } = useGetStock(meData?.id);
-  const [getPermission, _] = useAtom(newPermission);
-  const { permissions } = getAuthCredentials();
-  const canWrite = permissions.includes('super_admin')
-    ? siteSettings.sidebarLinks
-    : getPermission?.find(
-        (permission) => permission.type === 'sidebar-nav-item-create-order'
-      )?.write;
+
+  console.log("stockData",stockData)
+ 
+
+  const permissionTypes = AllPermission(); 
+
+  const canWrite = permissionTypes.includes('sidebar-nav-item-create-order');
 
   function handleSearch({ searchText }: { searchText: string }) {
     setSearchTerm(searchText);
@@ -66,6 +68,7 @@ export default function SalesPage() {
   function handlePagination(current: any) {
     setPage(current);
   }
+
 
   return (
     <>

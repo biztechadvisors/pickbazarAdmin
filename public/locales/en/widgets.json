@@ -7,5 +7,9 @@
   "sticker-card-subtitle-customer": "(Last 30 Days)",
   "sticker-card-title-today-rev": "Todays Revenue",
   "sticker-card-title-total-shops": "Dealers",
-  "sticker-card-title-total-cutomer": "Customers"
+  "sticker-card-title-total-cutomer": "Customers",
+  "sticker-card-title-shops": "Total Shops",
+  "sticker-card-subtitle-shops": "Total Shops",
+  "sticker-card-title-users": "Total Users",
+  "sticker-card-title-company":"Total Company"
 }

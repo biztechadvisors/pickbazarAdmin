@@ -22,7 +22,7 @@ export const ScheduleGrid: React.FC<ScheduleProps> = ({
 
   const [selectedSchedule, setSchedule] = useAtom(deliveryTimeAtom);
   useEffect(() => {
-    setSchedule(schedules[0]);
+    setSchedule(schedules?.[0]);
   }, []);
 
   return (

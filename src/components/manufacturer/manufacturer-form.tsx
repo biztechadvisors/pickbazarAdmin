@@ -249,7 +249,7 @@ export default function CreateOrUpdateManufacturerForm({
     try {
       if (
         !initialValues ||
-        !initialValues.translated_languages.includes(router.locale!)
+        !initialValues.translated_languages?.includes(router.locale!)
       ) {
         createManufacturer({
           ...input,

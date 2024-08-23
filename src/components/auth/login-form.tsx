@@ -10,15 +10,16 @@ import { useLogin } from '@/data/user';
 import type { LoginInput } from '@/types';
 import { useState } from 'react';
 import Alert from '@/components/ui/alert';
-import Router from 'next/router';
+import Router from 'next/router'; // Import Router from next/router
 import {
   allowedRoles,
   hasAccess,
   setAuthCredentials,
 } from '@/utils/auth-utils';
 import { useAtom } from 'jotai';
-import { newPermission } from '@/contexts/permission/storepermission';
-
+import {
+  newPermission,
+} from '@/contexts/permission/storepermission';
 const loginFormSchema = yup.object().shape({
   email: yup
     .string()
@@ -46,7 +47,7 @@ const LoginForm = () => {
                 data?.permissions,
                 data?.type_name
               );
-              Router.push(Routes.dashboard);
+              Router.push(Routes.dashboard); // Navigate to dashboard
               return;
             }
             setErrorMessage('form:error-enough-permission');
@@ -54,8 +55,8 @@ const LoginForm = () => {
             setErrorMessage('form:error-credential-wrong');
           }
         },
-        onError: () => {
-          setErrorMessage('form:error-credential-wrong');
+        onError: (error) => {
+          setErrorMessage(error.message); // Handle error by displaying error message
         },
       }
     );

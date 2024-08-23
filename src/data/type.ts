@@ -8,12 +8,19 @@ import { GetParams, Type, TypeQueryOptions } from '@/types';
 import { typeClient } from '@/data/client/type';
 import { Config } from '@/config';
 
+export const getShopSlug = () => {
+  if (typeof window !== 'undefined') {
+    return localStorage.getItem('shopSlug') || '';
+  }
+  return '';
+};
+
 export const useCreateTypeMutation = () => {
   const { t } = useTranslation();
   const queryClient = useQueryClient();
   return useMutation(typeClient.create, {
     onSuccess: () => {
-      Router.push(Routes.type.list, undefined, {
+      Router.push(`/${getShopSlug()}/${Routes.type.list}`, undefined, {
         locale: Config.defaultLanguage,
       });
       toast.success(t('common:successfully-created'));

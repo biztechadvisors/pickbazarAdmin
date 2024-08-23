@@ -1,24 +1,3 @@
-// import NextLink, { LinkProps as NextLinkProps } from 'next/link';
-
-// const Link: React.FC<
-//   NextLinkProps & {
-//     className?: string;
-//     title?: string;
-//     children?: React.ReactNode;
-//   }
-// > = ({ className, children, ...props }) => {
-//   console.log("props", props)
-//   return (
-//     <NextLink {...props} className={className}>
-//       {children}
-//     </NextLink>
-//   );
-// };
-
-// export default Link;
-
-
-
 import classNames from 'classnames';
 import NextLink, { LinkProps as NextLinkProps } from 'next/link';
 
@@ -52,6 +31,7 @@ const Link: React.FC<LinkProps> = ({
         className
       )}
       title={title}
+      suppressHydrationWarning={true}
     >
       {children}
     </NextLink>
@@ -59,4 +39,3 @@ const Link: React.FC<LinkProps> = ({
 };
 
 export default Link;
-

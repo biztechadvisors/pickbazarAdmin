@@ -11,10 +11,9 @@ import { useTranslation } from 'next-i18next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import { Routes } from '@/config/routes';
 import { SortOrder } from '@/types';
-import { adminOnly, getAuthCredentials } from '@/utils/auth-utils';
-import { newPermission } from '@/contexts/permission/storepermission';
-import { useAtom } from 'jotai';
-import { siteSettings } from '@/settings/site.settings';
+import { adminOnly, getAuthCredentials, ownerOnly } from '@/utils/auth-utils';
+import { AllPermission } from '@/utils/AllPermission';
+import OwnerLayout from '@/components/layouts/owner';
 
 export default function Customers() {
   const [searchTerm, setSearchTerm] = useState('');
@@ -28,20 +27,16 @@ export default function Customers() {
   const { users, paginatorInfo, loading, error } = useUsersQuery({
     limit: 20,
     usrById: data?.id,
-    email:searchTerm,
+    email: searchTerm,
     page,
     name: searchTerm,
     orderBy,
     sortedBy,
+    role: 'user'
   });
 
-  const [getPermission,_]=useAtom(newPermission)
-  const { permissions }:any = getAuthCredentials();
-  const canWrite =  permissions.includes('super_admin')
-  ? siteSettings.sidebarLinks
-  :getPermission?.find(
-    (permission) => permission.type === 'sidebar-nav-item-users'
-  )?.write;
+  console.log("data?.id",data?.id)
+  console.log("users",users)
 
   if (loading) return <Loader text={t('common:text-loading')} />;
   if (error) return <ErrorMessage message={error.message} />;
@@ -60,18 +55,19 @@ export default function Customers() {
       <Card className="mb-8 flex flex-col items-center md:flex-row">
         <div className="mb-4 md:mb-0 md:w-1/4">
           <h1 className="text-lg font-semibold text-heading">
-            {t('common:sidebar-nav-item-users')}
+            {t('common:sidebar-nav-item-customer')}
           </h1>
         </div>
-
-        <div className="ms-auto flex w-full items-center md:w-3/4">
-          <Search onSearch={handleSearch} />
-          <LinkButton
-            href={`${Routes.user.create}`}
-            className="ms-4 md:ms-6 h-12"
-          >
-            <span>+ {t('form:button-label-add-user')}</span>
-          </LinkButton>
+        <div className="flex w-full flex-col items-center ms-auto md:w-1/2 md:flex-row">
+          <div className="flex w-full items-center">
+            <Search onSearch={handleSearch} />
+            <LinkButton
+              href={`${Routes.user.create}`}
+              className="h-12 ms-4 md:ms-6"
+            >
+              <span>+ {t('form:button-label-add-user')}</span>
+            </LinkButton>
+          </div>
         </div>
       </Card>
 
@@ -89,9 +85,9 @@ export default function Customers() {
 }
 
 Customers.authenticate = {
-  permissions: adminOnly,
+  permissions: ownerOnly,
 };
-Customers.Layout = Layout;
+Customers.Layout = OwnerLayout;
 
 export const getStaticProps = async ({ locale }: any) => ({
   props: {

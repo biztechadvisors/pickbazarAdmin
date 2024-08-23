@@ -69,8 +69,7 @@ const UserListView = ({ conversation, className, ...rest }: Props) => {
             {!isEmpty(conversation?.shop?.logo?.thumbnail) ? (
               <Image
                 // @ts-ignore
-                // src={conversation?.shop?.logo?.thumbnail}
-                src={`${process?.env?.NEXT_PUBLIC_REST_API_ENDPOINT}/${conversation?.shop?.logo?.thumbnail}`}
+                src={conversation?.shop?.logo?.thumbnail}
                 alt={String(conversation?.shop?.name)}
                 fill
                 sizes="(max-width: 768px) 100vw"
@@ -87,7 +86,7 @@ const UserListView = ({ conversation, className, ...rest }: Props) => {
             <div className="flex items-center justify-between">
               {isEmpty(conversation?.latest_message?.body) ? (
                 <h2 className="mr-1 w-[70%] truncate text-sm font-semibold">
-                  {conversation?.shop?.name}
+                  {conversation?.shop?.name || conversation?.dealer?.name}
                 </h2>
               ) : (
                 <h2 className="mr-1 w-[70%] truncate text-sm font-semibold">
@@ -107,7 +106,7 @@ const UserListView = ({ conversation, className, ...rest }: Props) => {
             </div>
             {!isEmpty(conversation?.latest_message?.body) ? (
               <p className="text-xs text-[#64748B]">
-                {conversation?.shop?.name}
+                {conversation?.shop?.name || conversation?.dealer?.name}
               </p>
             ) : (
               ''

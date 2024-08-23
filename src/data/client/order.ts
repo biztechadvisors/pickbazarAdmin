@@ -15,22 +15,74 @@ export const orderClient = {
   ...crudFactory<Order, QueryOptions, CreateOrderInput>(API_ENDPOINTS.ORDERS),
 
   get: ({ id, language }: { id: string; language: string }) => {
-    console.log('first--18')
     return HttpClient.get<Order>(`${API_ENDPOINTS.ORDERS}/${id}`, {
       language,
     });
   },
 
-  paginated: ({ tracking_number, ...params }: Partial<OrderQueryOptions>) => {
+  // paginated: ({
+  //   tracking_number,
+  //   customer_id,
+  //   ...params
+  // }: Partial<OrderQueryOptions>) => {
+  //   return HttpClient.get<OrderPaginator>(API_ENDPOINTS.ORDERS, {
+  //     searchJoin: customer_id,
+  //     ...params,
+  //     customer_id: HttpClient.formatSearchParams({ tracking_number, customer_id }),
+  //   });
+  // },
+
+  paginated: ({    
+    customer_id,
+    ...params
+  }: Partial<OrderQueryOptions>) => {
     return HttpClient.get<OrderPaginator>(API_ENDPOINTS.ORDERS, {
-      searchJoin: 'and',
       ...params,
-      search: HttpClient.formatSearchParams({ tracking_number }),
+      customer_id, 
+      
+    });
+  },
+
+
+
+
+
+  downloadInvoice: (input: GenerateInvoiceDownloadUrlInput) => {
+    return HttpClient.post<string>(
+      `${API_ENDPOINTS.ORDER_INVOICE_DOWNLOAD}`,
+      input
+    );
+  },
+};
+
+
+
+export const orderStocks = {
+  ...crudFactory<Order, QueryOptions, CreateOrderInput>(API_ENDPOINTS.DEALER_SEALS_STOCK_BY_ID),
+
+  // get: ({ id }: { id: string }) => {
+  //   return HttpClient.get<Order>(`${API_ENDPOINTS.DEALER_SEALS_STOCK_BY_ID}/:${id}`);
+  // },
+
+  get: ({ id }: { id: string }) => {
+    return HttpClient.get<Order>(`${API_ENDPOINTS.DEALER_SEALS_STOCK_BY_ID}/${id}`);
+},
+
+
+
+  paginated: ({
+    tracking_number,
+    customer_id,
+    ...params
+  }: Partial<OrderQueryOptions>) => {
+    return HttpClient.get<OrderPaginator>(API_ENDPOINTS.DEALER_SEALS_STOCK_BY_ID, {
+      searchJoin: customer_id,
+      ...params,
+      search: HttpClient.formatSearchParams({ tracking_number, customer_id }),
     });
   },
 
   downloadInvoice: (input: GenerateInvoiceDownloadUrlInput) => {
-    console.log('downloadInvoice***', input);
     return HttpClient.post<string>(
       `${API_ENDPOINTS.ORDER_INVOICE_DOWNLOAD}`,
       input

@@ -19,6 +19,7 @@ import { PlusIcon } from '@/components/icons/plus-icon';
 import AddCustomerSlider from './AddCustomerSlider';
 import { checkoutCustAtom, shopIdAtom } from '@/utils/atoms';
 import UserAddressSelection from '@/components/UserAddressSelection';
+import PageLoader from '@/components/ui/page-loader/page-loader';
 
 const CustomerEmail = dynamic(
   () => import('@/components/checkout/customer/CustomerEmail')
@@ -43,6 +44,7 @@ export default function CheckoutPage() {
   const {
     data: user,
     isLoading: loading,
+    error,
     refetch,
   } = useUserQuery({ id: customer?.id });
 
@@ -51,6 +53,14 @@ export default function CheckoutPage() {
       refetch(customer?.id);
     }
   }, [customer?.id]);
+
+  if (loading) {
+    <div>
+      <PageLoader />
+    </div>;
+  }
+
+  if (error) return <ErrorMessage message={error.message} />;
 
   return (
     <div className="bg-gray-100">

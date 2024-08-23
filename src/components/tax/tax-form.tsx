@@ -12,63 +12,80 @@ import {
 import { useTranslation } from 'next-i18next';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { taxValidationSchema } from './tax-validation-schema';
+import { useMeQuery } from '@/data/user';
+import { useState } from 'react';
 
 const defaultValues = {
   name: '',
   rate: 0,
-  cgst:'',
-  sgst:'',
-  gst_Name:'',
-  hsn_no:'',
-  sac_no:'',
-  compensatoin:'',
-  // country: '',
-  // state: '',
-  // zip: '',
-  // city: '',
+  cgst: '',
+  sgst: '',
+  hsn_no: '',
+  sac_no: '',
+  compensation_Cess: '',
 };
 
 type IProps = {
   initialValues?: Tax | null;
 };
+
 export default function CreateOrUpdateTaxForm({ initialValues }: IProps) {
   const router = useRouter();
   const { t } = useTranslation();
+  const { data: meData } = useMeQuery();
   const {
     register,
     handleSubmit,
     formState: { errors },
+    setValue,
+    watch,
   } = useForm<Tax>({
     shouldUnregister: true,
     resolver: yupResolver(taxValidationSchema),
     defaultValues: initialValues ?? defaultValues,
   });
+
+  const shop_id = meData?.shop_id;
   const { mutate: createTaxClass, isLoading: creating } =
-    useCreateTaxClassMutation();
+    useCreateTaxClassMutation(shop_id);
   const { mutate: updateTaxClass, isLoading: updating } =
-    useUpdateTaxClassMutation();
+    useUpdateTaxClassMutation(shop_id);
+
   const onSubmit = async (values: Tax) => {
     if (initialValues) {
       updateTaxClass({
         id: initialValues.id!,
         ...values,
+        shop_id,
       });
     } else {
       createTaxClass({
         ...values,
+        shop_id,
       });
     }
   };
+
+  // State to track the selected option
+  const [selectedKey, setSelectedKey] = useState('hsn_no');
+  const inputValue = watch(selectedKey);
+
+  const handleKeyChange = (e) => {
+    const newKey = e.target.value;
+    setSelectedKey(newKey);
+    // Clear the value of the unselected key
+    setValue(newKey === 'hsn_no' ? 'sac_no' : 'hsn_no', null);
+  };
+
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
       <div className="my-5 flex flex-wrap sm:my-8">
         <Description
           title={t('form:form-title-information')}
-          details={`${
-            initialValues
-              ? t('form:item-description-update')
-              : t('form:item-description-add')
-          } ${t('form:tax-form-info-help-text')}`}
+          details={`${initialValues
+            ? t('form:item-description-update')
+            : t('form:item-description-add')
+            } ${t('form:tax-form-info-help-text')}`}
           className="w-full px-0 pb-5 sm:w-4/12 sm:py-8 sm:pe-4 md:w-1/3 md:pe-5 "
         />
 
@@ -88,13 +105,33 @@ export default function CreateOrUpdateTaxForm({ initialValues }: IProps) {
             variant="outline"
             className="mb-5"
           />
-          <Input  //form.json to change languages and set all aditional fiels(hsn,CGST,SGST,GSTName, Compensatoin) 
-            label={t('form:input-label-hsn_no')}
-            {...register('hsn_no')}
-            error={t(errors.hsn_no?.message!)}
+
+          {/* Dropdown to select key */}
+          <div className="mb-5">
+            <label className="block text-sm font-medium text-gray-700">
+              {t('form:select-label-gst-type')}
+            </label>
+            <select
+              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+              value={selectedKey}
+              onChange={handleKeyChange}
+            >
+              <option value="hsn_no">{t('form:input-label-hsn_no')}</option>
+              <option value="sac_no">{t('form:input-label-sac_no')}</option>
+            </select>
+          </div>
+
+          {/* Conditional input field based on dropdown selection */}
+          <Input
+            label={t(`form:input-label-${selectedKey}`)}
+            {...register(selectedKey)}
+            value={inputValue || ''}
+            onChange={(e) => setValue(selectedKey, e.target.value)}
+            error={t(errors[selectedKey]?.message!)}
             variant="outline"
             className="mb-5"
           />
+
           <Input
             label={t('form:input-label-cgst')}
             {...register('cgst')}
@@ -110,69 +147,24 @@ export default function CreateOrUpdateTaxForm({ initialValues }: IProps) {
             className="mb-5"
           />
           <Input
-            label={t('form:input-label-gst_Name')}
-            {...register('gst_Name')}
-            error={t(errors.gst_Name?.message!)}
-            variant="outline"
-            className="mb-5"
-          />
-          <Input  //form.json to change languages and set all aditional fiels(hsn,CGST,SGST,GSTName, Compensatoin) 
-            label={t('form:input-label-sac_no')}
-            {...register('sac_no')}
-            error={t(errors.sac_no?.message!)}
-            variant="outline"
-            className="mb-5"
-          />
-           <Input
             label={t('form:input-label-compensatoin')}
             {...register('compensation_Cess')}
             error={t(errors.compensation_Cess?.message!)}
             variant="outline"
             className="mb-5"
           />
-          {/* <Input
-            label={t('form:input-label-country')}
-            {...register('country')}
-            error={t(errors.country?.message!)}
-            variant="outline"
-            className="mb-5"
-          /> */}
-          {/* <Input
-            label={t('form:input-label-city')}
-            {...register('city')}
-            error={t(errors.city?.message!)}
-            variant="outline"
-            className="mb-5"
-          /> */}
-          {/* <Input
-            label={t('form:input-label-state')}
-            {...register('state')}
-            error={t(errors.state?.message!)}
-            variant="outline"
-            className="mb-5"
-          /> */}
-          {/* <Input
-            label={t('form:input-label-zip')}
-            {...register('zip')}
-            error={t(errors.zip?.message!)}
-            variant="outline"
-            className="mb-5"
-          /> */}
         </Card>
       </div>
 
       <div className="mb-4 text-end">
-        {/* {initialValues && ( */}
-          <Button
-            variant="outline"
-            onClick={router.back}
-            className="me-4"
-            type="button"
-          >
-            {t('form:button-label-back')}
-          </Button>
-        {/* )} */}
-
+        <Button
+          variant="outline"
+          onClick={router.back}
+          className="me-4"
+          type="button"
+        >
+          {t('form:button-label-back')}
+        </Button>
         <Button loading={creating || updating}>
           {initialValues
             ? t('form:button-label-update')

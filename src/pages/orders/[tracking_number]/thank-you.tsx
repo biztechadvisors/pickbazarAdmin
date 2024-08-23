@@ -1,78 +1,79 @@
-import { getLayout } from '@/components/layouts/layout';
-import Order from '@/components/orders/order-view';
-import Seo from '@/components/seo/seo';
+// import { getLayout } from '@/components/layouts/layout';
+import Order from '@/components/order/order-view';
+// import Seo from '@/components/seo/seo';
 import { useEffect, useState } from 'react';
 import { useOrder, useOrderPayment } from '@/framework/rest/order';
 import { useRouter } from 'next/router';
 import { toast } from 'react-toastify';
 import { useTranslation } from 'next-i18next';
 import Spinner from '@/components/ui/loader/spinner/spinner';
+import AdminLayout from '@/components/layouts/admin';
 
 export { getServerSideProps } from '@/framework/rest/order.ssr';
 
 export default function OrderPage() {
-  const { query } = useRouter();
-  const { t } = useTranslation();
-  const { order, isLoading, isFetching } = useOrder({
-    tracking_number: query.tracking_number!.toString(),
-  });
-  const { createOrderPayment } = useOrderPayment();
+    const { query } = useRouter();
+    const { t } = useTranslation();
+    const { order, isLoading, isFetching } = useOrder({
+        tracking_number: query.tracking_number!.toString(),
+    });
+    const { createOrderPayment } = useOrderPayment();
 
-  useEffect(() => {
-    //@ts-ignore
-    switch (order?.payment_status) {
-      case 'payment-pending':
-        toast.success(`${t('payment-pending')}`);
-        break;
-
-      case 'payment-awaiting-for-approval':
-        toast.success(`${t('payment-awaiting-for-approval')}`);
-        break;
-
-      case 'payment-processing':
-        toast.success(`${t('payment-processing')}`);
-        break;
-
-      case 'payment-success':
-        toast.success(`${t('payment-success')}`);
-        break;
-
-      case 'payment-reversal':
-        toast.error(`${t('payment-reversal')}`);
-        break;
-
-      case 'payment-failed':
-        toast.error(`${t('payment-failed')}`);
-        break;
-    }
-  }, [
-    //@ts-ignore
-    order?.payment_status
-  ]);
-
-  useEffect(() => {
-    //@ts-ignore
-    if (!isLoading && order?.payment_gateway.toLowerCase()) {
-      createOrderPayment({
-        tracking_number: query?.tracking_number as string,
+    useEffect(() => {
         //@ts-ignore
-        payment_gateway: order?.payment_gateway.toLowerCase() as string,
-        paymentIntentInfo: undefined
-      });
+        switch (order?.payment_status) {
+            case 'payment-pending':
+                toast.success(`${t('payment-pending')}`);
+                break;
+
+            case 'payment-awaiting-for-approval':
+                toast.success(`${t('payment-awaiting-for-approval')}`);
+                break;
+
+            case 'payment-processing':
+                toast.success(`${t('payment-processing')}`);
+                break;
+
+            case 'payment-success':
+                toast.success(`${t('payment-success')}`);
+                break;
+
+            case 'payment-reversal':
+                toast.error(`${t('payment-reversal')}`);
+                break;
+
+            case 'payment-failed':
+                toast.error(`${t('payment-failed')}`);
+                break;
+        }
+    }, [
+        //@ts-ignore
+        order?.payment_status
+    ]);
+
+    useEffect(() => {
+        //@ts-ignore
+        if (!isLoading && order?.payment_gateway.toLowerCase()) {
+            createOrderPayment({
+                tracking_number: query?.tracking_number as string,
+                //@ts-ignore
+                payment_gateway: order?.payment_gateway.toLowerCase() as string,
+                paymentIntentInfo: undefined
+            });
+        }
+    }, [
+        //@ts-ignore
+        order?.payment_status,
+    ]);
+    if (isLoading) {
+        return <Spinner showText={false} />;
     }
-  }, [
-    //@ts-ignore
-    order?.payment_status,
-  ]);
-  if (isLoading) {
-    return <Spinner showText={false} />;
-  }
-  return (
-    <>
-      <Seo noindex={true} nofollow={true} />
-      <Order order={order} loadingStatus={!isLoading && isFetching} />
-    </>
-  );
+    return (
+        <>
+            {/* <Seo noindex={true} nofollow={true} /> */}
+            <Order order={order} loadingStatus={!isLoading && isFetching} />
+        </>
+    );
 }
 
-OrderPage.getLayout = getLayout;
+OrderPage.getLayout = AdminLayout;

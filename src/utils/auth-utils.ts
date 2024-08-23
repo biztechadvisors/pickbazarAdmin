@@ -7,25 +7,45 @@ import {
   EMAIL_VERIFIED,
   PERMISSIONS,
   STAFF,
-  STORE_OWNER,
+  Company,
   SUPER_ADMIN,
+  OWNER,
   TOKEN,
 } from './constants';
-import { Permissions } from '@/types';
 
-// Define allowed roles and role-specific access
-export const allowedRoles = [SUPER_ADMIN, STORE_OWNER, STAFF, DEALER, ADMIN];
-export const adminAndOwnerOnly = [SUPER_ADMIN, STORE_OWNER, ADMIN, DEALER];
-export const adminOwnerAndStaffOnly = [SUPER_ADMIN, STORE_OWNER, STAFF];
+export const allowedRoles = [
+  SUPER_ADMIN,
+  Company,
+  STAFF,
+  DEALER,
+  ADMIN,
+  OWNER,
+];
+export const adminAndOwnerOnly = [
+  SUPER_ADMIN,
+  Company,
+  ADMIN,
+  DEALER,
+  OWNER,
+];
+export const adminOwnerAndStaffOnly = [SUPER_ADMIN, Company, STAFF, OWNER];
 export const superAdminOnly = [SUPER_ADMIN];
-export const adminOnly = [SUPER_ADMIN, ADMIN, DEALER];
-export const ownerOnly = [STORE_OWNER];
+export const adminOnly = [OWNER, SUPER_ADMIN, ADMIN, DEALER, Company];
+export const ownerOnly = [SUPER_ADMIN, OWNER, DEALER, Company, STAFF];
 export const dealerOnly = [DEALER];
-export const ownerAndStaffOnly = [STORE_OWNER, STAFF];
+export const ownerAndStaffOnly = [Company, STAFF];
 
-let type_names: string[] | null = null;
+export interface AuthCredentials {
+  token: string | null;
+  permissions: string[] | null;
+  type_name: string[] | null;
+}
 
-export function setAuthCredentials(token: string, type_name: string, permissions: any) {
+export function setAuthCredentials(
+  token: string,
+  type_name: string,
+  permissions: string[]
+) {
   Cookie.set(AUTH_CRED, JSON.stringify({ token, permissions, type_name }));
 }
 
@@ -38,29 +58,18 @@ export function getEmailVerified(): { emailVerified: boolean } {
   return emailVerified ? JSON.parse(emailVerified) : { emailVerified: false };
 }
 
-export function getAuthCredentials(context?: any): {
-  token: string | null;
-  permissions: Permissions[] | null;
-  type_name: string[] | null;
-} {
-  let authCred: string | undefined;
-
+export function getAuthCredentials(context?: any): AuthCredentials {
+  let authCred;
   if (context) {
     authCred = parseSSRCookie(context)[AUTH_CRED];
   } else {
     authCred = Cookie.get(AUTH_CRED);
   }
-
   if (authCred) {
     const parsedData = JSON.parse(authCred);
-    type_names = parsedData.type_name;
-    return {
-      token: parsedData.token,
-      permissions: parsedData.permissions,
-      type_name: parsedData.type_name,
-    };
+    const type_names = parsedData.type_name;
+    return { ...parsedData, type_name: type_names };
   }
-
   return { token: null, permissions: null, type_name: null };
 }
 
@@ -68,12 +77,14 @@ export function parseSSRCookie(context: any) {
   return SSRCookie.parse(context.req.headers.cookie ?? '');
 }
 
-export function hasAccess(allowedRoles: string[], userPermissions: string[] | undefined | null) {
-  if (userPermissions) {
-    return allowedRoles.some((role) => userPermissions.includes(role));
-  }
-
-  return false;
+export function hasAccess(
+  allowedRoles: string[],
+  userPermissions: string[] | null | undefined
+) {
+  return (
+    Array.isArray(userPermissions) &&
+    allowedRoles.some((role) => userPermissions.includes(role))
+  );
 }
 
 export function isAuthenticated(cookies: any) {

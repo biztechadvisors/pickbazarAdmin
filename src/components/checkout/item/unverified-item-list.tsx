@@ -16,7 +16,7 @@ const UnverifiedItemList = () => {
   );
   return (
     <div className="w-full">
-      <div className="space-s-4 mb-4 flex flex-col items-center">
+      <div className="mb-4 flex flex-col items-center space-s-4">
         <span className="text-base font-bold text-heading">
           {t('text-your-order')}
         </span>
@@ -30,7 +30,9 @@ const UnverifiedItemList = () => {
             </h4>
           </div>
         ) : (
-          items?.map((item) => <ItemCard item={item} margin={item.margin} key={item.id} />)
+          items?.map((item) => (
+            <ItemCard item={item} margin={item.margin} key={item.id} />
+          ))
         )}
       </div>
       <div className="mt-4 space-y-2">

@@ -7,10 +7,7 @@ import { SortOrder } from '@/types';
 import { useState } from 'react';
 import TitleWithSort from '@/components/ui/title-with-sort';
 import { User, MappedPaginatorInfo } from '@/types';
-import { useAtom } from 'jotai';
-import { newPermission } from '@/contexts/permission/storepermission';
-import { getAuthCredentials } from '@/utils/auth-utils';
-import { siteSettings } from '@/settings/site.settings';
+import { AllPermission } from '@/utils/AllPermission';
 
 type IProps = {
   staffs: User[] | undefined;
@@ -29,13 +26,10 @@ const StaffList = ({
 }: IProps) => {
   const { t } = useTranslation();
   const { alignLeft, alignRight } = useIsRTL();
-  const [getPermission,_]=useAtom(newPermission)
-  const { permissions } = getAuthCredentials();
-  const canWrite =  permissions.includes('super_admin')
-  ? siteSettings.sidebarLinks
-  :getPermission?.find(
-   (permission) => permission.type === 'sidebar-nav-item-staffs'
- )?.write;
+
+  const permissionTypes = AllPermission(); 
+
+  const canWrite = permissionTypes.includes('sidebar-nav-item-staffs');
 
   const [sortingObj, setSortingObj] = useState<{
     sort: SortOrder;
@@ -91,18 +85,17 @@ const StaffList = ({
       render: (is_active: boolean) =>
         is_active ? t('common:text-active') : t('common:text-inactive'),
     },
-    {
-        ...(canWrite
-        ?{
-        title: t('table:table-item-actions'),
-        dataIndex: 'id',
-        key: 'actions',
-        align: alignRight,
-        render: (id: string) => {
-          return <ActionButtons id={id} deleteModalView="DELETE_STAFF" />;
-        },
-      } : null),
-    },
+    ...(canWrite
+      ? [{
+          title: t('table:table-item-actions'),
+          dataIndex: 'id',
+          key: 'actions',
+          align: alignRight,
+          render: (id: string) => {
+            return <ActionButtons id={id} deleteModalView="DELETE_STAFF" />;
+          },
+        }]
+      : []),
   ];
 
   return (

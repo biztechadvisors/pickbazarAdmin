@@ -11,20 +11,21 @@ import { User, QueryOptionsType, UserPaginator } from '@/types';
 import { mapPaginatorData } from '@/utils/data-mappers';
 import axios from 'axios';
 import { setEmailVerified } from '@/utils/auth-utils';
+import { useEffect, useMemo, useState } from 'react';
 
-// Get cookie value
-function getCookie(name: string) {
+// Function to get cookie value
+function getCookie(name: string): string | null {
   if (typeof window === 'undefined') {
     // We are on the server, return null
     return null;
   }
 
-  let cookieArr = document.cookie.split(';');
+  const cookieArr = document.cookie.split(';');
 
   for (let i = 0; i < cookieArr.length; i++) {
-    let cookiePair = cookieArr[i].split('=');
+    const cookiePair = cookieArr[i].split('=');
 
-    if (name == cookiePair[0].trim()) {
+    if (name === cookiePair[0].trim()) {
       return decodeURIComponent(cookiePair[1]);
     }
   }
@@ -35,100 +36,144 @@ function getCookie(name: string) {
 // Service to get user details
 export class UserService {
   static getUserDetails() {
-    // Extract token
+    // Extract token from cookie or localStorage
     let authToken = getCookie('AUTH_CRED');
-    let username: any, sub: any;
+    let username: string | null = null;
+    let sub: string | null = null;
 
     if (authToken) {
       // Parse the JWT token
-      let base64Url = authToken.split('.')[1];
-      let base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
-      let jsonPayload = decodeURIComponent(
-        atob(base64)
-          .split('')
-          .map(function (c) {
-            return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
-          })
-          .join('')
-      );
+      try {
+        const base64Url = authToken.split('.')[1];
+        const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+        const jsonPayload = decodeURIComponent(
+          atob(base64)
+            .split('')
+            .map((c) => '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2))
+            .join('')
+        );
 
-      let data = JSON.parse(jsonPayload);
+        const data = JSON.parse(jsonPayload);
 
-      // Extract username and sub
-      username = data.username;
-      sub = data.sub;
+        // Extract username and sub
+        username = data.username;
+        sub = data.sub;
+      } catch (error) {
+        console.error('Error parsing JWT token:', error);
+      }
     }
 
     return { username, sub };
   }
 }
 
+
+
+
+
 export const useMeQuery = () => {
-  const queryClient = useQueryClient();
   const router = useRouter();
+  const queryClient = useQueryClient();
+  const [userDetails, setUserDetails] = useState(() =>
+    UserService.getUserDetails()
+  );
 
-  // Get user details from UserService
-  const { username, sub } = UserService.getUserDetails();
+  useEffect(() => {
+    const fetchUserData = async () => {
+      const user = await UserService.getUserDetails();
+      setUserDetails(user);
+    };
 
-  console.log('username', username)
-  console.log('sub', sub)
+    fetchUserData();
+  }, []);
 
-  return useQuery<User, Error>(
+  const { username, sub } = userDetails;
+
+  const userDataQuery = useQuery<User, Error>(
     [API_ENDPOINTS.ME, { username, sub }],
     () => userClient.me({ username, sub }),
     {
-      retry: false,
-      onSuccess: () => {
-        if (router.pathname === Routes.verifyEmail) {
-          setEmailVerified(true);
-          router.replace(Routes.dashboard);
-        }
+      enabled: !!username && !!sub,
+      initialData: () => {
+        const cachedData = queryClient.getQueryData<User>([
+          API_ENDPOINTS.ME,
+          { username, sub },
+        ]);
+        return cachedData;
       },
-
+      retry: false,
       onError: (err) => {
         if (axios.isAxiosError(err)) {
           if (err.response?.status === 409) {
             setEmailVerified(false);
             router.replace(Routes.verifyEmail);
-            return;
+          } else {
+            toast.error('Error fetching user data');
           }
-          queryClient.clear();
-          router.replace(Routes.login);
         }
       },
     }
   );
+
+  const memoizedUserDataQuery = useMemo(() => userDataQuery, [userDataQuery]);
+
+  if (!username || !sub) {
+    return {
+      data: null,
+      isLoading: false,
+      isError: false,
+      error: null,
+      refetch: () => { },
+    };
+  }
+
+  return memoizedUserDataQuery;
 };
 
 export function useLogin() {
   return useMutation(userClient.login);
 }
 
+
 export const useLogoutMutation = () => {
   const router = useRouter();
   const { t } = useTranslation();
 
-  return useMutation(userClient.logout, {
+  const logoutMutation = useMutation(userClient.logout, {
     onSuccess: () => {
-      Cookies.remove(AUTH_CRED);
-      router.replace(Routes.login);
-      toast.success(t('common:successfully-logout'));
+      if (typeof window !== 'undefined') { // Ensure we're in the browser environment
+        // Remove auth credentials and clear all local storage items
+        Cookies.remove(AUTH_CRED);
+        localStorage.clear();
+
+        // Redirect to login route
+        router.replace(Routes.login);
+
+        // Show success toast
+        toast.success(t('common:successfully-logout'));
+      }
+    },
+    onError: (error) => {
+      if (typeof window !== 'undefined') { // Ensure we're in the browser environment
+        // Show error toast
+        toast.error(t('common:logout-failed', { error: error.message }));
+
+        console.error('Logout Error:', error);
+      }
     },
   });
+
+  return logoutMutation;
 };
 
 export const useRegisterMutation = () => {
   const router = useRouter();
   const queryClient = useQueryClient();
   const { t } = useTranslation();
-  // console.log(t, queryClient)
-
   return useMutation(userClient.register, {
     onSuccess: () => {
       const queryParams = new URLSearchParams(window.location.search);
-      console.log('queryParams', queryParams);
       const fromCheckout = queryParams.get('from') === 'checkout';
-      console.log('fromCheckout', fromCheckout);
 
       toast.success(t('common:successfully-register'));
       // if (fromCheckout) {
@@ -276,13 +321,19 @@ export const useUserQuery = ({ id }: { id: string }) => {
   );
 };
 
-export const useVendorQuery = () => {
-  const type: string = API_ENDPOINTS.VENDOR_LIST;
+export const useVendorQuery = (usrById: number) => {
+  const type: string = API_ENDPOINTS.STORE_OWNER;
+
   return useQuery<User, Error>(
-    [API_ENDPOINTS.USERS, type],
-    () => userClient.fetchVendor({ type }),
+    [API_ENDPOINTS.USERS, type, usrById],
+    () => {
+      if (isNaN(usrById)) {
+        throw new Error('usrById must be a valid number');
+      }
+      return userClient.fetchVendor({ type, usrById });
+    },
     {
-      enabled: Boolean(type),
+      enabled: !isNaN(usrById) && Boolean(type), // Enable query only if usrById is a valid number and type is truthy
     }
   );
 };
@@ -321,10 +372,8 @@ export const useAdminsQuery = (params: Partial<QueryOptionsType>) => {
   };
 };
 
-
 //  profile update function
 export const useUpdateProfileMutation = () => {
-
   const { t } = useTranslation();
   const queryClient = useQueryClient();
   return useMutation(userClient.update, {
@@ -336,5 +385,5 @@ export const useUpdateProfileMutation = () => {
       queryClient.invalidateQueries(API_ENDPOINTS.ME);
       queryClient.invalidateQueries(API_ENDPOINTS.PROFILE_UPDATE);
     },
-  })
-}
+  });
+};

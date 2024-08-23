@@ -1,10 +1,11 @@
 {
   "type_name": {
-    "SUPER_ADMIN": "super_admin",
-    "STORE_OWNER": "store_owner",
-    "ADMIN": "admin",
-    "DEALER": "dealer",
-    "STAFF": "staff"
+    "OWNER": "Owner",
+    "SUPER_ADMIN": "Super_Admin",
+    "Company": "Company",
+    "ADMIN": "Admin",
+    "DEALER": "Dealer",
+    "STAFF": "Staff"
   },
   "Menus": {
     "DASHBOARD": "sidebar-nav-item-dashboard",
@@ -14,6 +15,7 @@
     "ATTRIBUTES": "sidebar-nav-item-attributes",
     "GROUPS": "sidebar-nav-item-groups",
     "CATEGORIES": "sidebar-nav-item-categories",
+    "SUBCATEGORIES": "sidebar-nav-item-subcategories",
     "TAGS": "sidebar-nav-item-tags",
     "MANUFACTURERS": "sidebar-nav-item-manufacturers",
     "PERMISSIONS": "sidebar-nav-item-permissions",

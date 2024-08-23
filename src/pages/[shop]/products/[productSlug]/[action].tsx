@@ -4,7 +4,7 @@ import Loader from '@/components/ui/loader/loader';
 import { useRouter } from 'next/router';
 import { useTranslation } from 'next-i18next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
-import ShopLayout from '@/components/layouts/shop';
+
 import {
   adminOnly,
   adminOwnerAndStaffOnly,
@@ -13,10 +13,10 @@ import {
 } from '@/utils/auth-utils';
 import { useProductQuery } from '@/data/product';
 import { Config } from '@/config';
-import shop from '@/components/layouts/shop';
 import { Routes } from '@/config/routes';
 import { useShopQuery } from '@/data/shop';
 import { useMeQuery } from '@/data/user';
+import AdminLayout from '@/components/layouts/admin';
 
 export default function UpdateProductPage() {
   const { query, locale } = useRouter();
@@ -27,14 +27,15 @@ export default function UpdateProductPage() {
   const { data: shopData } = useShopQuery({
     slug: query?.shop as string,
   });
-  const shopId = shopData?.id!;
+  const shop_id = shopData?.id!;
   const {
     product,
     isLoading: loading,
     error,
   } = useProductQuery({
     slug: query.productSlug as string,
-    userId: me?.id,
+    shop_id,
+    id: me?.id,
     language:
       query.action!.toString() === 'edit' ? locale! : Config.defaultLanguage,
   });
@@ -48,6 +49,7 @@ export default function UpdateProductPage() {
   ) {
     router.replace(Routes.dashboard);
   }
+
   return (
     <>
       <div className="flex py-5 border-b border-dashed border-border-base sm:py-8">
@@ -62,7 +64,7 @@ export default function UpdateProductPage() {
 UpdateProductPage.authenticate = {
   permissions: adminOwnerAndStaffOnly,
 };
-UpdateProductPage.Layout = ShopLayout;
+UpdateProductPage.Layout = AdminLayout;
 
 export const getServerSideProps = async ({ locale }: any) => ({
   props: {

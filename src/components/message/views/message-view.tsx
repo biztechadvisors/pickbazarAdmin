@@ -146,11 +146,10 @@ const UserMessageView = ({
       >
         <div
           onClick={scrollToBottom}
-          className={`flex h-10 w-10 transform cursor-pointer rounded-full border border-solid border-[#F3F4F6] bg-[#F3F4F6] text-black shadow-lg transition-all duration-300 hover:border-accent-hover hover:bg-accent-hover hover:text-white ${
-            visible
+          className={`flex h-10 w-10 transform cursor-pointer rounded-full border border-solid border-[#F3F4F6] bg-[#F3F4F6] text-black shadow-lg transition-all duration-300 hover:border-accent-hover hover:bg-accent-hover hover:text-white ${visible
               ? 'visible translate-y-0 opacity-100'
               : 'invisible translate-y-1 opacity-0'
-          }`}
+            }`}
           ref={floating}
           style={{
             position: strategy,
@@ -168,7 +167,8 @@ const UserMessageView = ({
           <>
             {!isEmpty(messages) ? (
               <div className="space-y-6">
-                {messages?.map((item: any, key: number) => {
+                {/* Reverse the messages array to display newest messages at the bottom */}
+                {messages.slice().reverse().map((item: any, key: number) => {
                   const { body, created_at, user_id, conversation } = item;
                   const checkUser = Number(data?.id) === Number(user_id);
                   let avatarUrl = !permission
@@ -176,9 +176,8 @@ const UserMessageView = ({
                     : item?.conversation?.shop?.logo?.thumbnail;
                   return (
                     <div
-                      className={`flex w-full gap-x-3 ${
-                        checkUser ? 'flex-row-reverse' : ''
-                      }`}
+                      className={`flex w-full gap-x-3 ${checkUser ? 'flex-row-reverse' : ''
+                        }`}
                       key={key}
                     >
                       {checkUser ? null : (
@@ -191,9 +190,8 @@ const UserMessageView = ({
                         </div>
                       )}
                       <div
-                        className={`w-full sm:w-2/4 ${
-                          checkUser ? 'text-right' : 'text-left'
-                        }`}
+                        className={`w-full sm:w-2/4 ${checkUser ? 'text-right' : 'text-left'
+                          }`}
                       >
                         <div className="space-y-1">
                           <h2
@@ -222,6 +220,7 @@ const UserMessageView = ({
         ) : (
           ''
         )}
+
         <div ref={messagesEndRef} />
       </div>
     </>

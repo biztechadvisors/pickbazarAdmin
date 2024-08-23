@@ -1,10 +1,9 @@
 import React, { useEffect, useState } from 'react';
-import AdminLayout from '@/components/layouts/admin';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import Card from '@/components/common/card';
 import { useTranslation } from 'react-i18next';
 import { useRouter } from 'next/router';
-import { ToastContainer, toast } from 'react-toastify';
+import { toast } from 'react-toastify';
 import Button from '@/components/ui/button';
 import { useQuery } from 'react-query';
 import { permissionClient } from '@/data/client/permission';
@@ -14,11 +13,12 @@ import { useMeQuery } from '@/data/user';
 import { getAuthCredentials } from '@/utils/auth-utils';
 import { newPermission } from '@/contexts/permission/storepermission';
 import { useAtom } from 'jotai';
+import OwnerLayout from '@/components/layouts/owner';
+import { ADMIN, DEALER, OWNER, STAFF, Company } from '@/utils/constants';
 
 const CreatePermission = () => {
   const router = useRouter();
   const { t } = useTranslation();
-
   const [typeName, setTypeName] = useState(PermissionJson.type_name);
   const [selectedType, setSelectedType] = useState('');
   const [menusData, setMenusData] = useState(PermissionJson.Menus);
@@ -50,7 +50,7 @@ const CreatePermission = () => {
       setTypeName([singlePermissionData.type_name]);
       setPermissionName(singlePermissionData.permissionName);
       const formattedPermissions = singlePermissionData.permission.map(
-        (perm, i) => ({
+        (perm: any, i: any) => ({
           id: perm.id,
           type: perm.type,
           read: perm.read,
@@ -61,17 +61,17 @@ const CreatePermission = () => {
     }
   }, [singlePermissionData]);
 
-  const handleChange = (e) => {
+  const handleChange = (e: any) => {
     setSelectedType(e.target.value);
     setTypeError('');
   };
 
-  const handlePermissionNameChange = (e) => {
+  const handlePermissionNameChange = (e: any) => {
     setPermissionName(e.target.value);
     setPermissionError('');
   };
 
-  const handleCheckboxChange = (menuItem, type, isChecked) => {
+  const handleCheckboxChange = (menuItem: any, type: any, isChecked: any) => {
     const permissionIndex = selectedPermissions.findIndex(
       (p) => p.type === menuItem
     );
@@ -144,7 +144,7 @@ const CreatePermission = () => {
   };
 
   const filteredData = () => {
-    if (permissions.includes('super_admin')) {
+    if (permissions?.includes(OWNER)) {
       return Object.entries(menusData).map(([key, value], index) => ({
         [key]: value,
         id: index + 1,
@@ -168,7 +168,7 @@ const CreatePermission = () => {
   };
 
   useEffect(() => {
-    if (permissions.includes('super_admin')) {
+    if (permissions.includes(OWNER)) {
       setTypeName(PermissionJson.type_name);
     } else {
       const permList = permissions;
@@ -179,14 +179,17 @@ const CreatePermission = () => {
 
       for (let i = 0; i < filteredArray.length; i++) {
         switch (filteredArray[i]) {
-          case 'admin':
-            updatedTypeName.push('admin', 'store_owner', 'dealer', 'staff');
+          case OWNER:
+            updatedTypeName.push(OWNER, ADMIN, Company, DEALER, STAFF);
             break;
-          case 'store_owner':
-            updatedTypeName.push('store_owner', 'dealer', 'staff');
+          case ADMIN:
+            updatedTypeName.push(ADMIN, Company, DEALER, STAFF);
             break;
-          case 'dealer':
-            updatedTypeName.push('dealer', 'staff');
+          case Company:
+            updatedTypeName.push(Company, DEALER, STAFF);
+            break;
+          case DEALER:
+            updatedTypeName.push(DEALER, STAFF);
             break;
           default:
             updatedTypeName = [];
@@ -211,7 +214,7 @@ const CreatePermission = () => {
             htmlFor="typename"
             className="block text-sm font-medium text-gray-700"
           >
-            {t('TYPENAMES')}
+            {t('PERMISSION TYPE')}
           </label>
           <select
             id="typename"
@@ -237,7 +240,7 @@ const CreatePermission = () => {
             htmlFor="permission"
             className="block text-sm font-medium text-gray-700"
           >
-            {t('PERMISSIONS')}
+            {t('PERMISSIONS NAME')}
           </label>
           <input
             type="text"
@@ -333,7 +336,7 @@ const CreatePermission = () => {
   );
 };
 
-CreatePermission.Layout = AdminLayout;
+CreatePermission.Layout = OwnerLayout;
 
 export const getStaticProps = async ({ locale }) => ({
   props: {

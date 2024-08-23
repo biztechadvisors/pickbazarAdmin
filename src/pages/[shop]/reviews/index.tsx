@@ -18,6 +18,7 @@ import { useShopQuery } from '@/data/shop';
 import { useRouter } from 'next/router';
 import { Routes } from '@/config/routes';
 import { useMeQuery } from '@/data/user';
+import AdminLayout from '@/components/layouts/admin';
 
 export default function Reviews() {
   const router = useRouter();
@@ -82,7 +83,7 @@ export default function Reviews() {
 Reviews.authenticate = {
   permissions: adminAndOwnerOnly,
 };
-Reviews.Layout = Layout;
+Reviews.Layout = AdminLayout;
 
 export const getServerSideProps = async ({ locale }: any) => ({
   props: {

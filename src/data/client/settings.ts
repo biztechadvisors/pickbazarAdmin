@@ -5,12 +5,22 @@ import { HttpClient } from '@/data/client/http-client';
 
 export const settingsClient = {
   ...crudFactory<Settings, any, SettingsOptionsInput>(API_ENDPOINTS.SETTINGS),
-  all({ language }: { language: string }) {
-    return HttpClient.get<Settings>(API_ENDPOINTS.SETTINGS, {
-      language,
+
+  all({ language, shopSlug }: { language: string; shopSlug: string | null }) {
+    return HttpClient.get<Settings>(`${API_ENDPOINTS.SETTINGS}`, {
+      params: { language },
+      // Add shopSlug to the params object
+      shopSlug,
     });
   },
-  update: ({ ...data }: SettingsInput) => {
-    return HttpClient.post<Settings>(API_ENDPOINTS.SETTINGS, { ...data });
+
+  create: ({ shop_id, ...data }: SettingsInput) => {
+    const url = `${API_ENDPOINTS.SETTINGS}?shopId=${shop_id}`;
+    return HttpClient.post<Settings>(url, { ...data });
+  },
+
+  update: ({ id, ...data }: SettingsInput) => {
+    const url = `${API_ENDPOINTS.SETTINGS}/${id}`;
+    return HttpClient.put<Settings>(url, { ...data }); // Changed to HttpClient.put
   },
 };
