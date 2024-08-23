@@ -162,7 +162,6 @@ const CreatePermission = () => {
           Object.entries(menusData).filter(([key, value]) => value === item)
         );
       });
-
       return last;
     }
   };

@@ -10,7 +10,7 @@ export const API_ENDPOINTS = {
   USERS: 'users',
   REGISTER: 'register',
   VENDOR_LIST: 'Vendor',
-  STORE_OWNER: 'company',
+  STORE_OWNER: 'Company',
   PRODUCTS: 'products',
   POPULAR_PRODUCTS: 'popular-products',
   COUPONS: 'coupons',
@@ -80,5 +80,6 @@ export const API_ENDPOINTS = {
   DEALER_SEALS_STOCK: '/stocks/orders',
   DEALER_SEALS_STOCK_BY_ID: '/stocks/order',
   DEALER_STATUS_CHANGE: '/stocks',
+  EVENTS:'/events'
   
 };

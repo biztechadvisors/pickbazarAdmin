@@ -11,6 +11,7 @@ interface AddressProps {
 }
 
 const AddressCard: React.FC<AddressProps> = ({ checked, address, userId }) => {
+  console.log('address', address);
   const { t } = useTranslation();
   const { openModal } = useModalAction();
 

@@ -96,7 +96,9 @@ export const customerContactAtom = atom(
     return set(checkoutAtom, { ...prev, customer_contact: data });
   }
 );
-export const customerAtom = atom((get) => get(checkoutAtom).customer,(get, set, data: any) => {
+export const customerAtom = atom(
+  (get) => get(checkoutAtom).customer,
+  (get, set, data: any) => {
     const prev = get(checkoutAtom);
     return set(checkoutAtom, {
       ...prev,

@@ -58,6 +58,12 @@ export const Routes = {
   tag: {
     ...routesFactory('/tags'),
   },
+  blog:{
+    ...routesFactory('/blogs')
+  },
+  event:{
+    ...routesFactory('/events')
+  },
   dealerlist: {
     ...routesFactory('/dealerlist'),
   },

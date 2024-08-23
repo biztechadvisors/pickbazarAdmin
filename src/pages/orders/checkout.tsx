@@ -20,6 +20,7 @@ import AddCustomerSlider from './AddCustomerSlider';
 import { checkoutCustAtom, shopIdAtom } from '@/utils/atoms';
 import UserAddressSelection from '@/components/UserAddressSelection';
 import PageLoader from '@/components/ui/page-loader/page-loader';
+import ErrorMessage from '@/components/ui/error-message';
 
 const CustomerEmail = dynamic(
   () => import('@/components/checkout/customer/CustomerEmail')
@@ -54,6 +55,8 @@ export default function CheckoutPage() {
     }
   }, [customer?.id]);
 
+  console.log('billingAddressAtom', billingAddressAtom);
+
   if (loading) {
     <div>
       <PageLoader />
@@ -76,7 +79,7 @@ export default function CheckoutPage() {
           />
 
           <AddressGrid
-            userId={user?.id!}
+            userId={user?.id}
             className="shadow-700 bg-light p-5 md:p-8"
             label={t('text-billing-address')}
             count={3}

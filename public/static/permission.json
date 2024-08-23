@@ -17,10 +17,8 @@
     "CATEGORIES": "sidebar-nav-item-categories",
     "SUBCATEGORIES": "sidebar-nav-item-subcategories",
     "TAGS": "sidebar-nav-item-tags",
-    "MANUFACTURERS": "sidebar-nav-item-manufacturers",
     "PERMISSIONS": "sidebar-nav-item-permissions",
     "DEALER": "sidebar-nav-item-dealerlist",
-    "AUTHORS": "sidebar-nav-item-authors",
     "ORDERS": "sidebar-nav-item-orders",
     "CREATE_ORDERS": "sidebar-nav-item-create-order",
     "USERS": "sidebar-nav-item-users",
@@ -30,12 +28,16 @@
     "WITHDRAWS": "sidebar-nav-item-withdraws",
     "MESSAGE": "sidebar-nav-item-message",
     "REFUNDS": "sidebar-nav-item-refunds",
-    "QUESTIONS": "sidebar-nav-item-questions",
     "STORE_NOTICE": "sidebar-nav-item-store-notice",
     "REVIEWS": "sidebar-nav-item-reviews",
     "SETTINGS": "sidebar-nav-item-settings",
     "STAFFS": "sidebar-nav-item-staffs",
     "STOCK": "sidebar-nav-item-stocks",
+    "SALES": "sidebar-nav-item-sales",
+    "CREATE_SALES": "sidebar-nav-item-create-sales"
+  },
+
+  "Advance_Permission": {
     "SALES": "sidebar-nav-item-sales",
     "CREATE_SALES": "sidebar-nav-item-create-sales"
   }
