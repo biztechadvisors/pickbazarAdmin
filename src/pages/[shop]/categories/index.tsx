@@ -42,6 +42,7 @@ export default function Categories() {
   const shopSlug = meData?.managed_shop?.slug;
 
   const { categories, paginatorInfo, loading, error } = useCategoriesQuery({
+    shop,
     limit: 20,
     page,
     type,
@@ -50,7 +51,7 @@ export default function Categories() {
     sortedBy,
     parent: null,
     language: locale,
-    shop,
+    search:searchTerm,
   });
 
 
