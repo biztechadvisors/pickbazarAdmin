@@ -1,5 +1,3 @@
-
-
 import { Fragment } from 'react';
 import { Dialog, Transition } from '@headlessui/react';
 import { useForm, Controller } from 'react-hook-form';
@@ -7,7 +5,10 @@ import Button from '@/components/ui/button';
 import { Table } from '@/components/ui/table';
 import { useTranslation } from 'next-i18next';
 // import { useQuery } from 'react-query';
-import { useUpdateStockDataByDealer, useUpdateStockDataById } from '@/data/stocks';
+import {
+  useUpdateStockDataByDealer,
+  useUpdateStockDataById,
+} from '@/data/stocks';
 import { useMeQuery } from '@/data/user';
 import { DEALER } from '@/utils/constants';
 
@@ -31,11 +32,14 @@ const DispatchModal: React.FC<DispatchModalProps> = ({
 
   const user_id = dealerId;
   const { mutate: updateStockDataById } = useUpdateStockDataById(user_id);
-  const { mutate: updateStockDataByDealer } = useUpdateStockDataByDealer(user_id);
+  const { mutate: updateStockDataByDealer } =
+    useUpdateStockDataByDealer(user_id);
 
   const { data: meData } = useMeQuery();
 
-  const ReceivedButton = meData?.permission.type_name === DEALER || meData?.permission.type_name === DEALER;
+  const ReceivedButton =
+    meData?.permission.type_name === DEALER ||
+    meData?.permission.type_name === DEALER;
 
   // const ReceivedButton = meData?.type.type_name === DEALER;
 
@@ -45,11 +49,10 @@ const DispatchModal: React.FC<DispatchModalProps> = ({
       ...data.products[rowData.id],
     };
     const updateDispatchQuant = Number(updatedData?.update_qty);
-    const receivedQuantity = Number(updatedData?.update_qty);    
+    const receivedQuantity = Number(updatedData?.update_qty);
     const order_id = Number(updatedData?.order?.id);
     const product_id = Number(updatedData?.product?.id);
     const variation_option_id = Number(updatedData?.variation_options?.id);
-    
 
     const finalUpdatedData = {
       ...(ReceivedButton ? { receivedQuantity } : { updateDispatchQuant }),
@@ -64,7 +67,7 @@ const DispatchModal: React.FC<DispatchModalProps> = ({
 
     if (ReceivedButton) {      
       updateStockDataByDealer(finalUpdatedData);
-    } else {     
+    } else {
       updateStockDataById(finalUpdatedData);
     }
   };
@@ -112,9 +115,13 @@ const DispatchModal: React.FC<DispatchModalProps> = ({
       key: ReceivedButton ? 'received_qty' : 'dispatched_qty',
       render: (_: any, item: any) => (
         <Controller
-          name={`products.${item.id}.${ReceivedButton ? 'received_qty' : 'dispatched_qty'}`}
+          name={`products.${item.id}.${
+            ReceivedButton ? 'received_qty' : 'dispatched_qty'
+          }`}
           control={control}
-          defaultValue={ReceivedButton ? item.receivedQuantity : item.dispatchedQuantity}
+          defaultValue={
+            ReceivedButton ? item.receivedQuantity : item.dispatchedQuantity
+          }
           render={({ field }) => (
             <input
               type="number"

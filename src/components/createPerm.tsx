@@ -18,19 +18,24 @@ import { ADMIN, DEALER, OWNER, STAFF, Company } from '@/utils/constants';
 const CreatePerm = ({ PermissionDatas }) => {
   const router = useRouter();
   const { t } = useTranslation();
-  const [typeName, setTypeName] = useState(PermissionJson.type_name);
+  const [typeName, setTypeName] = useState(PermissionDatas.type_name);
   const [selectedType, setSelectedType] = useState('');
-  const [menusData, setMenusData] = useState(PermissionJson.Menus);
-  const [permissionName, setPermissionName] = useState('');
+  const [menusData, setMenusData] = useState(PermissionJson.Advance_Permission);
+  const [permissionName, setPermissionName] = useState(PermissionDatas.permission_name);
   const [selectedPermissions, setSelectedPermissions] = useState([]);
   const [typeError, setTypeError] = useState('');
   const [permissionError, setPermissionError] = useState('');
 
   const { permissions } = getAuthCredentials();
+
   const [matched, _] = useAtom(newPermission);
+
   const permissionId = router.query.id;
+
   const { data: meData } = useMeQuery();
+
   const { id } = meData || {};
+
   const { data: singlePermissionData, isLoading } = useQuery(
     ['permissionById', permissionId],
     () => permissionClient.getPermissionById(permissionId),
@@ -42,7 +47,6 @@ const CreatePerm = ({ PermissionDatas }) => {
   useEffect(() => {
     if (singlePermissionData) {
       setTypeName([singlePermissionData.type_name]);
-      setSelectedType(singlePermissionData.type_name); // Updated line
       setPermissionName(singlePermissionData.permissionName);
       const formattedPermissions = singlePermissionData.permission.map(
         (perm) => ({
@@ -53,13 +57,8 @@ const CreatePerm = ({ PermissionDatas }) => {
         })
       );
       setSelectedPermissions(formattedPermissions);
-    } else if (PermissionDatas) {
-      setTypeName([PermissionDatas.type_name]);
-      setSelectedType(PermissionDatas.type_name); // Updated line
-      setPermissionName(PermissionDatas.permission_name);
-      setSelectedPermissions(PermissionDatas.permissions);
     }
-  }, [singlePermissionData, PermissionDatas]);
+  }, [singlePermissionData]);
 
   const handleChange = (e) => {
     setSelectedType(e.target.value);
@@ -123,18 +122,23 @@ const CreatePerm = ({ PermissionDatas }) => {
       permissionName: permissionName,
       permissions: selectedPermissions,
     };
+    const dataToSend2 = {
+      type_name: typeToSend,
+      user: id,
+      permission_name: permissionName,
+      permissions: selectedPermissions,
+    };
 
     try {
       if (router.query.id) {
         const permissionId = router.query.id;
         await mutateUpdate({ permissionId, dataToSend });
       } else {
-        await mutatePost(dataToSend);
+        await mutatePost(dataToSend2);
       }
-      toast.success('Permission saved successfully');
     } catch (error) {
       console.error('Error saving/updating permission:', error);
-      toast.error('Error saving/updating permission');
+      toast.error('Error');
     }
   };
 
@@ -157,17 +161,16 @@ const CreatePerm = ({ PermissionDatas }) => {
           Object.entries(menusData).filter(([key, value]) => value === item)
         );
       });
-
       return last;
     }
   };
 
   useEffect(() => {
     if (permissions.includes(OWNER)) {
-      setTypeName(PermissionJson.type_name);
+      setTypeName(PermissionDatas.type_name);
     } else {
       const permList = permissions;
-      const newArray = Object.values(PermissionJson.type_name);
+      const newArray = Object.values(PermissionDatas.type_name);
       const filteredArray = newArray.filter((e) => permList.includes(e));
 
       let updatedTypeName = [];

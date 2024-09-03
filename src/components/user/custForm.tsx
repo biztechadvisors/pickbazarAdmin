@@ -241,7 +241,7 @@ import { useRouter } from 'next/router';
 import { usePermissionData } from '@/data/permission';
 import { getAuthCredentials } from '@/utils/auth-utils';
 import Loader from '../ui/loader/loader';
-import { DEALER, OWNER } from '@/utils/constants';
+import { Company, DEALER, OWNER } from '@/utils/constants';
 import { useShopQuery } from '@/data/shop';
 import PhoneInput from 'react-phone-input-2';
 import 'react-phone-input-2/lib/style.css';
@@ -278,6 +278,8 @@ const CustForm = () => {
   const { permissions } = getAuthCredentials();
   const [value, setValue] = useState('');
   const [selectedPermissionType] = useAtom(selectedOption);
+
+  console.log("selectedPermissionType", selectedPermissionType)
 
   const shopSlug =
     typeof window !== 'undefined' ? localStorage.getItem('shopSlug') : null;
@@ -321,7 +323,7 @@ const CustForm = () => {
     password,
     contact,
     type,
-    numberOfDealers,
+    numberOfDealers, // Added new field to destructure
   }: FormValues) {
     registerUser(
       {
@@ -329,10 +331,10 @@ const CustForm = () => {
         email,
         password,
         contact,
-        UsrBy: id,
-        type: type?.value,
+        createdBy: id,
+        permission: selectedPermissionType?.name,
         numberOfDealers,
-        managed_shop: shopData,
+        managed_shop: shopData, // Added new field to payload
       },
       {
         onError: (error: any) => {
@@ -405,7 +407,7 @@ const CustForm = () => {
           isLoading={loading}
           className="mb-4"
         />
-        {permissions[0] === OWNER ? (
+        {permissions[0] === Company ? (
           <Input
             label={t('form:input-label-dealers')}
             {...register('numberOfDealers')}
