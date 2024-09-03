@@ -25,6 +25,9 @@ export const ScheduleGrid: React.FC<ScheduleProps> = ({
     setSchedule(schedules?.[0]);
   }, []);
 
+  console.log("selectedSchedule",selectedSchedule)
+  console.log("schedules",schedules)
+
   return (
     <div className={className}>
       <div className="mb-5 flex items-center justify-between md:mb-8">
@@ -45,7 +48,7 @@ export const ScheduleGrid: React.FC<ScheduleProps> = ({
             {schedules?.map((schedule: any, idx: number) => (
               <RadioGroup.Option value={schedule} key={idx}>
                 {({ checked }) => (
-                  <ScheduleCard checked={checked} schedule={schedule} />
+                  <ScheduleCard checked={checked} schedule={schdeule} />
                 )}
               </RadioGroup.Option>
             ))}
