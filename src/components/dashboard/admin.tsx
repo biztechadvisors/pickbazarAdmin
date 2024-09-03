@@ -47,7 +47,7 @@ export default function Dashboard() {
     error: orderError,
     loading: orderLoading,
   } = useOrdersQuery({
-    customer_id: customerId,
+    // customer_id: customerId,
     shop_id: meData?.managed_shop?.id,
     shop_slug: meData?.managed_shop?.slug,
     language: locale,
