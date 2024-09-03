@@ -20,7 +20,7 @@ import StockList from '@/components/stock/StockList';
 import { useOrdersQuery } from '@/data/order';
 import { useMeQuery } from '@/data/user';
 import OrderList from '@/components/order/order-list';
-import { Company } from '@/utils/constants';
+import { Company, DEALER } from '@/utils/constants';
 import { GetStockSeals, useGetStockSeals } from '@/data/stock';
 
 
@@ -47,16 +47,50 @@ export default function Sales() {
 
   const { data: me } = useMeQuery(); 
 
+  const DealerShow = me?.permission.type_name === DEALER;
+  const ShopShow = me?.permission.type_name === Company;
 
-  const { orders, loading, paginatorInfo, error } = useOrdersQuery({
+  
+
+  const queryConfig = {
     language: locale,
     limit: 20,
     page,
     tracking_number: searchTerm,
-    customer_id: me?.id,
-    shop_id: me?.managed_shop?.id,
-    shop_slug: me?.managed_shop?.slug,
-  });
+    // customer_id: me?.id,
+    // shop_id :  me?.shop_id,
+    // shop_slug : me?.managed_shop?.slug
+};
+
+if (DealerShow) {
+    queryConfig.shop_slug = me?.managed_shop?.slug;
+    queryConfig.customer_id = me?.id;
+} else if (ShopShow) {
+    queryConfig.customer_id = me?.shop_id;
+    queryConfig.shop_id = me?.managed_shop?.id;
+    queryConfig.shop_slug = me?.managed_shop?.slug;
+}
+
+// if (DealerShow) {
+//     queryConfig.shop_slug = me?.createdBy?.managed_shop?.slug;
+// } else if (ShopShow) {
+//     queryConfig.shop_id = me?.createdBy?.managed_shop?.id;
+//     queryConfig.shop_slug = me?.createdBy?.managed_shop?.slug;
+// }
+
+const { orders, loading, paginatorInfo, error } = useOrdersQuery(queryConfig);
+console.log("++++++++++sales++orders",orders)
+
+
+  // const { orders, loading, paginatorInfo, error } = useOrdersQuery({
+  //   language: locale,
+  //   limit: 20,
+  //   page,
+  //   tracking_number: searchTerm,
+  //   customer_id: me?.id,
+  //   shop_id: me?.managed_shop?.id,
+  //   shop_slug: me?.managed_shop?.slug,
+  // });
 
  
 
@@ -217,7 +251,7 @@ export default function Sales() {
 
   console.log("ordersData",ordersData)
 
-  const ShopShow = me?.permission.type_name === Company;
+  // const ShopShow = me?.permission.type_name === Company;
 
  
 
