@@ -58,6 +58,12 @@ export const Routes = {
   tag: {
     ...routesFactory('/tags'),
   },
+  blog:{
+    ...routesFactory('/blogs')
+  },
+  event:{
+    ...routesFactory('/events')
+  },
   dealerlist: {
     ...routesFactory('/dealerlist'),
   },
@@ -113,13 +119,13 @@ export const Routes = {
     ...routesFactory('/withdraws'),
   },
   staff: {
-    ...routesFactory('/staffs'),
+    ...routesFactory('/staff'),
   },
   stock: {
     ...routesFactory('/stocks'),
   },
   refund: {
-    ...routesFactory('/refunds'),
+    ...routesFactory(`${getAdminMyShopsRoute()}/refunds`),
   },
   question: {
     ...routesFactory('/questions'),

@@ -15,7 +15,6 @@ module.exports = withPWA({
       'via.placeholder.com',
       'res.cloudinary.com',
       's3.amazonaws.com',
-      'server.codenox.tech',
       'codenoxtestbucket.s3.ap-south-1.amazonaws.com',
       '18.141.64.26',
       '127.0.0.1',
@@ -27,6 +26,8 @@ module.exports = withPWA({
       'lh3.googleusercontent.com',
       'images.pexels.com',
       'codenoxtestbucket.s3.ap-south-1.amazonaws.com',
+      'server.codenoxx.com',
+      's3.ap-south-1.amazonaws.com',
     ],
   },
   ...(process.env.APPLICATION_MODE === 'production' && {

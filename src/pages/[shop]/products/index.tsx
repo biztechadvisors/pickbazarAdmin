@@ -87,9 +87,10 @@ export default function ProductsPage() {
   function handleImportModal() {
     openModal('EXPORT_IMPORT_PRODUCT', shopId);
   }
-  function handleOpenModel(){
+  function handleOpenModal(){
     openModal('MODEL_IMPORT',shopId);
   }
+
   // function handleOpenModel(){
   //   openModal('MODEL_IMPORT',shopSlug);
   // }
@@ -144,7 +145,7 @@ export default function ProductsPage() {
             </div>
 
             <Button
-              onClick={handleOpenModel}
+              onClick={handleOpenModal}
               className="h-12 ms-4 md:ms-6 "
             >
               {t('common:text-export-import')}

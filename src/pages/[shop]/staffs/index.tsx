@@ -40,7 +40,6 @@ export default function StaffsPage() {
 
   const canWrite = permissionTypes.includes('sidebar-nav-item-staffs');
 
-
   const { data: shopData, isLoading: fetchingShopId } = useShopQuery({
     slug: shop as string,
   });

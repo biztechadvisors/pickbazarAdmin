@@ -14,6 +14,8 @@ import { useAtom } from 'jotai';
 import { dealerAddress } from '@/utils/atoms';
 import { useRouter } from 'next/router';
 import OwnerLayout from '@/components/layouts/owner';
+import AdminLayout from '@/components/layouts/admin';
+import { DEALER } from '@/utils/constants';
 
 export default function ProfilePage() {
   const { t } = useTranslation();
@@ -49,7 +51,7 @@ export default function ProfilePage() {
       <ProfileUpdateFrom me={data} />
       <ChangePasswordForm />
 
-      {data?.dealer?.id && (
+      {data?.permission?.type_name === DEALER && (
         <div ref={userAddressSelectionRef}>
           <UserAddressSelection
             addresses={data.address}
@@ -63,7 +65,7 @@ export default function ProfilePage() {
     </>
   );
 }
-ProfilePage.Layout = OwnerLayout;
+ProfilePage.Layout = AdminLayout;
 
 export const getStaticProps = async ({ locale }: any) => ({
   props: {

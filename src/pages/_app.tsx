@@ -29,7 +29,8 @@ const Noop: React.FC<{ children?: React.ReactNode }> = ({ children }) => (
 
 const AppSettings: React.FC<{ children?: React.ReactNode }> = (props) => {
   const { locale } = useRouter();
-  const authToken = typeof window !== 'undefined' ? localStorage.getItem('authToken') : null;
+  const authToken =
+    typeof window !== 'undefined' ? localStorage.getItem('authToken') : null;
 
   let settings = null;
   let loading = false;
@@ -45,7 +46,9 @@ const AppSettings: React.FC<{ children?: React.ReactNode }> = (props) => {
   if (loading) return <PageLoader />;
   if (error) return <ErrorMessage message={error.message} />;
 
-  return <SettingsProvider initialValue={settings?.options || null} {...props} />;
+  return (
+    <SettingsProvider initialValue={settings?.options || null} {...props} />
+  );
 };
 type AppPropsWithLayout = AppProps & {
   Component: NextPageWithLayout;
@@ -89,7 +92,7 @@ const CustomApp = ({ Component, pageProps }: AppPropsWithLayout) => {
               </ModalProvider>
             </UIProvider>
           </AppSettings>
-          <ReactQueryDevtools />
+          {/* <ReactQueryDevtools /> */}
         </Hydrate>
       </QueryClientProvider>
     </div>

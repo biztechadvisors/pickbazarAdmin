@@ -42,7 +42,11 @@ const StockList = ({
   onSort,
   onOrder,
 }: IProps) => {
-  // const { data, paginatorInfo } = orders! ?? {};
+  // const { data } = orders! ?? {};
+
+  console.log("orders=orders",orders)
+
+
   const router = useRouter();
   const { t } = useTranslation();
   const rowExpandable = (record: any) => record.children?.length;
@@ -59,14 +63,9 @@ const StockList = ({
     column: null,
   });
 
-  // const [getPermission, _] = useAtom(newPermission);
-  // const canWrite = permissions.includes('super_admin')
-  //   ? siteSettings.sidebarLinks
-  //   : getPermission?.find(
-  //       (permission) => permission.type === 'sidebar-nav-item-orders'
-  //     )?.write;
+ 
 
-  const permissionTypes = AllPermission(); 
+  const permissionTypes = AllPermission();
 
   const canWrite = permissionTypes.includes('sidebar-nav-item-orders');
 
@@ -95,6 +94,13 @@ const StockList = ({
   });
 
   const columns = [
+    {
+      title: t('table:table-item-id'),
+      dataIndex: 'id',
+      key: 'id',
+      align: 'center',
+      width: 60,
+    },
     {
       title: t('table:table-item-tracking-number'),
       dataIndex: 'tracking_number',

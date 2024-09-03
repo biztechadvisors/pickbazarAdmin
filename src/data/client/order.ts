@@ -20,13 +20,63 @@ export const orderClient = {
     });
   },
 
+  // paginated: ({
+  //   tracking_number,
+  //   customer_id,
+  //   ...params
+  // }: Partial<OrderQueryOptions>) => {
+  //   return HttpClient.get<OrderPaginator>(API_ENDPOINTS.ORDERS, {
+  //     searchJoin: customer_id,
+  //     ...params,
+  //     customer_id: HttpClient.formatSearchParams({ tracking_number, customer_id }),
+  //   });
+  // },
+
+  paginated: ({    
+    customer_id,
+    ...params
+  }: Partial<OrderQueryOptions>) => {
+    return HttpClient.get<OrderPaginator>(API_ENDPOINTS.ORDERS, {
+      ...params,
+      customer_id, 
+      
+    });
+  },
+
+
+
+
+
+  downloadInvoice: (input: GenerateInvoiceDownloadUrlInput) => {
+    return HttpClient.post<string>(
+      `${API_ENDPOINTS.ORDER_INVOICE_DOWNLOAD}`,
+      input
+    );
+  },
+};
+
+
+
+export const orderStocks = {
+  ...crudFactory<Order, QueryOptions, CreateOrderInput>(API_ENDPOINTS.DEALER_SEALS_STOCK_BY_ID),
+
+  // get: ({ id }: { id: string }) => {
+  //   return HttpClient.get<Order>(`${API_ENDPOINTS.DEALER_SEALS_STOCK_BY_ID}/:${id}`);
+  // },
+
+  get: ({ id }: { id: string }) => {
+    return HttpClient.get<Order>(`${API_ENDPOINTS.DEALER_SEALS_STOCK_BY_ID}/${id}`);
+},
+
+
+
   paginated: ({
     tracking_number,
     customer_id,
     ...params
   }: Partial<OrderQueryOptions>) => {
-    return HttpClient.get<OrderPaginator>(API_ENDPOINTS.ORDERS, {
-      searchJoin: 'and',
+    return HttpClient.get<OrderPaginator>(API_ENDPOINTS.DEALER_SEALS_STOCK_BY_ID, {
+      searchJoin: customer_id,
       ...params,
       search: HttpClient.formatSearchParams({ tracking_number, customer_id }),
     });

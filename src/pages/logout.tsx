@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react';
+import { useEffect } from 'react';
 import Loader from '@/components/ui/loader/loader';
 import { useLogoutMutation } from '@/data/user';
 import { useTranslation } from 'next-i18next';
@@ -9,15 +9,11 @@ import { Routes } from '@/config/routes';
 
 function SignOut() {
   const { t } = useTranslation();
-  const { mutate: logout } = useLogoutMutation();
-  const hasLoggedOut = useRef(false); 
+  const { mutate: logout, isSuccess, isError, error } = useLogoutMutation();
+  const router = useRouter();
 
   useEffect(() => {
-    console.log('SignOut useEffect called');
-    if (!hasLoggedOut.current) {
-      logout();
-      hasLoggedOut.current = true;
-    }
+    logout();
   }, [logout]);
 
   return <Loader text={t('common:signing-out-text')} />;

@@ -14,12 +14,11 @@ import { getAuthCredentials } from '@/utils/auth-utils';
 import { newPermission } from '@/contexts/permission/storepermission';
 import { useAtom } from 'jotai';
 import OwnerLayout from '@/components/layouts/owner';
-import { ADMIN, DEALER, OWNER, STAFF, STORE_OWNER } from '@/utils/constants';
+import { ADMIN, DEALER, OWNER, STAFF, Company } from '@/utils/constants';
 
 const CreatePermission = () => {
   const router = useRouter();
   const { t } = useTranslation();
-
   const [typeName, setTypeName] = useState(PermissionJson.type_name);
   const [selectedType, setSelectedType] = useState('');
   const [menusData, setMenusData] = useState(PermissionJson.Menus);
@@ -163,7 +162,6 @@ const CreatePermission = () => {
           Object.entries(menusData).filter(([key, value]) => value === item)
         );
       });
-
       return last;
     }
   };
@@ -181,19 +179,13 @@ const CreatePermission = () => {
       for (let i = 0; i < filteredArray.length; i++) {
         switch (filteredArray[i]) {
           case OWNER:
-            updatedTypeName.push(
-              OWNER,
-              ADMIN,
-              STORE_OWNER,
-              DEALER,
-              STAFF,
-            );
+            updatedTypeName.push(OWNER, ADMIN, Company, DEALER, STAFF);
             break;
           case ADMIN:
-            updatedTypeName.push(ADMIN, STORE_OWNER, DEALER, STAFF);
+            updatedTypeName.push(ADMIN, Company, DEALER, STAFF);
             break;
-          case STORE_OWNER:
-            updatedTypeName.push(STORE_OWNER, DEALER, STAFF);
+          case Company:
+            updatedTypeName.push(Company, DEALER, STAFF);
             break;
           case DEALER:
             updatedTypeName.push(DEALER, STAFF);
@@ -221,13 +213,14 @@ const CreatePermission = () => {
             htmlFor="typename"
             className="block text-sm font-medium text-gray-700"
           >
-            {t('TYPENAMES')}
+            {t('PERMISSION TYPE')}
           </label>
           <select
             id="typename"
             name="typename"
-            className={`mt-1 block w-full rounded-md border bg-gray-100 p-2 ${typeError && 'border-red-500'
-              }`}
+            className={`mt-1 block w-full rounded-md border bg-gray-100 p-2 ${
+              typeError && 'border-red-500'
+            }`}
             onChange={(e) => handleChange(e)}
           >
             {Object.values(typeName).map((type, index) => (
@@ -246,14 +239,15 @@ const CreatePermission = () => {
             htmlFor="permission"
             className="block text-sm font-medium text-gray-700"
           >
-            {t('PERMISSIONS')}
+            {t('PERMISSIONS NAME')}
           </label>
           <input
             type="text"
             id="permission"
             name="permission"
-            className={`mt-1 block w-full rounded-md border bg-gray-100 p-2 ${permissionError && 'border-red-500'
-              }`}
+            className={`mt-1 block w-full rounded-md border bg-gray-100 p-2 ${
+              permissionError && 'border-red-500'
+            }`}
             placeholder="Enter permissions"
             value={permissionName}
             onChange={(e) => handlePermissionNameChange(e)}

@@ -426,7 +426,7 @@ export default function CreateOrUpdateProductForm({
               />
               <ProductCategoryInput control={control} setValue={setValue} />
               <ProductSubCategoryInput control={control} setValue={setValue} />
-              <ProductAuthorInput control={control} setValue={setValue} />
+              {/* <ProductAuthorInput control={control} setValue={setValue} /> */}
               {/* <ProductManufacturerInput control={control} setValue={setValue} /> */}
               <ProductTagInput control={control} setValue={setValue} />
             </Card>
@@ -509,7 +509,7 @@ export default function CreateOrUpdateProductForm({
                   getOptionLabel={(option: any) => `${option?.name}-${option?.hsn_no}`}
                   getOptionValue={(option: any) => option}
                   control={control}
-                  name={'hsn'}
+                  name={'taxes'}
                   defaultValue={[]} />
                 <ValidationError message={errors.address?.state?.message} />
               </div>

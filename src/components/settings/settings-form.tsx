@@ -51,6 +51,7 @@ import { EMAIL_GROUP_OPTION, SMS_GROUP_OPTION } from './eventsOption';
 import OpenAIButton from '../openAI/openAI.button';
 import { useModalAction } from '../ui/modal/modal.context';
 import { getErrorMessage } from '@/utils/form-error';
+import { useMeQuery } from '@/data/user';
 
 export const chatbotAutoSuggestion = ({ name }: { name: string }) => {
   return [
@@ -253,8 +254,13 @@ export default function SettingsForm({
   const router = useRouter();
   const { locale } = router;
 
+  const { data } = useMeQuery();
+
+  const shop_id = data?.managed_shop?.id || data?.createdBy?.managed_shop?.id;
+
   const { mutate: updateSettingsMutation } = useUpdateSettingsMutation();
   const { mutate: createSettingsMutation, isLoading: loading } = useCreateSettingsMutation();
+
 
   const { options } = settings ?? {};
 
@@ -398,14 +404,16 @@ export default function SettingsForm({
       ...values?.contactDetails,
       location: { ...omit(values?.contactDetails?.location, '__typename') },
       socials: values?.contactDetails?.socials
-        ? values?.contactDetails?.socials?.map((social: any) => ({
+        ? values?.contactDetails?.socials.map((social: any) => ({
           icon: social?.icon?.value,
           url: social?.url,
         }))
         : [],
     };
+
     const smsEvent = formatEventOptions(values.smsEvent);
     const emailEvent = formatEventOptions(values.emailEvent);
+
     const mutationParams = {
       id: settings?.id,
       language: locale,
@@ -424,7 +432,7 @@ export default function SettingsForm({
           name: gateway.name,
           title: gateway.title,
         })) || PAYMENT_GATEWAY.slice(0, 2),
-        useEnableGateway: values.useEnableGateway,
+        useEnableGateway: values.useEnableGateway || true,
         guestCheckout: values.guestCheckout,
         taxClass: values.taxClass?.id,
         shippingClass: values.shippingClass?.id,
@@ -446,9 +454,9 @@ export default function SettingsForm({
 
     try {
       if (!settings || !settings.language.includes(router.locale!)) {
-        await createSettingsMutation(mutationParams);
+        await createSettingsMutation({ shop_id, ...mutationParams });
       } else {
-        await updateSettingsMutation(mutationParams);
+        await updateSettingsMutation({ shop_id, ...mutationParams });
       }
     } catch (error) {
       const serverErrors = getErrorMessage(error);
@@ -486,7 +494,7 @@ export default function SettingsForm({
     (item: any) => item?.name === defaultPaymentGateway?.name
   );
 
-  const isRazorpayActive = paymentGateway?.some(payment => payment?.name === "razorpay");
+  const isRazorpayActive = paymentGateway?.some(payment => payment?.name === "razorpay") ? paymentGateway?.some(payment => payment?.name === "razorpay") : true;
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
@@ -722,7 +730,7 @@ export default function SettingsForm({
                       ? defaultPaymentGateway?.name
                       : ''
                   }
-                  disable={isEmpty(paymentGateway)}
+                // disable={isEmpty(paymentGateway)}
                 />
               </div>
 
@@ -749,31 +757,28 @@ export default function SettingsForm({
                     />
                   </div>
                   {isRazorpayActive && (
-                    <>
-                      <div className="mb-5">
-                        <div className="flex items-center gap-x-4">
-                          <SwitchInput
-                            name="RazorpayCardOnly"
-                            control={control}
-                            disabled={isNotDefaultSettingsPage}
-                          />
-                          <Label className="!mb-0">{t('Enable Razorpay Element')}</Label>
-                        </div>
+                    <div className="mb-5">
+                      <div className="flex items-center gap-x-4">
+                        <SwitchInput
+                          name="RazorpayCardOnly"
+                          control={control}
+                          disabled={isNotDefaultSettingsPage}
+                        />
+                        <Label className="!mb-0">{t('Enable Razorpay Element')}</Label>
                       </div>
-                    </>
+                    </div>
                   )}
                   <Label>{t('text-webhook-url')}</Label>
                   <div className="relative flex flex-col overflow-hidden rounded-md border border-solid border-[#D1D5DB]">
-                    {paymentGateway?.map((gateway: any, index: any) => {
-                      return <WebHookURL gateway={gateway} key={index} />;
-                    })}
+                    {paymentGateway.map((gateway: any, index: any) => (
+                      <WebHookURL gateway={gateway} key={index} />
+                    ))}
                   </div>
                 </>
               )}
             </>
-          ) : (
-            ''
-          )}
+          ) : null}
+
         </Card>
       </div>
       <div className="my-5 flex flex-wrap border-b border-dashed border-border-base pb-8 sm:my-8">

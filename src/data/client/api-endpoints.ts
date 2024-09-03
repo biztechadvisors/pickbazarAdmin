@@ -10,7 +10,7 @@ export const API_ENDPOINTS = {
   USERS: 'users',
   REGISTER: 'register',
   VENDOR_LIST: 'Vendor',
-  STORE_OWNER: 'Store_Owner',
+  STORE_OWNER: 'Company',
   PRODUCTS: 'products',
   POPULAR_PRODUCTS: 'popular-products',
   COUPONS: 'coupons',
@@ -60,7 +60,7 @@ export const API_ENDPOINTS = {
   GENERATE_DESCRIPTION: 'generate-descriptions',
   ORDER_EXPORT: 'export-order-url',
   ORDER_CREATE: 'order/create',
-  ORDER_INVOICE_DOWNLOAD: 'download-invoice',
+  ORDER_INVOICE_DOWNLOAD: 'download-invoice-url',
   // INVOICE_DOWNLOAD:'download-invoice',
   SEND_VERIFICATION_EMAIL: '/email/verification-notification',
   UPDATE_EMAIL: '/update-email',
@@ -75,5 +75,11 @@ export const API_ENDPOINTS = {
   PERMISSION: 'permission',
   CART: 'carts',
   STOCK: '/stocks',
+  STOCK_DEALER_UPDATE: '/stocks/update/inventory',
   STOCKBYID: '/orders',
+  DEALER_SEALS_STOCK: '/stocks/orders',
+  DEALER_SEALS_STOCK_BY_ID: '/stocks/order',
+  DEALER_STATUS_CHANGE: '/stocks',
+  EVENTS:'/events'
+  
 };

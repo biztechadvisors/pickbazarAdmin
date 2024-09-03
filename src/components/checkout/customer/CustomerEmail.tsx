@@ -7,7 +7,7 @@ import { userClient } from '@/data/client/user';
 import { useMeQuery } from '@/data/user';
 import { PlusIcon } from '@/components/icons/plus-icon';
 import { useRouter } from 'next/router';
-import { ADMIN, DEALER, STAFF, STORE_OWNER, SUPER_ADMIN } from '@/utils/constants';
+import { ADMIN, DEALER, STAFF, Company, SUPER_ADMIN } from '@/utils/constants';
 import { getAuthCredentials } from '@/utils/auth-utils';
 
 const CustomerEmail = ({ count }) => {
@@ -21,16 +21,26 @@ const CustomerEmail = ({ count }) => {
   const router = useRouter();
   const { permissions } = getAuthCredentials();
   const isPermission = permissions?.some(role =>
-    [DEALER, SUPER_ADMIN, STAFF, STORE_OWNER, ADMIN].includes(role)
+    [DEALER, SUPER_ADMIN, STAFF, Company, ADMIN].includes(role)
   );
 
   const { data: meData } = useMeQuery();
   const { id: usrById, email } = meData || {};
 
+  // useEffect(() => {
+  //   const storedInputValue = localStorage.getItem('inputValue');
+  //   if (storedInputValue) {
+  //     setInputValue(storedInputValue);
+  //   }
+  // }, []);
+
   useEffect(() => {
-    const storedInputValue = localStorage.getItem('inputValue');
-    if (storedInputValue) {
-      setInputValue(storedInputValue);
+    if (typeof window !== 'undefined') {
+      // Ensure we're in the browser environment
+      const storedInputValue = localStorage.getItem('inputValue');
+      if (storedInputValue) {
+        setInputValue(storedInputValue);
+      }
     }
   }, []);
 
@@ -56,9 +66,19 @@ const CustomerEmail = ({ count }) => {
     }
   }
 
+  // function handleInputChange(value) {
+  //   setInputValue(value);
+  //   localStorage.setItem('inputValue', value);
+  //   fetchEmailSuggestions(value);
+  //   setShowAddButton(true);
+  // }
+
   function handleInputChange(value) {
     setInputValue(value);
-    localStorage.setItem('inputValue', value);
+    if (typeof window !== 'undefined') {
+      // Ensure we're in the browser environment
+      localStorage.setItem('inputValue', value);
+    }
     fetchEmailSuggestions(value);
     setShowAddButton(true);
   }
@@ -124,11 +144,14 @@ const CustomerEmail = ({ count }) => {
             Loading...
           </div>
         )}
-        {!loading && emailSuggestions.length === 0 && inputValue !== '' && showAddButton && (
-          <div className="relative mt-2 rounded border border-border-200 bg-gray-100 px-5 py-6 text-center text-base">
-            No email found
-          </div>
-        )}
+        {!loading &&
+          emailSuggestions.length === 0 &&
+          inputValue !== '' &&
+          showAddButton && (
+            <div className="relative mt-2 rounded border border-border-200 bg-gray-100 px-5 py-6 text-center text-base">
+              No email found
+            </div>
+          )}
         {!loading && emailSuggestions.length > 0 && (
           <ul className="absolute z-10 mt-0.5 max-h-24 w-full overflow-y-auto rounded border border-accent bg-white py-1 shadow-lg">
             {emailSuggestions.map((suggestion) => (

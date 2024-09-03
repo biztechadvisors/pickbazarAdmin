@@ -16,7 +16,7 @@ import {
 import { useShopQuery } from '@/data/shop';
 import { useState } from 'react';
 import { SortOrder } from '@/types';
-import { useModalAction } from '@/components/ui/modal/modal.context';
+// import { useModalAction } from '@/components/ui/modal/modal.context';
 import { MoreIcon } from '@/components/icons/more-icon';
 import Button from '@/components/ui/button';
 import { useAttributesQuery } from '@/data/attributes';
@@ -37,25 +37,27 @@ export default function AttributePage() {
   const [searchTerm, setSearchTerm] = useState('');
   const [page, setPage] = useState(1);
   const { t } = useTranslation();
-  const { openModal } = useModalAction();
+  // const { openModal } = useModalAction();
   const [orderBy, setOrder] = useState('updated_at');
   const [sortedBy, setColumn] = useState<SortOrder>(SortOrder.Desc);
   const { data: me } = useMeQuery();
   const { data: shopData, isLoading: fetchingShop } = useShopQuery({
     slug: shop as string,
   });
+  
   const shopId = shopData?.id!;
+  const shopSlug = shopData?.slug
 
-  function handleImportModal() {
-    openModal('EXPORT_IMPORT_ATTRIBUTE', shopId);
-  }
+  
 
   const { attributes, loading, error } = useAttributesQuery(
     {
       shop_id: shopId,
+      slug: shopSlug,
       orderBy,
       sortedBy,
       language: locale,
+      search:searchTerm,
     },
     {
       enabled: Boolean(shopId),
@@ -63,6 +65,8 @@ export default function AttributePage() {
   );
 
 
+
+  
 
   const permissionTypes = AllPermission();
 
@@ -80,10 +84,21 @@ export default function AttributePage() {
     router.replace(Routes.dashboard);
   }
 
-  function handleSearch({ searchText }: { searchText: string }) {
+  // function handleSearch({ searchText }: { searchText: string }) {
+  //   setSearchTerm(searchText);
+  //   setPage(1);
+  // }
+
+  function handleSearch({ searchText }) {
     setSearchTerm(searchText);
     setPage(1);
   }
+
+  const filteredAttributes = attributes.filter(attribute =>
+    attribute.name.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
+
 
   function handlePagination(current: any) {
     setPage(current);
@@ -113,18 +128,18 @@ export default function AttributePage() {
             </LinkButton>
           )}
 
-          <Button onClick={handleImportModal} className="mt-5 w-full md:hidden">
+          {/* <Button onClick={handleImportModal} className="mt-5 w-full md:hidden">
             {t('common:text-export-import')}
-          </Button>
+          </Button> */}
 
-          <button
+          {/* <button
             onClick={handleImportModal}
             className="hidden h-8 w-8 flex-shrink-0 items-center justify-center rounded-full bg-gray-50 transition duration-300 ms-6 hover:bg-gray-100 md:flex"
           >
             {canWrite && (
               <MoreIcon className="w-3.5 text-body" />
             )}
-          </button>
+          </button> */}
         </div>
       </Card>
       <AttributeList

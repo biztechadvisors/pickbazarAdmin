@@ -54,14 +54,16 @@ export const PlaceOrderAction: React.FC<{
   const { data: meData } = useMeQuery();
   const dealerId = meData?.id;
 
+  const checkDealerId = meData?.dealer?.id;
+
   useEffect(() => {
-    if (!selectedAddress) {
+    if (!selectedAddress && checkDealerId) {
       router.push({
         pathname: '/profile-update',
         query: { from: 'order-checkout' },
       });
     }
-  }, [selectedAddress, router]);
+  }, [selectedAddress, router, checkDealerId]);
 
   useEffect(() => {
     setErrorMessage(null);
@@ -75,7 +77,8 @@ export const PlaceOrderAction: React.FC<{
 
   const { settings: option } = useSettings();
 
-  let freeShippings = option?.freeShipping && Number(option?.freeShippingAmount) <= subtotal;
+  let freeShippings =
+    option?.freeShipping && Number(option?.freeShippingAmount) <= subtotal;
 
   const total = calculatePaidTotal(
     {
@@ -96,8 +99,7 @@ export const PlaceOrderAction: React.FC<{
       return;
     }
 
-    const isFullWalletPayment =
-      use_wallet_points && payable_amount === 0;
+    const isFullWalletPayment = use_wallet_points && payable_amount === 0;
 
     const gateWay = isFullWalletPayment
       ? PaymentGateway.FULL_WALLET_PAYMENT
@@ -129,7 +131,7 @@ export const PlaceOrderAction: React.FC<{
       shipping_address: {
         ...(shipping_address?.address && shipping_address.address),
       },
-      saleBy: selectedAddress.address,
+      saleBy: selectedAddress?.address ?? null,
     };
 
     createOrder(input);
@@ -176,4 +178,3 @@ export const PlaceOrderAction: React.FC<{
     </>
   );
 };
-

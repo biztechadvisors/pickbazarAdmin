@@ -22,7 +22,6 @@ export default function ModalImportProducts() {
 
   const handleDrop = async (acceptedFiles) => {
     if (acceptedFiles.length) {
-      console.log("File and shopSlug: ", acceptedFiles[0], shopSlug);
       importProducts({
         file: acceptedFiles[0],
         shopSlug,
@@ -38,7 +37,7 @@ export default function ModalImportProducts() {
         title={t('text-import-products')}
       />
       <div style={{ marginTop: '20px' }}>
-        <ProgressBar now={progress} label={`${progress}%`} variant={progress > 0 ? 'success' : 'info'} />
+        {/* <ProgressBar now={progress} label={`${progress}%`} variant={progress > 0 ? 'success' : 'info'} /> */}
       </div>
       {loading && <p>{t('Loading...')}</p>}
     </div>

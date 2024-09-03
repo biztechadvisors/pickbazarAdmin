@@ -5,36 +5,50 @@ import Link from '@/components/ui/link';
 
 const InventoryDropdown = () => {
   const [isOpen, setIsOpen] = useState(false);
-  const [newShopSlug, setNewShopSlug] = useState(''); // State for newShopSlug
+  const [newShopSlug, setNewShopSlug] = useState('');
   const { permissions } = getAuthCredentials();
   const permission = hasAccess(dealerOnly, permissions);
 
   useEffect(() => {
-    const storedShopSlug = localStorage.getItem('shopSlug');
-    if (storedShopSlug) {
-      setNewShopSlug(storedShopSlug);
+    if (typeof window !== 'undefined') {
+      const storedShopSlug = localStorage.getItem('shopSlug');
+      const storedIsOpen = localStorage.getItem('isOpen') === 'true';
+      if (storedShopSlug) {
+        setNewShopSlug(storedShopSlug);
+      }
+      setIsOpen(storedIsOpen);
     }
   }, []);
 
   const toggleMenu = () => {
-    setIsOpen(!isOpen);
+    const newIsOpen = !isOpen;
+    setIsOpen(newIsOpen);
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('isOpen', newIsOpen);
+    }
   };
 
   const handleSetNewShopSlug = (newShopSlug) => {
-    localStorage.setItem('shopSlug', newShopSlug);
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('shopSlug', newShopSlug);
+    }
     setNewShopSlug(newShopSlug);
   };
 
+
   const buildUrl = (path) => {
-    return `/${newShopSlug}${path}`;
+    return `/${newShopSlug}/${path}`;
   };
 
   return (
     <div className="flex flex-col">
-      <button className="flex w-full items-center text-base text-body-dark text-start focus:text-accent" onClick={toggleMenu}>
+      <button
+        className="flex w-full items-center text-base text-body-dark text-start focus:text-accent"
+        onClick={toggleMenu}
+      >
         <h3>Inventory</h3>
         <ChevronDownIcon
-          className={`h-3.5 w-3.5 shrink-0 opacity-75 transition-transform duration-300 ${isOpen ? 'rotate-90' : ''}`}
+          className={`h-3.5 w-3.5 shrink-0 opacity-75 transition-transform duration-300 ${isOpen ? 'rotate-180' : ''}`}
         />
       </button>
       <div className={`${isOpen ? '' : 'hidden'} mt-0`}>
@@ -59,15 +73,6 @@ const InventoryDropdown = () => {
           </div>
           <div>
             <Link
-              href={buildUrl('/groups')}
-              className="relative flex w-full cursor-pointer items-center rounded-lg py-2 px-5 text-sm text-body-dark text-start before:absolute before:-left-0.5 before:top-[18px] before:h-px before:w-3 before:border-t before:border-dashed before:border-gray-300 before:content-[''] hover:text-accent focus:text-accent"
-              onClick={() => handleSetNewShopSlug(newShopSlug)}
-            >
-              <span>Groups</span>
-            </Link>
-          </div>
-          <div>
-            <Link
               href={buildUrl('/categories')}
               className="relative flex w-full cursor-pointer items-center rounded-lg py-2 px-5 text-sm text-body-dark text-start before:absolute before:-left-0.5 before:top-[18px] before:h-px before:w-3 before:border-t before:border-dashed before:border-gray-300 before:content-[''] hover:text-accent focus:text-accent"
               onClick={() => handleSetNewShopSlug(newShopSlug)}
@@ -82,6 +87,15 @@ const InventoryDropdown = () => {
               onClick={() => handleSetNewShopSlug(newShopSlug)}
             >
               <span>SubCategories</span>
+            </Link>
+          </div>
+          <div>
+            <Link
+              href={buildUrl('/groups')}
+              className="relative flex w-full cursor-pointer items-center rounded-lg py-2 px-5 text-sm text-body-dark text-start before:absolute before:-left-0.5 before:top-[18px] before:h-px before:w-3 before:border-t before:border-dashed before:border-gray-300 before:content-[''] hover:text-accent focus:text-accent"
+              onClick={() => handleSetNewShopSlug(newShopSlug)}
+            >
+              <span>Collections</span>
             </Link>
           </div>
           <div>

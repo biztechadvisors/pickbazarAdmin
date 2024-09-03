@@ -50,6 +50,7 @@ function formatBooleanSearchParam(key: string, value: boolean) {
 }
 
 interface SearchParamOptions {
+  attributes: string;
   categories: string;
   subcategories: string;
   slug: string,
@@ -75,6 +76,11 @@ export class HttpClient {
     const response = await Axios.post<T>(url, data, options);
     return response.data;
   }
+ 
+  static async patch<T>(url: string, data: unknown, options?: any) {
+    const response = await Axios.patch<T>(url, data, options);
+    return response.data;
+  }
 
   static async put<T>(url: string, data: unknown) {
     const response = await Axios.put<T>(url, data);
@@ -90,7 +96,7 @@ export class HttpClient {
     return Object.entries(params)
       .filter(([, value]) => Boolean(value))
       .map(([k, v]) =>
-        ['type', 'categories', 'subcategories', 'tags', 'author', 'manufacturer', 'settings'].includes(k)
+        ['type','attributes', 'categories', 'subcategories', 'tags', 'author', 'manufacturer', 'settings'].includes(k)
           ? `${k}.slug:${v}`
           : ['is_approved'].includes(k)
             ? formatBooleanSearchParam(k, v as boolean)

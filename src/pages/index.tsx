@@ -11,7 +11,7 @@ import {
   ADMIN,
   DEALER,
   STAFF,
-  STORE_OWNER,
+  Company,
   SUPER_ADMIN,
 } from '@/utils/constants';
 import AppLayout from '@/components/layouts/app';
@@ -28,7 +28,7 @@ export default function Dashboard({
 }) {
   if (
     userPermissions.some((permission) =>
-      [DEALER, STAFF, STORE_OWNER, SUPER_ADMIN, ADMIN].includes(permission)
+      [DEALER, STAFF, Company, SUPER_ADMIN, ADMIN].includes(permission)
     )
   ) {
     return <AdminDashboard />;

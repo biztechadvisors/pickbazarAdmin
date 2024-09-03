@@ -17,6 +17,7 @@ import DealerTypeList from '@/components/dealerlist/dealer-list';
 import { useMeQuery, useUsersQuery } from '@/data/user';
 import { useDealerQuery, useDealerQueryGet } from '@/data/dealer';
 import { AllPermission } from '@/utils/AllPermission';
+import { DEALER } from '@/utils/constants';
 
 export default function DealerPage() {
   const { locale } = useRouter();
@@ -26,19 +27,19 @@ export default function DealerPage() {
   const [searchTerm, setSearchTerm] = useState('');
   const { data } = useMeQuery();
   const { users, loading, error } = useUsersQuery({
-    type: 'Dealer',
+    type: DEALER,
     usrById: data?.id,
     name: searchTerm,
     // language: locale,
     orderBy,
     sortedBy,
   });
-  
-  const userdealer = users.filter((user)=>user?.type?.type_name==='dealer')
 
-  const permissionTypes = AllPermission(); 
+  const userdealer = users.filter((user) => user?.permission?.type_name === DEALER)
 
-const canWrite = permissionTypes.includes('sidebar-nav-item-dealerlist');
+  const permissionTypes = AllPermission();
+
+  const canWrite = permissionTypes.includes('sidebar-nav-item-dealerlist');
 
   // const {
   //   data,

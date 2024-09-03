@@ -134,6 +134,7 @@ export type QueryOptionsType = {
   name?: string;
   orderBy?: string;
   sortedBy?: SortOrder;
+
 };
 
 export enum OrderStatus {
@@ -163,7 +164,7 @@ export interface NameAndValueType {
 }
 export enum Permission {
   SuperAdmin = 'super_admin',
-  StoreOwner = 'store_owner',
+  StoreOwner = 'Company',
   Staff = 'staff',
   Customer = 'customer',
   Admin = 'admin',
@@ -483,7 +484,7 @@ export interface MakeAdminInput {
 }
 
 export interface User {
-  type: any;
+  permission: any;
   id: string;
   name: string;
   shops: Shop[];
@@ -498,7 +499,7 @@ export interface User {
   email_verified: boolean;
   shop_id: number;
   dealer?: any;
-  UsrBy?: any;
+  createdBy?: any;
 }
 
 export interface UpdateUser {
@@ -1362,7 +1363,7 @@ export interface RegisterInput {
   shop_id?: number;
   permission: Permission;
   contact: string;
-  UsrBy: any;
+  createdBy: any;
 }
 
 export interface ChangePasswordInput {
@@ -1541,6 +1542,7 @@ export interface AttributeQueryOptions extends QueryOptions {
   type: string;
   name: string;
   shop_id: string;
+  search: string;
 }
 
 export interface AttributeValueQueryOptions extends QueryOptions {
@@ -1620,8 +1622,14 @@ export interface OrderQueryOptions extends QueryOptions {
   type: string;
   name: string;
   shop_id: string;
+  shop_slug: string;
   tracking_number: string;
   customer_id: number;
+  search: any
+}
+
+export interface SalesQueryOptions extends QueryOptions { 
+  customer_id: number; 
 }
 
 export interface CouponQueryOptions extends QueryOptions {

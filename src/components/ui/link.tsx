@@ -31,6 +31,7 @@ const Link: React.FC<LinkProps> = ({
         className
       )}
       title={title}
+      suppressHydrationWarning={true}
     >
       {children}
     </NextLink>
@@ -38,4 +39,3 @@ const Link: React.FC<LinkProps> = ({
 };
 
 export default Link;
-

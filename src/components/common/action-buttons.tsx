@@ -83,10 +83,6 @@ const ActionButtons = ({
     openModal('REPLY_QUESTION', id);
   }
 
-
-
- 
-
   return (
     <div className="inline-flex w-auto items-center gap-8">
       {showReplyQuestion && (

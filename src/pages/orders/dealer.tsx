@@ -17,6 +17,7 @@ import { useShopQuery } from '@/data/shop';
 import { Menu, Transition } from '@headlessui/react';
 import classNames from 'classnames';
 import { DownloadIcon } from '@/components/icons/download-icon';
+import { useMeQuery } from '@/data/user';
 
 export default function DealerOrders() {
     const router = useRouter();
@@ -48,12 +49,18 @@ export default function DealerOrders() {
         }
     );
     const shopId = shopData?.id!;
+
+    const { data: me } = useMeQuery();
+
     const { orders, loading, paginatorInfo, error } = useOrdersQuery({
         language: locale,
         limit: 20,
         page,
         tracking_number: searchTerm,
+        shop_id: shopId ? shopId : null,
+        customer_id: me?.id
     });
+
     const { refetch } = useExportOrderQuery(
         {
             ...(shopId && { shop_id: shopId }),

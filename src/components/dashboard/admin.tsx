@@ -15,6 +15,8 @@ import { useRouter } from 'next/router';
 import { useMeQuery } from '@/data/user';
 import { CustomerIcon } from '../icons/sidebar/customer';
 import { AllPermission } from '@/utils/AllPermission';
+import { useGetStockSeals } from '@/data/stock';
+import { DEALER } from '@/utils/constants';
 
 export default function Dashboard() {
   const { t } = useTranslation();
@@ -23,6 +25,7 @@ export default function Dashboard() {
   const canWrite = permissionTypes.includes('sidebar-nav-item-dealerlist');
   const { data: meData } = useMeQuery();
   const customerId = meData?.id;
+ 
 
   const analyticsQuery = {
     customerId: parseInt(customerId),
@@ -35,16 +38,37 @@ export default function Dashboard() {
     error: analyticsError,
   } = useAnalyticsQuery(analyticsQuery);
 
+  console.log("analyticsData",analyticsData)
+
   const {
-    data: orderData,
+    orders: orderData,
+    paginatorInfo,
     error: orderError,
-    isLoading: orderLoading,
+    loading: orderLoading,
   } = useOrdersQuery({
     customer_id: customerId,
+    shop_id: meData?.managed_shop?.id,
+    shop_slug: meData?.managed_shop?.slug,
     language: locale,
     limit: 10,
     page: 1,
   });
+
+  const customer_id = meData?.id
+  const shop_id =  meData?.managed_shop?.id
+
+  const { data: response } = useGetStockSeals(customer_id, shop_id);
+
+  const DealerSalesList = response?.data
+  const DealerShow = meData?.permission.type_name === DEALER;
+
+  if (orderError) {
+    console.error('Error fetching orders:', orderError);
+  }
+
+  if (orderLoading) {
+    console.log('Loading orders...');
+  }
 
   const {
     data: popularProductData,
@@ -53,7 +77,7 @@ export default function Dashboard() {
   } = usePopularProductsQuery({
     limit: 10,
     language: locale,
-    shop_id: meData?.shop_id ? meData.shops : meData?.managed_shop?.id,
+    shop_id: meData?.managed_shop?.id,
   });
 
   if (analyticsLoading || orderLoading || popularProductLoading) {
@@ -136,11 +160,25 @@ export default function Dashboard() {
         />
       </div>
 
-      <div className="mb-6 flex w-full flex-wrap space-y-6 xl:flex-nowrap xl:space-y-0 xl:space-x-5">
+      <div className="mb-6  w-full flex-wrap space-y-6 xl:flex-nowrap xl:space-y-0 xl:space-x-5">
         <RecentOrders
           orders={orderData}
           title={t('table:recent-order-table-title')}
         />
+      </div>
+      {DealerShow ? (
+        <div className="mb-6  w-full flex-wrap space-y-6 xl:flex-nowrap xl:space-y-0 xl:space-x-5">
+        <RecentOrders
+          orders={DealerSalesList}
+          title={t('Recent Sales')}
+        />
+      </div>
+      ) : (
+        null
+      )}
+
+     
+      <div className="mb-6 w-full flex-wrap space-y-6 xl:flex-nowrap xl:space-y-0 xl:space-x-5">
         <PopularProductList
           products={popularProductData}
           title={t('table:popular-products-table-title')}

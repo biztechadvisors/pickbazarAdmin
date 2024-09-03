@@ -6,7 +6,7 @@ import { useTranslation } from 'next-i18next';
 import isEmpty from 'lodash/isEmpty';
 import ListView from '@/components/message/views/list-view';
 import Scrollbar from '@/components/ui/scrollbar';
-import { LIMIT } from '@/utils/constants';
+import { DEALER, LIMIT } from '@/utils/constants';
 import UserListNotFound from '@/components/message/views/conversation-not-found';
 import { SortOrder } from '@/types';
 import cn from 'classnames';
@@ -35,7 +35,7 @@ const UserList = ({ className, filterText, permission, ...rest }: Props) => {
     search:
       filterText?.length >= 3 ? filterText?.trim()?.toLowerCase() ?? '' : null,
     limit: LIMIT,
-    dealer_id: user?.type.type_name === 'dealer' ? user?.type.id : '',
+    dealer_id: user?.permission.type_name === DEALER ? user?.permission.id : '',
     sortedBy: SortOrder.Desc,
     orderBy: 'updated_at',
   });
