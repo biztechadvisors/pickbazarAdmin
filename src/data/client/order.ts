@@ -36,6 +36,7 @@ export const orderClient = {
     customer_id,
     ...params
   }: Partial<OrderQueryOptions>) => {
+    console.log("params",params)
     return HttpClient.get<OrderPaginator>(API_ENDPOINTS.ORDERS, {
       ...params,
       customer_id, 

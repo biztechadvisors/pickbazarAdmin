@@ -39,6 +39,7 @@ export default function Dashboard() {
   } = useAnalyticsQuery(analyticsQuery);
 
   console.log("analyticsData",analyticsData)
+  console.log("meData",meData)
 
   const {
     orders: orderData,
