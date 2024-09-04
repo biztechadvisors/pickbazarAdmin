@@ -5,6 +5,7 @@ import Search from '@/components/common/search';
 import AdminLayout from '@/components/layouts/admin';
 import LinkButton from '@/components/ui/link-button';
 import { Routes } from '@/config/routes';
+import { useBlogsQuery } from '@/data/blog';
 import { useMeQuery } from '@/data/user';
 import { adminOwnerAndStaffOnly } from '@/utils/auth-utils';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
@@ -22,10 +23,14 @@ const Blogs = () => {
   const shop: string | undefined = meData?.managed_shop?.id;
   const shopSlug = meData?.managed_shop?.slug;
 
+  const { data, isLoading, error } = useBlogsQuery(shopSlug);
+
   function handleSearch({ searchText }: { searchText: string }) {
     setSearchTerm(searchText);
     setPage(1);
   }
+
+  console.log("shopSlug", shopSlug)
   return (
     <>
       <Card className="mb-8 flex flex-col">

@@ -212,9 +212,8 @@ const ShopForm = ({ initialValues }: { initialValues?: any }) => {
   const { mutate: createShop, isLoading: creating } = useCreateShopMutation();
   const { mutate: updateShop, isLoading: updating } = useUpdateShopMutation();
   const [modalIsOpen, setIsOpen] = useState(false);
-  const [permissionSelectedOption] = useAtom(selectedOption);
-
-  console.log('permissionSelectedOption', permissionSelectedOption);
+  const [permissionSelectedOption, setPermissionSelectedOption] =
+    useAtom(selectedOption);
 
   function openModal() {
     setIsOpen(true);
@@ -225,8 +224,6 @@ const ShopForm = ({ initialValues }: { initialValues?: any }) => {
   }
 
   const permissionId = permissionSelectedOption?.e?.id;
-
-  console.log('permissionId', permissionId);
 
   const { permissions } = getAuthCredentials();
   const {
@@ -297,8 +294,6 @@ const ShopForm = ({ initialValues }: { initialValues?: any }) => {
 
   const permissionProps = permissionSelectedOption?.e;
 
-  console.log('permissionProps---------', permissionProps);
-
   const handleGenerateDescription = useCallback(() => {
     openModal('GENERATE_DESCRIPTION', {
       control,
@@ -315,6 +310,55 @@ const ShopForm = ({ initialValues }: { initialValues?: any }) => {
     name: 'settings.socials',
   });
 
+  const handleSelectChange = (selectedOption: any) => {
+    setPermissionSelectedOption(selectedOption);
+  };
+
+  // async function onSubmit(values: FormValues) {
+  //   const settings = {
+  //     ...values?.settings,
+  //     location: { ...omit(values?.settings?.location, '__typename') },
+  //     socials: values?.settings?.socials
+  //       ? values?.settings?.socials?.map((social: any) => ({
+  //           icon: social?.icon?.value,
+  //           url: social?.url,
+  //         }))
+  //       : [],
+  //   };
+
+  //   const { companyType, ...filteredValues } = values;
+
+  //   console.log('settings**********', settings);
+  //   try {
+  //     if (initialValues) {
+  //       const { ...restAddress } = values.address;
+  //       await updateShop({
+  //         id: initialValues.id,
+  //         ...values,
+  //         address: restAddress,
+  //         settings,
+  //         balance: {
+  //           id: initialValues.balance?.id,
+  //           ...values.balance,
+  //         },
+  //       });
+  //     } else {
+  //       await createShop({
+  //         ...values,
+  //         settings,
+  //         balance: {
+  //           ...values.balance,
+  //         },
+  //         additionalPermissions: {},
+  //         permission: permissionProps,
+  //       });
+  //     }
+  //     router.push('/shops'); // Navigate to the shops list or appropriate page
+  //   } catch (error) {
+  //     console.error('Error while saving the shop:', error);
+  //   }
+  // }
+
   async function onSubmit(values: FormValues) {
     const settings = {
       ...values?.settings,
@@ -326,26 +370,33 @@ const ShopForm = ({ initialValues }: { initialValues?: any }) => {
           }))
         : [],
     };
+  
+    // Remove companyType from values
+    const { companyType, ...filteredValues } = values;
+  
+    console.log('settings**********', settings);
     try {
       if (initialValues) {
-        const { ...restAddress } = values.address;
+        const { ...restAddress } = filteredValues.address;
         await updateShop({
           id: initialValues.id,
-          ...values,
+          ...filteredValues,
           address: restAddress,
           settings,
           balance: {
             id: initialValues.balance?.id,
-            ...values.balance,
+            ...filteredValues.balance,
           },
         });
       } else {
         await createShop({
-          ...values,
+          ...filteredValues,
           settings,
           balance: {
-            ...values.balance,
+            ...filteredValues.balance,
           },
+          additionalPermissions: {}, // Ensure this is set as needed
+          permission: permissionProps,
         });
       }
       router.push('/shops'); // Navigate to the shops list or appropriate page
@@ -353,6 +404,7 @@ const ShopForm = ({ initialValues }: { initialValues?: any }) => {
       console.error('Error while saving the shop:', error);
     }
   }
+  
 
   const coverImageInformation = (
     <span>
@@ -369,6 +421,8 @@ const ShopForm = ({ initialValues }: { initialValues?: any }) => {
       </div>
     );
   }
+
+  console.log(' initialValues_____________________', initialValues);
 
   return (
     <>
@@ -399,6 +453,7 @@ const ShopForm = ({ initialValues }: { initialValues?: any }) => {
                     option.email.toLowerCase().includes(searchValue)
                   );
                 }}
+                onChange={handleSelectChange}
                 defaultValue={control._defaultValues.owner}
               />
             </div>
