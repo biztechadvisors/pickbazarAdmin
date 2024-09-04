@@ -39,12 +39,12 @@ export const productClient = {
       searchJoin: 'and',
       with: 'shop;type',
       ...params,
-      search: HttpClient.formatSearchParams({
-        type,
-        name,
-        slug,
-        categories,
-      }),
+      // search: HttpClient.formatSearchParams({
+      //   type,
+      //   name,
+      //   slug,
+      //   categories,
+      // }),
     });
   },
   popular({ shop_id, ...params }: Partial<ProductQueryOptions>) {

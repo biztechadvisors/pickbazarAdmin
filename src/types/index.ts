@@ -1586,6 +1586,7 @@ export interface ProductQueryOptions extends QueryOptions {
   question: string;
   userId: string;
   dealerId: string;
+  search:string; 
 }
 
 export interface UserQueryOptions extends QueryOptions {

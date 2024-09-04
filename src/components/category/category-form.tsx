@@ -168,6 +168,7 @@ type FormValues = {
   image: any;
   icon: any;
   type: any;
+  region:string;
 };
 
 const defaultValues = {
@@ -247,6 +248,7 @@ export default function CreateOrUpdateCategoriesForm({
     useUpdateCategoryMutation();
 
   const onSubmit = async (values: FormValues) => {
+    console.log('Form Data:', values);
     const input = {
       language: router.locale,
       name: values.name,
@@ -259,6 +261,7 @@ export default function CreateOrUpdateCategoriesForm({
       icon: values.icon?.value || '',
       parent: values.parent?.id ?? null,
       type_id: values.type?.id,
+      regions: values.region,
     };
 
     if (
@@ -279,7 +282,10 @@ export default function CreateOrUpdateCategoriesForm({
       });
     }
   };
-
+  const countryOptions = [
+    { value: 'India', label: 'India' },
+    { value: 'usa', label: 'usa' },
+  ];
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
       <div className="my-5 flex flex-wrap border-b border-dashed border-border-base pb-8 sm:my-8">
@@ -336,6 +342,15 @@ export default function CreateOrUpdateCategoriesForm({
               options={updatedIcons}
               isClearable={true} defaultValue={[]} />
           </div>
+          <div className="mb-5">
+          <SelectInput
+    name="region"
+    control={control}
+    options={countryOptions}
+    isClearable={true}
+    defaultValue={[]}
+  />
+  </div>  
           <SelectTypes control={control} errors={errors} />
           <SelectCategories control={control} setValue={setValue} />
         </Card>
