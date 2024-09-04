@@ -449,6 +449,8 @@ export default function OrderDetailsPage() {
   const { data: me } = useMeQuery();
   const DealerShow = me?.permission.type_name === DEALER;
 
+  console.log("query",query)
+
   useEffect(() => {
     resetCart();
     resetCheckout();
@@ -459,13 +461,19 @@ export default function OrderDetailsPage() {
     : useUpdateOrderMutation();
   const { mutate: updateOrder, isLoading: updating, isError, isSuccess } = mutationHooks;
 
+ 
   const {
-    data: order,
+    order,
     isLoading: loading,
     error,
   } = DealerShow
     ? useOrderStocksQuery({ id: query.orderId as string, language: locale! })
     : useOrderQuery({ id: query.orderId as string, language: locale! });
+
+ 
+  
+  
+  console.log("Order Data:", order);
 
   const { refetch } = useDownloadInvoiceMutation(
     {
@@ -537,6 +545,9 @@ export default function OrderDetailsPage() {
 
   if (loading) return <Loader text={t('common:text-loading')} />;
   if (error) return <ErrorMessage message={error.message} />;
+
+  
+  
 
   async function handleDownloadInvoice() {
     try {

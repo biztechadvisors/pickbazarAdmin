@@ -49,7 +49,6 @@ export const useOrderQuery = ({
     [API_ENDPOINTS.ORDERS, { id, language }],
     () => orderClient.get({ id, language })
   );
-
   return {
     order: data,
     error,
