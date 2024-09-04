@@ -172,7 +172,8 @@ export const PlaceOrderAction: React.FC<{
       )}
       {!isAllRequiredFieldSelected && (
         <div className="mt-3">
-          <ValidationError message={t('text-place-order-helper-text')} />
+          {/* <ValidationError message={t('text-place-order-helper-text')} /> */}
+          
         </div>
       )}
     </>

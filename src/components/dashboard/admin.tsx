@@ -39,6 +39,7 @@ export default function Dashboard() {
   } = useAnalyticsQuery(analyticsQuery);
 
   console.log("analyticsData",analyticsData)
+  console.log("meData",meData)
 
   const {
     orders: orderData,
@@ -46,14 +47,15 @@ export default function Dashboard() {
     error: orderError,
     loading: orderLoading,
   } = useOrdersQuery({
-    customer_id: customerId,
+    // customer_id: customerId,
     shop_id: meData?.managed_shop?.id,
     shop_slug: meData?.managed_shop?.slug,
     language: locale,
     limit: 10,
     page: 1,
   });
-
+  
+ console.log("ORDERDAtA===========",orderData)
   const customer_id = meData?.id
   const shop_id =  meData?.managed_shop?.id
 

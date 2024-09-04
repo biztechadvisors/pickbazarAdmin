@@ -57,6 +57,7 @@ export default function AttributePage() {
       orderBy,
       sortedBy,
       language: locale,
+      search:searchTerm,
     },
     {
       enabled: Boolean(shopId),

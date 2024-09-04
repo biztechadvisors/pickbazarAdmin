@@ -81,7 +81,7 @@ export const useAttributesQuery = (
       ...options,
     }
   );
-
+ console.log("DATA+++++++",params)
   return {
     attributes: data ?? [],
     error,

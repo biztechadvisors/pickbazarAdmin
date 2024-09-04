@@ -1542,6 +1542,7 @@ export interface AttributeQueryOptions extends QueryOptions {
   type: string;
   name: string;
   shop_id: string;
+  search: string;
 }
 
 export interface AttributeValueQueryOptions extends QueryOptions {
@@ -1585,6 +1586,7 @@ export interface ProductQueryOptions extends QueryOptions {
   question: string;
   userId: string;
   dealerId: string;
+  search:string; 
 }
 
 export interface UserQueryOptions extends QueryOptions {

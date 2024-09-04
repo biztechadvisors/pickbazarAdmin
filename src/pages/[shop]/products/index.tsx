@@ -78,6 +78,7 @@ export default function ProductsPage() {
       orderBy,
       sortedBy,
       page,
+      search:searchTerm,
     },
     {
       enabled: Boolean(shopId),
