@@ -241,7 +241,7 @@ export default function CreateOrUpdateTagForm({ initialValues }: IProps) {
   const { mutate: updateTag, isLoading: updating } = useUpdateTagMutation();
   
   const onSubmit = async (values: FormValues) => {
-    console.log("Submitted Form Values:", values);
+  
     const input = {
       language: router.locale,
       name: values.name,
@@ -254,7 +254,7 @@ export default function CreateOrUpdateTagForm({ initialValues }: IProps) {
       icon: values.icon?.value ?? '',
       type_id: values.type?.id,
       shop: shopSlug,
-      region_name: values.region,
+      region_name: values.region ,
     };
 
     try {
