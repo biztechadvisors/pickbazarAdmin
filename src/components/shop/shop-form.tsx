@@ -214,6 +214,7 @@ const ShopForm = ({ initialValues }: { initialValues?: any }) => {
   const [modalIsOpen, setIsOpen] = useState(false);
   const [permissionSelectedOption, setPermissionSelectedOption] =
     useAtom(selectedOption);
+    
 
   function openModal() {
     setIsOpen(true);
@@ -370,10 +371,10 @@ const ShopForm = ({ initialValues }: { initialValues?: any }) => {
           }))
         : [],
     };
-  
+
     // Remove companyType from values
     const { companyType, ...filteredValues } = values;
-  
+
     console.log('settings**********', settings);
     try {
       if (initialValues) {
@@ -404,7 +405,6 @@ const ShopForm = ({ initialValues }: { initialValues?: any }) => {
       console.error('Error while saving the shop:', error);
     }
   }
-  
 
   const coverImageInformation = (
     <span>

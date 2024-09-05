@@ -24,6 +24,7 @@ import { AllPermission } from '@/utils/AllPermission';
 import AdminLayout from '@/components/layouts/admin';
 import OwnerLayout from '@/components/layouts/owner';
 import { STAFF } from '@/utils/constants';
+import Search from '@/components/common/search';
 
 export default function StaffsPage() {
   const router = useRouter();
@@ -49,16 +50,6 @@ export default function StaffsPage() {
     slug: shopSlug as string,
   });
 
-  const { users } = useUsersQuery({
-    limit: 20,
-    usrById: me?.id,
-    email: searchTerm,
-    page,
-    name: searchTerm,
-    orderBy,
-    sortedBy,
-  });
-
   const shopId = shopData?.id!;
   const {
     staffs,
@@ -67,6 +58,11 @@ export default function StaffsPage() {
     error,
   } = useStaffsQuery(
     {
+      limit: 20,
+      usrById: me?.id,
+      email: searchTerm,
+      page,
+      name: searchTerm,
       shop_id: shopId,
       page,
       orderBy,
@@ -93,10 +89,14 @@ export default function StaffsPage() {
     router.replace(Routes.dashboard);
   }
 
-  const filteredUsers = users?.filter(
+  const filteredUsers = staffs?.filter(
     (user) => user.permission?.type_name === STAFF
   );
 
+  function handleSearch({ searchText }: { searchText: string }) {
+    setSearchTerm(searchText);
+    setPage(1);
+  }
   return (
     <>
       <Card className="mb-8 flex flex-row items-center justify-between">
@@ -106,12 +106,16 @@ export default function StaffsPage() {
           </h1>
         </div>
 
-        <div className="flex w-3/4 items-center ms-auto xl:w-2/4">
-          {canWrite || ownerOnly ? (
-            <LinkButton href={`/users/create`} className="h-12 ms-auto">
+        <div className="flex w-full flex-col items-center ms-auto md:w-1/2 md:flex-row">
+          <div className="flex w-full items-center">
+            <Search onSearch={handleSearch} />
+            <LinkButton
+              href={`${Routes.staff.create}`}
+              className="h-12 ms-4 md:ms-6"
+            >
               <span>+ {t('form:button-label-add-staff')}</span>
             </LinkButton>
-          ) : null}
+          </div>
         </div>
       </Card>
 

@@ -94,7 +94,7 @@ export default function Customers() {
 Customers.authenticate = {
   permissions: adminAndOwnerOnly,
 };
-Customers.Layout = AdminLayout;
+Customers.Layout = OwnerLayout;
 
 export const getStaticProps = async ({ locale }: any) => ({
   props: {
