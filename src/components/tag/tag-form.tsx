@@ -16,7 +16,7 @@ import FileInput from '@/components/ui/file-input';
 import SelectInput from '@/components/ui/select-input';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { tagValidationSchema } from './tag-validation-schema';
-import { useCreateTagMutation, useUpdateTagMutation } from '@/data/tag';
+import { useCreateTagMutation, useRegionsQuery, useUpdateTagMutation } from '@/data/tag';
 import { useTypesQuery } from '@/data/type';
 import OpenAIButton from '../openAI/openAI.button';
 import { useSettingsQuery } from '@/data/settings';
@@ -70,6 +70,41 @@ export const chatbotAutoSuggestion = ({ name }: { name: string }) => {
     },
   ];
 };
+function SelectRegion({
+  control,
+  errors,
+}: {
+  control: Control<FormValues>;
+  errors: FieldErrors;
+}) {
+  const { locale } = useRouter();
+  const { t } = useTranslation(); 
+  const ShopSlugName = 'hilltop-marble';
+
+  const { regions, error } = useRegionsQuery({ 
+    shopSlug: ShopSlugName,  
+    language: locale!,
+  });
+
+  if (error) {
+    console.error("Error fetching regions:", error);
+  }
+
+  return (
+    <div className="mb-5">
+      <Label>Select Region</Label>
+      <SelectInput
+        name="region"
+        control={control}
+        getOptionLabel={(option: any) => option.name}
+        getOptionValue={(option: any) => option.id}
+        options={regions || []}
+        isLoading={!regions} // Show loading state if regions data is not yet loaded
+      />
+    <ValidationError message={t(errors.type?.message)} />
+    </div>
+  );
+}
 
 
 function SelectTypes({
@@ -81,8 +116,7 @@ function SelectTypes({
 }) {
   const { locale } = useRouter();
   const { t } = useTranslation();
-
-  const { types, loading } = useTypesQuery({
+   const { types, loading } = useTypesQuery({
     limit: 999,
     // type: type?.slug,
     language: locale,
@@ -125,6 +159,7 @@ type FormValues = {
   details: string;
   image: any;
   icon: any;
+  region_name:string;
 };
 
 const defaultValues = {
@@ -133,6 +168,7 @@ const defaultValues = {
   details: '',
   icon: '',
   type: '',
+  region_name:'',
 };
 
 type IProps = {
@@ -146,7 +182,7 @@ export default function CreateOrUpdateTagForm({ initialValues }: IProps) {
   const [page, setPage] = useState(1);
   const [orderBy, setOrder] = useState('created_at');
   const [sortedBy, setColumn] = useState<SortOrder>(SortOrder.Desc);
-
+ console.log("first+++++",initialValues)
   const { data: meData } = useMeQuery();
 
   const shopSlug = meData?.managed_shop.slug;
@@ -203,8 +239,9 @@ export default function CreateOrUpdateTagForm({ initialValues }: IProps) {
 
   const { mutate: createTag, isLoading: creating } = useCreateTagMutation();
   const { mutate: updateTag, isLoading: updating } = useUpdateTagMutation();
-
+  
   const onSubmit = async (values: FormValues) => {
+    console.log("Submitted Form Values:", values);
     const input = {
       language: router.locale,
       name: values.name,
@@ -217,6 +254,7 @@ export default function CreateOrUpdateTagForm({ initialValues }: IProps) {
       icon: values.icon?.value ?? '',
       type_id: values.type?.id,
       shop: shopSlug,
+      region_name: values.region,
     };
 
     try {
@@ -238,7 +276,6 @@ export default function CreateOrUpdateTagForm({ initialValues }: IProps) {
       getErrorMessage(err);
     }
   };
-
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
       <div className="my-5 flex flex-wrap border-b border-dashed border-gray-300 pb-8 sm:my-8">
@@ -297,6 +334,7 @@ export default function CreateOrUpdateTagForm({ initialValues }: IProps) {
               isClearable={true}
             />
           </div>
+          <SelectRegion control={control} errors={errors} />
           <SelectTypes control={control} errors={errors} />
         </Card>
       </div>

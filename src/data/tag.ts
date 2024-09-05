@@ -5,9 +5,10 @@ import { useTranslation } from 'next-i18next';
 import { mapPaginatorData } from '@/utils/data-mappers';
 import { API_ENDPOINTS } from './client/api-endpoints';
 import { Routes } from '@/config/routes';
-import { TagQueryOptions, GetParams, TagPaginator, Tag } from '@/types';
+import { TagQueryOptions, GetParams, TagPaginator, Tag, Region } from '@/types';
 import { tagClient } from '@/data/client/tag';
 import { Config } from '@/config';
+import { regionClient } from './client/regions';
 
 export const useCreateTagMutation = () => {
   const queryClient = useQueryClient();
@@ -56,13 +57,26 @@ export const useUpdateTagMutation = () => {
   });
 };
 
-export const useTagQuery = ({ slug, language }: GetParams) => {
+export const useTagQuery = ({ slug, language  }: GetParams) => {
   const { data, error, isLoading } = useQuery<Tag, Error>(
-    [API_ENDPOINTS.TYPES, { slug, language }],
+    [API_ENDPOINTS.TYPES , { slug, language }],
     () => tagClient.get({ slug, language })
   );
   return {
     tag: data,
+    error,
+    loading: isLoading,
+  };
+};
+export const useRegionsQuery = ({ shopSlug, language }: GetParams) => {
+  const { data, error, isLoading } = useQuery<Region[], Error>(
+    [API_ENDPOINTS.REGIONS, { shopSlug, language }],
+    () => regionClient.get({ shopSlug, language })  
+  );
+
+  console.log("REGION DATA: ", data); 
+   return {
+    regions: data,   
     error,
     loading: isLoading,
   };
