@@ -54,7 +54,8 @@ export default function Dashboard() {
     limit: 10,
     page: 1,
   });
-
+  
+ console.log("ORDERDAtA===========",orderData)
   const customer_id = meData?.id
   const shop_id =  meData?.managed_shop?.id
 

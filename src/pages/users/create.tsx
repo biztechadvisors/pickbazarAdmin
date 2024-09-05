@@ -1,3 +1,4 @@
+import AdminLayout from '@/components/layouts/admin';
 import Layout from '@/components/layouts/admin';
 import OwnerLayout from '@/components/layouts/owner';
 import CustomerCreateForm from '@/components/user/user-form';
@@ -17,7 +18,7 @@ export default function CreateCustomerPage() {
     </>
   );
 }
-CreateCustomerPage.Layout = OwnerLayout;
+CreateCustomerPage.Layout = AdminLayout;
 
 export const getStaticProps = async ({ locale }: any) => ({
   props: {

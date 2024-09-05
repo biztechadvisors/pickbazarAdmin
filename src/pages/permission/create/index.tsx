@@ -47,9 +47,9 @@ const CreatePermission = () => {
 
   useEffect(() => {
     if (singlePermissionData) {
-      setTypeName([singlePermissionData.type_name]);
-      setPermissionName(singlePermissionData.permissionName);
-      const formattedPermissions = singlePermissionData.permission.map(
+      setTypeName([singlePermissionData?.[0].type_name]);
+      setPermissionName(singlePermissionData?.[0].permissionName);
+      const formattedPermissions = singlePermissionData?.[0]?.permission?.map(
         (perm: any, i: any) => ({
           id: perm.id,
           type: perm.type,
@@ -199,6 +199,11 @@ const CreatePermission = () => {
     }
   }, []);
 
+
+  console.log("typename", typeName)
+  console.log("singlePermissionData", singlePermissionData)
+  console.log("singlePermissionData.type_name", singlePermissionData?.type_name)
+
   return (
     <>
       <Card className="mb-8 flex flex-col items-center xl:flex-row">
@@ -287,7 +292,7 @@ const CreatePermission = () => {
                         )
                       }
                       checked={
-                        selectedPermissions.find(
+                        selectedPermissions?.find(
                           (p) => p.type === Object.values(item)[0]
                         )?.read || false
                       }
@@ -306,7 +311,7 @@ const CreatePermission = () => {
                         )
                       }
                       checked={
-                        selectedPermissions.find(
+                        selectedPermissions?.find(
                           (p) => p.type === Object.values(item)[0]
                         )?.write || false
                       }

@@ -21,7 +21,7 @@ const CreatePerm = ({ PermissionDatas }) => {
   const [typeName, setTypeName] = useState(PermissionDatas.type_name);
   const [selectedType, setSelectedType] = useState('');
   const [menusData, setMenusData] = useState(PermissionJson.Advance_Permission);
-  const [permissionName, setPermissionName] = useState(PermissionDatas.permission_name);
+  const [permissionName, setPermissionName] = useState('');
   const [selectedPermissions, setSelectedPermissions] = useState([]);
   const [typeError, setTypeError] = useState('');
   const [permissionError, setPermissionError] = useState('');
@@ -111,7 +111,7 @@ const CreatePerm = ({ PermissionDatas }) => {
 
     let typeToSend = selectedType;
     if (!selectedType) {
-      const firstType = Object.values(typeName)[0];
+      const firstType = typeName;
       typeToSend = firstType;
       setSelectedType(firstType);
     }
@@ -198,6 +198,13 @@ const CreatePerm = ({ PermissionDatas }) => {
     }
   }, []);
 
+
+  console.log("typeName", typeName)
+  console.log("selectedType", selectedType)
+  console.log("PermissionDatas", PermissionDatas)
+
+ 
+
   return (
     <div style={{ backgroundColor: 'white' }} className="modal">
       <div className="modal-content">
@@ -224,11 +231,9 @@ const CreatePerm = ({ PermissionDatas }) => {
               onChange={handleChange}
               value={selectedType}
             >
-              {Object.values(typeName).map((type, index) => (
-                <option key={index} value={type}>
-                  {type}
+                <option>
+                  {typeName}
                 </option>
-              ))}
             </select>
             {typeError && (
               <p className="mt-1 text-sm text-red-500">{typeError}</p>

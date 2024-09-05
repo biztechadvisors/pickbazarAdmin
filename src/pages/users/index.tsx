@@ -11,9 +11,16 @@ import { useTranslation } from 'next-i18next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import { Routes } from '@/config/routes';
 import { SortOrder } from '@/types';
-import { adminOnly, getAuthCredentials, ownerOnly } from '@/utils/auth-utils';
+import {
+  adminAndOwnerOnly,
+  adminOnly,
+  getAuthCredentials,
+  ownerOnly,
+} from '@/utils/auth-utils';
 import { AllPermission } from '@/utils/AllPermission';
 import OwnerLayout from '@/components/layouts/owner';
+import AppLayout from '@/components/layouts/app';
+import AdminLayout from '@/components/layouts/admin';
 
 export default function Customers() {
   const [searchTerm, setSearchTerm] = useState('');
@@ -32,11 +39,11 @@ export default function Customers() {
     name: searchTerm,
     orderBy,
     sortedBy,
-    role: 'user'
+    role: 'user',
   });
 
-  console.log("data?.id",data?.id)
-  console.log("users",users)
+  console.log('data?.id', data?.id);
+  console.log('users', users);
 
   if (loading) return <Loader text={t('common:text-loading')} />;
   if (error) return <ErrorMessage message={error.message} />;
@@ -85,9 +92,9 @@ export default function Customers() {
 }
 
 Customers.authenticate = {
-  permissions: ownerOnly,
+  permissions: adminAndOwnerOnly,
 };
-Customers.Layout = OwnerLayout;
+Customers.Layout = AdminLayout;
 
 export const getStaticProps = async ({ locale }: any) => ({
   props: {

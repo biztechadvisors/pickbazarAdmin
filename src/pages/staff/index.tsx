@@ -108,10 +108,7 @@ export default function StaffsPage() {
 
         <div className="flex w-3/4 items-center ms-auto xl:w-2/4">
           {canWrite || ownerOnly ? (
-            <LinkButton
-              href={`/users/create`}
-              className="h-12 ms-auto"
-            >
+            <LinkButton href={`/users/create`} className="h-12 ms-auto">
               <span>+ {t('form:button-label-add-staff')}</span>
             </LinkButton>
           ) : null}

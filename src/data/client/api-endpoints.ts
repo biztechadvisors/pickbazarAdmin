@@ -45,7 +45,7 @@ export const API_ENDPOINTS = {
   STAFFS: 'staffs',
   ADD_STAFF: 'staffs',
   REMOVE_STAFF: 'staffs',
-  MODEL_IMPORT:'uploadxl-products/upload',
+  MODEL_IMPORT: 'uploadxl-products/upload',
   IMPORT_PRODUCTS: 'import-products/',
   IMPORT_ATTRIBUTES: 'import-attributes/',
   IMPORT_VARIATION_OPTIONS: 'import-variation-options/',
@@ -80,6 +80,6 @@ export const API_ENDPOINTS = {
   DEALER_SEALS_STOCK: '/stocks/orders',
   DEALER_SEALS_STOCK_BY_ID: '/stocks/order',
   DEALER_STATUS_CHANGE: '/stocks',
-  EVENTS:'/events'
-  
+  EVENTS: '/events',
+  BLOG: '/blogs',
 };
