@@ -1,3 +1,4 @@
+
 // import Card from '@/components/common/card';
 // import { DownloadIcon } from '@/components/icons/download-icon';
 // import Layout from '@/components/layouts/admin';
@@ -11,13 +12,7 @@
 // import { Table } from '@/components/ui/table';
 // import { clearCheckoutAtom } from '@/contexts/checkout';
 // import { useCart } from '@/contexts/quick-cart/cart.context';
-// import {  
-//   useDealerStatusChange,
-//   useDownloadInvoiceMutation,
-//   useOrderQuery,
-//   useOrderStocksQuery,
-//   useUpdateOrderMutation,
-// } from '@/data/order';
+// import { useDealerStatusChange, useDownloadInvoiceMutation, useOrderQuery, useOrderStocksQuery, useUpdateOrderMutation } from '@/data/order';
 // import { siteSettings } from '@/settings/site.settings';
 // import { Attachment, OrderStatus, PaymentStatus } from '@/types';
 // import { formatAddress } from '@/utils/format-address';
@@ -27,7 +22,7 @@
 // import usePrice from '@/utils/use-price';
 // import { useAtom } from 'jotai';
 // import jsPDF from 'jspdf';
-// import html2canvas from "html2canvas";
+// import html2canvas from 'html2canvas';
 // import { useTranslation } from 'next-i18next';
 // import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 // import Image from 'next/image';
@@ -36,11 +31,11 @@
 // import { useForm } from 'react-hook-form';
 // import { useMeQuery } from '@/data/user';
 // import { DEALER } from '@/utils/constants';
-// // import html2pdf from 'html2pdf.js'
 
 // type FormValues = {
 //   order_status: any;
 // };
+
 // export default function OrderDetailsPage() {
 //   const { t } = useTranslation();
 //   const { query, locale } = useRouter();
@@ -50,18 +45,19 @@
 //   const { data: me } = useMeQuery();
 //   const DealerShow = me?.permission.type_name === DEALER;
 
+//   console.log("query",query)
+
 //   useEffect(() => {
 //     resetCart();
-//     // @ts-ignore
 //     resetCheckout();
 //   }, [resetCart, resetCheckout]);
 
 //   const mutationHooks = DealerShow
-//   ? useDealerStatusChange()
-//   : useUpdateOrderMutation();
-// const { mutate: updateOrder, isLoading: updating, isError, isSuccess } = mutationHooks;
+//     ? useDealerStatusChange()
+//     : useUpdateOrderMutation();
+//   const { mutate: updateOrder, isLoading: updating, isError, isSuccess } = mutationHooks;
 
-//  console.log("DealerShow=======", DealerShow)
+ 
 //   const {
 //     order,
 //     isLoading: loading,
@@ -69,8 +65,11 @@
 //   } = DealerShow
 //     ? useOrderStocksQuery({ id: query.orderId as string, language: locale! })
 //     : useOrderQuery({ id: query.orderId as string, language: locale! });
+
+ 
   
   
+//   console.log("Order Data:", order);
 
 //   const { refetch } = useDownloadInvoiceMutation(
 //     {
@@ -95,6 +94,7 @@
 //       order_status: order_status?.status as string,
 //     });
 //   };
+
 //   const { price: subtotal } = usePrice(
 //     order && {
 //       amount: order?.amount!,
@@ -106,32 +106,35 @@
 //       amount: order?.paid_total!,
 //     }
 //   );
+
 //   const { price: discount } = usePrice(
 //     order && {
 //       amount: order?.discount! ?? 0,
 //     }
 //   );
+
 //   const { price: delivery_fee } = usePrice(
 //     order && {
 //       amount: order?.delivery_fee!,
 //     }
 //   );
+
 //   const { price: sales_tax } = usePrice(
 //     order && {
 //       amount: order?.sales_tax!,
 //     }
 //   );
+
 //   const { price: sub_total } = usePrice({ amount: order?.amount! });
 //   const { price: shipping_charge } = usePrice({
 //     amount: order?.delivery_fee ?? 0,
 //   });
+
 //   const { price: wallet_total } = usePrice({
-//     // @ts-ignore
 //     amount: order?.wallet_point?.amount!,
 //   });
 
 //   const totalItem = order?.products?.reduce(
-//     // @ts-ignore
 //     (initial = 0, p) => initial + parseInt(p?.pivot?.order_quantity!),
 //     0
 //   );
@@ -139,40 +142,74 @@
 //   if (loading) return <Loader text={t('common:text-loading')} />;
 //   if (error) return <ErrorMessage message={error.message} />;
 
-
 //   async function handleDownloadInvoice() {
 //     try {
 //       const response = await refetch();
-
-//       // Check if the response is successful and contains data
+  
 //       if (!response || !response.data) {
 //         throw new Error('Invalid response received from backend');
 //       }
-
-//       const pdfContent = response.data;
-
-//       if (!pdfContent || pdfContent.length === 0) {
-//         throw new Error('Invalid PDF content received from backend');
-//       }
-
+  
+//       const pdfContent = response.data; // Assuming this is binary content
+  
+//       // Create a Blob object from the PDF content
 //       const blob = new Blob([pdfContent], { type: 'application/pdf' });
-
+  
+//       // Create a URL for the Blob object
+//       const url = window.URL.createObjectURL(blob);
+  
+//       // Create a temporary link element
 //       const link = document.createElement('a');
-//       link.href = window.URL.createObjectURL(blob);
-//       link.download = 'invoice.pdf';
-
+//       link.href = url;
+//       link.download = 'invoice.pdf'; // The name of the file to be downloaded
+  
+//       // Append the link to the document body
 //       document.body.appendChild(link);
+  
+//       // Trigger the download
 //       link.click();
-
-//       // Wait for a short delay before removing the link
-//       await new Promise(resolve => setTimeout(resolve, 1000));
-
-//       document.body.removeChild(link);
+  
+//       // Clean up the temporary link and revoke the object URL
+//       link.remove();
+//       window.URL.revokeObjectURL(url);
+  
 //     } catch (error) {
 //       console.error('Error downloading PDF:', error);
 //     }
 //   }
+  
+  
 
+//   // async function handleDownloadInvoice() {
+//   //   try {
+//   //     const response = await refetch();
+
+//   //     if (!response || !response.data) {
+//   //       throw new Error('Invalid response received from backend');
+//   //     }
+
+//   //     const pdfContent = response.data;
+
+//   //     if (!pdfContent || pdfContent.length === 0) {
+//   //       throw new Error('Invalid PDF content received from backend');
+//   //     }
+
+//   //     const blob = new Blob([pdfContent], { type: 'application/pdf' });
+
+//   //     const link = document.createElement('a');
+//   //     link.href = window.URL.createObjectURL(blob);
+//   //     link.download = 'invoice.pdf';
+
+//   //     document.body.appendChild(link);
+//   //     link.click();
+
+//   //     await new Promise((resolve) => setTimeout(resolve, 1000));
+
+//   //     document.body.removeChild(link);
+//   //   } catch (error) {
+//   //     console.error('Error downloading PDF:', error);
+//   //   }
+//   // }
 
 //   const columns = [
 //     {
@@ -281,7 +318,6 @@
 //         <div className="mb-10">
 //           {order ? (
 //             <Table
-//               //@ts-ignore
 //               columns={columns}
 //               emptyText={t('table:empty-table-data')}
 //               data={order?.products!}
@@ -346,9 +382,7 @@
 //             </h3>
 
 //             <div className="flex flex-col items-start space-y-1 text-sm text-body">
-//               <span>
-//                 {formatString(order?.products?.length, t('text-item'))}
-//               </span>
+//               <span>{formatString(order?.products?.length, t('text-item'))}</span>
 //               <span>{order?.delivery_time}</span>
 //             </div>
 //           </div>
@@ -389,6 +423,7 @@
 //     </>
 //   );
 // }
+
 // OrderDetailsPage.Layout = Layout;
 
 // export const getServerSideProps = async ({ locale }: any) => ({
@@ -396,10 +431,10 @@
 //     ...(await serverSideTranslations(locale, ['common', 'form', 'table'])),
 //   },
 // });
-// // function html2pdf() {
-// //   throw new Error('Function not implemented.');
-// // }
 
+
+
+//----------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 
 
