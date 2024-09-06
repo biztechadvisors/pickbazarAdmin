@@ -14,28 +14,32 @@ import { useCouponsQuery } from '@/data/coupon';
 import { useRouter } from 'next/router';
 import { Config } from '@/config';
 import { AllPermission } from '@/utils/AllPermission';
+import RegionsList from '@/components/regions/regions-list';
+import { useMeQuery } from '@/data/user';
+import { useRegionsQuery } from '@/data/regions';
 
-export default function Coupons() {
+export default function Regions() {
   const { t } = useTranslation();
   const { locale } = useRouter();
   const [orderBy, setOrder] = useState('created_at');
   const [sortedBy, setColumn] = useState<SortOrder>(SortOrder.Desc);
   const [searchTerm, setSearchTerm] = useState('');
   const [page, setPage] = useState(1);
-  const { coupons, loading, paginatorInfo, error } = useCouponsQuery({
-    language: locale,
-    limit: 20,
-    page,
-    code: searchTerm,
-    orderBy,
-    sortedBy,
+  const { data: me } = useMeQuery()
+  console.log('region-me = ', me)
+  console.log('region-me = ', me?.managed_shop?.slug)
+
+  const { regions, loading, paginatorInfo, error } = useRegionsQuery({
+    code: me?.managed_shop?.slug,
   });
+
+  console.log("regions",regions)
 
   const { permissions } = getAuthCredentials();
   
   const permissionTypes = AllPermission(); 
 
-  const canWrite = permissionTypes.includes('sidebar-nav-item-coupons');
+  const canWrite = permissionTypes.includes('sidebar-nav-item-regions');
 
   if (loading) return <Loader text={t('common:text-loading')} />;
   if (error) return <ErrorMessage message={error.message} />;
@@ -54,7 +58,7 @@ export default function Coupons() {
       <Card className="mb-8 flex flex-col items-center xl:flex-row">
         <div className="mb-4 md:mb-0 md:w-1/4">
           <h1 className="text-xl font-semibold text-heading">
-            {t('form:input-label-coupons')}
+            {t('form:input-label-regions')}
           </h1>
         </div>
 
@@ -63,16 +67,16 @@ export default function Coupons() {
 
           {canWrite && locale === Config.defaultLanguage && (
             <LinkButton
-              href="/coupons/create"
+              href="/regions/create"
               className="h-12 w-full md:w-auto md:ms-6"
             >
-              <span>+ {t('form:button-label-add-coupon')}</span>
+              <span>+ {t('form:button-label-add-regions')}</span>
             </LinkButton>
           )}
         </div>
       </Card>
-      <CouponList
-        coupons={coupons}
+      <RegionsList
+        regions={regions}
         paginatorInfo={paginatorInfo}
         onPagination={handlePagination}
         onOrder={setOrder}
@@ -82,11 +86,11 @@ export default function Coupons() {
   );
 }
 
-Coupons.authenticate = {
+Regions.authenticate = {
   permissions: adminOnly,
 };
 
-Coupons.Layout = Layout;
+Regions.Layout = Layout;
 
 export const getStaticProps = async ({ locale }: any) => ({
   props: {
