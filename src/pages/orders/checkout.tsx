@@ -57,6 +57,8 @@ export default function CheckoutPage() {
 
   console.log('billingAddressAtom', billingAddressAtom);
 
+  console.log("user",user)
+
   if (loading) {
     <div>
       <PageLoader />
