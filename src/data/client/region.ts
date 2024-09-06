@@ -17,22 +17,25 @@ import {
     //     language,
     //   });
     // },
-    get: ({ code }:  Partial<RegionsQueryOptions>) => {
-        console.log('code = ',code)
-        return HttpClient.get<Region>(`${API_ENDPOINTS.REGIONS}/shop/${code}`);
-      },
+    get: ({ shopSlug }: Partial<RegionsQueryOptions>) => {
+      if (!shopSlug) {
+        throw new Error("shopSlug is required");
+      }
+      // Return the correct endpoint using shopSlug
+      return HttpClient.get<Region>(`${API_ENDPOINTS.REGIONS}/shop/${shopSlug}`);
+    
 
-      paginated: ({    
-        code,
-        shopSlug,
-        ...params
-      }: { code?: string; } & Partial<RegionsQueryOptions>) => {
-        console.log("params",params)
-        return HttpClient.get<Region>(API_ENDPOINTS.REGIONS, {
-          ...params,
-          code,
-          shopSlug
-        });
+      // paginated: ({    
+      //   code,
+      //   shopSlug,
+      //   ...params
+      // }: { code?: string; } & Partial<RegionsQueryOptions>) => {
+      //   console.log("params",params)
+      //   return HttpClient.get<Region>(API_ENDPOINTS.REGIONS, {
+      //     ...params,
+      //     code,
+      //     shopSlug
+      //   });
 
         // paginated: ({    
         //     code,

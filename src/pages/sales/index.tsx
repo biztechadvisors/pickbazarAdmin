@@ -63,8 +63,7 @@ export default function Sales() {
 if (DealerShow) {
     queryConfig.shop_slug = me?.managed_shop?.slug;
     queryConfig.customer_id = me?.id;
-} else if (ShopShow) {
-    queryConfig.customer_id = me?.shop_id;
+} else if (ShopShow) {  
     queryConfig.shop_id = me?.managed_shop?.id;
     queryConfig.shop_slug = me?.managed_shop?.slug;
 }
@@ -74,17 +73,6 @@ const { orders, loading, paginatorInfo, error } = useOrdersQuery(queryConfig);
 console.log("++++++++++sales++orders",orders)
 
 
-  // const { orders, loading, paginatorInfo, error } = useOrdersQuery({
-  //   language: locale,
-  //   limit: 20,
-  //   page,
-  //   tracking_number: searchTerm,
-  //   customer_id: me?.id,
-  //   shop_id: me?.managed_shop?.id,
-  //   shop_slug: me?.managed_shop?.slug,
-  // });
-
- 
 
   const customer_id = me?.id
   const shop_id =  me?.createdBy?.shop_id

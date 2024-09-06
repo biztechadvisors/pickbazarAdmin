@@ -100,18 +100,21 @@ export const useRegionsQuery = (
   params: Partial<RegionsQueryOptions>,
   options: any = {}
 ) => {
+  // useQuery to fetch data
   const { data, error, isLoading } = useQuery<RegionPaginator, Error>(
     [API_ENDPOINTS.REGIONS, params],
-    ({ queryKey, pageParam }) =>
-      regionClient.paginated(Object.assign({}, queryKey[1], pageParam)),
+    ({ queryKey }) =>
+      regionClient.get({ shopSlug: queryKey[1].shopSlug }), // Pass shopSlug correctly
     {
       keepPreviousData: true,
       ...options,
     }
   );
+
+  // Return the data in a more structured way
   return {
-    orders: data?.data ?? [],
-    paginatorInfo: mapPaginatorData(data),
+    regions: data?.data ?? [], // Return regions instead of orders
+    paginatorInfo: data ? mapPaginatorData(data) : null, // Handle paginator info correctly
     error,
     loading: isLoading,
   };

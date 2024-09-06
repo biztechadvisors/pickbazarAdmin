@@ -1648,8 +1648,7 @@ export interface CouponQueryOptions extends QueryOptions {
 }
 
 export interface RegionsQueryOptions extends QueryOptions {
-  shopSlug: string;
-  code: string;
+  shopSlug: string; 
 }
 
 export interface StoreNoticeQueryOptions extends QueryOptions {

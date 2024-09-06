@@ -30,7 +30,7 @@ export default function Regions() {
   console.log('region-me = ', me?.managed_shop?.slug)
 
   const { regions, loading, paginatorInfo, error } = useRegionsQuery({
-    code: me?.managed_shop?.slug,
+    shopSlug: me?.managed_shop?.slug,
   });
 
   console.log("regions",regions)
