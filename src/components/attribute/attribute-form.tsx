@@ -37,8 +37,9 @@ export default function CreateOrUpdateAttributeForm({ initialValues }: IProps) {
     },
     { enabled: !!shop }
   );
+  const shopId = shopData?.id || initialValues?.shop_id;
 
-  const shopId = shopData?.id!;
+  // const shopId = shopData?.id!;
   const {
     register,
     handleSubmit,
@@ -56,7 +57,10 @@ export default function CreateOrUpdateAttributeForm({ initialValues }: IProps) {
   const { mutate: updateAttribute, isLoading: updating } =
     useUpdateAttributeMutation();
   const onSubmit = (values: FormValues) => {
-
+    if (!shopId) {
+      setErrorMessage('Shop ID is required');
+      return;
+    }
     if (
       !initialValues &&
       !initialValues?.translated_languages?.includes(router.locale!) ||

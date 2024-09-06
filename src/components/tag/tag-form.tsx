@@ -241,7 +241,9 @@ export default function CreateOrUpdateTagForm({ initialValues }: IProps) {
   const { mutate: updateTag, isLoading: updating } = useUpdateTagMutation();
   
   const onSubmit = async (values: FormValues) => {
-  
+    const transformedRegions = Array.isArray(values.region)
+    ? values.region.map((region: any) => region.name || region)
+    : [];
     const input = {
       language: router.locale,
       name: values.name,
@@ -254,7 +256,7 @@ export default function CreateOrUpdateTagForm({ initialValues }: IProps) {
       icon: values.icon?.value ?? '',
       type_id: values.type?.id,
       shop: shopSlug,
-      region_name: values.region ,
+      region_name: transformedRegions ,
     };
 
     try {
