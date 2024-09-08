@@ -14,6 +14,7 @@ import { newPermission } from '@/contexts/permission/storepermission';
 import { useAtom } from 'jotai';
 import OwnerLayout from '@/components/layouts/owner';
 import { ADMIN, DEALER, OWNER, STAFF, Company } from '@/utils/constants';
+import { addPermission } from '@/utils/atoms';
 
 const CreatePerm = ({ PermissionDatas }) => {
   const router = useRouter();
@@ -25,6 +26,7 @@ const CreatePerm = ({ PermissionDatas }) => {
   const [selectedPermissions, setSelectedPermissions] = useState([]);
   const [typeError, setTypeError] = useState('');
   const [permissionError, setPermissionError] = useState('');
+  const [matchedAdd, setMatchedAdd] = useAtom(addPermission);
 
   const { permissions } = getAuthCredentials();
 
@@ -135,6 +137,8 @@ const CreatePerm = ({ PermissionDatas }) => {
         await mutateUpdate({ permissionId, dataToSend });
       } else {
         await mutatePost(dataToSend2);
+
+        setMatchedAdd((prev) => [...prev, dataToSend2.permission_name]);
       }
     } catch (error) {
       console.error('Error saving/updating permission:', error);
@@ -198,12 +202,9 @@ const CreatePerm = ({ PermissionDatas }) => {
     }
   }, []);
 
-
-  console.log("typeName", typeName)
-  console.log("selectedType", selectedType)
-  console.log("PermissionDatas", PermissionDatas)
-
- 
+  console.log('typeName', typeName);
+  console.log('selectedType', selectedType);
+  console.log('PermissionDatas', PermissionDatas);
 
   return (
     <div style={{ backgroundColor: 'white' }} className="modal">
@@ -231,9 +232,7 @@ const CreatePerm = ({ PermissionDatas }) => {
               onChange={handleChange}
               value={selectedType}
             >
-                <option>
-                  {typeName}
-                </option>
+              <option>{typeName}</option>
             </select>
             {typeError && (
               <p className="mt-1 text-sm text-red-500">{typeError}</p>
