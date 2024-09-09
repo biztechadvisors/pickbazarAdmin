@@ -137,27 +137,19 @@ export function useLogin() {
 
 export const useLogoutMutation = () => {
   const router = useRouter();
-  const { t } = useTranslation();
+const { t } = useTranslation();
 
   const logoutMutation = useMutation(userClient.logout, {
     onSuccess: () => {
-      if (typeof window !== 'undefined') { // Ensure we're in the browser environment
-        // Remove auth credentials and clear all local storage items
+      if (typeof window !== 'undefined') { 
         Cookies.remove(AUTH_CRED);
-        localStorage.clear();
-
-        // Redirect to login route
+        localStorage.clear(); 
         router.replace(Routes.login);
-
-        // Show success toast
-        toast.success(t('common:successfully-logout'));
       }
     },
     onError: (error) => {
-      if (typeof window !== 'undefined') { // Ensure we're in the browser environment
-        // Show error toast
+      if (typeof window !== 'undefined') { 
         toast.error(t('common:logout-failed', { error: error.message }));
-
         console.error('Logout Error:', error);
       }
     },
@@ -165,7 +157,6 @@ export const useLogoutMutation = () => {
 
   return logoutMutation;
 };
-
 export const useRegisterMutation = () => {
   const router = useRouter();
   const queryClient = useQueryClient();

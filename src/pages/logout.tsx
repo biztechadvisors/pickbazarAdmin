@@ -16,6 +16,17 @@ function SignOut() {
     logout();
   }, [logout]);
 
+  useEffect(() => {
+    if (isSuccess) {
+      // Show success toast here only once
+      toast.success(t('common:successfully-logout'));
+    }
+    if (isError && error) {
+      // Show error toast if there's an error
+      toast.error(t('common:logout-failed', { error: error.message }));
+    }
+  }, [isSuccess, isError, error, t]);
+
   return <Loader text={t('common:signing-out-text')} />;
 }
 
