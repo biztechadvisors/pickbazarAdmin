@@ -242,8 +242,9 @@ export default function CreateOrUpdateTagForm({ initialValues }: IProps) {
   
   const onSubmit = async (values: FormValues) => {
     const transformedRegions = Array.isArray(values.region)
-    ? values.region.map((region: any) => region.name || region)
-    : [];
+      ? values.region.map((region: any) => region.name || region)
+      : [];
+      
     const input = {
       language: router.locale,
       name: values.name,
@@ -256,28 +257,26 @@ export default function CreateOrUpdateTagForm({ initialValues }: IProps) {
       icon: values.icon?.value ?? '',
       type_id: values.type?.id,
       shop: shopSlug,
-      region_name: transformedRegions ,
+      region_name: transformedRegions,
     };
-
-    try {
-      if (
-        !initialValues ||
-        !initialValues.translated_languages.includes(router.locale)
-      ) {
+  
+    try { 
+      if (initialValues?.id) { 
+        updateTag({
+          ...input,
+          id: initialValues.id,  
+        });
+      } else { 
         createTag({
           ...input,
           ...(initialValues?.slug && { slug: initialValues.slug }),
-        });
-      } else {
-        updateTag({
-          ...input,
-          id: initialValues.id!,
         });
       }
     } catch (err) {
       getErrorMessage(err);
     }
   };
+  
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
       <div className="my-5 flex flex-wrap border-b border-dashed border-gray-300 pb-8 sm:my-8">
