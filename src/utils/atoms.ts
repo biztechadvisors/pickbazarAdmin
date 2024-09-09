@@ -11,3 +11,5 @@ export const shop_slug = atom(null);
 export const shopSlugAtom = atom<string | null>(null);
 
 export const dealerAddress = atom<string | null>(null);
+
+export const selectedOption = atom<string | null>(null);

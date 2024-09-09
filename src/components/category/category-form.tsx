@@ -33,6 +33,8 @@ import { useSettingsQuery } from '@/data/settings';
 import { useModalAction } from '../ui/modal/modal.context';
 import OpenAIButton from '../openAI/openAI.button';
 import { useMeQuery } from '@/data/user';
+import { useRegionsQuery } from '@/data/tag';
+// import { useRegionsQuery } from '@/data/region'; 
 
 export const chatbotAutoSuggestion = ({ name }: { name: string }) => {
   return [
@@ -95,6 +97,41 @@ export const updatedIcons = categoryIcons.map((item: any) => {
   return item;
 });
 
+function SelectRegion({
+  control,
+  errors,
+}: {
+  control: Control<FormValues>;
+  errors: FieldErrors;
+}) {
+  const { locale } = useRouter();
+  const { t } = useTranslation(); 
+  const ShopSlugName = 'hilltop-marble';
+
+  const { regions, error } = useRegionsQuery({ 
+    shopSlug: ShopSlugName,  
+    language: locale!,
+  });
+
+  if (error) {
+    console.error("Error fetching regions:", error);
+  }
+
+  return (
+    <div className="mb-5">
+      <Label>Select Region</Label>
+      <SelectInput
+        name="region"
+        control={control}
+        getOptionLabel={(option: any) => option.name}
+        getOptionValue={(option: any) => option.id}
+        options={regions || []}
+        isLoading={!regions} // Show loading state if regions data is not yet loaded
+      />
+    <ValidationError message={t(errors.type?.message)} />
+    </div>
+  );
+}
 function SelectTypes({
   control,
   errors,
@@ -114,8 +151,7 @@ function SelectTypes({
         getOptionLabel={(option: any) => option.name}
         getOptionValue={(option: any) => option.slug}
         options={types!}
-        isLoading={loading}
-      />
+        isLoading={loading} defaultValue={[]} />
       <ValidationError message={t(errors.type?.message)} />
     </div>
   );
@@ -157,8 +193,7 @@ function SelectCategories({
         getOptionValue={(option: any) => option.id}
         options={categories}
         isClearable={true}
-        isLoading={loading}
-      />
+        isLoading={loading} defaultValue={[]} />
     </div>
   );
 }
@@ -170,6 +205,7 @@ type FormValues = {
   image: any;
   icon: any;
   type: any;
+  region_name:string;
 };
 
 const defaultValues = {
@@ -179,6 +215,7 @@ const defaultValues = {
   parent: '',
   icon: '',
   type: '',
+  region_name:'',
 };
 
 type IProps = {
@@ -203,23 +240,21 @@ export default function CreateOrUpdateCategoriesForm({
     //@ts-ignore
     defaultValues: initialValues
       ? {
-          ...initialValues,
-          icon: initialValues?.icon
-            ? categoryIcons.find(
-                (singleIcon) => singleIcon.value === initialValues?.icon!
-              )
-            : '',
-          ...(isNewTranslation && {
-            type: null,
-          }),
-        }
+        ...initialValues,
+        icon: initialValues?.icon
+          ? categoryIcons.find(
+            (singleIcon) => singleIcon.value === initialValues?.icon!
+          )
+          : '',
+        ...(isNewTranslation && {
+          type: null,
+        }),
+      }
       : defaultValues,
     resolver: yupResolver(categoryValidationSchema),
   });
 
   const { data: meData } = useMeQuery();
-
-  console.log('meData', meData);
 
   const { openModal } = useModalAction();
   const { locale } = router;
@@ -251,6 +286,7 @@ export default function CreateOrUpdateCategoriesForm({
     useUpdateCategoryMutation();
 
   const onSubmit = async (values: FormValues) => {
+    console.log('Form Data:', values);
     const input = {
       language: router.locale,
       name: values.name,
@@ -263,28 +299,27 @@ export default function CreateOrUpdateCategoriesForm({
       icon: values.icon?.value || '',
       parent: values.parent?.id ?? null,
       type_id: values.type?.id,
+      region_name: values.region,
     };
+
     if (
       !initialValues ||
       (initialValues.translated_languages &&
-        !initialValues.translated_languages.includes(router.locale!))
+        !initialValues.translated_languages?.includes(router.locale!))
     ) {
       createCategory({
         ...input,
         ...(initialValues?.slug && { slug: initialValues.slug }),
-        shop_id: meData?.shops?.[0]?.id || initialValues?.shop_id,
+        shop_id: meData?.managed_shop?.id || initialValues?.shop_id,
       });
     } else {
       updateCategory({
         ...input,
         id: initialValues.id!,
-        shop_id: meData?.shops?.[0]?.id,
+        shop_id: meData?.managed_shop?.id,
       });
     }
-  };
-
-  console.log('shop_id', meData?.shops?.[0]?.id);
-
+  }; 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
       <div className="my-5 flex flex-wrap border-b border-dashed border-border-base pb-8 sm:my-8">
@@ -302,11 +337,10 @@ export default function CreateOrUpdateCategoriesForm({
       <div className="my-5 flex flex-wrap sm:my-8">
         <Description
           title={t('form:input-label-description')}
-          details={`${
-            initialValues
+          details={`${initialValues
               ? t('form:item-description-edit')
               : t('form:item-description-add')
-          } ${t('form:category-description-helper-text')}`}
+            } ${t('form:category-description-helper-text')}`}
           className="w-full px-0 pb-5 sm:w-4/12 sm:py-8 sm:pe-4 md:w-1/3 md:pe-5 "
         />
 
@@ -340,9 +374,18 @@ export default function CreateOrUpdateCategoriesForm({
               name="icon"
               control={control}
               options={updatedIcons}
-              isClearable={true}
-            />
+              isClearable={true} defaultValue={[]} />
           </div>
+          {/* <div className="mb-5">
+          <SelectInput
+    name="region"
+    control={control}
+    options={countryOptions}
+    isClearable={true}
+    defaultValue={[]}
+  />
+  </div>   */}
+          <SelectRegion control={control} errors={errors} />
           <SelectTypes control={control} errors={errors} />
           <SelectCategories control={control} setValue={setValue} />
         </Card>

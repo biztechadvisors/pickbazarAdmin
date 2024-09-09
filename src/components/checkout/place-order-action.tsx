@@ -28,11 +28,8 @@ export const PlaceOrderAction: React.FC<{
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const { createOrder, isLoading } = useCreateOrder();
   const { items } = useCart();
-  const { me } = useUser();
   const [selectedAddress] = useAtom(dealerAddress);
   const router = useRouter();
-
-  console.log('selectedAddress*********', selectedAddress);
 
   const [
     {
@@ -57,6 +54,17 @@ export const PlaceOrderAction: React.FC<{
   const { data: meData } = useMeQuery();
   const dealerId = meData?.id;
 
+  const checkDealerId = meData?.dealer?.id;
+
+  useEffect(() => {
+    if (!selectedAddress && checkDealerId) {
+      router.push({
+        pathname: '/profile-update',
+        query: { from: 'order-checkout' },
+      });
+    }
+  }, [selectedAddress, router, checkDealerId]);
+
   useEffect(() => {
     setErrorMessage(null);
   }, [payment_gateway]);
@@ -66,10 +74,12 @@ export const PlaceOrderAction: React.FC<{
   );
 
   const subtotal = calculateTotal(available_items);
-  const {
-    settings: { freeShippingAmount, freeShipping },
-  } = useSettings();
-  let freeShippings = freeShipping && Number(freeShippingAmount) <= subtotal;
+
+  const { settings: option } = useSettings();
+
+  let freeShippings =
+    option?.freeShipping && Number(option?.freeShippingAmount) <= subtotal;
+
   const total = calculatePaidTotal(
     {
       totalAmount: subtotal,
@@ -78,24 +88,24 @@ export const PlaceOrderAction: React.FC<{
     },
     Number(discount)
   );
+
   const handlePlaceOrder = () => {
     if (!customer_contact) {
       setErrorMessage('Contact Number Is Required');
       return;
     }
     if (!use_wallet_points && !payment_gateway) {
-      setErrorMessage('Gateway Is Required');
+      setErrorMessage('Payment Gateway Is Required');
       return;
     }
 
-    const isFullWalletPayment =
-      use_wallet_points && payable_amount == 0 ? true : false;
+    const isFullWalletPayment = use_wallet_points && payable_amount === 0;
+
     const gateWay = isFullWalletPayment
       ? PaymentGateway.FULL_WALLET_PAYMENT
       : payment_gateway;
 
-    let input = {
-      //@ts-ignore
+    const input = {
       products: available_items?.map((item) => formatOrderedProduct(item)),
       amount: subtotal,
       coupon_id: Number(coupon?.id),
@@ -108,7 +118,6 @@ export const PlaceOrderAction: React.FC<{
       delivery_time: delivery_time?.title,
       customer,
       customer_id: customer?.id,
-      customerId: customer?.id,
       customer_contact,
       customer_name,
       note,
@@ -122,39 +131,30 @@ export const PlaceOrderAction: React.FC<{
       shipping_address: {
         ...(shipping_address?.address && shipping_address.address),
       },
-      saleBy: selectedAddress.address,
+      saleBy: selectedAddress?.address ?? null,
     };
-    console.log('placeOrder', input);
 
     createOrder(input);
   };
+
   const isDigitalCheckout = available_items.find((item) =>
     Boolean(item.is_digital)
   );
 
-  let formatRequiredFields = isDigitalCheckout
+  const formatRequiredFields = isDigitalCheckout
     ? [customer_contact, payment_gateway, available_items]
     : [
-        customer_contact,
-        payment_gateway,
-        billing_address,
-        shipping_address,
-        delivery_time,
-        available_items,
-      ];
-  // if (!isDigitalCheckout && !me) {
-  //   formatRequiredFields.push(customer_name);
-  // }
+      customer_contact,
+      payment_gateway,
+      billing_address,
+      shipping_address,
+      delivery_time,
+      available_items,
+    ];
 
   const isAllRequiredFieldSelected = formatRequiredFields.every(
     (item) => !isEmpty(item)
   );
-
-  useEffect(() => {
-    if (!selectedAddress) {
-      router.push('/profile-update');
-    }
-  }, [selectedAddress]);
 
   return (
     <>
@@ -172,7 +172,8 @@ export const PlaceOrderAction: React.FC<{
       )}
       {!isAllRequiredFieldSelected && (
         <div className="mt-3">
-          <ValidationError message={t('text-place-order-helper-text')} />
+          {/* <ValidationError message={t('text-place-order-helper-text')} /> */}
+          
         </div>
       )}
     </>

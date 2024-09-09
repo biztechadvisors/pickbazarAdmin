@@ -3,7 +3,8 @@ import Cookies from 'js-cookie';
 import Router from 'next/router';
 import invariant from 'tiny-invariant';
 
-invariant( process.env.NEXT_PUBLIC_REST_API_ENDPOINT, 'NEXT_PUBLIC_REST_API_ENDPOINT is not defined, please define it in your .env file');
+invariant(process.env.NEXT_PUBLIC_REST_API_ENDPOINT, 'NEXT_PUBLIC_REST_API_ENDPOINT is not defined, please define it in your .env file');
+
 const Axios = axios.create({
   baseURL: process.env.NEXT_PUBLIC_REST_API_ENDPOINT,
   timeout: 50000,
@@ -49,15 +50,19 @@ function formatBooleanSearchParam(key: string, value: boolean) {
 }
 
 interface SearchParamOptions {
+  attributes: string;
   categories: string;
+  subcategories: string;
   slug: string,
   code: string;
   type: string;
   name: string;
   email: string;
   shop_id: string;
+  shopSlug: string;
   is_approved: boolean;
   tracking_number: string;
+  customer_id: number;
   notice: string;
 }
 
@@ -69,6 +74,11 @@ export class HttpClient {
 
   static async post<T>(url: string, data: unknown, options?: any) {
     const response = await Axios.post<T>(url, data, options);
+    return response.data;
+  }
+ 
+  static async patch<T>(url: string, data: unknown, options?: any) {
+    const response = await Axios.patch<T>(url, data, options);
     return response.data;
   }
 
@@ -86,7 +96,7 @@ export class HttpClient {
     return Object.entries(params)
       .filter(([, value]) => Boolean(value))
       .map(([k, v]) =>
-        ['type', 'categories', 'tags', 'author', 'manufacturer'].includes(k)
+        ['type','attributes', 'categories', 'subcategories', 'tags', 'author', 'manufacturer', 'settings'].includes(k)
           ? `${k}.slug:${v}`
           : ['is_approved'].includes(k)
             ? formatBooleanSearchParam(k, v as boolean)

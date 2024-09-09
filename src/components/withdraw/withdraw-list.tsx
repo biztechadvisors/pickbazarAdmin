@@ -16,9 +16,7 @@ import timezone from 'dayjs/plugin/timezone';
 import { useState } from 'react';
 import TitleWithSort from '@/components/ui/title-with-sort';
 import { Withdraw, MappedPaginatorInfo } from '@/types';
-import { useAtom } from 'jotai';
-import { newPermission } from '@/contexts/permission/storepermission';
-import { siteSettings } from '@/settings/site.settings';
+import { AllPermission } from '@/utils/AllPermission';
 
 type IProps = {
   withdraws: Withdraw[] | undefined;
@@ -40,13 +38,10 @@ const WithdrawList = ({
 
   const router = useRouter();
 
-  const [getPermission,_]=useAtom(newPermission)
-  const { permissions } = getAuthCredentials();
-  const canWrite =  permissions.includes('super_admin')
-  ? siteSettings.sidebarLinks
-  :getPermission?.find(
-    (permission) => permission.type === 'sidebar-nav-item-withdraws'
-  )?.write;
+  const permissionTypes = AllPermission(); 
+
+  const canWrite = permissionTypes.includes('sidebar-nav-item-withdraws');
+
 
   const renderStatusBadge = (status: string) => {
     switch (status.toUpperCase()) {

@@ -5,6 +5,7 @@ import { useEffect } from 'react';
 import { useTagsQuery } from '@/data/tag';
 import { useRouter } from 'next/router';
 import { useTranslation } from 'next-i18next';
+import { useShopQuery } from '@/data/shop';
 
 interface Props {
   control: Control<any>;
@@ -13,7 +14,10 @@ interface Props {
 
 const ProductTagInput = ({ control, setValue }: Props) => {
   const { t } = useTranslation();
-  const { locale } = useRouter();
+
+  const router = useRouter();
+  const { locale } = router;
+
   const type = useWatch({
     control,
     name: 'type',
@@ -27,10 +31,18 @@ const ProductTagInput = ({ control, setValue }: Props) => {
     }
   }, [type?.slug]);
 
+  const { data: shopData } = useShopQuery(
+    { slug: router.query.shop as string },
+    {
+      enabled: !!router.query.shop,
+    }
+  );
+
   const { tags, loading } = useTagsQuery({
     limit: 999,
     type: type?.slug,
     language: locale,
+    shopSlug: shopData?.slug
   });
 
   return (

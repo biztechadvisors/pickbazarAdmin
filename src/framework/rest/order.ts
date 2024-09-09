@@ -37,7 +37,6 @@ export function useOrders(options?: Partial<OrderQueryOptions>) {
     ...options,
     // language: locale
   };
-
   const {
     data,
     isLoading,
@@ -60,7 +59,6 @@ export function useOrders(options?: Partial<OrderQueryOptions>) {
   function handleLoadMore() {
     fetchNextPage();
   }
-
   return {
     orders: data?.pages?.flatMap((page) => page.data) ?? [],
     paginatorInfo: Array.isArray(data?.pages)
@@ -84,7 +82,6 @@ export function useOrder({ tracking_number }: { tracking_number: string }) {
     () => client.orders.get(tracking_number),
     { refetchOnWindowFocus: false }
   );
-
   return {
     order: data,
     isFetching,
@@ -239,6 +236,8 @@ export function useCreateOrder() {
           if (id) {
             idStr = id.toString();
           }
+
+          console.log("idStr", idStr)
           if (
             [
               PaymentGateway.COD,
@@ -265,13 +264,11 @@ export function useCreateOrder() {
     }
   );
 
-  console.log('stock----266');
   const { mutate: createStock, isLoading: stockLoading } = useMutation(
     client.stocks.create,
     {
       onSuccess: (response) => {
         const { id } = response;
-        console.log('Success-Stock: ', id);
       },
       onError: (error) => {
         const {
@@ -282,18 +279,9 @@ export function useCreateOrder() {
     }
   );
 
-  console.log('stock----280');
-
   async function checkAndCreateStocks(input: CreateOrderInput) {
     // Check if sub and input.customer_id are equal
-    console.log(
-      'checkAndCreateStocks--267',
-      input.dealerId,
-      ' &&&& ',
-      input.customer_id
-    );
     if (input.dealerId === input.customer_id) {
-      console.log(input.dealerId === input.customer_id);
       const stockInput: CreateStockInput = {
         user_id: parseInt(input.dealerId),
         products: input.products,
@@ -320,13 +308,14 @@ export function useCreateOrder() {
         date: t('text-date'),
       },
     };
+
     createOrder(formattedInputs);
-    checkAndCreateStocks(formattedInputs); // Call checkAndCreateStocks function after formatting the order input
+
   }
 
   return {
     createOrder: formatOrderInput,
-    isLoading: orderLoading || stockLoading,
+    isLoading: orderLoading,
   };
 }
 

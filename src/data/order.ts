@@ -11,9 +11,11 @@ import {
   InvoiceTranslatedText,
   CreateOrderInput,
 } from '@/types';
-import { orderClient } from './client/order';
+import { orderClient, orderStocks } from './client/order';
 import { useRouter } from 'next/router';
 import { Routes } from '@/config/routes';
+import { HttpClient } from './client/http-client';
+
 
 export const useOrdersQuery = (
   params: Partial<OrderQueryOptions>,
@@ -46,6 +48,24 @@ export const useOrderQuery = ({
   const { data, error, isLoading } = useQuery<Order, Error>(
     [API_ENDPOINTS.ORDERS, { id, language }],
     () => orderClient.get({ id, language })
+  );
+  return {
+    order: data,
+    error,
+    isLoading,
+  };
+};
+
+export const useOrderStocksQuery = ({
+  id,
+  language,
+}: {
+  id: string;
+  language: string;
+}) => {
+  const { data, error, isLoading } = useQuery<Order, Error>(
+    [API_ENDPOINTS.DEALER_SEALS_STOCK_BY_ID, { id, language }],
+    () => orderStocks.get({ id, language })
   );
 
   return {
@@ -118,6 +138,77 @@ export const useUpdateOrderMutation = () => {
   });
 };
 
+
+// export const useDealerStatusChange = () => {
+//   const { t } = useTranslation();
+//   const queryClient = useQueryClient();
+
+//   return useMutation(
+//     async ({ id, status }: { id: string; status: string }) => {
+//       const url = `${API_ENDPOINTS.DEALER_STATUS_CHANGE}/${id}/status`;
+//       const data = { status };
+//       return await HttpClient.patch(url, data);
+//     },
+//     {
+//       onSuccess: () => {
+//         toast.success(t('common:successfully-updated'));
+//       },
+//       // Always refetch after error or success:
+//       onSettled: () => {
+//         queryClient.invalidateQueries(API_ENDPOINTS.DEALER_STATUS_CHANGE);
+//       },
+//     }
+//   );
+// };
+
+export const useDealerStatusChange = () => {
+  const { t } = useTranslation();
+  const queryClient = useQueryClient();
+
+  return useMutation(
+    async ({ id, status }: { id: string; status: string }) => {
+      console.log('ID:', id);
+      console.log('Status:', status);
+
+      if (!status) {
+        throw new Error('Status is undefined');
+      }
+
+      const url = `${API_ENDPOINTS.DEALER_STATUS_CHANGE}/${id}/status`;
+      const data = { name: status };
+
+      console.log('Sending data to server:', data); // Log the data object
+      return await HttpClient.patch(url, data);
+    },
+    {
+      onSuccess: () => {
+        toast.success(t('common:successfully-updated'));
+      },
+      // Always refetch after error or success:
+      onSettled: () => {
+        queryClient.invalidateQueries(API_ENDPOINTS.DEALER_STATUS_CHANGE);
+      },
+    }
+  );
+};
+
+
+// export const usDealerStatusChange = () => {
+//   const { t } = useTranslation();
+//   const queryClient = useQueryClient();
+//   return useMutation(orderStocks.update, {
+//     onSuccess: () => {
+//       toast.success(t('common:successfully-updated'));
+//     },
+//     // Always refetch after error or success:
+//     onSettled: () => {
+//       queryClient.invalidateQueries(API_ENDPOINTS.DEALER_STATUS_CHANGE);
+//     },
+//   });
+// };
+
+
+
 export const useDownloadInvoiceMutation = (
   {
     order_id,
@@ -144,9 +235,7 @@ export const useDownloadInvoiceMutation = (
     },
   };
 
-  console.log('formattedInput', formattedInput);
-
-  return useQuery<string, Error>(
+  return useQuery<any, Error>(
     [API_ENDPOINTS.ORDER_INVOICE_DOWNLOAD],
     () => orderClient.downloadInvoice(formattedInput),
     {

@@ -19,6 +19,8 @@ import { PlusIcon } from '@/components/icons/plus-icon';
 import AddCustomerSlider from './AddCustomerSlider';
 import { checkoutCustAtom, shopIdAtom } from '@/utils/atoms';
 import UserAddressSelection from '@/components/UserAddressSelection';
+import PageLoader from '@/components/ui/page-loader/page-loader';
+import ErrorMessage from '@/components/ui/error-message';
 
 const CustomerEmail = dynamic(
   () => import('@/components/checkout/customer/CustomerEmail')
@@ -43,6 +45,7 @@ export default function CheckoutPage() {
   const {
     data: user,
     isLoading: loading,
+    error,
     refetch,
   } = useUserQuery({ id: customer?.id });
 
@@ -52,26 +55,34 @@ export default function CheckoutPage() {
     }
   }, [customer?.id]);
 
-  // if (loading) return <Loader text={t('common:text-loading')} />;
+  console.log('billingAddressAtom', billingAddressAtom);
+
+  if (loading) {
+    <div>
+      <PageLoader />
+    </div>;
+  }
+
+  if (error) return <ErrorMessage message={error.message} />;
 
   return (
     <div className="bg-gray-100">
       <div className="m-auto flex w-full max-w-5xl flex-col items-center lg:flex-row lg:items-start lg:space-s-8">
         <div className="w-full space-y-6 lg:max-w-2xl">
-          <CustomerEmail count={2} />
+          <CustomerEmail count={1} />
 
           <ContactGrid
             className="shadow-700 bg-light p-5 md:p-8"
             contact={user?.contact}
             label={t('text-contact-number')}
-            count={3}
+            count={2}
           />
 
           <AddressGrid
-            userId={user?.id!}
+            userId={user?.id}
             className="shadow-700 bg-light p-5 md:p-8"
             label={t('text-billing-address')}
-            count={4}
+            count={3}
             addresses={user?.address?.filter(
               (address) => address?.type === AddressType.Billing
             )}
@@ -83,7 +94,7 @@ export default function CheckoutPage() {
             userId={user?.id!}
             className="shadow-700 bg-light p-5 md:p-8"
             label={t('text-shipping-address')}
-            count={5}
+            count={4}
             addresses={user?.address?.filter(
               (address) => address?.type === AddressType.Shipping
             )}
@@ -94,7 +105,7 @@ export default function CheckoutPage() {
           <ScheduleGrid
             className="shadow-700 bg-light p-5 md:p-8"
             label={t('text-delivery-schedule')}
-            count={6}
+            count={5}
           />
         </div>
         <div className="mb-10 mt-10 w-full sm:mb-12 lg:mb-0 lg:w-96">

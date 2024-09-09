@@ -12,6 +12,7 @@ import { newPermission } from '@/contexts/permission/storepermission';
 import { getAuthCredentials } from '@/utils/auth-utils';
 import { siteSettings } from '@/settings/site.settings';
 import { AddToStock } from '../stock/add-to-stock';
+import { AllPermission } from '@/utils/AllPermission';
 
 interface Props {
   item: Product;
@@ -36,6 +37,7 @@ const StockCard = ({ item, isChecked, inStock }: Props) => {
     sale_price,
     margin,
   } = item ?? {};
+  console.log("item",item)
   const {
     price: currentPrice,
     basePrice,
@@ -53,13 +55,17 @@ const StockCard = ({ item, isChecked, inStock }: Props) => {
 
   const { openModal } = useModalAction();
 
-  const [getPermission, _] = useAtom(newPermission);
-  const { permissions } = getAuthCredentials();
-  const canWrite = permissions.includes('super_admin')
-    ? siteSettings.sidebarLinks
-    : getPermission?.find(
-        (permission) => permission.type === 'sidebar-nav-item-create-order'
-      )?.write;
+  // const [getPermission, _] = useAtom(newPermission);
+  // const { permissions } = getAuthCredentials();
+  // const canWrite = permissions.includes('super_admin')
+  //   ? siteSettings.sidebarLinks
+  //   : getPermission?.find(
+  //       (permission) => permission.type === 'sidebar-nav-item-create-order'
+  //     )?.write;
+
+  const permissionTypes = AllPermission(); 
+
+  const canWrite = permissionTypes.includes('sidebar-nav-item-create-order');
 
   function handleVariableProduct() {
     return openModal('SELECT_PRODUCT_VARIATION', slug);
@@ -70,9 +76,7 @@ const StockCard = ({ item, isChecked, inStock }: Props) => {
       <div className="relative flex h-48 w-auto items-center justify-center sm:h-64">
         <span className="sr-only">{t('text-product-image')}</span>
         <Image
-          src={`${process?.env?.NEXT_PUBLIC_REST_API_ENDPOINT}/${
-            image?.original ?? 'productPlaceholder'
-          }`}
+          src={image?.thumbnail}
           alt={name}
           fill
           sizes="(max-width: 768px) 100vw"

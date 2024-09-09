@@ -1,5 +1,4 @@
 import Card from '@/components/common/card';
-import Layout from '@/components/layouts/admin';
 import ErrorMessage from '@/components/ui/error-message';
 import Loader from '@/components/ui/loader/loader';
 import { useTranslation } from 'next-i18next';
@@ -7,45 +6,38 @@ import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import React, { useState } from 'react';
 import Search from '@/components/common/search';
 import LinkButton from '@/components/ui/link-button';
-import { adminOnly, getAuthCredentials } from '@/utils/auth-utils';
+import { getAuthCredentials } from '@/utils/auth-utils';
 import Link from 'next/link';
-import { newPermission } from '@/contexts/permission/storepermission';
-import { useAtom } from 'jotai';
-import { siteSettings } from '@/settings/site.settings';
 import { usePermissionData } from '@/data/permission';
-import { useUpdateCart } from '@/data/cart';
 import { useMeQuery } from '@/data/user';
-import { date } from 'yup';
-export default function Permission() {
+import { AllPermission } from '@/utils/AllPermission';
+import OwnerLayout from '@/components/layouts/owner';
+import { OWNER } from '@/utils/constants';
+
+interface PermissionComponentProps {
+  Layout: React.FC;
+}
+
+const PermissionComponent: React.FC & PermissionComponentProps = () => {
   const { t } = useTranslation();
-  const [searchTerm, setSearchTerm] = useState('');
-  const [page, setPage] = useState(1);
-  const [orderBy, setOrder] = useState('created_at');
-  const [getPermission, _] = useAtom(newPermission);
   const { permissions } = getAuthCredentials();
 
   const { data: meData } = useMeQuery();
-  const id = meData?.id;
+  const id = meData?.id ?? '';
+  const permissionTypes = AllPermission();
 
-  const canWrite = permissions.includes('super_admin')
-    ? siteSettings.sidebarLinks
-    : getPermission?.find(
-        (permission) => permission.type === 'sidebar-nav-item-permissions'
-      )?.write;
+  const canWrite =
+    permissionTypes.includes('sidebar-nav-item-permissions') ||
+    permissions?.[0] === OWNER;
 
   const {
     isLoading,
     error,
     data: permissionData,
-    refetch,
   } = usePermissionData(id);
 
   function handleSearch({ searchText }: { searchText: string }) {
-    setSearchTerm(searchText);
-  }
-
-  function handlePagination(current: any) {
-    setPage(current);
+    // Implement search functionality here
   }
 
   if (isLoading) return <Loader text={t('common:text-loading')} />;
@@ -53,6 +45,7 @@ export default function Permission() {
   if (!permissionData) {
     return <div>No permission data available</div>;
   }
+
   return (
     <>
       <Card className="mb-8 flex flex-col items-center justify-between md:flex-row">
@@ -64,7 +57,9 @@ export default function Permission() {
           <Search onSearch={handleSearch} />
           {canWrite ? (
             <LinkButton href="/permission/create">Create Permission</LinkButton>
-          ) : null}
+          ) : (
+            <LinkButton href="/permission/create">Create Permission</LinkButton>
+          )}
         </div>
       </Card>
 
@@ -88,51 +83,49 @@ export default function Permission() {
                   <td className="border p-2">{e.permission_name}</td>
                   <td className="border p-2">
                     {e.permissions.length > 0
-                      ? e.permissions.slice(0, 3).map((permission, i) => (
-                          <React.Fragment key={i}>
-                            <li>
-                              {permission.type
+                      ? e.permissions.slice(0, 3).map((permission: { type: string; }, i: React.Key | null | undefined) => (
+                        <React.Fragment key={i}>
+                          <li>
+                            {permission.type
+                              .replace('sidebar-nav-item-', '')
+                              .charAt(0)
+                              .toUpperCase() +
+                              permission.type
                                 .replace('sidebar-nav-item-', '')
-                                .charAt(0)
-                                .toUpperCase() +
-                                permission.type
-                                  .replace('sidebar-nav-item-', '')
-                                  .slice(1)}
-                            </li>
-                            {i !== e.permissions.length - 1 && ' '}
-                          </React.Fragment>
-                        ))
+                                .slice(1)}
+                          </li>
+                          {i !== e.permissions.length - 1 && ' '}
+                        </React.Fragment>
+                      ))
                       : ''}
                   </td>
                   {canWrite ? (
                     <td className="border p-2">
-                      <td className="border p-2">
-                        <Link href={`/permission/create?id=${e.id}`}>
-                          <button className="flex items-center space-x-1 text-blue-500 hover:underline">
-                            <svg
-                              xmlns="http://www.w3.org/2000/svg"
-                              fill="none"
-                              viewBox="0 0 24 24"
-                              stroke="currentColor"
-                              width="24"
-                            >
-                              <path
-                                stroke-linecap="round"
-                                stroke-linejoin="round"
-                                stroke-width="2"
-                                d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
-                              ></path>
-                              <path
-                                stroke-linecap="round"
-                                stroke-linejoin="round"
-                                stroke-width="2"
-                                d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"
-                              ></path>
-                            </svg>
-                            <span>View</span>
-                          </button>
-                        </Link>
-                      </td>
+                      <Link href={`/permission/create?id=${e.id}`}>
+                        <button className="flex items-center space-x-1 text-blue-500 hover:underline">
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            stroke="currentColor"
+                            width="24"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth={2}
+                              d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
+                            />
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth={2}
+                              d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"
+                            />
+                          </svg>
+                          <span>View</span>
+                        </button>
+                      </Link>
                     </td>
                   ) : null}
                 </tr>
@@ -143,12 +136,15 @@ export default function Permission() {
       </div>
     </>
   );
-}
+};
 
-Permission.Layout = Layout;
+// Assign Layout to the PermissionComponent
+PermissionComponent.Layout = OwnerLayout;
 
 export const getStaticProps = async ({ locale }: any) => ({
   props: {
     ...(await serverSideTranslations(locale, ['table', 'common', 'form'])),
   },
 });
+
+export default PermissionComponent;

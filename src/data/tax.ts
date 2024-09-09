@@ -8,12 +8,12 @@ import { useTranslation } from 'next-i18next';
 import { TaxQueryOptions } from '@/types';
 import { taxClient } from './client/tax';
 
-export const useCreateTaxClassMutation = () => {
+export const useCreateTaxClassMutation = (shop_id) => {
   const queryClient = useQueryClient();
   const router = useRouter();
   const { t } = useTranslation();
 
-  return useMutation(taxClient.create, {
+  return useMutation((data) => taxClient.create({ ...data, shop_id }), {
     onSuccess: () => {
       router.push(Routes.tax.list);
       toast.success(t('common:successfully-created'));
@@ -40,15 +40,14 @@ export const useDeleteTaxMutation = () => {
   });
 };
 
-export const useUpdateTaxClassMutation = () => {
+export const useUpdateTaxClassMutation = (shop_id) => {
   const { t } = useTranslation();
   const queryClient = useQueryClient();
 
-  return useMutation(taxClient.update, {
+  return useMutation((data) => taxClient.update({ ...data, shop_id }), {
     onSuccess: () => {
       toast.success(t('common:successfully-updated'));
     },
-    // Always refetch after error or success:
     onSettled: () => {
       queryClient.invalidateQueries(API_ENDPOINTS.TAXES);
     },

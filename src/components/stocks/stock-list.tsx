@@ -3,10 +3,7 @@ import { siteSettings } from '@/settings/site.settings';
 import Badge from '@/components/ui/badge/badge';
 import { useRouter } from 'next/router';
 import { useTranslation } from 'next-i18next';
-import {
-  Product,
-  SortOrder,
-} from '@/types';
+import { Product, SortOrder } from '@/types';
 import { useIsRTL } from '@/utils/locals';
 import { useState } from 'react';
 import TitleWithSort from '@/components/ui/title-with-sort';
@@ -18,6 +15,7 @@ import Input from '../ui/input';
 import Button from '../ui/button';
 import { useGetStock, useUpdateStockQuantity } from '@/data/stock';
 import Select from '../ui/select/select';
+import { AllPermission } from '@/utils/AllPermission';
 
 export type IProps = {
   me: any;
@@ -31,28 +29,27 @@ type SortingObjType = {
   column: string | null;
 };
 
-const StockList = ({
-  me,
-  onSort,
-  onOrder,
-}: IProps) => {
+const StockList = ({ me, onSort, onOrder }: IProps) => {
   const router = useRouter();
   const { t } = useTranslation();
   const { alignLeft, alignRight } = useIsRTL();
-  const { mutate: updateQuantity, isLoading: updating } = useUpdateStockQuantity();
-  const { permissions } = getAuthCredentials();
-  const [getPermission, _] = useAtom(newPermission)
+  const { mutate: updateQuantity, isLoading: updating } =
+    useUpdateStockQuantity();
+
   const { data: stocks, isLoading: loading, error } = useGetStock(me?.id);
-  const canWrite = permissions.includes('super_admin')
-    ? siteSettings.sidebarLinks.admin
-    : getPermission?.find(
-      (permission: any) => permission.type === 'sidebar-nav-item-products'
-    )?.write;
+ 
+
+  const permissionTypes = AllPermission(); 
+
+  const canWrite = permissionTypes.includes('sidebar-nav-item-products');
 
   const [sortingObj, setSortingObj] = useState<SortingObjType>({
     sort: SortOrder.Desc,
     column: null,
   });
+
+  console.log('sortingObj',sortingObj)
+  console.log("Product",Product)
 
   const onHeaderClick = (column: string | null) => ({
     onClick: () => {
@@ -96,10 +93,42 @@ const StockList = ({
       width: 300,
       ellipsis: true,
       onHeaderCell: () => onHeaderClick('name'),
-      render: (text: any) => (
-        <span>{text.name}</span>
-      ),
+      render: (text: any) => <span>{text.name}</span>,
     },
+
+    {
+      title: (
+        <TitleWithSort
+          title={t('Product Type')}
+          // ascending={
+          //   sortingObj.sort === SortOrder.Asc && sortingObj.column === 'product_type'
+          // }
+          // isActive={sortingObj.column === 'product_type'}
+        />
+      ),
+      className: 'cursor-pointer',
+      dataIndex: 'product',
+      key: 'product_type',
+      align: alignLeft,
+      width: 300,
+      ellipsis: true,
+      onHeaderCell: () => onHeaderClick('product_type'),
+      render: (text: any) => <span>{text.product_type}</span>,
+    },
+
+    // {
+    //   title: t('Product Variation'),
+    //   dataIndex: 'inStock',
+    //   key: 'inStock',
+    //   align: 'center',
+    //   render: (inStock: boolean) => (
+    //     <Badge
+    //       text={t(inStock ? 'In Stock' : 'Out Of Stock')}
+    //       color={inStock ? 'bg-accent' : 'bg-red-500'}
+    //     />
+    //   ),
+    // },
+    
 
     {
       title: t('Stock Available'),
@@ -107,19 +136,13 @@ const StockList = ({
       key: 'inStock',
       align: 'center',
       render: (inStock: boolean) => (
-        <Badge text={t(inStock ? "In Stock" : 'Out Of Stock')} color={inStock ? 'bg-accent' : 'bg-red-500'} />
+        <Badge
+          text={t(inStock ? 'In Stock' : 'Out Of Stock')}
+          color={inStock ? 'bg-accent' : 'bg-red-500'}
+        />
       ),
     },
 
-    // {
-    //   title: t('Status'),
-    //   dataIndex: 'status',
-    //   key: 'status',
-    //   align: 'center',
-    //   render: (status: boolean) => (
-    //     <span>{status ? "true" : "false"}</span>
-    //   ),
-    // },
 
     {
       title: t('Status'),
@@ -129,12 +152,12 @@ const StockList = ({
       render: (status: boolean, record: any) => {
         const options = [
           { value: true, label: 'True' },
-          { value: false, label: 'False' }
+          { value: false, label: 'False' },
         ];
         // const [getstatus, setStatus] = useState(status);
 
         const onOrderChange = (selectedOption: any) => {
-          console.log('Selected option:', selectedOption);
+
           const data = {
             user_id: me?.id,
             quantity: record.quantity,
@@ -152,16 +175,15 @@ const StockList = ({
               <Select
                 options={options}
                 onChange={onOrderChange}
-                defaultValue={options.find(option => option.value === status)}
+                defaultValue={options.find((option) => option.value === status)}
                 name="status"
                 placeholder={t('select')}
               />
             </div>
           </>
         );
-      }
+      },
     },
-
 
     {
       title: (
@@ -210,21 +232,31 @@ const StockList = ({
                 <Input
                   type="number"
                   defaultValue={quantity}
-                  onChange={(e) => setEditedQuantity(Number(e.target.value))} name={''} />
-                <Button onClick={handleEditQuantity}
-                  size='small'
-                  className='mt-2'
-                >Update</Button>
+                  onChange={(e) => setEditedQuantity(Number(e.target.value))}
+                  name={''}
+                />
+                <Button
+                  onClick={handleEditQuantity}
+                  size="small"
+                  className="mt-2"
+                >
+                  Update
+                </Button>
               </>
             ) : (
               <>
                 {/* <Button onClick={handleShowQuantity}>Show</Button> */}
-                <span onClick={handleShowQuantity} className='font-semibold text-accent underline transition-colors duration-200 ms-1 hover:text-accent-hover hover:no-underline focus:text-accent-700 focus:no-underline focus:outline-none'>{updatedQuantity}</span>
+                <span
+                  onClick={handleShowQuantity}
+                  className="font-semibold text-accent underline transition-colors duration-200 ms-1 hover:text-accent-hover hover:no-underline focus:text-accent-700 focus:no-underline focus:outline-none"
+                >
+                  {updatedQuantity}
+                </span>
               </>
             )}
           </div>
         );
-      }
+      },
     },
 
     {
@@ -258,7 +290,7 @@ const StockList = ({
             user_id: me?.id,
             quantity: editedQuantity,
             status: record.status,
-            inStock: record.quantity === 0 && false || true,
+            inStock: (record.quantity === 0 && false) || true,
             ordPendQuant: record.ordPendQuant,
             product: record.product.id,
           };
@@ -274,16 +306,26 @@ const StockList = ({
                 <Input
                   type="number"
                   defaultValue={quantity}
-                  onChange={(e) => setEditedQuantity(Number(e.target.value))} name={''} />
-                <Button onClick={handleEditQuantity}
-                  size='small'
-                  className='mt-2'
-                >Update</Button>
+                  onChange={(e) => setEditedQuantity(Number(e.target.value))}
+                  name={''}
+                />
+                <Button
+                  onClick={handleEditQuantity}
+                  size="small"
+                  className="mt-2"
+                >
+                  Update
+                </Button>
               </>
             ) : (
               <>
                 {/* <Button onClick={handleShowQuantity}>Show</Button> */}
-                <span onClick={handleShowQuantity} className='font-semibold text-accent underline transition-colors duration-200 ms-1 hover:text-accent-hover hover:no-underline focus:text-accent-700 focus:no-underline focus:outline-none'>{updatedQuantity}</span>
+                <span
+                  onClick={handleShowQuantity}
+                  className="font-semibold text-accent underline transition-colors duration-200 ms-1 hover:text-accent-hover hover:no-underline focus:text-accent-700 focus:no-underline focus:outline-none"
+                >
+                  {updatedQuantity}
+                </span>
               </>
             )}
           </div>

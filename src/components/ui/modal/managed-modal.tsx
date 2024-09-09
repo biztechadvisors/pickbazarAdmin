@@ -20,6 +20,9 @@ const ShippingDeleteView = dynamic(
 const CategoryDeleteView = dynamic(
   () => import('@/components/category/category-delete-view')
 );
+const SubCategoryDeleteView = dynamic(
+  () => import('@/components/subcategory/subcategory-delete-view')
+);
 const CouponDeleteView = dynamic(
   () => import('@/components/coupon/coupon-delete-view')
 );
@@ -50,7 +53,9 @@ const RemoveStaffView = dynamic(
 const ExportImportView = dynamic(
   () => import('@/components/product/import-export-modal')
 );
-
+const ModelImportView = dynamic(
+  () => import('@/components/product/modal-import')
+);
 const AttributeExportImport = dynamic(
   () => import('@/components/attribute/attribute-import-export')
 );
@@ -127,6 +132,8 @@ function renderModal(view: MODAL_VIEWS | undefined, data: any) {
       return <AttributeDeleteView />;
     case 'DELETE_CATEGORY':
       return <CategoryDeleteView />;
+    case 'DELETE_SUBCATEGORY':
+      return <SubCategoryDeleteView/>;  
     case 'DELETE_COUPON':
       return <CouponDeleteView />;
     case 'DELETE_TAX':
@@ -161,6 +168,8 @@ function renderModal(view: MODAL_VIEWS | undefined, data: any) {
       return <MakeAdminView />;
     case 'EXPORT_IMPORT_PRODUCT':
       return <ExportImportView />;
+      case 'MODEL_IMPORT':
+        return <ModelImportView />;
     case 'EXPORT_IMPORT_ATTRIBUTE':
       return <AttributeExportImport />;
     case 'ADD_WALLET_POINTS':

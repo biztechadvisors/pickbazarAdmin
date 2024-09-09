@@ -16,13 +16,15 @@ import FileInput from '@/components/ui/file-input';
 import SelectInput from '@/components/ui/select-input';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { tagValidationSchema } from './tag-validation-schema';
-import { useCreateTagMutation, useUpdateTagMutation } from '@/data/tag';
+import { useCreateTagMutation, useRegionsQuery, useUpdateTagMutation } from '@/data/tag';
 import { useTypesQuery } from '@/data/type';
 import OpenAIButton from '../openAI/openAI.button';
 import { useSettingsQuery } from '@/data/settings';
-import { useCallback, useMemo } from 'react';
-import { ItemProps } from '@/types';
+import { useCallback, useMemo, useState } from 'react';
+import { ItemProps, SortOrder } from '@/types';
 import { useModalAction } from '../ui/modal/modal.context';
+import { useShopsQuery } from '@/data/shop';
+import { useMeQuery } from '@/data/user';
 
 export const chatbotAutoSuggestion = ({ name }: { name: string }) => {
   return [
@@ -68,6 +70,41 @@ export const chatbotAutoSuggestion = ({ name }: { name: string }) => {
     },
   ];
 };
+function SelectRegion({
+  control,
+  errors,
+}: {
+  control: Control<FormValues>;
+  errors: FieldErrors;
+}) {
+  const { locale } = useRouter();
+  const { t } = useTranslation(); 
+  const ShopSlugName = 'hilltop-marble';
+
+  const { regions, error } = useRegionsQuery({ 
+    shopSlug: ShopSlugName,  
+    language: locale!,
+  });
+
+  if (error) {
+    console.error("Error fetching regions:", error);
+  }
+
+  return (
+    <div className="mb-5">
+      <Label>Select Region</Label>
+      <SelectInput
+        name="region"
+        control={control}
+        getOptionLabel={(option: any) => option.name}
+        getOptionValue={(option: any) => option.id}
+        options={regions || []}
+        isLoading={!regions} // Show loading state if regions data is not yet loaded
+      />
+    <ValidationError message={t(errors.type?.message)} />
+    </div>
+  );
+}
 
 
 function SelectTypes({
@@ -79,8 +116,7 @@ function SelectTypes({
 }) {
   const { locale } = useRouter();
   const { t } = useTranslation();
-
-  const { types, loading } = useTypesQuery({
+   const { types, loading } = useTypesQuery({
     limit: 999,
     // type: type?.slug,
     language: locale,
@@ -123,6 +159,7 @@ type FormValues = {
   details: string;
   image: any;
   icon: any;
+  region_name:string;
 };
 
 const defaultValues = {
@@ -131,6 +168,7 @@ const defaultValues = {
   details: '',
   icon: '',
   type: '',
+  region_name:'',
 };
 
 type IProps = {
@@ -140,6 +178,14 @@ export default function CreateOrUpdateTagForm({ initialValues }: IProps) {
   const router = useRouter();
   const { t } = useTranslation();
   const isNewTranslation = router?.query?.action === 'translate';
+  const [searchTerm, setSearchTerm] = useState('');
+  const [page, setPage] = useState(1);
+  const [orderBy, setOrder] = useState('created_at');
+  const [sortedBy, setColumn] = useState<SortOrder>(SortOrder.Desc);
+ console.log("first+++++",initialValues)
+  const { data: meData } = useMeQuery();
+
+  const shopSlug = meData?.managed_shop.slug;
 
   const {
     register,
@@ -152,16 +198,16 @@ export default function CreateOrUpdateTagForm({ initialValues }: IProps) {
     //@ts-ignore
     defaultValues: initialValues
       ? {
-          ...initialValues,
-          icon: initialValues?.icon
-            ? tagIcons.find(
-                (singleIcon) => singleIcon.value === initialValues?.icon!
-              )
-            : '',
-          ...(isNewTranslation && {
-            type: null,
-          }),
-        }
+        ...initialValues,
+        icon: initialValues?.icon
+          ? tagIcons.find(
+            (singleIcon) => singleIcon.value === initialValues?.icon!
+          )
+          : '',
+        ...(isNewTranslation && {
+          type: null,
+        }),
+      }
       : defaultValues,
 
     resolver: yupResolver(tagValidationSchema),
@@ -173,7 +219,7 @@ export default function CreateOrUpdateTagForm({ initialValues }: IProps) {
     // @ts-ignore
     settings: { options },
   } = useSettingsQuery({
-    language: locale!,
+    language: locale!
   });
 
   const generateName = watch('name');
@@ -193,8 +239,11 @@ export default function CreateOrUpdateTagForm({ initialValues }: IProps) {
 
   const { mutate: createTag, isLoading: creating } = useCreateTagMutation();
   const { mutate: updateTag, isLoading: updating } = useUpdateTagMutation();
-
+  
   const onSubmit = async (values: FormValues) => {
+    const transformedRegions = Array.isArray(values.region)
+    ? values.region.map((region: any) => region.name || region)
+    : [];
     const input = {
       language: router.locale,
       name: values.name,
@@ -206,6 +255,8 @@ export default function CreateOrUpdateTagForm({ initialValues }: IProps) {
       },
       icon: values.icon?.value ?? '',
       type_id: values.type?.id,
+      shop: shopSlug,
+      region_name: transformedRegions ,
     };
 
     try {
@@ -227,7 +278,6 @@ export default function CreateOrUpdateTagForm({ initialValues }: IProps) {
       getErrorMessage(err);
     }
   };
-
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
       <div className="my-5 flex flex-wrap border-b border-dashed border-gray-300 pb-8 sm:my-8">
@@ -245,11 +295,10 @@ export default function CreateOrUpdateTagForm({ initialValues }: IProps) {
       <div className="my-5 flex flex-wrap sm:my-8">
         <Description
           title={t('form:input-label-description')}
-          details={`${
-            initialValues
-              ? t('form:item-description-edit')
-              : t('form:item-description-add')
-          } ${t('form:tag-description-helper-text')}`}
+          details={`${initialValues
+            ? t('form:item-description-edit')
+            : t('form:item-description-add')
+            } ${t('form:tag-description-helper-text')}`}
           className="w-full px-0 pb-5 sm:w-4/12 sm:py-8 sm:pe-4 md:w-1/3 md:pe-5 "
         />
 
@@ -287,19 +336,20 @@ export default function CreateOrUpdateTagForm({ initialValues }: IProps) {
               isClearable={true}
             />
           </div>
+          <SelectRegion control={control} errors={errors} />
           <SelectTypes control={control} errors={errors} />
         </Card>
       </div>
       <div className="mb-4 text-end">
         {/* {initialValues && ( */}
-          <Button
-            variant="outline"
-            onClick={router.back}
-            className="me-4"
-            type="button"
-          >
-            {t('form:button-label-back')}
-          </Button>
+        <Button
+          variant="outline"
+          onClick={router.back}
+          className="me-4"
+          type="button"
+        >
+          {t('form:button-label-back')}
+        </Button>
         {/* )} */}
 
         <Button loading={creating || updating}>

@@ -4,14 +4,23 @@ import { MinusIcon } from './icons/minus-icon';
 import { useModalAction } from './ui/modal/modal.context';
 import { useAtom } from 'jotai';
 import { dealerAddress } from '@/utils/atoms';
+import { toast } from 'react-toastify';
 
-const UserAddressSelection = ({ addresses, count, dealerId, type }) => {
+const UserAddressSelection = ({
+  addresses,
+  count,
+  dealerId,
+  type,
+  selectedAddress,
+  setSelectedAddress,
+}: any) => {
   const [showAllAddresses, setShowAllAddresses] = useState(false);
-  const [selectedAddress, setSelectedAddress] = useAtom(dealerAddress);
+
   const { openModal } = useModalAction();
 
-  const handleAddressSelection = (address) => {
+  const handleAddressSelection = (address: { address: { street_address: string | number | boolean | React.ReactFragment | React.ReactPortal | React.ReactElement<any, string | React.JSXElementConstructor<any>> | Record<string, unknown> | null | undefined; }; }) => {
     setSelectedAddress(address);
+    toast.success('Address selected successfully!');
   };
 
   if (!addresses || !dealerId) {
@@ -47,12 +56,11 @@ const UserAddressSelection = ({ addresses, count, dealerId, type }) => {
           </div>
           <div className="grid grid-cols-1 gap-2 md:gap-4">
             {displayedAddresses.length > 0 ? (
-              displayedAddresses.map((address, index) => (
+              displayedAddresses.map((address: { address: { street_address: string | number | boolean | React.ReactElement<any, string | React.JSXElementConstructor<any>> | React.ReactFragment | React.ReactPortal | Record<string, unknown> | null | undefined; }; }, index: React.Key | null | undefined) => (
                 <div
                   key={index}
-                  className={`cursor-pointer rounded border border-gray-200 p-3 hover:bg-gray-50 md:p-4 ${
-                    selectedAddress === address ? 'border-green-500' : ''
-                  }`}
+                  className={`cursor-pointer rounded border border-gray-200 p-3 hover:bg-gray-50 md:p-4 ${selectedAddress === address ? 'border-green-500' : ''
+                    }`}
                   onClick={() => handleAddressSelection(address)}
                 >
                   <h3 className="text-base font-normal">
@@ -64,6 +72,12 @@ const UserAddressSelection = ({ addresses, count, dealerId, type }) => {
               <span className="relative rounded border border-border-200 bg-gray-100 px-5 py-6 text-center text-base">
                 No Address Available
               </span>
+            )}
+
+            {displayedAddresses.length > 0 && !selectedAddress && (
+              <div className="relative rounded border border-border-200 bg-gray-100 px-5 py-6 text-center text-base">
+                Please select an address.
+              </div>
             )}
             {addresses.length > 0 && (
               <button

@@ -12,6 +12,7 @@ import SwitchInput from '@/components/ui/switch-input';
 import Label from '@/components/ui/label';
 import { adminOnly, getAuthCredentials, hasAccess } from '@/utils/auth-utils';
 import { useDealerQueryGet, useUpdateDealerMutation } from '@/data/dealer';
+import { DEALER } from '@/utils/constants';
 
 
 type FormValues = {
@@ -35,24 +36,20 @@ type FormValues = {
 };
 
 export default function ProfileUpdate({ me }: any) {
-  console.log("myDealers", me)
   const id = me?.id
   const { t } = useTranslation();
   const {
     data,
     isLoading,
     error,
-  } = useDealerQueryGet({id});
-
-  console.log("DealerGet", data)
+  } = useDealerQueryGet({ id });
   const { mutate: updateUser, isLoading: loading } = useUpdateUserMutation();
   const { mutate: updateDealer, isLoading: updating } = useUpdateDealerMutation();
   const { permissions } = getAuthCredentials();
 
   let permission = hasAccess(adminOnly, permissions);
-  console.log("permission", permissions[0])
-  let identify = permissions[0]
-  const matching: any = 'dealer'
+  let identify = permissions?.[0]
+  const matching: any = DEALER
   const {
     register,
     handleSubmit,
@@ -100,7 +97,6 @@ export default function ProfileUpdate({ me }: any) {
       pan: pan,
     }
     updateDealer(inputGP)
-    console.log("inputs", input)
     updateUser({ ...input });
     // updateDealer({  })
   }

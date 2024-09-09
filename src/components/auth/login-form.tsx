@@ -6,11 +6,11 @@ import * as yup from 'yup';
 import Link from '@/components/ui/link';
 import Form from '@/components/ui/forms/form';
 import { Routes } from '@/config/routes';
-import { useLogin, useMeQuery } from '@/data/user';
+import { useLogin } from '@/data/user';
 import type { LoginInput } from '@/types';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import Alert from '@/components/ui/alert';
-import Router from 'next/router';
+import Router from 'next/router'; // Import Router from next/router
 import {
   allowedRoles,
   hasAccess,
@@ -18,12 +18,8 @@ import {
 } from '@/utils/auth-utils';
 import { useAtom } from 'jotai';
 import {
-  filterPermission,
   newPermission,
-  permissionAtom,
 } from '@/contexts/permission/storepermission';
-import { siteSettings } from '@/settings/site.settings';
-
 const loginFormSchema = yup.object().shape({
   email: yup
     .string()
@@ -36,9 +32,7 @@ const LoginForm = () => {
   const { t } = useTranslation();
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const { mutate: login, isLoading, error } = useLogin();
-  const [_, setPermissionState] = useAtom(newPermission);
-
-  // export { matchedLinksState as matchedLinks };
+  const [, setPermissionState] = useAtom(newPermission);
 
   function onSubmit({ email, password }: LoginInput) {
     login(
@@ -53,7 +47,7 @@ const LoginForm = () => {
                 data?.permissions,
                 data?.type_name
               );
-              Router.push(Routes.dashboard);
+              Router.push(Routes.dashboard); // Navigate to dashboard
               return;
             }
             setErrorMessage('form:error-enough-permission');
@@ -61,7 +55,9 @@ const LoginForm = () => {
             setErrorMessage('form:error-credential-wrong');
           }
         },
-        onError: () => {},
+        onError: (error) => {
+          setErrorMessage(error.message); // Handle error by displaying error message
+        },
       }
     );
   }
@@ -125,15 +121,3 @@ const LoginForm = () => {
 };
 
 export default LoginForm;
-
-{
-  /* {errorMsg ? (
-          <Alert
-            message={t(errorMsg)}
-            variant="error"
-            closeable={true}
-            className="mt-5"
-            onClose={() => setErrorMsg('')}
-          />
-        ) : null} */
-}

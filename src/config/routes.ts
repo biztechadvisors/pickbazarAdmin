@@ -6,6 +6,7 @@ export const Routes = {
   forgotPassword: '/forgot-password',
   resetPassword: '/reset-password',
   adminMyShops: getAdminMyShopsRoute(),
+  OwnerMyShops: '/shops', //For Owner Dashboard
   profile: '/profile',
   verifyCoupons: '/coupons/verify',
   settings: '/settings',
@@ -17,7 +18,7 @@ export const Routes = {
   verifyEmail: '/verify-email',
   sales: '/sales',
   createSales: '/sales/create',
-  groups: '/groups',
+  // groups: `/${getAdminMyShopsRoute()}/groups`,
   shops: (slug: string) => `/shops/${encodeURIComponent(slug)}`,
   // orders: '/orders',
   orders: (tracking_number: string) =>
@@ -40,10 +41,13 @@ export const Routes = {
     ...routesFactory('/users'),
   },
   type: {
-    ...routesFactory('/groups'),
+    ...routesFactory(`/groups`),
   },
   category: {
     ...routesFactory('/categories'),
+  },
+  subcategory: {
+    ...routesFactory('/subCategories'),
   },
   attribute: {
     ...routesFactory('/attributes'),
@@ -53,6 +57,12 @@ export const Routes = {
   },
   tag: {
     ...routesFactory('/tags'),
+  },
+  blog:{
+    ...routesFactory('/blogs')
+  },
+  event:{
+    ...routesFactory('/events')
   },
   dealerlist: {
     ...routesFactory('/dealerlist'),
@@ -109,13 +119,13 @@ export const Routes = {
     ...routesFactory('/withdraws'),
   },
   staff: {
-    ...routesFactory('/staffs'),
+    ...routesFactory('/staff'),
   },
   stock: {
     ...routesFactory('/stocks'),
   },
   refund: {
-    ...routesFactory('/refunds'),
+    ...routesFactory(`${getAdminMyShopsRoute()}/refunds`),
   },
   question: {
     ...routesFactory('/questions'),

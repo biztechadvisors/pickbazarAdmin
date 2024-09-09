@@ -37,8 +37,9 @@ export default function CreateOrUpdateAttributeForm({ initialValues }: IProps) {
     },
     { enabled: !!shop }
   );
+  const shopId = shopData?.id || initialValues?.shop_id;
 
-  const shopId = shopData?.id!;
+  // const shopId = shopData?.id!;
   const {
     register,
     handleSubmit,
@@ -56,9 +57,14 @@ export default function CreateOrUpdateAttributeForm({ initialValues }: IProps) {
   const { mutate: updateAttribute, isLoading: updating } =
     useUpdateAttributeMutation();
   const onSubmit = (values: FormValues) => {
+    if (!shopId) {
+      setErrorMessage('Shop ID is required');
+      return;
+    }
     if (
-      !initialValues ||
-      !initialValues.translated_languages?.includes(router.locale!)
+      !initialValues &&
+      !initialValues?.translated_languages?.includes(router.locale!) ||
+      !initialValues?.language?.includes(router.locale!)
     ) {
       createAttribute(
         {
@@ -108,11 +114,10 @@ export default function CreateOrUpdateAttributeForm({ initialValues }: IProps) {
         <div className="my-5 flex flex-wrap border-b border-dashed border-border-base pb-8 sm:my-8">
           <Description
             title={t('common:attribute')}
-            details={`${
-              initialValues
-                ? t('form:item-description-update')
-                : t('form:item-description-add')
-            } ${t('form:form-description-attribute-name')}`}
+            details={`${initialValues
+              ? t('form:item-description-update')
+              : t('form:item-description-add')
+              } ${t('form:form-description-attribute-name')}`}
             className="sm:pe-4 md:pe-5 w-full px-0 pb-5 sm:w-4/12 sm:py-8 md:w-1/3"
           />
 
@@ -130,11 +135,10 @@ export default function CreateOrUpdateAttributeForm({ initialValues }: IProps) {
         <div className="my-5 flex flex-wrap sm:my-8">
           <Description
             title={t('common:attribute-values')}
-            details={`${
-              initialValues
-                ? t('form:item-description-update')
-                : t('form:item-description-add')
-            } ${t('form:form-description-attribute-value')}`}
+            details={`${initialValues
+              ? t('form:item-description-update')
+              : t('form:item-description-add')
+              } ${t('form:form-description-attribute-value')}`}
             className="sm:pe-4 md:pe-5 w-full px-0 pb-5 sm:w-4/12 sm:py-8 md:w-1/3"
           />
 
@@ -184,14 +188,14 @@ export default function CreateOrUpdateAttributeForm({ initialValues }: IProps) {
 
         <div className="text-end mb-4">
           {/* {initialValues && ( */}
-            <Button
-              variant="outline"
-              onClick={router.back}
-              className="me-4"
-              type="button"
-            >
-              {t('form:button-label-back')}
-            </Button>
+          <Button
+            variant="outline"
+            onClick={router.back}
+            className="me-4"
+            type="button"
+          >
+            {t('form:button-label-back')}
+          </Button>
           {/* )} */}
 
           <Button loading={creating || updating}>

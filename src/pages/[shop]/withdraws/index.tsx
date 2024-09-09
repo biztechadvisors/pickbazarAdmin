@@ -5,7 +5,7 @@ import { useTranslation } from 'next-i18next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import WithdrawList from '@/components/withdraw/withdraw-list';
 import LinkButton from '@/components/ui/link-button';
-import ShopLayout from '@/components/layouts/shop';
+
 import { useRouter } from 'next/router';
 import {
   adminAndOwnerOnly,
@@ -19,9 +19,8 @@ import { useState } from 'react';
 import { SortOrder } from '@/types';
 import { Routes } from '@/config/routes';
 import { useMeQuery } from '@/data/user';
-import { useAtom } from 'jotai';
-import { newPermission } from '@/contexts/permission/storepermission';
-import { siteSettings } from '@/settings/site.settings';
+import { AllPermission } from '@/utils/AllPermission';
+import AdminLayout from '@/components/layouts/admin';
 
 export default function WithdrawsPage() {
   const router = useRouter();
@@ -39,12 +38,10 @@ export default function WithdrawsPage() {
   });
   const shopId = shopData?.id!;
 
-  const [getPermission,_]=useAtom(newPermission)  
-  const canWrite =  permissions.includes('super_admin')
-  ? siteSettings.sidebarLinks
-  :getPermission?.find(
-   (permission) => permission.type === 'sidebar-nav-item-withdraws'
- )?.write;
+
+  const permissionTypes = AllPermission();
+
+  const canWrite = permissionTypes.includes('sidebar-nav-item-withdraws');
 
   const { withdraws, paginatorInfo, loading, error } = useWithdrawsQuery(
     {
@@ -83,13 +80,13 @@ export default function WithdrawsPage() {
           </h1>
         </div>
         {canWrite ? (
-        <LinkButton
-          href={`/${shop}/withdraws/create`}
-          className="h-12 w-full md:w-auto md:ms-auto"
-        >
-          <span>+ {t('form:button-label-add-withdraw')}</span>
-        </LinkButton>
-         ) : null}
+          <LinkButton
+            href={`/${shop}/withdraws/create`}
+            className="h-12 w-full md:w-auto md:ms-auto"
+          >
+            <span>+ {t('form:button-label-add-withdraw')}</span>
+          </LinkButton>
+        ) : null}
       </Card>
 
       <WithdrawList
@@ -105,7 +102,7 @@ export default function WithdrawsPage() {
 WithdrawsPage.authenticate = {
   permissions: adminAndOwnerOnly,
 };
-WithdrawsPage.Layout = ShopLayout;
+WithdrawsPage.Layout = AdminLayout;
 
 export const getServerSideProps = async ({ locale }: any) => ({
   props: {

@@ -2,10 +2,9 @@ import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { useTranslation } from 'next-i18next';
 import { useUI } from '@/contexts/ui.context';
-import { fadeInOut } from '@/utils/motion/fade-in-out';
 import axios from 'axios';
 
-const CheckoutForm = ({ }) => {
+const CheckoutForm = () => {
   const { t } = useTranslation('common');
   const { closeCartSidebar } = useUI();
 
@@ -14,7 +13,7 @@ const CheckoutForm = ({ }) => {
 
   // Function to toggle the visibility of the form
   const toggleForm = () => {
-    setIsFormOpen(!isFormOpen);
+    setIsFormOpen(prevState => !prevState);
   };
 
   // Function to handle form submission
@@ -22,22 +21,23 @@ const CheckoutForm = ({ }) => {
     e.preventDefault();
     const formData = {
       email: e.target.elements['email'].value,
-      contact: e.target.elements['phone'].value
+      phone: e.target.elements['phone'].value
     };
 
     try {
       // Make a POST request to the API endpoint
-      const response = await axios.post('http://localhost:5050/api/dealers/customer', formData);
-      // console.log('Response:', response.data);
+      const response = await axios.post('http://localhost:5000/api/dealers/customer', formData);
 
       // Close the cart sidebar after form submission
-    closeCartSidebar();
+      closeCartSidebar();
+
+      // Optionally, reset form state or perform other actions upon successful submission
+      setIsFormOpen(false);
+
     } catch (error) {
       console.error('Error submitting form:', error.message);
-      // Handle any errors that occur during form submission
     }
   };
-
 
   return (
     <motion.div
@@ -45,7 +45,6 @@ const CheckoutForm = ({ }) => {
       initial="from"
       animate="to"
       exit="from"
-      variants={fadeInOut(0.25)}
       className="flex flex-col items-center justify-center"
     >
       <motion.button
@@ -61,20 +60,19 @@ const CheckoutForm = ({ }) => {
           initial="from"
           animate="to"
           exit="from"
-          variants={fadeInOut(0.25)}
           onSubmit={handleSubmit}
           className="flex flex-col items-center justify-center"
         >
           <input
             type="email"
-            name="email" // Add name attribute
+            name="email"
             placeholder={t('Enter email')}
             className="mb-3 rounded-md border border-gray-300 px-3 py-2"
             required
           />
           <input
             type="tel"
-            name="phone" // Add name attribute
+            name="phone"
             placeholder={t('Enter phone')}
             className="mb-3 rounded-md border border-gray-300 px-3 py-2"
             required

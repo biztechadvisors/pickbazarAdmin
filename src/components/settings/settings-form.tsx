@@ -18,7 +18,7 @@ import SelectInput from '@/components/ui/select-input';
 import SwitchInput from '@/components/ui/switch-input';
 import TextArea from '@/components/ui/text-area';
 import { Config } from '@/config';
-import { useSettingsQuery, useUpdateSettingsMutation } from '@/data/settings';
+import { useCreateSettingsMutation, useUpdateSettingsMutation } from '@/data/settings';
 import { siteSettings } from '@/settings/site.settings';
 import {
   AttachmentInput,
@@ -50,6 +50,8 @@ import {
 import { EMAIL_GROUP_OPTION, SMS_GROUP_OPTION } from './eventsOption';
 import OpenAIButton from '../openAI/openAI.button';
 import { useModalAction } from '../ui/modal/modal.context';
+import { getErrorMessage } from '@/utils/form-error';
+import { useMeQuery } from '@/data/user';
 
 export const chatbotAutoSuggestion = ({ name }: { name: string }) => {
   return [
@@ -249,11 +251,19 @@ export default function SettingsForm({
   shippingClasses,
 }: IProps) {
   const { t } = useTranslation();
-  const { locale } = useRouter();
-  const [isCopied, setIsCopied] = useState(false);
-  const { mutate: updateSettingsMutation, isLoading: loading } =
-    useUpdateSettingsMutation();
-  const { language, options } = settings ?? {};
+  const router = useRouter();
+  const { locale } = router;
+
+  const { data } = useMeQuery();
+
+  const shop_id = data?.managed_shop?.id || data?.createdBy?.managed_shop?.id;
+
+  const { mutate: updateSettingsMutation } = useUpdateSettingsMutation();
+  const { mutate: createSettingsMutation, isLoading: loading } = useCreateSettingsMutation();
+
+
+  const { options } = settings ?? {};
+
   const [serverInfo, SetSeverInfo] = useState(options?.server_info);
 
   const {
@@ -263,6 +273,7 @@ export default function SettingsForm({
     getValues,
     watch,
     setValue,
+    setError,
     formState: { errors },
   } = useForm<FormValues>({
     shouldUnregister: true,
@@ -388,19 +399,23 @@ export default function SettingsForm({
   const isNotDefaultSettingsPage = Config.defaultLanguage !== locale;
 
   async function onSubmit(values: FormValues) {
+
     const contactDetails = {
       ...values?.contactDetails,
       location: { ...omit(values?.contactDetails?.location, '__typename') },
       socials: values?.contactDetails?.socials
-        ? values?.contactDetails?.socials?.map((social: any) => ({
+        ? values?.contactDetails?.socials.map((social: any) => ({
           icon: social?.icon?.value,
           url: social?.url,
         }))
         : [],
     };
+
     const smsEvent = formatEventOptions(values.smsEvent);
     const emailEvent = formatEventOptions(values.emailEvent);
-    updateSettingsMutation({
+
+    const mutationParams = {
+      id: settings?.id,
       language: locale,
       options: {
         ...values,
@@ -411,36 +426,47 @@ export default function SettingsForm({
         minimumOrderAmount: Number(values.minimumOrderAmount),
         freeShippingAmount: Number(values.freeShippingAmount),
         currency: values.currency?.code,
-        defaultAi: values?.defaultAi?.value,
-        // paymentGateway: values.paymentGateway?.name,
+        defaultAi: values.defaultAi?.value,
         defaultPaymentGateway: values.defaultPaymentGateway?.name,
-        paymentGateway:
-          values?.paymentGateway && values?.paymentGateway!.length
-            ? values?.paymentGateway?.map((gateway: any) => ({
-              name: gateway.name,
-              title: gateway.title,
-            }))
-            : PAYMENT_GATEWAY.filter((value: any, index: number) => index < 2),
-        useEnableGateway: values?.useEnableGateway,
-        guestCheckout: values?.guestCheckout,
-        taxClass: values?.taxClass?.id,
-        shippingClass: values?.shippingClass?.id,
-        logo: values?.logo,
+        paymentGateway: values.paymentGateway?.map((gateway: any) => ({
+          name: gateway.name,
+          title: gateway.title,
+        })) || PAYMENT_GATEWAY.slice(0, 2),
+        useEnableGateway: values.useEnableGateway || true,
+        guestCheckout: values.guestCheckout,
+        taxClass: values.taxClass?.id,
+        shippingClass: values.shippingClass?.id,
+        logo: values.logo,
         smsEvent,
         emailEvent,
         contactDetails,
-        //@ts-ignore
         seo: {
-          ...values?.seo,
-          ogImage: values?.seo?.ogImage,
+          ...values.seo,
+          ogImage: values.seo?.ogImage,
         },
         currencyOptions: {
           ...values.currencyOptions,
           //@ts-ignore
-          formation: values?.currencyOptions?.formation?.code,
+          formation: values.currencyOptions?.formation?.code,
         },
       },
-    });
+    };
+
+    try {
+      if (!settings || !settings.language.includes(router.locale!)) {
+        await createSettingsMutation({ shop_id, ...mutationParams });
+      } else {
+        await updateSettingsMutation({ shop_id, ...mutationParams });
+      }
+    } catch (error) {
+      const serverErrors = getErrorMessage(error);
+      Object.keys(serverErrors?.validation).forEach((field: any) => {
+        setError(field.split('.')[1], {
+          type: 'manual',
+          message: serverErrors?.validation[field][0],
+        });
+      });
+    }
   }
 
   let paymentGateway = watch('paymentGateway');
@@ -468,7 +494,7 @@ export default function SettingsForm({
     (item: any) => item?.name === defaultPaymentGateway?.name
   );
 
-  const isStripeActive = paymentGateway?.some(payment => payment?.name === "stripe");
+  const isRazorpayActive = paymentGateway?.some(payment => payment?.name === "razorpay") ? paymentGateway?.some(payment => payment?.name === "razorpay") : true;
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
@@ -704,7 +730,7 @@ export default function SettingsForm({
                       ? defaultPaymentGateway?.name
                       : ''
                   }
-                  disable={isEmpty(paymentGateway)}
+                // disable={isEmpty(paymentGateway)}
                 />
               </div>
 
@@ -730,32 +756,29 @@ export default function SettingsForm({
                       disabled={isNotDefaultSettingsPage}
                     />
                   </div>
-                  {isStripeActive && (
-                    <>
-                      <div className="mb-5">
-                        <div className="flex items-center gap-x-4">
-                          <SwitchInput
-                            name="StripeCardOnly"
-                            control={control}
-                            disabled={isNotDefaultSettingsPage}
-                          />
-                          <Label className="!mb-0">{t('Enable Stripe Element')}</Label>
-                        </div>
+                  {isRazorpayActive && (
+                    <div className="mb-5">
+                      <div className="flex items-center gap-x-4">
+                        <SwitchInput
+                          name="RazorpayCardOnly"
+                          control={control}
+                          disabled={isNotDefaultSettingsPage}
+                        />
+                        <Label className="!mb-0">{t('Enable Razorpay Element')}</Label>
                       </div>
-                    </>
+                    </div>
                   )}
                   <Label>{t('text-webhook-url')}</Label>
                   <div className="relative flex flex-col overflow-hidden rounded-md border border-solid border-[#D1D5DB]">
-                    {paymentGateway?.map((gateway: any, index: any) => {
-                      return <WebHookURL gateway={gateway} key={index} />;
-                    })}
+                    {paymentGateway.map((gateway: any, index: any) => (
+                      <WebHookURL gateway={gateway} key={index} />
+                    ))}
                   </div>
                 </>
               )}
             </>
-          ) : (
-            ''
-          )}
+          ) : null}
+
         </Card>
       </div>
       <div className="my-5 flex flex-wrap border-b border-dashed border-border-base pb-8 sm:my-8">
@@ -795,7 +818,7 @@ export default function SettingsForm({
                     amount: 987456321.123456789,
                     currencyCode:
                       currentCurrency?.code ?? settings?.options?.currency!,
-                      // @ts-ignore
+                    // @ts-ignore
                     locale: formation?.code! as string,
                     fractions: currentFractions,
                   })}

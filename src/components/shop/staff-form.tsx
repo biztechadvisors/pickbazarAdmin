@@ -1,7 +1,7 @@
 import Button from '@/components/ui/button';
 import Input from '@/components/ui/input';
 import PasswordInput from '@/components/ui/password-input';
-import { useForm } from 'react-hook-form';
+import { Controller, useForm } from 'react-hook-form';
 import Card from '@/components/common/card';
 import Description from '@/components/ui/description';
 import { useRouter } from 'next/router';
@@ -10,6 +10,12 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
 import { useShopQuery } from '@/data/shop';
 import { useAddStaffMutation } from '@/data/staff';
+import { useMeQuery } from '@/data/user';
+import PhoneInput from 'react-phone-input-2';
+import Label from '../ui/label';
+import Select from '../ui/select/select';
+import { usePermissionData } from '@/data/permission';
+
 
 type FormValues = {
   name: string;
@@ -26,6 +32,7 @@ const staffFormSchema = yup.object().shape({
 });
 const AddStaffForm = () => {
   const router = useRouter();
+  const { data: meData } = useMeQuery();
   const {
     query: { shop },
   } = router;
@@ -37,13 +44,22 @@ const AddStaffForm = () => {
     register,
     handleSubmit,
     setError,
-
     formState: { errors },
+    control,
   } = useForm<FormValues>({
     resolver: yupResolver(staffFormSchema),
   });
   const { mutate: addStaff, isLoading: loading } = useAddStaffMutation();
   const { t } = useTranslation();
+  const { id } = meData || {};
+  const { data: permissionData } = usePermissionData(id);
+
+  const permissionOptions =
+    permissionData?.map((permission: { id: any; permission_name: string }) => ({
+      value: permission.permission_name,
+      label: permission.permission_name,
+      id: permission.id,
+    })) ?? [];
 
   function onSubmit({ name, email, password }: FormValues) {
     addStaff(
@@ -66,13 +82,15 @@ const AddStaffForm = () => {
     );
   }
 
+  const { data } = useMeQuery();
+
   return (
     <form onSubmit={handleSubmit(onSubmit)} noValidate>
       <div className="my-5 flex flex-wrap sm:my-8">
         <Description
           title={t('form:form-title-information')}
           details={t('form:form-description-staff-info')}
-          className="sm:pe-4 md:pe-5 w-full px-0 pb-5 sm:w-4/12 sm:py-8 md:w-1/3"
+          className="w-full px-0 pb-5 sm:w-4/12 sm:py-8 sm:pe-4 md:w-1/3 md:pe-5"
         />
 
         <Card className="w-full sm:w-8/12 md:w-2/3">
@@ -99,10 +117,50 @@ const AddStaffForm = () => {
             variant="outline"
             className="mb-4"
           />
+
+          <Controller
+            name="contact"
+            control={control}
+            render={({ field: { onChange, value } }) => (
+              <PhoneInput
+                country="in"
+                value={value}
+                onChange={onChange}
+                inputStyle={{
+                  width: '100%',
+                  height: '40px',
+                  border: '1px solid #e2e8f0',
+                  borderRadius: '0.375rem',
+                  padding: '0.5rem',
+                  fontSize: '0.875rem',
+                  outline: 'none',
+                  paddingLeft: '50px',
+                }}
+              />
+            )}
+          />
+          <Controller
+            name="type"
+            control={control}
+            render={({ field }) => (
+              <>
+                <Label className="mt-4">{t('form:input-label-type')}</Label>
+                <Select
+                  {...field}
+                  getOptionLabel={(option: { label: string }) => option.label}
+                  getOptionValue={(option: { value: string }) => option.value}
+                  options={permissionOptions}
+                  isClearable={true}
+                  isLoading={loading}
+                  className="mb-4"
+                />
+              </>
+            )}
+          />
         </Card>
       </div>
 
-      <div className="text-end mb-4">
+      <div className="mb-4 text-end">
         <Button loading={loading} disabled={loading}>
           {t('form:button-label-add-staff')}
         </Button>

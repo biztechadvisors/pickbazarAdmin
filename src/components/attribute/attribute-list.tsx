@@ -4,28 +4,22 @@ import { Attribute, Shop, SortOrder } from '@/types';
 import { useRouter } from 'next/router';
 import { useTranslation } from 'next-i18next';
 import TitleWithSort from '@/components/ui/title-with-sort';
-import { Config } from '@/config';
-import Link from '@/components/ui/link';
 import { Routes } from '@/config/routes';
 import LanguageSwitcher from '@/components/ui/lang-action/action';
-import { useAtom } from 'jotai';
-import { newPermission } from '@/contexts/permission/storepermission';
-import { getAuthCredentials } from '@/utils/auth-utils';
-import { siteSettings } from '@/settings/site.settings';
+import { AllPermission } from '@/utils/AllPermission';
 
 export type IProps = {
   attributes: Attribute[] | undefined;
   onSort: (current: any) => void;
   onOrder: (current: string) => void;
 };
+
 const AttributeList = ({ attributes, onSort, onOrder }: IProps) => {
   const { t } = useTranslation();
   const router = useRouter();
 
-  const alignLeft =
-    router.locale === 'ar' || router.locale === 'he' ? 'right' : 'left';
-  const alignRight =
-    router.locale === 'ar' || router.locale === 'he' ? 'left' : 'right';
+  const alignLeft = router.locale === 'ar' || router.locale === 'he' ? 'right' : 'left';
+  const alignRight = router.locale === 'ar' || router.locale === 'he' ? 'left' : 'right';
 
   const [sortingObj, setSortingObj] = useState<{
     sort: SortOrder;
@@ -35,13 +29,8 @@ const AttributeList = ({ attributes, onSort, onOrder }: IProps) => {
     column: null,
   });
 
-  const [getPermission,_]=useAtom(newPermission) 
-  const { permissions } = getAuthCredentials();
-   const canWrite =  permissions.includes('super_admin')
-   ? siteSettings.sidebarLinks
-   :getPermission?.find(
-    (permission) => permission.type === 'sidebar-nav-item-attributes'
-  )?.write;
+  const permissionTypes = AllPermission();
+  const canWrite = permissionTypes.includes('sidebar-nav-item-attributes');
 
   const onHeaderClick = (column: string | null) => ({
     onClick: () => {
@@ -51,8 +40,7 @@ const AttributeList = ({ attributes, onSort, onOrder }: IProps) => {
       onOrder(column!);
 
       setSortingObj({
-        sort:
-          sortingObj.sort === SortOrder.Desc ? SortOrder.Asc : SortOrder.Desc,
+        sort: sortingObj.sort === SortOrder.Desc ? SortOrder.Asc : SortOrder.Desc,
         column: column,
       });
     },
@@ -67,13 +55,10 @@ const AttributeList = ({ attributes, onSort, onOrder }: IProps) => {
       width: 60,
     },
     {
-      // title: t("table:table-item-title"),
       title: (
         <TitleWithSort
           title={t('table:table-item-title')}
-          ascending={
-            sortingObj.sort === SortOrder.Asc && sortingObj.column === 'name'
-          }
+          ascending={sortingObj.sort === SortOrder.Asc && sortingObj.column === 'name'}
           isActive={sortingObj.column === 'name'}
         />
       ),
@@ -103,40 +88,37 @@ const AttributeList = ({ attributes, onSort, onOrder }: IProps) => {
       render: (values: any) => {
         return (
           <span className="whitespace-nowrap">
-            {values?.map((singleValues: any, index: number) => {
-              return index > 0
-                ? `, ${singleValues.value}`
-                : `${singleValues.value}`;
+            {values?.map((singleValue: any, index: number) => {
+              return index > 0 ? `, ${singleValue.value}` : `${singleValue.value}`;
             })}
           </span>
         );
       },
     },
-    {      
+    {
       ...(canWrite
         ? {
           title: t('table:table-item-actions'),
           dataIndex: 'slug',
           key: 'actions',
           align: alignRight,
-          render: (slug: string, record: Attribute) =>  (
+          render: (slug: string, record: Attribute) => (
             <LanguageSwitcher
               slug={slug}
               record={record}
               deleteModalView="DELETE_ATTRIBUTE"
               routes={Routes?.attribute}
             />
-            ),
+          ),
         }
-        
-        : null),
-    },    
-    
+        : {}),
+    },
   ];
 
   if (router?.query?.shop) {
     columns = columns?.filter((column) => column?.key !== 'shop');
   }
+
   return (
     <div className="mb-8 overflow-hidden rounded shadow">
       <Table

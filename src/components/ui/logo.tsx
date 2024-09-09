@@ -42,6 +42,7 @@ import Link from '@/components/ui/link';
 import { logoPlaceholder } from '@/lib/placeholders';
 import { useSettings } from '@/framework/rest/settings';
 import Image from 'next/image';
+import { siteSettings } from '@/settings/site.settings';
 
 const Logo: React.FC<React.AnchorHTMLAttributes<{}>> = ({
   className,
@@ -51,11 +52,11 @@ const Logo: React.FC<React.AnchorHTMLAttributes<{}>> = ({
     settings: { logo, siteTitle },
   }: any = useSettings();
   return (
-    <Link href='/' className={cn('inline-flex', className)} {...props}>
+    <Link href="/" className={cn('inline-flex', className)} {...props}>
       <span className="relative h-10 w-32 overflow-hidden md:w-40">
         <Image
-          src={`${process?.env?.NEXT_PUBLIC_REST_API_ENDPOINT}/${logo?.original }`}
           // src={logo?.original ?? siteSettings.logo.url}
+          src="/icons/Frame.png"
           alt={siteTitle ?? 'PickBazar Logo'}
           fill
           sizes="(max-width: 768px) 100vw"
@@ -68,4 +69,3 @@ const Logo: React.FC<React.AnchorHTMLAttributes<{}>> = ({
 };
 
 export default Logo;
-

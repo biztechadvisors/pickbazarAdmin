@@ -1,12 +1,12 @@
 import { useRouter } from 'next/router';
 import { BackArrowRound } from '@/components/icons/back-arrow-round';
-import { useUser } from '@/framework/user';
 import LoginView from '@/components/auth/login-form';
 import { useToken } from '@/lib/hooks/use-token';
 import VerifyEmail from '@/pages/verify-email';
 
 import dynamic from 'next/dynamic';
 import { useHasMounted } from '@/lib/use-has-mounted';
+import { useUser } from '@/framework/rest/user';
 const Loader = dynamic(
   () => import('@/components/ui/loaders/spinner/spinner'),
   { ssr: false }
@@ -21,7 +21,7 @@ const PrivateRoute: React.FC<{ children?: React.ReactNode }> = ({
   const hasMounted = useHasMounted();
   const isUser = !!me;
 
-  const {emailVerified} = getEmailVerified();
+  const { emailVerified } = getEmailVerified();
   if (!isUser && !isAuthorized && hasMounted) {
     return (
       <div className="relative flex min-h-screen w-full justify-center py-5 md:py-8">

@@ -7,15 +7,22 @@ import { useMeQuery } from '@/data/user';
 import { useTranslation } from 'next-i18next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import EmailUpdateForm from '@/components/auth/email-update-form';
-import CreateOrUpdateDealerForm from '@/components/dealerlist/add-dealer-form';
 import { AddressType } from '@/types';
 import UserAddressSelection from '@/components/UserAddressSelection';
 import { useEffect, useRef } from 'react';
+import { useAtom } from 'jotai';
+import { dealerAddress } from '@/utils/atoms';
+import { useRouter } from 'next/router';
+import OwnerLayout from '@/components/layouts/owner';
+import AdminLayout from '@/components/layouts/admin';
+import { DEALER } from '@/utils/constants';
 
 export default function ProfilePage() {
   const { t } = useTranslation();
   const { data, isLoading: loading, error } = useMeQuery();
   const userAddressSelectionRef = useRef(null);
+  const router = useRouter();
+  const [selectedAddress, setSelectedAddress] = useAtom(dealerAddress);
 
   useEffect(() => {
     if (data && userAddressSelectionRef.current) {
@@ -24,7 +31,12 @@ export default function ProfilePage() {
         block: 'start',
       });
     }
-  }, [data]);
+
+    if (selectedAddress && router.query.from === 'order-checkout') {
+      router.push('orders/checkout');
+    }
+  }, [data, selectedAddress, router.query.from]);
+
   if (loading) return <Loader text={t('common:text-loading')} />;
   if (error) return <ErrorMessage message={error.message} />;
 
@@ -39,19 +51,21 @@ export default function ProfilePage() {
       <ProfileUpdateFrom me={data} />
       <ChangePasswordForm />
 
-      {data?.dealer?.id && (
+      {data?.permission?.type_name === DEALER && (
         <div ref={userAddressSelectionRef}>
           <UserAddressSelection
             addresses={data.address}
             dealerId={data.id}
             type={AddressType.Billing}
+            selectedAddress={selectedAddress}
+            setSelectedAddress={setSelectedAddress}
           />
         </div>
       )}
     </>
   );
 }
-ProfilePage.Layout = Layout;
+ProfilePage.Layout = AdminLayout;
 
 export const getStaticProps = async ({ locale }: any) => ({
   props: {

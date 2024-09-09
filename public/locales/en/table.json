@@ -8,12 +8,13 @@
   "table-item-title": "Name",
   "table-item-walletpoint": "Wallet Points",
   "table-item-walletbalance": "Wallet Balance",
-  "table-item-usersbase":"Users Base",
+  "table-item-usersbase": "Users Base",
   "table-item-products": "Products",
   "table-item-type": "Type",
   "table-item-unit": "Price/Unit",
   "table-item-quantity": "Quantity",
   "table-item-stock": "Stock",
+  "table-item-content": "Content",
   "table-item-description": "Description",
   "table-item-status": "Status",
   "table-item-action": "Action",
@@ -48,7 +49,7 @@
   "table-item-zip": "ZIP",
   "table-item-global": "Global",
   "table-item-values": "Values",
-  "table-item-group": "Group",
+  "table-item-group": "Collections",
   "table-item-shop-id": "Shop ID",
   "table-item-shop-name": "Shop Name",
   "table-item-payment-method": "Payment Method",
@@ -81,5 +82,6 @@
   "table-item-receiver": "Receiver",
   "table-item-effective-from": "Effective From",
   "table-item-expired-at": "Expired At",
-  "table-item-issued-by": "Issued By"
+  "table-item-issued-by": "Issued By",
+  "table-item-category": "Category"
 }

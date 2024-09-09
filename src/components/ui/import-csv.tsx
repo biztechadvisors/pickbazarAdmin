@@ -1,9 +1,9 @@
 import { UploadIcon } from '@/components/icons/upload-icon';
+import { useState } from 'react';
 import { useDropzone } from 'react-dropzone';
 
 export default function ImportCsv({ onDrop, loading, title }: any) {
   const { getRootProps, getInputProps } = useDropzone({
-    // @ts-ignore
     accept: '.csv',
     multiple: false,
     onDrop,

@@ -43,6 +43,11 @@ import { useModalAction } from '@/components/ui/modal/modal.context';
 import { useCallback } from 'react';
 import OpenAIButton from '@/components/openAI/openAI.button';
 import { ItemProps } from '@/types';
+import ProductSubCategoryInput from './product-subcategory-input';
+import { useTaxesQuery } from '@/data/tax';
+import SelectInput from '../ui/select-input';
+import ValidationError from '../ui/form-validation-error';
+import { useMeQuery } from '@/data/user';
 
 export const chatbotAutoSuggestion = ({ name }: { name: string }) => {
   return [
@@ -98,12 +103,6 @@ export default function CreateOrUpdateProductForm({
 }: ProductFormProps) {
   const router = useRouter();
   const { locale } = router;
-  const {
-    // @ts-ignore
-    settings: { options },
-  } = useSettingsQuery({
-    language: locale!,
-  });
   const [isSlugDisable, setIsSlugDisable] = useState<boolean>(true);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const { t } = useTranslation();
@@ -129,6 +128,14 @@ export default function CreateOrUpdateProductForm({
       enabled: !!router.query.shop,
     }
   );
+
+  const {
+    // @ts-ignore
+    settings: { options },
+  } = useSettingsQuery({
+    language: locale!
+  });
+
   const shopId = shopData?.id!;
   const isNewTranslation = router?.query?.action === 'translate';
   const isSlugEditable =
@@ -140,6 +147,13 @@ export default function CreateOrUpdateProductForm({
     // @ts-ignore
     defaultValues: getProductDefaultValues(initialValues!, isNewTranslation),
   });
+
+  const { data: meData } = useMeQuery()
+  const shop_id = meData?.shop_id
+  const { taxes, loading, error } = useTaxesQuery({
+    shop_id
+  });
+
   const {
     register,
     handleSubmit,
@@ -158,7 +172,6 @@ export default function CreateOrUpdateProductForm({
     useUpdateProductMutation();
 
   const onSubmit = async (values: ProductFormValues) => {
-    console.log('valuesProduct', values);
     const inputValues = {
       language: router.locale,
       ...getProductInputValues(values, initialValues),
@@ -194,8 +207,6 @@ export default function CreateOrUpdateProductForm({
     }
   };
   const product_type = watch('product_type');
-  const is_digital = watch('is_digital');
-  const is_external = watch('is_external');
   const { fields, append, remove } = useFieldArray({
     control,
     name: 'video',
@@ -326,11 +337,11 @@ export default function CreateOrUpdateProductForm({
 
             <Card className="w-full sm:w-8/12 md:w-2/3">
               <FileInput name="image" control={control} multiple={false} />
-              {/* {errors.image?.message && (
+              {errors.image?.message && (
                 <p className="my-2 text-xs text-red-500">
                   {t(errors?.image?.message!)}
                 </p>
-              )} */}
+              )}
             </Card>
           </div>
 
@@ -414,8 +425,9 @@ export default function CreateOrUpdateProductForm({
                 error={t((errors?.type as any)?.message)}
               />
               <ProductCategoryInput control={control} setValue={setValue} />
-              <ProductAuthorInput control={control} setValue={setValue} />
-              <ProductManufacturerInput control={control} setValue={setValue} />
+              <ProductSubCategoryInput control={control} setValue={setValue} />
+              {/* <ProductAuthorInput control={control} setValue={setValue} /> */}
+              {/* <ProductManufacturerInput control={control} setValue={setValue} /> */}
               <ProductTagInput control={control} setValue={setValue} />
             </Card>
           </div>
@@ -423,11 +435,10 @@ export default function CreateOrUpdateProductForm({
           <div className="my-5 flex flex-wrap sm:my-8">
             <Description
               title={t('form:item-description')}
-              details={`${
-                initialValues
-                  ? t('form:item-description-edit')
-                  : t('form:item-description-add')
-              } ${t('form:product-description-help-text')}`}
+              details={`${initialValues
+                ? t('form:item-description-edit')
+                : t('form:item-description-add')
+                } ${t('form:product-description-help-text')}`}
               className="w-full px-0 pb-5 sm:w-4/12 sm:py-8 sm:pe-4 md:w-1/3 md:pe-5"
             />
 
@@ -490,26 +501,37 @@ export default function CreateOrUpdateProductForm({
                   className="mb-5"
                 />
               </div>
-
+              <div>
+                <Label>{t('form:input-label-hsn_no')}</Label>
+                <SelectInput
+                  options={taxes}
+                  placeholder={t('Select')}
+                  getOptionLabel={(option: any) => `${option?.name}-${option?.hsn_no}`}
+                  getOptionValue={(option: any) => option}
+                  control={control}
+                  name={'taxes'}
+                  defaultValue={[]} />
+                <ValidationError message={errors.address?.state?.message} />
+              </div>
               <div>
                 <Label>{t('form:input-label-status')}</Label>
                 {!isEmpty(statusList)
                   ? statusList?.map((status: any, index: number) => (
-                      <Radio
-                        key={index}
-                        {...register('status')}
-                        label={t(status?.label)}
-                        id={status?.id}
-                        value={status?.value}
-                        className="mb-2"
-                        disabled={
-                          permission &&
+                    <Radio
+                      key={index}
+                      {...register('status')}
+                      label={t(status?.label)}
+                      id={status?.id}
+                      value={status?.value}
+                      className="mb-2"
+                      disabled={
+                        permission &&
                           initialValues?.status === ProductStatus?.Draft
-                            ? true
-                            : false
-                        }
-                      />
-                    ))
+                          ? true
+                          : false
+                      }
+                    />
+                  ))
                   : ''}
                 {errors.status?.message && (
                   <p className="my-2 text-xs text-red-500">

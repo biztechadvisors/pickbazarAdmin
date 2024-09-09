@@ -10,10 +10,11 @@ import { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { isEmpty } from 'lodash';
-import { useState } from 'react';
+import { useMeQuery } from '@/data/user';
 
 type FormValues = {
   message: string;
+  shop_id: string
 };
 
 const messageSchema = yup.object().shape({
@@ -22,9 +23,12 @@ const messageSchema = yup.object().shape({
 
 interface Props {
   className?: string;
+  shop?: any;
+  dealer?:any
 }
 
-const CreateMessageForm = ({ className, ...rest }: Props) => {
+const CreateMessageForm = ({ className, shop,dealer, ...rest }: Props) => {
+
   const {
     register,
     handleSubmit,
@@ -37,8 +41,10 @@ const CreateMessageForm = ({ className, ...rest }: Props) => {
   });
 
   const { t } = useTranslation();
+  const {data:user}= useMeQuery();
   const router = useRouter();
   const { query } = router;
+
   const { mutate: createMessage, isLoading: creating } = useSendMessage();
   useEffect(() => {
     const listener = (event: any) => {
@@ -63,8 +69,17 @@ const CreateMessageForm = ({ className, ...rest }: Props) => {
     }
     createMessage(
       {
-        message: values?.message,
-        id: query?.id as string
+        conversation: {
+          message: values?.message,
+          latest_message:{
+            body:values?.message,
+            user_id:user?.id,
+          },
+          shop_id: shop?.id,
+          dealer_id: dealer?.id,
+          // user_id:user?.id,
+          id: query?.id as string,
+        },
       },
       {
         onError: (error: any) => {
