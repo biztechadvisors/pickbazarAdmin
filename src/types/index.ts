@@ -172,6 +172,7 @@ export enum Permission {
 }
 
 export interface GetParams {
+  shopSlug?:string;  
   slug: string;
   userId?: string;
   language: string;
@@ -185,6 +186,8 @@ export interface QueryOptions {
   page?: number;
   orderBy?: string;
   sortedBy?: SortOrder;
+  region_name?:string[]; 
+ 
 }
 
 export interface ShopSocialInput {
@@ -782,7 +785,9 @@ export interface Tag {
   products?: Product[];
   created_at?: string;
   updated_at?: string;
+  region_name?:string[]; 
 }
+
 
 export interface CreateTagInput {
   name: string;
@@ -790,8 +795,17 @@ export interface CreateTagInput {
   details?: string;
   image?: AttachmentInput;
   icon?: string;
+  region_name?:string[]; 
 }
 
+export interface Region {
+  shop:number;
+  name:string;
+ }
+ export interface CreateRegionInput {
+  shop:string;
+  name:string;
+ }
 export interface Author {
   bio?: string;
   born?: string;
@@ -1527,7 +1541,12 @@ export interface TagQueryOptions extends QueryOptions {
   type: string;
   name: string;
   parent: number | null;
+  shopSlug: string; 
+  region_name:string[];
+ }
+export interface RegionQueryOptions extends QueryOptions {
   shopSlug: string;
+   name:string;
 }
 
 export interface InvoiceTranslatedText {

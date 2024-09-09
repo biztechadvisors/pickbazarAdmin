@@ -33,6 +33,8 @@ import { useSettingsQuery } from '@/data/settings';
 import { useModalAction } from '../ui/modal/modal.context';
 import OpenAIButton from '../openAI/openAI.button';
 import { useMeQuery } from '@/data/user';
+import { useRegionsQuery } from '@/data/tag';
+// import { useRegionsQuery } from '@/data/region'; 
 
 export const chatbotAutoSuggestion = ({ name }: { name: string }) => {
   return [
@@ -95,6 +97,41 @@ export const updatedIcons = categoryIcons.map((item: any) => {
   return item;
 });
 
+function SelectRegion({
+  control,
+  errors,
+}: {
+  control: Control<FormValues>;
+  errors: FieldErrors;
+}) {
+  const { locale } = useRouter();
+  const { t } = useTranslation(); 
+  const ShopSlugName = 'hilltop-marble';
+
+  const { regions, error } = useRegionsQuery({ 
+    shopSlug: ShopSlugName,  
+    language: locale!,
+  });
+
+  if (error) {
+    console.error("Error fetching regions:", error);
+  }
+
+  return (
+    <div className="mb-5">
+      <Label>Select Region</Label>
+      <SelectInput
+        name="region"
+        control={control}
+        getOptionLabel={(option: any) => option.name}
+        getOptionValue={(option: any) => option.id}
+        options={regions || []}
+        isLoading={!regions} // Show loading state if regions data is not yet loaded
+      />
+    <ValidationError message={t(errors.type?.message)} />
+    </div>
+  );
+}
 function SelectTypes({
   control,
   errors,
@@ -168,7 +205,7 @@ type FormValues = {
   image: any;
   icon: any;
   type: any;
-  region:string;
+  region_name:string;
 };
 
 const defaultValues = {
@@ -178,6 +215,7 @@ const defaultValues = {
   parent: '',
   icon: '',
   type: '',
+  region_name:'',
 };
 
 type IProps = {
@@ -261,7 +299,7 @@ export default function CreateOrUpdateCategoriesForm({
       icon: values.icon?.value || '',
       parent: values.parent?.id ?? null,
       type_id: values.type?.id,
-      regions: values.region,
+      region_name: values.region,
     };
 
     if (
@@ -281,11 +319,7 @@ export default function CreateOrUpdateCategoriesForm({
         shop_id: meData?.managed_shop?.id,
       });
     }
-  };
-  const countryOptions = [
-    { value: 'India', label: 'India' },
-    { value: 'usa', label: 'usa' },
-  ];
+  }; 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
       <div className="my-5 flex flex-wrap border-b border-dashed border-border-base pb-8 sm:my-8">
@@ -342,7 +376,7 @@ export default function CreateOrUpdateCategoriesForm({
               options={updatedIcons}
               isClearable={true} defaultValue={[]} />
           </div>
-          <div className="mb-5">
+          {/* <div className="mb-5">
           <SelectInput
     name="region"
     control={control}
@@ -350,7 +384,8 @@ export default function CreateOrUpdateCategoriesForm({
     isClearable={true}
     defaultValue={[]}
   />
-  </div>  
+  </div>   */}
+          <SelectRegion control={control} errors={errors} />
           <SelectTypes control={control} errors={errors} />
           <SelectCategories control={control} setValue={setValue} />
         </Card>
