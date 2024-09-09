@@ -198,6 +198,7 @@
   "input-forgot-password-label": "Forgot password?",
   "button-label-create-customer": "Create",
   "form-title-information": "Information",
+  "form-title-regions": "Regions",
   "customer-form-info-help-text": "Add your User information and create a new User from here",
   "coupon-image-helper-text": "Upload your coupon image here",
   "coupon-form-info-help-text": "your coupon description and necessary information from here",
@@ -453,5 +454,6 @@
   "shop-company-help-text": "Select the company you want to create with additional permission",
   "input-label-select-company": "Company Type",
   "input-label-extra-permission": "Add More Permission (Optional)",
-  "button-label-more-permission": "Advance permission"
+  "button-label-more-permission": "Advance permission",
+  "button-label-add-regions" : "Add Regions"
 }
