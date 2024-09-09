@@ -65,14 +65,14 @@ export default function Regions() {
         <div className="flex w-full flex-col items-center space-y-4 ms-auto md:flex-row md:space-y-0 xl:w-1/2">
           <Search onSearch={handleSearch} />
 
-          {canWrite && locale === Config.defaultLanguage && (
+          {/* {canWrite && locale === Config.defaultLanguage && ( */}
             <LinkButton
               href="/regions/create"
               className="h-12 w-full md:w-auto md:ms-6"
             >
               <span>+ {t('form:button-label-add-regions')}</span>
             </LinkButton>
-          )}
+          {/* )} */}
         </div>
       </Card>
       <RegionsList

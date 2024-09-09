@@ -4,97 +4,43 @@ import { toast } from 'react-toastify';
 import { useTranslation } from 'next-i18next';
 import { mapPaginatorData } from '@/utils/data-mappers';
 import { couponClient } from './client/coupon';
-import { Coupon, CouponPaginator, CouponQueryOptions, RegionPaginator, RegionsQueryOptions } from '@/types';
+import { Coupon, CouponPaginator, CouponQueryOptions, Region, RegionPaginator, RegionsQueryOptions } from '@/types';
 import { Routes } from '@/config/routes';
 import { API_ENDPOINTS } from './client/api-endpoints';
 import { Config } from '@/config';
 import { regionClient } from './client/region';
 
-export const useCreateCouponMutation = () => {
+export const useDeleteRegionsClassMutation = () => {
   const queryClient = useQueryClient();
   const { t } = useTranslation();
 
-  return useMutation(couponClient.create, {
+  return useMutation(regionClient.delete, {
     onSuccess: () => {
-      Router.push(Routes.coupon.list, undefined, {
-        locale: Config.defaultLanguage,
-      });
-      toast.success(t('common:successfully-created'));
-    },
-    onError: (error: any) => {
-      const {data, status} =  error?.response;
-      if (status === 422) {
-        const errorMessage:any = Object.values(data).flat();
-        toast.error(errorMessage[0]);
-      }
+      toast.success(t('common:successfully-deleted'));
     },
     // Always refetch after error or success:
     onSettled: () => {
-      queryClient.invalidateQueries(API_ENDPOINTS.COUPONS);
+      queryClient.invalidateQueries(API_ENDPOINTS.REGIONS);
     },
   });
 };
 
-// export const useDeleteCouponMutation = () => {
-//   const queryClient = useQueryClient();
-//   const { t } = useTranslation();
+export const useCreateRegionsClassMutation = (shop_id) => {
+  const queryClient = useQueryClient();
+  const router = useRouter();
+  const { t } = useTranslation();
 
-//   return useMutation(couponClient.delete, {
-//     onSuccess: () => {
-//       toast.success(t('common:successfully-deleted'));
-//     },
-//     // Always refetch after error or success:
-//     onSettled: () => {
-//       queryClient.invalidateQueries(API_ENDPOINTS.COUPONS);
-//     },
-//   });
-// };
-
-// export const useUpdateCouponMutation = () => {
-//   const { t } = useTranslation();
-//   const queryClient = useQueryClient();
-//   const { locale } = useRouter();
-//   return useMutation(couponClient.update, {
-//     onSuccess: async (data) => {
-//       toast.success(t('common:successfully-updated'));
-//       await Router.replace(
-//         `${Routes.coupon.list}/${data?.code}/edit`,
-//         undefined,
-//         {
-//           locale,
-//         }
-//       );
-//     },
-//     // Always refetch after error or success:
-//     onSettled: () => {
-//       queryClient.invalidateQueries(API_ENDPOINTS.COUPONS);
-//     },
-//   });
-// };
-
-// export const useVerifyCouponMutation = () => {
-//   return useMutation(couponClient.verify);
-// };
-
-// export const useCouponQuery = ({
-//   code,
-//   language,
-// }: {
-//   code: string;
-//   language: string;
-// }) => {
-//   const { data, error, isLoading } = useQuery<Coupon, Error>(
-//     [API_ENDPOINTS.COUPONS, { code, language }],
-//     () => couponClient.get({ code, language })
-//   );
-
-//   return {
-//     coupon: data,
-//     error,
-//     loading: isLoading,
-//   };
-// };
-
+  return useMutation((data) => regionClient.create({ ...data, shop_id }), {
+    onSuccess: () => {
+      router.push(Routes.regions.list);
+      toast.success(t('common:successfully-created'));
+    },
+    // Always refetch after error or success:
+    onSettled: () => {
+      queryClient.invalidateQueries(API_ENDPOINTS.REGIONS);
+    },
+  });
+};
 
 export const useRegionsQuery = (
   params: Partial<RegionsQueryOptions>,
@@ -110,13 +56,35 @@ export const useRegionsQuery = (
     }
   );
   return {
-    orders: data?.data ?? [],
+    regions: data || [],
     paginatorInfo: mapPaginatorData(data),
     error,
     loading: isLoading,
   };
 };
 
+export const useUpdateRegionClassMutation = (shop_id) => {
+  console.log('shop_id =', shop_id)
+  const { t } = useTranslation();
+  const queryClient = useQueryClient();
+
+  return useMutation((data) => regionClient.update({ ...data , shop_id }), {
+    onSuccess: () => {
+      toast.success(t('common:successfully-updated'));
+    },
+    onSettled: () => {
+      queryClient.invalidateQueries(API_ENDPOINTS.REGIONS);
+    },
+  });
+};
+
+
+
+export const useRegionsingleDataQuery = (id: string) => {
+  return useQuery<Region, Error>([API_ENDPOINTS.REGIONS, id], () =>
+    regionClient.get({ id })
+  );
+};
 
 
 // export const useRegionsQuery = (options: Partial<RegionsQueryOptions>) => {

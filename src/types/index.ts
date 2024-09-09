@@ -601,8 +601,11 @@ export interface StoreNoticeUserToNotifyInput {
 }
 
 export interface Region {
+  id: string;
   name: string;
-  shop: number[];
+  slug: string;
+  shop_id:string[];
+  // Add other properties as needed
 }
 
 export interface Order {
@@ -1648,8 +1651,11 @@ export interface CouponQueryOptions extends QueryOptions {
 }
 
 export interface RegionsQueryOptions extends QueryOptions {
-  shopSlug: string;
-  code: string;
+  id: string;
+  name: string;
+  shop_id: string[];
+  shopSlug?: string;
+  code?: string;
 }
 
 export interface StoreNoticeQueryOptions extends QueryOptions {
