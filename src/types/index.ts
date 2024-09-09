@@ -605,6 +605,11 @@ export interface Region {
   shop: number[];
 }
 
+export interface Notification {  
+  userId: number;
+  notificationId: number;
+}
+
 export interface Order {
   id: string;
   tracking_number: string;
@@ -1651,6 +1656,11 @@ export interface RegionsQueryOptions extends QueryOptions {
   shopSlug: string; 
 }
 
+export interface NotificationQueryOptions extends QueryOptions {
+  userId?: number; 
+  notificationId?: number;
+}
+
 export interface StoreNoticeQueryOptions extends QueryOptions {
   notice: string;
   shop_id: string;
@@ -1723,6 +1733,7 @@ export interface StaffPaginator extends PaginatorInfo<User> { }
 export interface DealerPaginator extends PaginatorInfo<AddDealerInput> { }
 
 export interface OrderPaginator extends PaginatorInfo<Order> { }
+export interface NotificationPaginator extends PaginatorInfo<Notification> { }
 
 export interface CouponPaginator extends PaginatorInfo<Coupon> { }
 
