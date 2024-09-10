@@ -44,10 +44,11 @@ export default function Tags() {
     limit: 10,
     orderBy,
     sortedBy,
-    name: searchTerm,
+    // name: searchTerm,
     page,
     language: locale,
-    shopSlug
+    shopSlug,
+    search:searchTerm,
   });
 
 

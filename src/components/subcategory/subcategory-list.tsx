@@ -29,7 +29,7 @@ const SubCategoryList = ({
   onSort,
   onOrder,
 }: IProps) => {
-
+console.log("subcategories++++", subcategories);
   const { t } = useTranslation();
   const rowExpandable = (record: any) => record.children?.length;
   const { alignLeft, alignRight } = useIsRTL();
@@ -178,7 +178,7 @@ const SubCategoryList = ({
           //@ts-ignore
           columns={columns}
           emptyText={t('table:empty-table-data')}
-          data={subcategories}
+          data={subcategories.data}
           rowKey="id"
           scroll={{ x: 1000 }}
           expandable={{
