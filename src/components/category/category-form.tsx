@@ -199,6 +199,7 @@ function SelectCategories({
 }
 
 type FormValues = {
+  region: any;
   name: string;
   details: string;
   parent: any;
@@ -287,6 +288,9 @@ export default function CreateOrUpdateCategoriesForm({
 
   const onSubmit = async (values: FormValues) => {
     console.log('Form Data:', values);
+    const transformedRegions = Array.isArray(values.region)
+    ? values.region.map((region: any) => region.name || region)
+    : [];
     const input = {
       language: router.locale,
       name: values.name,
@@ -299,7 +303,7 @@ export default function CreateOrUpdateCategoriesForm({
       icon: values.icon?.value || '',
       parent: values.parent?.id ?? null,
       type_id: values.type?.id,
-      region_name: values.region,
+      region_name: transformedRegions,
     };
 
     if (

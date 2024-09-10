@@ -241,6 +241,7 @@ export default function CreateOrUpdateTagForm({ initialValues }: IProps) {
   const { mutate: updateTag, isLoading: updating } = useUpdateTagMutation();
   
   const onSubmit = async (values: FormValues) => {
+    console.log("Form DATA:",values);
     const transformedRegions = Array.isArray(values.region)
       ? values.region.map((region: any) => region.name || region)
       : [];
