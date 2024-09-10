@@ -16,7 +16,7 @@ export const tagClient = {
       searchJoin: 'and',
       shopSlug,
       ...params,
-      search: HttpClient.formatSearchParams({ type, name }),
+      // search: HttpClient.formatSearchParams({ type, name }),
     });
   },
 };
