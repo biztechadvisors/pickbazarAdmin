@@ -48,6 +48,7 @@ export const useUpdateTagMutation = () => {
   const queryClient = useQueryClient();
   return useMutation(tagClient.update, {
     onSuccess: () => {
+      
       toast.success(t('common:successfully-updated'));
     },
     // Always refetch after error or success:
@@ -68,19 +69,19 @@ export const useTagQuery = ({ slug, language  }: GetParams) => {
     loading: isLoading,
   };
 };
-export const useRegionsQuery = ({ shopSlug, language }: GetParams) => {
-  const { data, error, isLoading } = useQuery<Region[], Error>(
-    [API_ENDPOINTS.REGIONS, { shopSlug, language }],
-    () => regionClient.get({ shopSlug, language })  
-  );
+// export const useRegionsQuery = ({ shopSlug, language }: GetParams) => {
+//   const { data, error, isLoading } = useQuery<Region[], Error>(
+//     [API_ENDPOINTS.REGIONS, { shopSlug, language }],
+//     () => regionClient.get({ shopSlug, language })  
+//   );
 
-  console.log("REGION DATA: ", data); 
-   return {
-    regions: data,   
-    error,
-    loading: isLoading,
-  };
-};
+//   console.log("REGION DATA: ", data); 
+//    return {
+//     regions: data,   
+//     error,
+//     loading: isLoading,
+//   };
+// };
 
 export const useTagsQuery = (options: Partial<TagQueryOptions>) => {
   const { data, error, isLoading } = useQuery<TagPaginator, Error>(

@@ -21,7 +21,7 @@ import RadioCard from '@/components/ui/radio-card/radio-card';
 import Checkbox from '@/components/ui/checkbox/checkbox';
 import { useCreateTypeMutation, useUpdateTypeMutation } from '@/data/type';
 import { useMeQuery } from '@/data/user';
-import { useRegionsQuery } from '@/data/tag';
+import { useRegionsQuery } from '@/data/regions';
 import ValidationError from '@/components/ui/form-validation-error';
 
 export const updatedIcons = typeIconList.map((item: any) => {
@@ -127,17 +127,21 @@ function SelectRegion({
 }) {
   const { locale } = useRouter();
   const { t } = useTranslation(); 
+
+  const { data: meData } = useMeQuery();
+
   const ShopSlugName = 'hilltop-marble';
-
-  const { regions, error } = useRegionsQuery({ 
-    shopSlug: ShopSlugName,  
-    language: locale!,
+  // const { data: me } = useMeQuery()
+  console.log('region-me = ', meData)
+  console.log('region-me = ', meData?.managed_shop?.slug)
+ 
+  const { regions, loading, paginatorInfo, error } = useRegionsQuery({
+    code: meData?.managed_shop?.slug,
   });
-
+console.log("REgions===",regions);
   if (error) {
     console.error("Error fetching regions:", error);
   }
-
   return (
     <div className="mb-5">
       <Label>Select Region</Label>
@@ -153,6 +157,7 @@ function SelectRegion({
     </div>
   );
 }
+
 export default function CreateOrUpdateTypeForm({ initialValues }: IProps) {
   const router = useRouter();
   const { t } = useTranslation();

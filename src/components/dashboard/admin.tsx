@@ -39,7 +39,7 @@ export default function Dashboard() {
   } = useAnalyticsQuery(analyticsQuery);
 
   console.log("analyticsData",analyticsData)
-  console.log("meData",meData)
+  // console.log("meData",meData)
 
   const {
     orders: orderData,
@@ -55,7 +55,7 @@ export default function Dashboard() {
     page: 1,
   });
   
- console.log("ORDERDAtA===========",orderData)
+ console.log("",orderData)
   const customer_id = meData?.id
   const shop_id =  meData?.managed_shop?.id
 
