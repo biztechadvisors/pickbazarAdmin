@@ -32,6 +32,7 @@ const AdminLayout: React.FC<{ children?: React.ReactNode }> = ({
   const { permissions } = getAuthCredentials();
   const { data, isLoading: loading, error } = useMeQuery();
   const [shopSlug, setShopSlug] = useAtom(shopSlugAtom);
+  const [shopId, setShopId] = useAtom(shopSlugAtom);
 
   const shopStatus = data?.managed_shop?.is_active ? 'active' : 'inactive' || data?.dealer?.id?.is_active ? 'active' : 'inactive';
   const isDisabled = shopStatus !== 'active';
@@ -39,18 +40,24 @@ const AdminLayout: React.FC<{ children?: React.ReactNode }> = ({
   useEffect(() => {
     if (typeof window !== 'undefined' && data) {
       let newShopSlug = null;
+      let newshopId = null
 
       if (permissions?.[0].includes(DEALER) && data.createdBy?.managed_shop?.slug) {
         newShopSlug = data.createdBy.managed_shop.slug;
+        newshopId  = data.createdBy.managed_shop.id
+
       } else if (data.managed_shop) {
         newShopSlug = data.managed_shop.slug;
+        newshopId  = data.managed_shop.id
       }
-      if (newShopSlug) {
+      if (newShopSlug && newshopId) {
         setShopSlug(newShopSlug);
+        setShopId(newshopId)
         localStorage.setItem('shopSlug', newShopSlug);
+        localStorage.setItem('shopId', newshopId);
       }
     }
-  }, [data, permissions, setShopSlug]);
+  }, [data, permissions, setShopSlug, setShopId]);
 
   let matchedLinks = [];
 

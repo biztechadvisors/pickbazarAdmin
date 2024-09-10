@@ -581,74 +581,37 @@ export default function OrderDetailsPage() {
   if (loading) return <Loader text={t('common:text-loading')} />;
   if (error) return <ErrorMessage message={error.message} />;
 
+ 
   async function handleDownloadInvoice() {
     try {
       const response = await refetch();
-  
+
       if (!response || !response.data) {
         throw new Error('Invalid response received from backend');
       }
-  
-      const pdfContent = response.data; // Assuming this is binary content
-  
-      // Create a Blob object from the PDF content
+
+      const pdfContent = response.data;
+
+      if (!pdfContent || pdfContent.length === 0) {
+        throw new Error('Invalid PDF content received from backend');
+      }
+
       const blob = new Blob([pdfContent], { type: 'application/pdf' });
-  
-      // Create a URL for the Blob object
-      const url = window.URL.createObjectURL(blob);
-  
-      // Create a temporary link element
+
       const link = document.createElement('a');
-      link.href = url;
-      link.download = 'invoice.pdf'; // The name of the file to be downloaded
-  
-      // Append the link to the document body
+      link.href = window.URL.createObjectURL(blob);
+      link.download = 'invoice.pdf';
+
       document.body.appendChild(link);
-  
-      // Trigger the download
       link.click();
-  
-      // Clean up the temporary link and revoke the object URL
-      link.remove();
-      window.URL.revokeObjectURL(url);
-  
+
+      await new Promise((resolve) => setTimeout(resolve, 1000));
+
+      document.body.removeChild(link);
     } catch (error) {
       console.error('Error downloading PDF:', error);
     }
   }
-  
-  
-
-  // async function handleDownloadInvoice() {
-  //   try {
-  //     const response = await refetch();
-
-  //     if (!response || !response.data) {
-  //       throw new Error('Invalid response received from backend');
-  //     }
-
-  //     const pdfContent = response.data;
-
-  //     if (!pdfContent || pdfContent.length === 0) {
-  //       throw new Error('Invalid PDF content received from backend');
-  //     }
-
-  //     const blob = new Blob([pdfContent], { type: 'application/pdf' });
-
-  //     const link = document.createElement('a');
-  //     link.href = window.URL.createObjectURL(blob);
-  //     link.download = 'invoice.pdf';
-
-  //     document.body.appendChild(link);
-  //     link.click();
-
-  //     await new Promise((resolve) => setTimeout(resolve, 1000));
-
-  //     document.body.removeChild(link);
-  //   } catch (error) {
-  //     console.error('Error downloading PDF:', error);
-  //   }
-  // }
 
   const columns = [
     {
