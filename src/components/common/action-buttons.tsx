@@ -47,6 +47,8 @@ const ActionButtons = ({
   const { t } = useTranslation();
   const { openModal } = useModalAction();
 
+  console.log(id,editUrl,deleteModalView ,' = ActionButtons')
+
   function handleDelete() {
     openModal(deleteModalView, id);
   }

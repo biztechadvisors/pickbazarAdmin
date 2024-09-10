@@ -46,6 +46,8 @@ const addressSchema = yup.object().shape({
   }),
 });
 
+console.log('addressSchema = ',addressSchema)
+
 const optionRegion = [
   { value: "Andhra Pradesh", label: "Andhra Pradesh" },
   { value: "Arunachal Pradesh", label: "Arunachal Pradesh" },
