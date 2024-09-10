@@ -20,6 +20,8 @@ import { useRouter } from 'next/router';
 import LanguageSwitcher from '@/components/ui/lang-action/action';
 
 import { AllPermission } from '@/utils/AllPermission';
+import ActionButtons from '../common/action-buttons';
+import { countryData } from './region-form';
 
 dayjs.extend(relativeTime);
 dayjs.extend(utc);
@@ -50,7 +52,6 @@ const RegionsList = ({
     column: null,
   });
 
-
   const permissionTypes = AllPermission(); 
 
   const canWrite = permissionTypes.includes('sidebar-nav-item-regions');
@@ -70,6 +71,7 @@ const RegionsList = ({
     },
   });
 
+
   const columns = [
     {
       title: t('table:table-item-id'),
@@ -79,154 +81,50 @@ const RegionsList = ({
       width: 120,
     },
     {
-      title: t('table:table-item-banner'),
-      dataIndex: 'image',
-      key: 'image',
-      width: 74,
-      render: (image: Attachment) => (
-        <Image
-          src={image?.thumbnail ?? siteSettings.product.placeholder}
-          alt="coupon banner"
-          width={42}
-          height={42}
-          className="overflow-hidden rounded"
-        />
-      ),
-    },
-    {
       title: (
         <TitleWithSort
-          title={t('table:table-item-code')}
+          title={t('table:table-item-title')}
           ascending={
-            sortingObj.sort === SortOrder.Asc && sortingObj.column === 'code'
+            sortingObj.sort === SortOrder.Asc && sortingObj.column === 'name'
           }
-          isActive={sortingObj.column === 'code'}
+          // isActive={sortingObj.column === 'name'}
         />
       ),
       className: 'cursor-pointer',
-      dataIndex: 'code',
-      key: 'code',
+      dataIndex: 'name',
+      key: 'name',
       align: 'center',
-      onHeaderCell: () => onHeaderClick('code'),
-      render: (text: string) => (
-        <span className="whitespace-nowrap">{text}</span>
-      ),
-    },
-    {
-      title: (
-        <TitleWithSort
-          title={t('table:table-item-amount')}
-          ascending={
-            sortingObj.sort === SortOrder.Asc && sortingObj.column === 'amount'
-          }
-          isActive={sortingObj.column === 'amount'}
-        />
-      ),
-      className: 'cursor-pointer',
-      dataIndex: 'amount',
-      key: 'amount',
-      align: 'center',
-      width: 150,
-      onHeaderCell: () => onHeaderClick('amount'),
-      render: function Render(amount: number, record: any) {
-        const { price } = usePrice({
-          amount: amount,
-        });
-        if (record.type === 'PERCENTAGE_COUPON') {
-          return <span>{amount}%</span>;
-        }
-        return <span>{price}</span>;
+      onHeaderCell: () => onHeaderClick('name'),
+      render: (text: string) => {
+        const foundCountry = countryData.find((country) => country.code === text);
+        const displayValue = foundCountry ? foundCountry.name : text;
+    
+        return <span className="whitespace-nowrap">{displayValue}</span>;
       },
-    },
-    {
-      title: (
-        <TitleWithSort
-          title={t('table:table-item-minimum-amount')}
-          ascending={
-            sortingObj.sort === SortOrder.Asc &&
-            sortingObj.column === 'minimum_cart_amount'
-          }
-          isActive={sortingObj.column === 'minimum_cart_amount'}
-        />
-      ),
-      className: 'cursor-pointer',
-      dataIndex: 'minimum_cart_amount',
-      key: 'minimum_cart_amount',
-      align: 'center',
-      width: 150,
-      onHeaderCell: () => onHeaderClick('minimum_cart_amount'),
-      render: function Render(minimum_cart_amount: number) {
-        const { price } = usePrice({
-          amount: minimum_cart_amount,
-        });
-        return <span>{price}</span>;
-      },
-    },
-    {
-      title: (
-        <TitleWithSort
-          title={t('table:table-item-active')}
-          ascending={
-            sortingObj.sort === SortOrder.Asc &&
-            sortingObj.column === 'active_from'
-          }
-          isActive={sortingObj.column === 'active_from'}
-        />
-      ),
-      className: 'cursor-pointer',
-      dataIndex: 'active_from',
-      key: 'active_from',
-      align: 'center',
-      onHeaderCell: () => onHeaderClick('active_from'),
-      render: (active_date: string) => (
-        <span className="whitespace-nowrap">
-          {dayjs().to(dayjs.utc(active_date).tz(dayjs.tz.guess()))}
-        </span>
-      ),
-    },
-    {
-      title: (
-        <TitleWithSort
-          title={t('table:table-item-expired')}
-          ascending={
-            sortingObj.sort === SortOrder.Asc &&
-            sortingObj.column === 'expire_at'
-          }
-          isActive={sortingObj.column === 'expire_at'}
-        />
-      ),
-      className: 'cursor-pointer',
-      dataIndex: 'expire_at',
-      key: 'expire_at',
-      align: 'center',
-      onHeaderCell: () => onHeaderClick('expire_at'),
-      render: (expired_date: string) => (
-        <span className="whitespace-nowrap">
-          {dayjs().to(dayjs.utc(expired_date).tz(dayjs.tz.guess()))}
-        </span>
-      ),
+      // render: (text: string) => (
+      //   <span className="whitespace-nowrap">{text}</span>
+      // ),
     },
     
-    // {
-    //   ...(canWrite
-    //   ?
-    //   {
-    //     title: t('table:table-item-actions'),
-    //     dataIndex: 'code',
-    //     key: 'actions',
-    //     align: 'right',
-    //     // render: (slug: string, record: Coupon) =>  (
-    //     render: (slug: string, record: Regions) =>  (
-    //         <LanguageSwitcher
-    //         slug={slug}
-    //         record={record}
-    //         deleteModalView="DELETE_COUPON"
-    //         routes={Routes?.coupon}
-    //       />
-    //       ) 
-    //   }
-    //   : null),
-    //   },
+    {
+      // ...(canWrite
+      // ?
+      // {
+        title: t('table:table-item-actions'),
+        dataIndex: 'id',
+        key: 'actions',
+        align: 'right',
+        // render: (slug: string, record: Coupon) =>  (
+        render: (id: string) =>  (
+            <ActionButtons
+            id={id}
+            editUrl={`${Routes.regions.list}/edit/${id}`}
+            deleteModalView="DELETE_REGIONS"
+          />
+          ) 
+      // }
+      // : null),
+      },
   ];
 
   return (

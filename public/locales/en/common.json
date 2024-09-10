@@ -44,8 +44,12 @@
   "pixel": "Pixel",
   "text-loading": "Loading...",
   "sidebar-nav-item-dashboard": "Dashboard",
+  "sidebar-nav-item-regions": "Regions",
   "sidebar-nav-item-create-sales": "Create Sales",
   "sidebar-nav-item-sales": "Sales",
+  "sidebar-nav-item-get-inspired": "GET Inspired",
+  "sidebar-nav-item-contact": "Contact",
+  "sidebar-nav-item-career": "Career",
   "sidebar-nav-item-inventory-dashboard": "Account Details",
   "sidebar-nav-item-products": "Products",
   "sidebar-nav-item-attributes": "Attributes",
@@ -57,7 +61,7 @@
   "sidebar-nav-item-orders": "Orders",
   "sidebar-nav-item-order-status": "Order Status",
   "sidebar-nav-item-users": "Users",
-  "sidebar-nav-item-customer":"Customer",
+  "sidebar-nav-item-customer": "Customer",
   "sidebar-nav-item-coupons": "Coupons",
   "sidebar-nav-item-taxes": "Taxes",
   "sidebar-nav-item-shippings": "Shippings",
@@ -400,5 +404,5 @@
   "text-total-item": "Total Item",
   "text-deliver-time": "Delivery Time",
   "text-order-failed": "Order Failed",
-  "form:input-label-number-of-dealers":"Total dealers"
+  "form:input-label-number-of-dealers": "Total dealers"
 }

@@ -115,6 +115,9 @@ export const Routes = {
   shipping: {
     ...routesFactory('/shippings'),
   },
+  regions: {
+    ...routesFactory('/regions'),
+  },
   withdraw: {
     ...routesFactory('/withdraws'),
   },

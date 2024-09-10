@@ -12,56 +12,22 @@ import {
   
   export const regionClient = {
     ...crudFactory<Region, any, RegionInput>(API_ENDPOINTS.REGIONS),
-    // get({ code, language }: { code: string; language: string }) {
-    //   return HttpClient.get<Coupon>(`${API_ENDPOINTS.COUPONS}/${code}`, {
-    //     language,
-    //   });
-    // },
-    get: ({ shopSlug }: Partial<RegionsQueryOptions>) => {
-      if (!shopSlug) {
-        throw new Error("shopSlug is required");
+    get({ id, language }: { id: string; language: string }) {
+      console.log(id,'  = regionID')
+      return HttpClient.get<Region>(`${API_ENDPOINTS.REGIONS}/${id}`, {
+        language,
+      });
+    },
+    paginated: ({
+        ...params
+      }: { params: Partial<RegionsQueryOptions> }) => {
+        console.log("params", params.code);
+        if(params.code){
+          return HttpClient.get<Region>(`${API_ENDPOINTS.REGIONS}/shop/${params.code}`)
+        }
+        ;
       }
-      // Return the correct endpoint using shopSlug
-      return HttpClient.get<Region>(`${API_ENDPOINTS.REGIONS}/shop/${shopSlug}`);
-    
-
-      // paginated: ({    
-      //   code,
-      //   shopSlug,
-      //   ...params
-      // }: { code?: string; } & Partial<RegionsQueryOptions>) => {
-      //   console.log("params",params)
-      //   return HttpClient.get<Region>(API_ENDPOINTS.REGIONS, {
-      //     ...params,
-      //     code,
-      //     shopSlug
-      //   });
-
-        // paginated: ({    
-        //     code,
-        //     ...params
-        //   }: { code?: string; } & Partial<RegionsQueryOptions>) => {
-        //     console.log("params",params)
-        //     return HttpClient.get<Region>(API_ENDPOINTS.REGIONS, {
-        //       ...params,
-        //       code,
-        //     });
-          
-      
-      
-    //   paginated: ({ code, ...params }: Partial<RegionsQueryOptions>) => {
-       
-    //     if (!code) {
-    //       console.error('shopSlug is missing, cannot fetch regions.');
-    //       return Promise.reject(new Error('Shop slug is required to fetch regions.'));
-    //     }
-    //     console.log('params =', params);
-    //     return HttpClient.get<Region>(
-    //       `${API_ENDPOINTS.REGIONS}/shop/${code}`, 
-    //       { params }
-    //     );
-    //   },
   }
-}
+// }
   
 
