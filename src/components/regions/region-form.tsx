@@ -325,10 +325,10 @@ export default function CreateOrUpdateRegionsForm({ initialValues }: IProps) {
       <div className="my-5 flex flex-wrap sm:my-8">
         <Description
           title={t('form:form-title-regions')}
-          details={`${initialValues
-            ? t('form:item-description-update')
-            : t('form:item-description-add')
-            } ${t('form:tax-form-info-help-text')}`}
+          // details={`${initialValues
+          //   ? t('form:item-description-update')
+          //   : t('form:item-description-add')
+          //   } ${t('form:tax-form-info-help-text')}`}
           className="w-full px-0 pb-5 sm:w-4/12 sm:py-8 sm:pe-4 md:w-1/3 md:pe-5 "
         />
 

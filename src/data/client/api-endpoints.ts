@@ -82,5 +82,6 @@ export const API_ENDPOINTS = {
   DEALER_STATUS_CHANGE: '/stocks',
   EVENTS: '/events',
   BLOG: '/blogs',
-  REGIONS:'/regions'
+  REGIONS:'/regions',
+  FAQ:'/faqs'
 };

@@ -561,9 +561,11 @@ export interface CouponInput {
 
 export interface RegionInput {
   code: string;
-  
 }
 
+export interface FaqInput {
+  code: string;
+}
 export interface StoreNotice {
   id: string;
   translated_languages: string[];
@@ -607,6 +609,17 @@ export interface Region {
   shop_id:string[];
   // Add other properties as needed
 }
+
+export interface Faq {
+  id: string;
+  name: string;
+  slug: string;
+  shop_id:string[];
+  title:string;
+  description: string
+  // Add other properties as needed
+}
+
 
 export interface Order {
   id: string;
@@ -1658,6 +1671,14 @@ export interface RegionsQueryOptions extends QueryOptions {
   code?: string;
 }
 
+export interface FaqQueryOptions extends QueryOptions {
+  id: string;
+  name: string;
+  shop_id: string[];
+  shopSlug?: string;
+  code?: string;
+}
+
 export interface StoreNoticeQueryOptions extends QueryOptions {
   notice: string;
   shop_id: string;
@@ -1734,6 +1755,8 @@ export interface OrderPaginator extends PaginatorInfo<Order> { }
 export interface CouponPaginator extends PaginatorInfo<Coupon> { }
 
 export interface RegionPaginator extends PaginatorInfo<Region> { }
+
+export interface FaqPaginator extends PaginatorInfo<Faq> { }
 
 export interface StoreNoticePaginator extends PaginatorInfo<StoreNotice> { }
 
