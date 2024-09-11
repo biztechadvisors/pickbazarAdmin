@@ -29,6 +29,7 @@ const DispatchModal: React.FC<DispatchModalProps> = ({
 }) => {
   const { t } = useTranslation();
   const { handleSubmit, control } = useForm();
+  console.log("DispatchModal-order",order)
 
   const user_id = dealerId;
   const { mutate: updateStockDataById } = useUpdateStockDataById(user_id);

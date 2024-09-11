@@ -124,6 +124,7 @@ export const PlaceOrderAction: React.FC<{
       delivery_time: delivery_time?.title,
       customer,
       customer_id: customer?.id,
+      customerId: customer?.id,
       customer_contact,
       customer_name,
       note,
@@ -155,7 +156,7 @@ export const PlaceOrderAction: React.FC<{
   };
 
 
-   // const handlePlaceOrder = () => {
+  //  const handlePlaceOrder = () => {
   //   if (!customer_contact) {
   //     setErrorMessage('Contact Number Is Required');
   //     return;
