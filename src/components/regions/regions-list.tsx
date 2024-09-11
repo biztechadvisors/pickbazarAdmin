@@ -12,7 +12,7 @@ import timezone from 'dayjs/plugin/timezone';
 import { useTranslation } from 'next-i18next';
 import { useState } from 'react';
 import TitleWithSort from '@/components/ui/title-with-sort';
-import { Coupon, MappedPaginatorInfo } from '@/types';
+import { MappedPaginatorInfo } from '@/types';
 import Link from '@/components/ui/link';
 import { Config } from '@/config';
 import { Routes } from '@/config/routes';
@@ -28,7 +28,6 @@ dayjs.extend(utc);
 dayjs.extend(timezone);
 
 type IProps = {
-  // coupons: CouponPaginator | null | undefined;
   regions: Region[] | undefined;
   paginatorInfo: MappedPaginatorInfo | null;
   onPagination: (current: number) => void;
@@ -114,7 +113,6 @@ const RegionsList = ({
         dataIndex: 'id',
         key: 'actions',
         align: 'right',
-        // render: (slug: string, record: Coupon) =>  (
         render: (id: string) =>  (
             <ActionButtons
             id={id}

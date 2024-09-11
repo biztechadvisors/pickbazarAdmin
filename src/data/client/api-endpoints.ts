@@ -84,4 +84,5 @@ export const API_ENDPOINTS = {
   BLOG: '/blogs',
   REGIONS:'/regions',
   NOTIFICATION:`/notifications`
+  FAQ:'/faqs'
 };

@@ -88,6 +88,7 @@
   "input-label-price": "Price",
   "input-label-sale-price": "Sale Price",
   "input-label-quantity": "Quantity",
+  "input-label-faq": "FAQ",
   "input-label-unit": "Unit",
   "input-label-width": "Width",
   "input-label-height": "Height",
@@ -199,6 +200,7 @@
   "button-label-create-customer": "Create",
   "form-title-information": "Information",
   "form-title-regions": "Regions",
+  "form-title-faq": "FAQ",
   "customer-form-info-help-text": "Add your User information and create a new User from here",
   "coupon-image-helper-text": "Upload your coupon image here",
   "coupon-form-info-help-text": "your coupon description and necessary information from here",
@@ -455,5 +457,7 @@
   "input-label-select-company": "Company Type",
   "input-label-extra-permission": "Add More Permission (Optional)",
   "button-label-more-permission": "Advance permission",
-  "button-label-add-regions" : "Add Regions"
+  "button-label-add-regions" : "Add Regions",
+  "button-label-add-faq" : "Add Faq"
+
 }
