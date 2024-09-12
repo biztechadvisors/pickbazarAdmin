@@ -84,22 +84,3 @@ export const useRegionsingleDataQuery = (id: string) => {
     regionClient.get({ id })
   );
 };
-
-
-// export const useRegionsQuery = (options: Partial<RegionsQueryOptions>) => {
-//   const { data, error, isLoading } = useQuery<RegionPaginator, Error>(
-//     [API_ENDPOINTS.REGIONS, options],
-//     ({ queryKey, pageParam }) =>
-//       regionClient.paginated(Object.assign({}, queryKey[1], pageParam)),
-//     {
-//       keepPreviousData: true,
-//     }
-//   );
-
-//   return {
-//     regions: data?.data ?? [],
-//     paginatorInfo: mapPaginatorData(data),
-//     error,
-//     loading: isLoading,
-//   };
-// };
