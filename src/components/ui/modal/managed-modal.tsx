@@ -84,6 +84,10 @@ const ReviewDeleteView = dynamic(
   () => import('@/components/reviews/review-delete-view')
 );
 
+const FaqDeleteView = dynamic(
+  () => import('@/components/faq/faq-delete-view')
+);
+
 const RegionsDeleteView = dynamic(
   () => import('@/components/regions/regions-delete-view')
 );
@@ -188,6 +192,8 @@ function renderModal(view: MODAL_VIEWS | undefined, data: any) {
       return <QuestionDeleteView />;
     case 'DELETE_REVIEW':
       return <ReviewDeleteView />;
+    case 'DELETE_FAQ':
+      return <FaqDeleteView />;
     case 'DELETE_REGIONS':
       return <RegionsDeleteView />
     case 'ACCEPT_ABUSE_REPORT':

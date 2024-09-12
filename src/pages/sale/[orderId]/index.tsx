@@ -53,6 +53,8 @@ export default function OrderDetailsPage() {
   const [, resetCheckout] = useAtom(clearCheckoutAtom);
   const [isDispatchModalOpen, setDispatchModalOpen] = useState(false);
 
+  console.log("isDispatchModalOpen",isDispatchModalOpen)
+
 
 
   const handleDispatchUpdate = (data: any) => {
@@ -142,10 +144,14 @@ export default function OrderDetailsPage() {
 
   const dealerId = order?.customer_id
 
+  console.log("dealerId",dealerId,"orderId",orderId)
+
   const { data, isLoading, isError } = useFetchStockOrderData({
     dealerId,
     orderId,
   });
+
+  console.log("first-data",data)
 
 
   if (loading) return <Loader text={t('common:text-loading')} />;
@@ -189,7 +195,7 @@ export default function OrderDetailsPage() {
           <span>{name}</span>
           <span className="mx-2">x</span>
           <span className="font-semibold text-heading">
-            {item.pivot.order_quantity}
+            {item?.pivot?.order_quantity}
           </span>
         </div>
       ),
@@ -201,7 +207,7 @@ export default function OrderDetailsPage() {
       align: alignRight,
       render: function Render(_: any, item: any) {
         const { price } = usePrice({
-          amount: parseFloat(item.pivot.subtotal),
+          amount: parseFloat(item?.pivot?.subtotal),
         });
         return <span>{price}</span>;
       },

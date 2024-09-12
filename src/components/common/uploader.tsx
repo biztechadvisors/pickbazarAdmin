@@ -9,15 +9,15 @@ import { useUploadMutation } from '@/data/upload';
 import Image from 'next/image';
 import { zipPlaceholder } from '@/utils/placeholders';
 import { ACCEPTED_FILE_TYPES } from '@/utils/constants';
-// import { processFileWithName } from '../product/form-utils';
 
-const getPreviewImage = (value: any) => {
-  let images: any[] = [];
+const getPreviewFiles = (value) => {
+  let files = [];
   if (value) {
-    images = Array.isArray(value) ? value : [{ ...value }];
+    files = Array.isArray(value) ? value : [{ ...value }];
   }
-  return images;
+  return files;
 };
+
 export default function Uploader({
   onChange,
   value,
@@ -25,57 +25,51 @@ export default function Uploader({
   acceptFile,
   helperText,
   maxSize,
-}: any) {
+}) {
   const { t } = useTranslation();
-  const [files, setFiles] = useState<Attachment[]>(getPreviewImage(value));
+  const [files, setFiles] = useState(getPreviewFiles(value));
   const { mutate: upload, isLoading: loading } = useUploadMutation();
-  const [error, setError] = useState<string | null>(null);
+  const [error, setError] = useState(null);
+
+  // Updated file types to include images and videos
+  const ACCEPTED_FILE_TYPES = {
+    'image/*': ['.jpg', '.jpeg', '.png', '.webp', '.glb'],
+    'video/*': ['.mp4', '.avi', '.mov', '.mkv', '.webm', '.flv', '.wmv', '.ogg', '.3gp'],
+  };
+
   const { getRootProps, getInputProps } = useDropzone({
-    ...(!acceptFile
-      ? {
-          accept: {
-            'image/*': ['.jpg', '.jpeg', '.png', '.webp', '.glb'],
-          },
-        }
-      : { ...ACCEPTED_FILE_TYPES }),
+    ...(acceptFile
+      ? { ...ACCEPTED_FILE_TYPES }
+      : {
+          accept: ACCEPTED_FILE_TYPES,
+        }),
     multiple,
+    maxSize,
     onDrop: async (acceptedFiles) => {
       if (acceptedFiles.length) {
-        upload(
-          acceptedFiles,
-          {
-            onSuccess: (data: any) => {
-              data &&
-                data?.map((file: any, idx: any) => {
-                  const splitArray = file?.original?.split('/');
-                  let fileSplitName =
-                    splitArray[splitArray?.length - 1]?.split('.');
-                  const fileType = fileSplitName?.pop(); // it will pop the last item from the fileSplitName arr which is the file ext
-                  const filename = fileSplitName?.join('.'); // it will join the array with dot, which restore the original filename
-                  data[idx]['file_name'] = filename + '.' + fileType;
-                });
+        upload(acceptedFiles, {
+          onSuccess: (data) => {
+            data = data.map((file, idx) => {
+              const splitArray = file?.original?.split('/');
+              const fileSplitName = splitArray?.pop()?.split('.');
+              const fileType = fileSplitName?.pop();
+              const filename = fileSplitName.join('.');
+              data[idx]['file_name'] = `${filename}.${fileType}`;
+              return file;
+            });
 
-              let mergedData;
-              if (multiple) {
-                mergedData = files.concat(data);
-                setFiles(files.concat(data));
-              } else {
-                mergedData = data[0];
-                setFiles(data);
-              }
-              if (onChange) {
-                onChange(mergedData);
-              }
-            },
-          }
-        );
+            const updatedFiles = multiple ? files.concat(data) : data;
+            setFiles(updatedFiles);
+            if (onChange) {
+              onChange(updatedFiles);
+            }
+          },
+        });
       }
     },
-    maxSize: maxSize,
-
     onDropRejected: (fileRejections) => {
       fileRejections.forEach((file) => {
-        file?.errors?.forEach((error) => {
+        file?.errors.forEach((error) => {
           if (error?.code === 'file-too-large') {
             setError(t('error-file-too-large'));
           } else if (error?.code === 'file-invalid-type') {
@@ -86,116 +80,87 @@ export default function Uploader({
     },
   });
 
-  const handleDelete = (image: string) => {
-    const images = files.filter((file) => file.thumbnail !== image);
-    setFiles(images);
+  const handleDelete = (thumbnail) => {
+    const updatedFiles = files.filter((file) => file.thumbnail !== thumbnail);
+    setFiles(updatedFiles);
     if (onChange) {
-      onChange(images);
+      onChange(updatedFiles);
     }
   };
-  const thumbs = files?.map((file: any, idx) => {
-    const imgTypes = [
-      'tif',
-      'tiff',
-      'bmp',
-      'jpg',
-      'jpeg',
-      'webp',
-      'gif',
-      'png',
-      'eps',
-      'raw',
-      'glb',
-    ];
-    // let filename, fileType, isImage;
-    if (file && file.id) {
-      // const processedFile = processFileWithName(file);
-      const splitArray = file?.file_name
-        ? file?.file_name.split('.')
-        : file?.thumbnail?.split('.');
-      const fileType = splitArray?.pop(); // it will pop the last item from the fileSplitName arr which is the file ext
-      const filename = splitArray?.join('.'); // it will join the array with dot, which restore the original filename
-      const isImage = file?.thumbnail && imgTypes.includes(fileType); // check if the original filename has the img ext
 
-      // Old Code *******
+  const thumbs = files.map((file, idx) => {
+    const imgTypes = ['jpg', 'jpeg', 'png', 'webp', 'gif', 'bmp', 'tif', 'tiff', 'glb'];
+    const videoTypes = ['mp4', 'avi', 'mov', 'mkv', 'webm', 'flv', 'wmv', 'ogg', '3gp'];
 
-      // const splitArray = file?.original?.split('/');
-      // let fileSplitName = splitArray[splitArray?.length - 1]?.split('.'); // it will create an array of words of filename
-      // const fileType = fileSplitName.pop(); // it will pop the last item from the fileSplitName arr which is the file ext
-      // const filename = fileSplitName.join('.'); // it will join the array with dot, which restore the original filename
-      // const isImage = file?.thumbnail && imgTypes.includes(fileType); // check if the original filename has the img ext
-      return (
-        <div
-          className={`relative mt-2 inline-flex flex-col overflow-hidden rounded me-2 ${isImage ? 'border border-border-200' : ''
-            }`}
-          key={idx}
-        >
-          {/* {file?.thumbnail && isImage ? ( */}
-          {isImage ? (
-            // <div className="flex items-center justify-center w-16 h-16 min-w-0 overflow-hidden">
-            //   <Image
-            //     src={file.thumbnail}
-            //     width={56}
-            //     height={56}
-            //     alt="uploaded image"
-            //   />
-            // </div>
-            // <figure className="relative h-16 w-28">
-            <div className="flex h-16 w-16 min-w-0 items-center justify-center overflow-hidden">
-              <Image
-                src={file.thumbnail}
-                alt={filename}
-                fill
-                sizes="(max-width: 768px) 100vw"
-                className="object-contain"
-              />
+    const fileName = file?.file_name || '';
+    const thumbnail = file?.thumbnail || '';
+
+    const splitArray = file?.file_name
+    ? file.file_name.split('.')
+    : file?.thumbnail
+    ? file.thumbnail.split('.')
+    : [];
+    const fileType = splitArray.pop();
+    const filename = splitArray.join('.');
+    const isImage = imgTypes.includes(fileType);
+    const isVideo = videoTypes.includes(fileType);
+
+    return (
+      <div
+        className={`relative mt-2 inline-flex flex-col overflow-hidden rounded me-2 ${
+          isImage || isVideo ? 'border border-border-200' : ''
+        }`}
+        key={idx}
+      >
+        {isImage ? (
+          <div className="flex h-16 w-16 items-center justify-center overflow-hidden">
+            <Image
+              src={file.thumbnail}
+              alt={filename}
+              fill
+              sizes="(max-width: 768px) 100vw"
+              className="object-contain"
+            />
+          </div>
+        ) : isVideo ? (
+          <div className="flex flex-col items-center">
+            <video className="h-16 w-16" controls>
+              <source src={file.thumbnail} type={`video/${fileType}`} />
+              Your browser does not support the video tag.
+            </video>
+            <p className="text-xs text-body mt-1">
+              {filename}.{fileType}
+            </p>
+          </div>
+        ) : (
+          <div className="flex flex-col items-center">
+            <div className="flex h-14 w-14 items-center justify-center overflow-hidden">
+              <Image src={zipPlaceholder} width={56} height={56} alt="upload placeholder" />
             </div>
-          ) : (
-            // </figure>
-
-            <div className="flex flex-col items-center">
-              <div className="flex h-14 w-14 min-w-0 items-center justify-center overflow-hidden">
-                <Image
-                  src={zipPlaceholder}
-                  width={56}
-                  height={56}
-                  alt="upload placeholder"
-                />
-              </div>
-              <p className="flex cursor-default items-baseline p-1 text-xs text-body">
-                <span
-                  className="inline-block max-w-[64px] overflow-hidden overflow-ellipsis whitespace-nowrap"
-                  title={`${filename}.${fileType}`}
-                >
-                  {filename}
-                </span>
-                .{fileType}
-              </p>
-            </div>
-          )}
-          {multiple ? (
-            <button
-              className="absolute top-1 flex h-4 w-4 items-center justify-center rounded-full bg-red-600 text-xs text-light shadow-xl outline-none end-1"
-              onClick={() => handleDelete(file.thumbnail)}
-            >
-              <CloseIcon width={10} height={10} />
-            </button>
-          ) : null}
-        </div>
-      );
-    }
+            <p className="text-xs text-body mt-1">
+              {filename}.{fileType}
+            </p>
+          </div>
+        )}
+        {multiple && (
+          <button
+            className="absolute top-1 flex h-4 w-4 items-center justify-center rounded-full bg-red-600 text-xs text-light shadow-xl outline-none end-1"
+            onClick={() => handleDelete(file.thumbnail)}
+          >
+            <CloseIcon width={10} height={10} />
+          </button>
+        )}
+      </div>
+    );
   });
 
-  useEffect(
-    () => () => {
-      // Reset error after upload new file
+  useEffect(() => {
+    // Clean up URLs to prevent memory leaks
+    return () => {
       setError(null);
-
-      // Make sure to revoke the data uris to avoid memory leaks
-      files.forEach((file: any) => URL.revokeObjectURL(file.thumbnail));
-    },
-    [files]
-  );
+      files.forEach((file) => URL.revokeObjectURL(file.thumbnail));
+    };
+  }, [files]);
 
   return (
     <section className="upload">
@@ -212,27 +177,21 @@ export default function Uploader({
             <span className="font-semibold text-gray-500">{helperText}</span>
           ) : (
             <>
-              <span className="font-semibold text-accent">
-                {t('text-upload-highlight')}
-              </span>{' '}
+              <span className="font-semibold text-accent">{t('text-upload-highlight')}</span>{' '}
               {t('text-upload-message')} <br />
               <span className="text-xs text-body">{t('text-img-format')}</span>
             </>
           )}
         </p>
-        {error && (
-          <p className="mt-4 text-center text-sm text-red-600 text-body">
-            {error}
-          </p>
-        )}
+        {error && <p className="mt-4 text-center text-sm text-red-600">{error}</p>}
       </div>
 
-      {(!!thumbs.length || loading) && (
+      {(thumbs.length || loading) && (
         <aside className="mt-2 flex flex-wrap">
-          {!!thumbs.length && thumbs}
+          {thumbs}
           {loading && (
             <div className="mt-2 flex h-16 items-center ms-2">
-              <Loader simple={true} className="h-6 w-6" />
+              <Loader simple className="h-6 w-6" />
             </div>
           )}
         </aside>

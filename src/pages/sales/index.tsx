@@ -47,6 +47,8 @@ export default function Sales() {
 
   const { data: me } = useMeQuery(); 
 
+
+
   const DealerShow = me?.permission.type_name === DEALER;
   const ShopShow = me?.permission.type_name === Company;
 
@@ -64,7 +66,7 @@ if (DealerShow) {
     queryConfig.shop_slug = me?.managed_shop?.slug;
     queryConfig.customer_id = me?.id;
 } else if (ShopShow) {  
-    queryConfig.shop_id = me?.managed_shop?.id;
+    // queryConfig.shop_id = me?.managed_shop?.id;
     queryConfig.shop_slug = me?.managed_shop?.slug;
 }
 

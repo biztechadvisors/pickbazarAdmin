@@ -118,6 +118,9 @@ export const Routes = {
   regions: {
     ...routesFactory('/regions'),
   },
+  faq:{
+    ...routesFactory('/faq')
+  },
   withdraw: {
     ...routesFactory('/withdraws'),
   },
