@@ -57,7 +57,7 @@ import CreateCustomerPage from '@/pages/users/create';
 import CreatePermission from '@/pages/permission/create';
 import CreatePerm from '../createPerm';
 import { useAtom } from 'jotai';
-import { selectedOption } from '@/utils/atoms';
+import { addPermission, selectedOption } from '@/utils/atoms';
 
 export const chatbotAutoSuggestion = ({ name }: { name: string }) => {
   return [
@@ -276,12 +276,13 @@ const ShopForm = ({ initialValues }: { initialValues?: any }) => {
     return chatbotAutoSuggestion({ name: generateName ?? '' });
   }, [generateName]);
 
+  const userId = data?.id;
+
   const {
-    isLoading,
+    isLoading: permissionLoading,
     error,
     data: permissionData,
-  } = usePermissionData(data?.id);
-  console.log('Permission Data:', data);
+  } = usePermissionData(userId);
 
   const filterdEcomm = permissionData?.filter((e: any) => {
   return (
@@ -402,8 +403,8 @@ const ShopForm = ({ initialValues }: { initialValues?: any }) => {
           balance: {
             ...filteredValues.balance,
           },
-          additionalPermissions: {}, // Ensure this is set as needed
-          permission: permissionProps,
+          additionalPermissions: additionalPerm, // Ensure this is set as needed
+          permission: permissionProps?.permission_name,
         });
       }
       router.push('/shops'); // Navigate to the shops list or appropriate page
@@ -420,12 +421,13 @@ const ShopForm = ({ initialValues }: { initialValues?: any }) => {
     </span>
   );
 
-  if (isLoading) {
-    return (
-      <div>
-        <Loader text="...loading" />
-      </div>
-    );
+  // Fixed the loading and error handling.
+  if (permissionLoading || creating || updating) {
+    return <Loader text="Loading..." />;
+  }
+
+  if (error) {
+    return <div>Error: {error.message}</div>;
   }
 
   console.log(' initialValues_____________________', initialValues);
