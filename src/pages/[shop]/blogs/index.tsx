@@ -23,14 +23,16 @@ const Blogs = () => {
   const shop: string | undefined = meData?.managed_shop?.id;
   const shopSlug = meData?.managed_shop?.slug;
 
-  const { data, isLoading, error } = useBlogsQuery(shopSlug);
+  const { data: Blogs, isLoading, error } = useBlogsQuery(shopSlug);
 
   function handleSearch({ searchText }: { searchText: string }) {
     setSearchTerm(searchText);
     setPage(1);
   }
 
-  console.log("shopSlug", shopSlug)
+  console.log('shopSlug', shopSlug);
+
+  console.log('Blog++++data+++++++++++++++++++++++++++++++++++++List', Blogs);
   return (
     <>
       <Card className="mb-8 flex flex-col">
@@ -56,7 +58,7 @@ const Blogs = () => {
           </div>
         </div>
       </Card>
-      <BlogList />
+      <BlogList Blogs={Blogs?.data} />
     </>
   );
 };

@@ -44,11 +44,9 @@ export default function AttributePage() {
   const { data: shopData, isLoading: fetchingShop } = useShopQuery({
     slug: shop as string,
   });
-  
-  const shopId = shopData?.id!;
-  const shopSlug = shopData?.slug
 
-  
+  const shopId = shopData?.id!;
+  const shopSlug = shopData?.slug;
 
   const { attributes, loading, error } = useAttributesQuery(
     {
@@ -57,16 +55,12 @@ export default function AttributePage() {
       orderBy,
       sortedBy,
       language: locale,
-      search:searchTerm,
+      search: searchTerm,
     },
     {
       enabled: Boolean(shopId),
     }
   );
-
-
-
-  
 
   const permissionTypes = AllPermission();
 
@@ -94,15 +88,15 @@ export default function AttributePage() {
     setPage(1);
   }
 
-  const filteredAttributes = attributes.filter(attribute =>
+  const filteredAttributes = attributes.filter((attribute) =>
     attribute.name.toLowerCase().includes(searchTerm.toLowerCase())
   );
-
-
 
   function handlePagination(current: any) {
     setPage(current);
   }
+
+  console.log('attributes------------------------------', attributes);
 
   return (
     <>
