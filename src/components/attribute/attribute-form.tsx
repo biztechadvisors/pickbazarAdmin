@@ -56,6 +56,7 @@ export default function CreateOrUpdateAttributeForm({ initialValues }: IProps) {
     useCreateAttributeMutation();
   const { mutate: updateAttribute, isLoading: updating } =
     useUpdateAttributeMutation();
+    
   const onSubmit = (values: FormValues) => {
     if (!shopId) {
       setErrorMessage('Shop ID is required');
