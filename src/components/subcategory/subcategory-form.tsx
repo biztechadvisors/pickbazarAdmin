@@ -244,9 +244,7 @@ export default function CreateOrUpdateSubCategoriesForm({
     useUpdateSubCategoryMutation();
 
   const onSubmit = async (values: FormValues) => {
-    const transformedRegions = Array.isArray(values.region)
-    ? values.region.map((region: any) => region.name || region)
-    : [];
+    const transformedRegions = values.region?.name ? [values.region.name] : [];
     const input = {
       language: router.locale,
       name: values.name,
@@ -258,7 +256,7 @@ export default function CreateOrUpdateSubCategoriesForm({
       },
       category_id: values.category_id?.id ?? null,
       shop_id: shop,
-      region_name: transformedRegions,
+      regionName: transformedRegions,
     };
     if (
       !initialValues ||

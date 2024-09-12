@@ -246,10 +246,7 @@ export default function CreateOrUpdateTagForm({ initialValues }: IProps) {
   
   const onSubmit = async (values: FormValues) => {
  
-    const transformedRegions = Array.isArray(values.region)
-      ? values.region.map((region: any) => region.name || region)
-      : [];
-      
+    const transformedRegions = values.region?.name ? [values.region.name] : [];
     const input = {
       language: router.locale,
       name: values.name,
