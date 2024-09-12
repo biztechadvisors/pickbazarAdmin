@@ -305,9 +305,8 @@ console.log("REgions===",regions);
 
   const onSubmit = async (values: FormValues) => {
     console.log('Form Data:', values);
-    const transformedRegions = Array.isArray(values.region)
-    ? values.region.map((region: any) => region.name || region)
-    : [];
+    const transformedRegions = values.region?.name ? [values.region.name] : [];
+    
     const input = {
       language: router.locale,
       name: values.name,

@@ -219,7 +219,7 @@ const ShopForm = ({ initialValues }: { initialValues?: any }) => {
   const {permissions}=getAuthCredentials()
 
   console.log(
-    'additionalPerm--------------------------------------------------',
+    'additionalPerm---------------------------------------------------',
     additionalPerm
   );
 

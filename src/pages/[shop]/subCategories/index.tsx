@@ -54,6 +54,7 @@ export default function SubCategories() {
     sortedBy,
     categoryId: null,
     language: locale,
+    search:searchTerm,
   });
 
   console.log("subcategories",subcategories)
