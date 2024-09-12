@@ -83,6 +83,6 @@ export const API_ENDPOINTS = {
   EVENTS: '/events',
   BLOG: '/blogs',
   REGIONS:'/regions',
-  NOTIFICATION:`/notifications`
+  NOTIFICATION:`/notifications`,
   FAQ:'/faqs'
 };

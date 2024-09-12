@@ -46,9 +46,7 @@ export default function Dashboard() {
     paginatorInfo,
     error: orderError,
     loading: orderLoading,
-  } = useOrdersQuery({
-    // customer_id: customerId,
-    shop_id: meData?.managed_shop?.id,
+  } = useOrdersQuery({    
     shop_slug: meData?.managed_shop?.slug,
     language: locale,
     limit: 10,
