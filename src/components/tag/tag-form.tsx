@@ -16,7 +16,7 @@ import FileInput from '@/components/ui/file-input';
 import SelectInput from '@/components/ui/select-input';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { tagValidationSchema } from './tag-validation-schema';
-import { useCreateTagMutation, useRegionsQuery, useUpdateTagMutation } from '@/data/tag';
+import { useCreateTagMutation,  useUpdateTagMutation } from '@/data/tag';
 import { useTypesQuery } from '@/data/type';
 import OpenAIButton from '../openAI/openAI.button';
 import { useSettingsQuery } from '@/data/settings';
@@ -25,6 +25,7 @@ import { ItemProps, SortOrder } from '@/types';
 import { useModalAction } from '../ui/modal/modal.context';
 import { useShopsQuery } from '@/data/shop';
 import { useMeQuery } from '@/data/user';
+import { useRegionsQuery } from '@/data/regions';
 
 export const chatbotAutoSuggestion = ({ name }: { name: string }) => {
   return [
@@ -79,17 +80,21 @@ function SelectRegion({
 }) {
   const { locale } = useRouter();
   const { t } = useTranslation(); 
+
+  const { data: meData } = useMeQuery();
+
   const ShopSlugName = 'hilltop-marble';
-
-  const { regions, error } = useRegionsQuery({ 
-    shopSlug: ShopSlugName,  
-    language: locale!,
+  // const { data: me } = useMeQuery()
+  console.log('region-me = ', meData)
+  console.log('region-me = ', meData?.managed_shop?.slug)
+ 
+  const { regions, loading, paginatorInfo, error } = useRegionsQuery({
+    code: meData?.managed_shop?.slug,
   });
-
+console.log("REgions===",regions);
   if (error) {
     console.error("Error fetching regions:", error);
   }
-
   return (
     <div className="mb-5">
       <Label>Select Region</Label>
@@ -105,7 +110,6 @@ function SelectRegion({
     </div>
   );
 }
-
 
 function SelectTypes({
   control,
@@ -241,6 +245,7 @@ export default function CreateOrUpdateTagForm({ initialValues }: IProps) {
   const { mutate: updateTag, isLoading: updating } = useUpdateTagMutation();
   
   const onSubmit = async (values: FormValues) => {
+ 
     const transformedRegions = Array.isArray(values.region)
       ? values.region.map((region: any) => region.name || region)
       : [];
