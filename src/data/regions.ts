@@ -4,7 +4,14 @@ import { toast } from 'react-toastify';
 import { useTranslation } from 'next-i18next';
 import { mapPaginatorData } from '@/utils/data-mappers';
 import { couponClient } from './client/coupon';
-import { Coupon, CouponPaginator, CouponQueryOptions, Region, RegionPaginator, RegionsQueryOptions } from '@/types';
+import {
+  Coupon,
+  CouponPaginator,
+  CouponQueryOptions,
+  Region,
+  RegionPaginator,
+  RegionsQueryOptions,
+} from '@/types';
 import { Routes } from '@/config/routes';
 import { API_ENDPOINTS } from './client/api-endpoints';
 import { Config } from '@/config';
@@ -49,8 +56,7 @@ export const useRegionsQuery = (
   // useQuery to fetch data
   const { data, error, isLoading } = useQuery<RegionPaginator, Error>(
     [API_ENDPOINTS.REGIONS, params],
-    ({ queryKey }) =>
-      regionClient.get({ shopSlug: queryKey[1].shopSlug }), // Pass shopSlug correctly
+    ({ queryKey }) => regionClient.get({ shopSlug: queryKey[1].shopSlug }), // Pass shopSlug correctly
     {
       keepPreviousData: true,
       ...options,
@@ -67,28 +73,25 @@ export const useRegionsQuery = (
 };
 
 export const useUpdateRegionClassMutation = (shop_id) => {
-  console.log('shop_id =', shop_id)
+  console.log('shop_id =', shop_id);
   const { t } = useTranslation();
   const queryClient = useQueryClient();
 
-  return useMutation((data) => regionClient.update({ ...data , shop_id }), {
+  return useMutation((data) => regionClient.update({ ...data, shop_id }), {
     onSuccess: () => {
       toast.success(t('common:successfully-updated'));
     },
     onSettled: () => {
-      queryClient.invalidateQueries(API_ENDPOINTS.REGIONS);
+      queryClient.invalidateQueries(API_ENDPOINTS.REGIONS);8
     },
   });
 };
-
-
 
 export const useRegionsingleDataQuery = (id: string) => {
   return useQuery<Region, Error>([API_ENDPOINTS.REGIONS, id], () =>
     regionClient.get({ id })
   );
 };
-
 
 // export const useRegionsQuery = (options: Partial<RegionsQueryOptions>) => {
 //   const { data, error, isLoading } = useQuery<RegionPaginator, Error>(
