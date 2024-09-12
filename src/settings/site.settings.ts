@@ -148,8 +148,13 @@ export const siteSettings = {
             }),
       },
       {
-        href: Routes.regions,
+        href: Routes.regions.list,
         label: 'sidebar-nav-item-regions',
+        icon: 'DashboardIcon',
+      },
+      {
+        href: Routes.faq.list,
+        label: 'sidebar-nav-item-faq',
         icon: 'DashboardIcon',
       },
       {

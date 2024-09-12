@@ -18,6 +18,8 @@ export const Routes = {
   verifyEmail: '/verify-email',
   sales: '/sales',
   createSales: '/sales/create',
+  regions: '/regions',
+  Faq: '/faq',
   // groups: `/${getAdminMyShopsRoute()}/groups`,
   shops: (slug: string) => `/shops/${encodeURIComponent(slug)}`,
   // orders: '/orders',
