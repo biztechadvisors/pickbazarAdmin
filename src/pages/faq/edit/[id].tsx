@@ -9,12 +9,14 @@ import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import { useTranslation } from 'next-i18next';
 import CreateOrUpdateRegionsForm from '@/components/regions/region-form';
 import { useRegionsingleDataQuery } from '@/data/regions';
+import { useFaqsingleDataQuery } from '@/data/faq';
+import CreateOrUpdateFaqForm from '@/components/faq/faq-form';
 
-export default function UpdateRegionsPage() {
+export default function UpdateFaqPage() {
   const { t } = useTranslation();
   const { query } = useRouter();
   console.log('query =',query)
-  const { data, isLoading: loading, error } = useRegionsingleDataQuery(query.id as string);
+  const { data, isLoading: loading, error } = useFaqsingleDataQuery(query.id as string);
   if (loading) return <Loader text={t('common:text-loading')} />;
   if (error) return <ErrorMessage message={error.message} />;
   console.log('data =',data)
@@ -23,14 +25,14 @@ export default function UpdateRegionsPage() {
     <>
       <div className="flex border-b border-dashed border-border-base py-5 sm:py-8">
         <h1 className="text-lg font-semibold text-heading">
-          Update Regions #{data?.id}
+          Update FAQ #{data?.id}
         </h1>
       </div>
-      <CreateOrUpdateRegionsForm initialValues={data} />
+      <CreateOrUpdateFaqForm initialValues={data} />
     </>
   );
 }
-UpdateRegionsPage.Layout = Layout;
+UpdateFaqPage.Layout = Layout;
 
 export const getStaticProps = async ({ locale }: any) => ({
   props: {

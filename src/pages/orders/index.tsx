@@ -81,7 +81,7 @@ export default function Orders() {
         queryConfig.shop_slug = me?.managed_shop?.slug;
         queryConfig.customer_id = me?.id;``
     } else if (ShopShow) {        
-        queryConfig.shop_id = me?.managed_shop?.id;
+        // queryConfig.shop_id = me?.managed_shop?.id;
         queryConfig.shop_slug = me?.managed_shop?.slug;
     }    
 
