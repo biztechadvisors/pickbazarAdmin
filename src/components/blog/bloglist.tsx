@@ -5,9 +5,11 @@ import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import Table from 'rc-table';
 import Pagination from 'rc-pagination';
+import LanguageSwitcher from '../ui/lang-action/action';
+import { Routes } from '@/config/routes';
 
 const BlogList = ({
-  categories,
+  Blogs,
   paginatorInfo,
   onPagination,
   onSort,
@@ -54,6 +56,7 @@ const BlogList = ({
     },
     {
       title: t('table:table-item-content'),
+      dataIndex:'title'
     },
     {
       title: t('table:table-item-image'),
@@ -69,11 +72,19 @@ const BlogList = ({
             dataIndex: 'slug',
             key: 'actions',
             align: alignRight,
-            width: 290,
+            render: (slug: string, record:any) => (
+              <LanguageSwitcher
+                slug={record.shop.slug}
+                record={record}
+                deleteModalView="DELETE_BLOG"
+                routes={Routes?.attribute}
+              />
+            ),
           }
-        : null),
+        : {}),
     },
   ];
+
 
   return (
     <>
@@ -82,7 +93,7 @@ const BlogList = ({
           //@ts-ignore
           columns={columns}
           emptyText={t('table:empty-table-data')}
-          data={categories}
+          data={Blogs}
           rowKey="id"
           scroll={{ x: 1000 }}
           expandable={{

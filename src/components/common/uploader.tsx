@@ -9,7 +9,7 @@ import { useUploadMutation } from '@/data/upload';
 import Image from 'next/image';
 import { zipPlaceholder } from '@/utils/placeholders';
 import { ACCEPTED_FILE_TYPES } from '@/utils/constants';
-
+ 
 const getPreviewFiles = (value) => {
   let files = [];
   if (value) {
@@ -17,7 +17,7 @@ const getPreviewFiles = (value) => {
   }
   return files;
 };
-
+ 
 export default function Uploader({
   onChange,
   value,
@@ -30,13 +30,13 @@ export default function Uploader({
   const [files, setFiles] = useState(getPreviewFiles(value));
   const { mutate: upload, isLoading: loading } = useUploadMutation();
   const [error, setError] = useState(null);
-
+ 
   // Updated file types to include images and videos
   const ACCEPTED_FILE_TYPES = {
     'image/*': ['.jpg', '.jpeg', '.png', '.webp', '.glb'],
     'video/*': ['.mp4', '.avi', '.mov', '.mkv', '.webm', '.flv', '.wmv', '.ogg', '.3gp'],
   };
-
+ 
   const { getRootProps, getInputProps } = useDropzone({
     ...(acceptFile
       ? { ...ACCEPTED_FILE_TYPES }
@@ -57,7 +57,7 @@ export default function Uploader({
               data[idx]['file_name'] = `${filename}.${fileType}`;
               return file;
             });
-
+ 
             const updatedFiles = multiple ? files.concat(data) : data;
             setFiles(updatedFiles);
             if (onChange) {
@@ -79,7 +79,7 @@ export default function Uploader({
       });
     },
   });
-
+ 
   const handleDelete = (thumbnail) => {
     const updatedFiles = files.filter((file) => file.thumbnail !== thumbnail);
     setFiles(updatedFiles);
@@ -87,17 +87,18 @@ export default function Uploader({
       onChange(updatedFiles);
     }
   };
-
+ 
   const thumbs = files.map((file, idx) => {
     const imgTypes = ['jpg', 'jpeg', 'png', 'webp', 'gif', 'bmp', 'tif', 'tiff', 'glb'];
     const videoTypes = ['mp4', 'avi', 'mov', 'mkv', 'webm', 'flv', 'wmv', 'ogg', '3gp'];
+ 
+    const splitArray = file?.file_name ? file.file_name.split('.') : file.thumbnail ? file.thumbnail.split('.') : [];
 
-    const splitArray = file?.file_name ? file.file_name.split('.') : file.thumbnail.split('.');
     const fileType = splitArray.pop();
     const filename = splitArray.join('.');
     const isImage = imgTypes.includes(fileType);
     const isVideo = videoTypes.includes(fileType);
-
+ 
     return (
       <div
         className={`relative mt-2 inline-flex flex-col overflow-hidden rounded me-2 ${
@@ -146,7 +147,7 @@ export default function Uploader({
       </div>
     );
   });
-
+ 
   useEffect(() => {
     // Clean up URLs to prevent memory leaks
     return () => {
@@ -154,7 +155,7 @@ export default function Uploader({
       files.forEach((file) => URL.revokeObjectURL(file.thumbnail));
     };
   }, [files]);
-
+ 
   return (
     <section className="upload">
       <div
@@ -178,7 +179,7 @@ export default function Uploader({
         </p>
         {error && <p className="mt-4 text-center text-sm text-red-600">{error}</p>}
       </div>
-
+ 
       {(thumbs.length || loading) && (
         <aside className="mt-2 flex flex-wrap">
           {thumbs}
@@ -192,3 +193,4 @@ export default function Uploader({
     </section>
   );
 }
+ 

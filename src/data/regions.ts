@@ -54,7 +54,7 @@ export const useRegionsQuery = (
       ...options,
     }
   );
-  console.log("first-data", data)
+  // console.log('data = ',data)
   return {
     regions: data || [],
     paginatorInfo: mapPaginatorData(data),
@@ -64,7 +64,7 @@ export const useRegionsQuery = (
 };
  
 export const useUpdateRegionClassMutation = (shop_id) => {
-  console.log('shop_id =', shop_id)
+  // console.log('shop_id =', shop_id)
   const { t } = useTranslation();
   const queryClient = useQueryClient();
  
@@ -73,7 +73,7 @@ export const useUpdateRegionClassMutation = (shop_id) => {
       toast.success(t('common:successfully-updated'));
     },
     onSettled: () => {
-      queryClient.invalidateQueries(API_ENDPOINTS.REGIONS);
+      queryClient.invalidateQueries(API_ENDPOINTS.REGIONS);8
     },
   });
 };
@@ -85,3 +85,23 @@ export const useRegionsingleDataQuery = (id: string) => {
     regionClient.get({ id })
   );
 };
+ 
+ 
+// export const useRegionsQuery = (options: Partial<RegionsQueryOptions>) => {
+//   const { data, error, isLoading } = useQuery<RegionPaginator, Error>(
+//     [API_ENDPOINTS.REGIONS, options],
+//     ({ queryKey, pageParam }) =>
+//       regionClient.paginated(Object.assign({}, queryKey[1], pageParam)),
+//     {
+//       keepPreviousData: true,
+//     }
+//   );
+ 
+//   return {
+//     regions: data?.data ?? [],
+//     paginatorInfo: mapPaginatorData(data),
+//     error,
+//     loading: isLoading,
+//   };
+// };
+ 

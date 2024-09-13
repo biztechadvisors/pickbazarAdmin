@@ -40,6 +40,10 @@ const AttributeDeleteView = dynamic(
   () => import('@/components/attribute/attribute-delete-view')
 );
 
+const BlogDeleteView = dynamic(
+  () => import('@/components/blog/blog-delete-view')
+);
+
 const ApproveShopView = dynamic(
   () => import('@/components/shop/approve-shop-view')
 );
@@ -84,9 +88,7 @@ const ReviewDeleteView = dynamic(
   () => import('@/components/reviews/review-delete-view')
 );
 
-const FaqDeleteView = dynamic(
-  () => import('@/components/faq/faq-delete-view')
-);
+const FaqDeleteView = dynamic(() => import('@/components/faq/faq-delete-view'));
 
 const RegionsDeleteView = dynamic(
   () => import('@/components/regions/regions-delete-view')
@@ -121,9 +123,7 @@ const ProductVariation = dynamic(
   () => import('@/components/product/variation/variation')
 );
 const AbuseReport = dynamic(() => import('@/components/reviews/abuse-report'));
-const OpenAiModal = dynamic(
-  () => import('@/components/openAI/openAI.modal')
-);
+const OpenAiModal = dynamic(() => import('@/components/openAI/openAI.modal'));
 const ComposerMessage = dynamic(
   () => import('@/components/message/compose-message')
 );
@@ -134,14 +134,16 @@ function renderModal(view: MODAL_VIEWS | undefined, data: any) {
       return <ProductDeleteView />;
     case 'DELETE_TYPE':
       return <TypeDeleteView />;
-      case 'DELETE_DEALER':
-        return <DealerDeleteView />;
+    case 'DELETE_DEALER':
+      return <DealerDeleteView />;
     case 'DELETE_ATTRIBUTE':
       return <AttributeDeleteView />;
+    case 'DELETE_BLOG':
+      return <BlogDeleteView />;
     case 'DELETE_CATEGORY':
       return <CategoryDeleteView />;
     case 'DELETE_SUBCATEGORY':
-      return <SubCategoryDeleteView/>;  
+      return <SubCategoryDeleteView />;
     case 'DELETE_COUPON':
       return <CouponDeleteView />;
     case 'DELETE_TAX':
@@ -176,8 +178,8 @@ function renderModal(view: MODAL_VIEWS | undefined, data: any) {
       return <MakeAdminView />;
     case 'EXPORT_IMPORT_PRODUCT':
       return <ExportImportView />;
-      case 'MODEL_IMPORT':
-        return <ModelImportView />;
+    case 'MODEL_IMPORT':
+      return <ModelImportView />;
     case 'EXPORT_IMPORT_ATTRIBUTE':
       return <AttributeExportImport />;
     case 'ADD_WALLET_POINTS':
@@ -195,7 +197,7 @@ function renderModal(view: MODAL_VIEWS | undefined, data: any) {
     case 'DELETE_FAQ':
       return <FaqDeleteView />;
     case 'DELETE_REGIONS':
-      return <RegionsDeleteView />
+      return <RegionsDeleteView />;
     case 'ACCEPT_ABUSE_REPORT':
       return <AcceptAbuseReportView />;
     case 'DECLINE_ABUSE_REPORT':

@@ -158,7 +158,8 @@ type SelectUserProps = {
 function SelectUser({ control, errors }: SelectUserProps) {
   const { t } = useTranslation();
   const { data } = useMeQuery();
-  const usrById = data?.id;
+  const usrById = data?.shop_id;
+  console.log('DATA_________', data);
   const { permissions } = getAuthCredentials();
   const isOwner = permissions?.[0].includes(OWNER);
   const { data: users, isLoading } = useVendorQuery(usrById);
@@ -215,9 +216,10 @@ const ShopForm = ({ initialValues }: { initialValues?: any }) => {
   const [permissionSelectedOption, setPermissionSelectedOption] =
     useAtom(selectedOption);
   const [additionalPerm] = useAtom(addPermission);
+  const { permissions } = getAuthCredentials();
 
   console.log(
-    'additionalPerm--------------------------------------------------',
+    'additionalPerm------------------------------------',
     additionalPerm
   );
 
@@ -231,7 +233,6 @@ const ShopForm = ({ initialValues }: { initialValues?: any }) => {
 
   const permissionId = permissionSelectedOption?.e?.id;
 
-  const { permissions } = getAuthCredentials();
   const {
     register,
     handleSubmit,
@@ -288,18 +289,23 @@ const ShopForm = ({ initialValues }: { initialValues?: any }) => {
     data: permissionData,
   } = usePermissionData(userId);
 
-  const filterdEcomm = permissionData?.filter(
-    (e: any) =>
-      (e.type_name == 'Company' && e.permission_name === 'E-commerce') ||
-      e.permission_name === 'Non-ecommerce'
-  );
+  const filterdEcomm = permissionData?.filter((e: any) => {
+    return (
+      (e && // Ensure the object exists
+        e.type_name === 'Company' &&
+        e.permission_name === 'E-commerce') ||
+      (e.type_name === 'Company' && e.permission_name === 'Non-ecommerce')
+    );
+  });
 
   const option = filterdEcomm?.map((e: any) => ({
-    name: e.permission_name,
-    email: e.type_name,
+    name: e?.permission_name,
+    email: e?.type_name,
     e,
   }));
-
+  console.log('Fetched Permission Data:', permissionData);
+  console.log('Permission Filtered Ecomm:', filterdEcomm);
+  console.log('Permission Options:', option);
   const permissionProps = permissionSelectedOption?.e;
 
   const handleGenerateDescription = useCallback(() => {

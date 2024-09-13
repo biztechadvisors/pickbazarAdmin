@@ -33,3 +33,19 @@ export const useBlogsQuery = (params: any) => {
       },
     });
   };
+
+
+  export const useDeleteBlogMutation = () => {
+    const queryClient = useQueryClient();
+    const { t } = useTranslation();
+  
+    return useMutation(blogClient.delete, {
+      onSuccess: () => {
+        toast.success(t('common:successfully-deleted'));
+      },
+      // Always refetch after error or success:
+      onSettled: () => {
+        queryClient.invalidateQueries(API_ENDPOINTS.BLOG);
+      },
+    });
+  };
