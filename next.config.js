@@ -26,6 +26,7 @@ module.exports = withPWA({
       'lh3.googleusercontent.com',
       'images.pexels.com',
       'codenoxtestbucket.s3.ap-south-1.amazonaws.com',
+      'hilltopmarble.s3.ap-south-1.amazonaws.com',
       'server.codenoxx.com',
       's3.ap-south-1.amazonaws.com',
     ],
