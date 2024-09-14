@@ -55,6 +55,8 @@ export const PlaceOrderAction: React.FC<{
   const { data: meData } = useMeQuery();
   console.log("first-meData",meData)
   console.log("first-billing_address",billing_address?.address)
+  console.log("customer",customer)
+  console.log("customer_name",customer_name)
   const dealerId = meData?.id;
   const shop_id = meData?.shop_id;
 
