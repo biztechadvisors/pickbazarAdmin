@@ -73,7 +73,7 @@ export const useUpdateRegionClassMutation = (shop_id) => {
       toast.success(t('common:successfully-updated'));
     },
     onSettled: () => {
-      queryClient.invalidateQueries(API_ENDPOINTS.REGIONS);
+      queryClient.invalidateQueries(API_ENDPOINTS.REGIONS);8
     },
   });
 };

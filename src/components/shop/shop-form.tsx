@@ -159,7 +159,7 @@ function SelectUser({ control, errors }: SelectUserProps) {
   const { t } = useTranslation();
   const { data } = useMeQuery();
   const usrById = data?.shop_id;
-  console.log("DATA_________",data);
+  console.log('DATA_________', data);
   const { permissions } = getAuthCredentials();
   const isOwner = permissions?.[0].includes(OWNER);
   const { data: users, isLoading } = useVendorQuery(usrById);
@@ -215,7 +215,13 @@ const ShopForm = ({ initialValues }: { initialValues?: any }) => {
   const [modalIsOpen, setIsOpen] = useState(false);
   const [permissionSelectedOption, setPermissionSelectedOption] =
     useAtom(selectedOption);
-    const { permissions } = getAuthCredentials(); 
+  const [additionalPerm] = useAtom(addPermission);
+  const { permissions } = getAuthCredentials();
+
+  console.log(
+    'additionalPerm------------------------------------',
+    additionalPerm
+  );
 
   function openModal() {
     setIsOpen(true);
@@ -227,7 +233,6 @@ const ShopForm = ({ initialValues }: { initialValues?: any }) => {
 
   const permissionId = permissionSelectedOption?.e?.id;
 
-  
   const {
     register,
     handleSubmit,
@@ -285,12 +290,13 @@ const ShopForm = ({ initialValues }: { initialValues?: any }) => {
   } = usePermissionData(userId);
 
   const filterdEcomm = permissionData?.filter((e: any) => {
-  return (
-    e && // Ensure the object exists
-    (e.type_name === 'Company' && e.permission_name === 'E-commerce') || 
-    (e.type_name === 'Company' && e.permission_name === 'Non-ecommerce')
-  );
-});
+    return (
+      (e && // Ensure the object exists
+        e.type_name === 'Company' &&
+        e.permission_name === 'E-commerce') ||
+      (e.type_name === 'Company' && e.permission_name === 'Non-ecommerce')
+    );
+  });
 
   const option = filterdEcomm?.map((e: any) => ({
     name: e?.permission_name,
