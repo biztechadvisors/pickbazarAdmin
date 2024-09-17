@@ -69,7 +69,7 @@
   "input-label-event": "Events",
   "input-label-subcategories": "SubCategories",
   "input-label-coupons": "Coupons",
-  "input-label-regions":"Regions",
+  "input-label-regions": "Regions",
   "input-label-orders": "Orders",
   "input-label-order-id": "Order ID",
   "input-label-sku": "SKU",
@@ -226,7 +226,7 @@
   "create-new-attribute-value": "Create New Attribute Value",
   "create-new-attribute": "Create New Attribute",
   "update-attribute-value": "Update Attribute Value",
-  "input-label-region":"Region",
+  "input-label-region": "Region",
   "edit-attribute": "Edit Attribute",
   "edit-blog": "Edit Blog",
   "error-name-required": "Name is required",
@@ -459,7 +459,6 @@
   "input-label-select-company": "Company Type",
   "input-label-extra-permission": "Add More Permission (Optional)",
   "button-label-more-permission": "Advance permission",
-  "button-label-add-regions" : "Add Regions",
-  "button-label-add-faq" : "Add Faq"
-
+  "button-label-add-regions": "Add Regions",
+  "button-label-add-faq": "Add Faq"
 }
