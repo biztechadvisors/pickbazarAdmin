@@ -34,7 +34,7 @@ import { useModalAction } from '../ui/modal/modal.context';
 import OpenAIButton from '../openAI/openAI.button';
 import { useMeQuery } from '@/data/user';
 // import { useRegionsQuery } from '@/data/tag';
-import { useRegionsQuery } from '@/data/regions'; 
+import { useRegionsQuery } from '@/data/regions';
 
 export const chatbotAutoSuggestion = ({ name }: { name: string }) => {
   return [
@@ -105,21 +105,21 @@ function SelectRegion({
   errors: FieldErrors;
 }) {
   const { locale } = useRouter();
-  const { t } = useTranslation(); 
+  const { t } = useTranslation();
 
   const { data: meData } = useMeQuery();
 
   const ShopSlugName = 'hilltop-marble';
   // const { data: me } = useMeQuery()
-  console.log('region-me = ', meData)
-  console.log('region-me = ', meData?.managed_shop?.slug)
- 
+  console.log('region-me = ', meData);
+  console.log('region-me = ', meData?.managed_shop?.slug);
+
   const { regions, loading, paginatorInfo, error } = useRegionsQuery({
     code: meData?.managed_shop?.slug,
   });
-console.log("REgions===",regions);
+  console.log('REgions===', regions);
   if (error) {
-    console.error("Error fetching regions:", error);
+    console.error('Error fetching regions:', error);
   }
   return (
     <div className="mb-5">
@@ -132,7 +132,7 @@ console.log("REgions===",regions);
         options={regions || []}
         isLoading={!regions} // Show loading state if regions data is not yet loaded
       />
-    <ValidationError message={t(errors.type?.message)} />
+      <ValidationError message={t(errors.type?.message)} />
     </div>
   );
 }
@@ -155,7 +155,9 @@ function SelectTypes({
         getOptionLabel={(option: any) => option.name}
         getOptionValue={(option: any) => option.slug}
         options={types!}
-        isLoading={loading} defaultValue={[]} />
+        isLoading={loading}
+        defaultValue={[]}
+      />
       <ValidationError message={t(errors.type?.message)} />
     </div>
   );
@@ -197,7 +199,9 @@ function SelectCategories({
         getOptionValue={(option: any) => option.id}
         options={categories}
         isClearable={true}
-        isLoading={loading} defaultValue={[]} />
+        isLoading={loading}
+        defaultValue={[]}
+      />
     </div>
   );
 }
@@ -210,7 +214,7 @@ type FormValues = {
   image: any;
   icon: any;
   type: any;
-  region_name:string;
+  region_name: string;
 };
 
 const defaultValues = {
@@ -220,7 +224,7 @@ const defaultValues = {
   parent: '',
   icon: '',
   type: '',
-  region_name:'',
+  region_name: '',
 };
 
 type IProps = {
@@ -245,16 +249,16 @@ export default function CreateOrUpdateCategoriesForm({
     //@ts-ignore
     defaultValues: initialValues
       ? {
-        ...initialValues,
-        icon: initialValues?.icon
-          ? categoryIcons.find(
-            (singleIcon) => singleIcon.value === initialValues?.icon!
-          )
-          : '',
-        ...(isNewTranslation && {
-          type: null,
-        }),
-      }
+          ...initialValues,
+          icon: initialValues?.icon
+            ? categoryIcons.find(
+                (singleIcon) => singleIcon.value === initialValues?.icon!
+              )
+            : '',
+          ...(isNewTranslation && {
+            type: null,
+          }),
+        }
       : defaultValues,
     resolver: yupResolver(categoryValidationSchema),
   });
@@ -263,15 +267,15 @@ export default function CreateOrUpdateCategoriesForm({
 
   const ShopSlugName = 'hilltop-marble';
   // const { data: me } = useMeQuery()
-  console.log('region-me = ', meData)
-  console.log('region-me = ', meData?.managed_shop?.slug)
- 
+  console.log('region-me = ', meData);
+  console.log('region-me = ', meData?.managed_shop?.slug);
+
   const { regions, loading, paginatorInfo, error } = useRegionsQuery({
     code: meData?.managed_shop?.slug,
   });
-console.log("REgions===",regions);
+  console.log('REgions===', regions);
   if (error) {
-    console.error("Error fetching regions:", error);
+    console.error('Error fetching regions:', error);
   }
 
   const { openModal } = useModalAction();
@@ -306,7 +310,7 @@ console.log("REgions===",regions);
   const onSubmit = async (values: FormValues) => {
     console.log('Form Data:', values);
     const transformedRegions = values.region?.name ? [values.region.name] : [];
-    
+
     const input = {
       language: router.locale,
       name: values.name,
@@ -339,7 +343,9 @@ console.log("REgions===",regions);
         shop_id: meData?.managed_shop?.id,
       });
     }
-  }; 
+  };
+
+  console.log('categoery-----------------initialvalue', initialValues);
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
       <div className="my-5 flex flex-wrap border-b border-dashed border-border-base pb-8 sm:my-8">
@@ -357,10 +363,11 @@ console.log("REgions===",regions);
       <div className="my-5 flex flex-wrap sm:my-8">
         <Description
           title={t('form:input-label-description')}
-          details={`${initialValues
+          details={`${
+            initialValues
               ? t('form:item-description-edit')
               : t('form:item-description-add')
-            } ${t('form:category-description-helper-text')}`}
+          } ${t('form:category-description-helper-text')}`}
           className="w-full px-0 pb-5 sm:w-4/12 sm:py-8 sm:pe-4 md:w-1/3 md:pe-5 "
         />
 
@@ -394,7 +401,9 @@ console.log("REgions===",regions);
               name="icon"
               control={control}
               options={updatedIcons}
-              isClearable={true} defaultValue={[]} />
+              isClearable={true}
+              defaultValue={[]}
+            />
           </div>
           {/* <div className="mb-5">
           <SelectInput

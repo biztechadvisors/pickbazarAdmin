@@ -1,4 +1,4 @@
-import { useMutation, useQueryClient } from 'react-query';
+import { useMutation, useQuery, useQueryClient } from 'react-query';
 import { useTranslation } from 'react-i18next';
 import { eventClient } from './client/event';
 import { toast } from 'react-toastify';
@@ -6,7 +6,7 @@ import Router from 'next/router';
 import { Routes } from '@/config/routes';
 import { API_ENDPOINTS } from './client/api-endpoints';
 
-export const useCreateMutation = () => {
+export const useCreateEventMutation = () => {
   const queryClient = useQueryClient();
   const { t } = useTranslation();
 
@@ -20,6 +20,66 @@ export const useCreateMutation = () => {
     },
     onSettled: () => {
       queryClient.invalidateQueries(API_ENDPOINTS.EVENTS); // Updated endpoint
+    },
+  });
+};
+
+export const useUpdateeventMutation = () => {
+  const { t } = useTranslation();
+  const queryClient = useQueryClient();
+  return useMutation(eventClient.update, {
+    onSuccess: () => {
+      toast.success(t('common:successfully-updated'));
+    },
+    onError: (error: any) => {
+      toast.error(t('common:update-failed'));
+    },
+    // Always refetch after error or success:
+    onSettled: () => {
+      queryClient.invalidateQueries(API_ENDPOINTS.EVENTS);
+    },
+  });
+};
+
+export const useEventQuery = (params: any) => {
+  return useQuery(
+    [API_ENDPOINTS.EVENTS, params],
+    () => eventClient.getAll(params),
+    {
+      onSuccess: (data) => {
+        // Handle successful data fetching (e.g., log data, set additional state)
+        console.log('Blogs fetched successfully:', data);
+      },
+      onError: (error) => {
+        // Handle errors (e.g., show an error message)
+        console.error('Error fetching blogs:', error);
+      },
+    }
+  );
+};
+
+export const useEventSingleData = (id: any) => {
+  return useQuery(
+    [API_ENDPOINTS.EVENT, id],
+    () => eventClient.singleData({ id }),
+    {
+      enabled: !!id, // Fetch only if id exists
+    }
+  );
+};
+
+export const useDeleteEventMutation = () => {
+  const queryClient = useQueryClient();
+  const { t } = useTranslation();
+
+  return useMutation(eventClient.delete, {
+    onSuccess: () => {
+      toast.success(t('common:successfully-deleted'));
+      queryClient.invalidateQueries([API_ENDPOINTS.BLOG]);
+    },
+    // Always refetch after error or success:
+    onSettled: () => {
+      queryClient.invalidateQueries(API_ENDPOINTS.BLOG);
     },
   });
 };

@@ -162,7 +162,7 @@ function SelectUser({ control, errors }: SelectUserProps) {
   console.log('DATA_________', data);
   const { permissions } = getAuthCredentials();
   const isOwner = permissions?.[0].includes(OWNER);
-  const { data: users, isLoading } = useVendorQuery(usrById);
+  const { data: users, isLoading } = useVendorQuery(data?.id);
   const options: any = users || [];
   const shouldDisable = control._defaultValues.owner != null || !isOwner;
 
