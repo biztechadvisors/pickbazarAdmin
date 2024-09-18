@@ -93,7 +93,6 @@ export default function Uploader({
     const videoTypes = ['mp4', 'avi', 'mov', 'mkv', 'webm', 'flv', 'wmv', 'ogg', '3gp'];
  
     const splitArray = file?.file_name ? file.file_name.split('.') : file.thumbnail ? file.thumbnail.split('.') : [];
-
     const fileType = splitArray.pop();
     const filename = splitArray.join('.');
     const isImage = imgTypes.includes(fileType);
