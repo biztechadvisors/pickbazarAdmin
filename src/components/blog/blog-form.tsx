@@ -232,16 +232,20 @@ type FormValues = {
 const BlogCreateOrUpdateForm = ({ initialValues }: any) => {
   const router = useRouter();
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [shopSlug, setShopSlug] = useState<string | null>(null);
 
-  const {
-    query: { shop },
-  } = router;
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const storedSlug = localStorage.getItem('shopSlug');
+      setShopSlug(storedSlug);
+    }
+  }, []);
   const { t } = useTranslation();
   const { data: shopData } = useShopQuery(
     {
-      slug: shop as string,
+      slug: shopSlug as string,
     },
-    { enabled: !!shop }
+    { enabled: !!shopSlug }
   );
   const shopId = shopData?.id || initialValues?.shop_id;
 

@@ -12,7 +12,7 @@ import { useMeQuery } from '@/data/user';
 import { useRouter } from 'next/router';
 import { useShopQuery } from '@/data/shop';
 import AdminLayout from '@/components/layouts/admin';
-import EventCreateOrUpdate from '@/components/event/event-form';
+import BlogCreateOrUpdateForm from '@/components/blog/blog-form';
 
 export default function CreateAttributePage() {
   const { t } = useTranslation();
@@ -39,10 +39,10 @@ export default function CreateAttributePage() {
     <>
       <div className="flex border-b border-dashed border-border-base py-5 sm:py-8">
         <h1 className="text-lg font-semibold text-heading">
-          {t('form:create-new-attribute')}
+          {t('form:create-new-blog')}
         </h1>
       </div>
-      <EventCreateOrUpdate />
+      <BlogCreateOrUpdateForm/>
     </>
   );
 }
