@@ -1,7 +1,6 @@
 import { useRouter } from 'next/router';
 import ErrorMessage from '@/components/ui/error-message';
 import Loader from '@/components/ui/loader/loader';
-import CreateOrUpdateAttributeForm from '@/components/attribute/attribute-form';
 import { useTranslation } from 'next-i18next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 
@@ -18,56 +17,37 @@ import { useMeQuery } from '@/data/user';
 import shop from '@/components/layouts/shop';
 import { useShopQuery } from '@/data/shop';
 import AdminLayout from '@/components/layouts/admin';
+import BlogCreateOrUpdateForm from '@/components/blog/blog-form';
+import { useEventSingleData } from '@/data/event';
 
-export default function UpdateAttributePage() {
+export default function UpdateBlogPage() {
   const { t } = useTranslation();
-  const router = useRouter();
-  const { permissions } = getAuthCredentials();
-  const { data: me } = useMeQuery();
-  const { query, locale } = useRouter();
-  const { data: shopData } = useShopQuery({
-    slug: query?.shop as string,
-  });
-  const shopId = shopData?.id!;
+  const { query } = useRouter();
 
-  const {
-    data,
-    isLoading: loading,
-    error,
-  } = useAttributeQuery({
-    slug: query.attributeId as string,
-    language:
-      query.action!.toString() === 'edit' ? locale! : Config.defaultLanguage,
-  });
+  console.log("queryfor Blog", query)
+  const { data, isLoading: loading, error } = useEventSingleData(query.id as string);
 
-  console.log("data_____________for Attri---------------------", data)
+
+  console.log("dataForSingleEVENTID_____________________________", data)
 
   if (loading) return <Loader text={t('common:text-loading')} />;
   if (error) return <ErrorMessage message={error.message} />;
 
-  if (
-    !hasAccess(adminOnly, permissions) &&
-    !me?.shops?.map((shop) => shop.id).includes(shopId) &&
-    me?.managed_shop?.id != shopId
-  ) {
-    router.replace(Routes.dashboard);
-  }
-
   return (
     <>
-      <div className="flex py-5 border-b border-dashed border-border-base sm:py-8">
+      <div className="flex border-b border-dashed border-border-base py-5 sm:py-8">
         <h1 className="text-lg font-semibold text-heading">
-          {t('form:edit-attribute')}
+          {t('form:edit-blog')}
         </h1>
       </div>
-      <CreateOrUpdateAttributeForm initialValues={data} />
+      <BlogCreateOrUpdateForm initialValues={data} />
     </>
   );
 }
-UpdateAttributePage.authenticate = {
+UpdateBlogPage.authenticate = {
   permissions: adminOwnerAndStaffOnly,
 };
-UpdateAttributePage.Layout = AdminLayout;
+UpdateBlogPage.Layout = AdminLayout;
 export const getServerSideProps = async ({ locale }: any) => ({
   props: {
     ...(await serverSideTranslations(locale, ['table', 'common', 'form'])),

@@ -49,6 +49,9 @@ export const PlaceOrderAction: React.FC<{
       
     },
   ] = useAtom(checkoutAtom);
+
+  console.log("billing_address____________________________________________", billing_address)
+  console.log("customer_name-------------------------", customer_name)
   const [discount] = useAtom(discountAtom);
   const [use_wallet_points] = useAtom(walletAtom);
 

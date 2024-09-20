@@ -33,6 +33,8 @@
     "SETTINGS": "sidebar-nav-item-settings",
     "STAFFS": "sidebar-nav-item-staffs",
     "STOCK": "sidebar-nav-item-stocks",
+    "REGIONS": "sidebar-nav-item-regions",
+    "FAQS": "sidebar-nav-item-faq",
     "GET_INSPIRED": "sidebar-nav-item-get-inspired",
     "CONTACT": "sidebar-nav-item-contact",
     "BLOG": "sidebar-nav-item-blog",
@@ -42,6 +44,8 @@
   },
 
   "Advance_Permission": {
+    "REGIONS": "sidebar-nav-item-regions",
+    "FAQS": "sidebar-nav-item-faq",
     "GET_INSPIRED": "sidebar-nav-item-get-inspired",
     "CONTACT": "sidebar-nav-item-contact",
     "BLOG": "sidebar-nav-item-blog",

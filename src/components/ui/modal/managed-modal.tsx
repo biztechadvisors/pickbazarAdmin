@@ -20,6 +20,9 @@ const ShippingDeleteView = dynamic(
 const CategoryDeleteView = dynamic(
   () => import('@/components/category/category-delete-view')
 );
+const EventDeleteView = dynamic(
+  () => import('@/components/event/event-delete-view')
+);
 const SubCategoryDeleteView = dynamic(
   () => import('@/components/subcategory/subcategory-delete-view')
 );
@@ -142,6 +145,8 @@ function renderModal(view: MODAL_VIEWS | undefined, data: any) {
       return <BlogDeleteView />;
     case 'DELETE_CATEGORY':
       return <CategoryDeleteView />;
+    case 'DELETE_EVENT':
+      return <EventDeleteView />;
     case 'DELETE_SUBCATEGORY':
       return <SubCategoryDeleteView />;
     case 'DELETE_COUPON':

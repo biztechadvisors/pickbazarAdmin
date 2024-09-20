@@ -1,12 +1,14 @@
-import BlogList from '@/components/blog/bloglist';
+
 import TypeFilter from '@/components/category/type-filter';
 import Card from '@/components/common/card';
 import Search from '@/components/common/search';
-import EventLists from '@/components/eventlists';
+import EventLists from '@/components/event/event-list';
 import AdminLayout from '@/components/layouts/admin';
 import LinkButton from '@/components/ui/link-button';
 import { Routes } from '@/config/routes';
+import { useEventQuery } from '@/data/event';
 import { useMeQuery } from '@/data/user';
+import { SortOrder } from '@/types';
 import { adminOwnerAndStaffOnly } from '@/utils/auth-utils';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import { useRouter } from 'next/router';
@@ -19,14 +21,34 @@ const Events = () => {
   const { data: meData } = useMeQuery();
   const [searchTerm, setSearchTerm] = useState('');
   const [page, setPage] = useState(1);
+  const [orderBy, setOrder] = useState('updated_at');
+  const [sortedBy, setColumn] = useState<SortOrder>(SortOrder.Desc);
 
   const shop: string | undefined = meData?.managed_shop?.id;
   const shopSlug = meData?.managed_shop?.slug;
+
+  const {
+    data: events,
+    isLoading,
+    error,
+  } = useEventQuery({
+    shopSlug,
+    orderBy,
+    sortedBy,
+    language: locale,
+    search: searchTerm,
+  });
 
   function handleSearch({ searchText }: { searchText: string }) {
     setSearchTerm(searchText);
     setPage(1);
   }
+
+  function handlePagination(current: any) {
+    setPage(current);
+  }
+
+  console.log("eventseventsevents", events)
   return (
     <>
       <Card className="mb-8 flex flex-col">
@@ -52,7 +74,7 @@ const Events = () => {
           </div>
         </div>
       </Card>
-      <EventLists />
+      <EventLists events={events?.data}/>
     </>
   );
 };
