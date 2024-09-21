@@ -124,53 +124,57 @@ export function useCreateOrderMutation() {
   };
 }
 
-export const useUpdateOrderMutation = () => {
-  const { t } = useTranslation();
-  const queryClient = useQueryClient();
-  return useMutation(orderClient.update, {
-    onSuccess: () => {
-      toast.success(t('common:successfully-updated'));
-    },
-    // Always refetch after error or success:
-    onSettled: () => {
-      queryClient.invalidateQueries(API_ENDPOINTS.ORDERS);
-    },
-  });
-};
-
-
-
 // export const useUpdateOrderMutation = () => {
 //   const { t } = useTranslation();
 //   const queryClient = useQueryClient();
-
-//   return useMutation(
-//     async ({ id, order_status }: { id: string; order_status: string }) => {
-//       console.log('ID:', id);
-//       console.log('Status:', order_status);
-
-//       if (!order_status) {
-//         throw new Error('Status is undefined');
-//       }
-
-      
-//       const url = `${API_ENDPOINTS.ORDER_STATUS}/${id}`;
-//       const data = { name: order_status };
-
-//       console.log('Sending data to server:', data); // Log the data object
-//       return await HttpClient.patch(url, data);
+//   return useMutation(orderClient.update, {
+//     onSuccess: () => {
+//       toast.success(t('common:successfully-updated'));
 //     },
-//     {
-//       onSuccess: () => {
-//         toast.success(t('common:successfully-updated'));
-//       },
-//       // Always refetch after error or success:
-//       onSettled: () => {
-//         queryClient.invalidateQueries(API_ENDPOINTS.ORDER_STATUS);
-//       },
-//     }
-//   );
+//     // Always refetch after error or success:
+//     onSettled: () => {
+//       queryClient.invalidateQueries(API_ENDPOINTS.ORDERS);
+//     },
+//   });
 // };
+
+
+
+export const useUpdateOrderMutation = () => {
+  const { t } = useTranslation();
+  const queryClient = useQueryClient();
+
+  return useMutation(
+    async ({ id, name, color, serial, language }: { id: string; name: string; color: string; serial: number; language: string }) => {
+      // console.log('ID:', id);
+      // console.log('Data-status:', { name, color, serial, language });
+
+      // Check if name (order status) is valid
+      if (!name) {
+        throw new Error('Order status name is undefined');
+      }
+
+      // API endpoint with the dynamic ID
+      const url = `http://localhost:5000/api/order-status/${id}`;
+
+      // Data object to send in the PUT request
+      const data = { name, color, serial, language };
+
+      console.log('Sending data to server:', data); // Log the data object
+      return await HttpClient.put(url, data); // PUT request with the data
+    },
+    {
+      onSuccess: () => {
+        toast.success(t('common:successfully-updated'));
+      },
+      // Always refetch after error or success:
+      onSettled: () => {
+        queryClient.invalidateQueries(API_ENDPOINTS.ORDER_STATUS);
+      },
+    }
+  );
+};
+
 
 export const useDealerStatusChange = () => {
   const { t } = useTranslation();
