@@ -139,14 +139,25 @@ export const useUpdateOrderMutation = () => {
 };
 
 
-// export const useDealerStatusChange = () => {
+
+// export const useUpdateOrderMutation = () => {
 //   const { t } = useTranslation();
 //   const queryClient = useQueryClient();
 
 //   return useMutation(
-//     async ({ id, status }: { id: string; status: string }) => {
-//       const url = `${API_ENDPOINTS.DEALER_STATUS_CHANGE}/${id}/status`;
-//       const data = { status };
+//     async ({ id, order_status }: { id: string; order_status: string }) => {
+//       console.log('ID:', id);
+//       console.log('Status:', order_status);
+
+//       if (!order_status) {
+//         throw new Error('Status is undefined');
+//       }
+
+      
+//       const url = `${API_ENDPOINTS.ORDER_STATUS}/${id}`;
+//       const data = { name: order_status };
+
+//       console.log('Sending data to server:', data); // Log the data object
 //       return await HttpClient.patch(url, data);
 //     },
 //     {
@@ -155,7 +166,7 @@ export const useUpdateOrderMutation = () => {
 //       },
 //       // Always refetch after error or success:
 //       onSettled: () => {
-//         queryClient.invalidateQueries(API_ENDPOINTS.DEALER_STATUS_CHANGE);
+//         queryClient.invalidateQueries(API_ENDPOINTS.ORDER_STATUS);
 //       },
 //     }
 //   );
