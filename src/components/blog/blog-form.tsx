@@ -247,7 +247,7 @@ const BlogCreateOrUpdateForm = ({ initialValues }: any) => {
     },
     { enabled: !!shopSlug }
   );
-  const shopId = shopData?.id || initialValues?.shop_id;
+  const shopId = shopData?.id || initialValues?.shop?.id;
 
   console.log(
     'shopId___________________________________________________',
@@ -269,6 +269,8 @@ const BlogCreateOrUpdateForm = ({ initialValues }: any) => {
   const { mutate: updateBlog, isLoading: updating } = useUpdateBlogMutation();
 
   const onSubmit = (values: FormValues) => {
+    console.log("BLOGG++++",values)
+    const attachmentIds = values.attachmentIds 
     if (!shopId) {
       setErrorMessage('Shop ID is required');
       return;
@@ -281,7 +283,7 @@ const BlogCreateOrUpdateForm = ({ initialValues }: any) => {
           title: values.title,
           content: values.content,
           shopId,
-          attachmentIds: values.attachmentIds,
+          attachmentIds,
         },
         {
           onError: (error: any) => {
@@ -298,8 +300,9 @@ const BlogCreateOrUpdateForm = ({ initialValues }: any) => {
         id: initialValues.id!,
         title: values.title,
         content: values.content,
-        shop_id: Number(initialValues.shop_id),
-        attachmentIds: values.attachmentIds,
+        shop_id: Number(initialValues?.shop?.id),
+        attachmentIds,
+  regionName:"IN"
       });
     }
   };
@@ -329,7 +332,7 @@ const BlogCreateOrUpdateForm = ({ initialValues }: any) => {
             className="w-full px-0 pb-5 sm:w-4/12 sm:py-8 sm:pe-4 md:w-1/3 md:pe-5"
           />
           <Card className="w-full sm:w-8/12 md:w-2/3">
-            <FileInput name="image" control={control} multiple={false} />
+            <FileInput name="attachmentIds" control={control} multiple={false} />
           </Card>
         </div>
 
