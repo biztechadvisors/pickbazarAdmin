@@ -516,6 +516,7 @@ export interface UpdateUser {
   name?: string;
   profile?: UserProfileInput;
   address?: UserAddressUpsertInput[];
+  customerId?: number;
 }
 
 export interface Profile {

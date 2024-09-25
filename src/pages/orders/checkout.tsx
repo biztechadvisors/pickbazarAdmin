@@ -40,6 +40,8 @@ const RightSideView = dynamic(
 export default function CheckoutPage() {
   const [shopId] = useAtom(shopIdAtom);
   const [customer] = useAtom(customerAtom);
+
+  console.log("customer",customer)
   const { t } = useTranslation();
 
   const {
