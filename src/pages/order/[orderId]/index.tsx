@@ -527,11 +527,24 @@ export default function OrderDetailsPage() {
     defaultValues: { order_status: order?.order_status ?? '' },
   });
 
+  // const ChangeStatus = ({ order_status }: FormValues) => {
+  //   updateOrder({
+  //     id: order?.id as string, : order_status?.status as string,
+  //   });
+  // };
+
   const ChangeStatus = ({ order_status }: FormValues) => {
     updateOrder({
-      id: order?.id as string, : order_status?.status as string,
+      id: order?.id as string, // Send the dynamic order ID
+      name: order_status?.status as string, 
+      color: order_status?.color as string, 
+      serial: order_status?.serial as number, 
+      language: order_status?.language as string, 
     });
   };
+
+
+  
 
   const { price: subtotal } = usePrice(
     order && {

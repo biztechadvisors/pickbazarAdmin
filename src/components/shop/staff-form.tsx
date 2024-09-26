@@ -40,6 +40,8 @@ const AddStaffForm = () => {
     slug: shop as string,
   });
   const shopId = shopData?.id!;
+  console.log("shopData",shopData)
+  console.log("shopId",shopId)
   const {
     register,
     handleSubmit,

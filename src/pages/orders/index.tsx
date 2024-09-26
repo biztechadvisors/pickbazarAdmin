@@ -78,11 +78,11 @@ export default function Orders() {
     };
 
     if (DealerShow) {
-        queryConfig.shop_slug = me?.managed_shop?.slug;
+        queryConfig.shopSlug = me?.managed_shop?.slug;
         queryConfig.customer_id = me?.id;``
     } else if (ShopShow) {        
         // queryConfig.shop_id = me?.managed_shop?.id;
-        queryConfig.shop_slug = me?.managed_shop?.slug;
+        queryConfig.shopSlug = me?.managed_shop?.slug;
     }    
 
     const { orders, loading, paginatorInfo, error } = useOrdersQuery(queryConfig);
@@ -227,10 +227,12 @@ export default function Orders() {
     const customerOrderList = orders.filter(
         (order) => order?.customer_id !== order?.dealer?.id
     );
+
+    console.log("customerOrderList",customerOrderList)
  
-    var ordersData = orders.filter(
-        (order) => order?.customer_id == order?.dealer?.id
-    );
+    // var ordersData = orders.filter(
+    //     (order) => order?.customer_id == order?.dealer?.id
+    // );
 
 
     
@@ -293,7 +295,7 @@ export default function Orders() {
  
             {DealerShow ? (
                 <StockList
-                    orders={ordersData}
+                    orders={customerOrderList}
                     paginatorInfo={paginatorInfo}
                     onPagination={handlePagination}
                     onOrder={setOrder}
@@ -301,7 +303,7 @@ export default function Orders() {
                 />
             ) : (
                 <OrderList
-                    orders={customerOrderList}
+                    orders={orders}
                     paginatorInfo={paginatorInfo}
                     onPagination={handlePagination}
                     onOrder={setOrder}

@@ -132,7 +132,7 @@ function SelectRegion({
         options={regions || []}
         isLoading={!regions} // Show loading state if regions data is not yet loaded
       />
-      <ValidationError message={t(errors.type?.message)} />
+      {/* <ValidationError message={t(errors.type?.message)} /> */}
     </div>
   );
 }
@@ -158,7 +158,7 @@ function SelectTypes({
         isLoading={loading}
         defaultValue={[]}
       />
-      <ValidationError message={t(errors.type?.message)} />
+      {/* <ValidationError message={t(errors.type?.message)} /> */}
     </div>
   );
 }

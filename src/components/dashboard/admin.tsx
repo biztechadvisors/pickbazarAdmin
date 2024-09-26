@@ -65,7 +65,7 @@ export default function Dashboard() {
   if (DealerShow) {
     queryConfig = {
       ...queryConfig, // Spread the previous properties
-      shop_slug: meData?.managed_shop?.slug,
+      shopSlug: meData?.managed_shop?.slug,
       customer_id: meData?.id,
     };
   } 
@@ -73,7 +73,7 @@ export default function Dashboard() {
   else if (ShopShow) {
     queryConfig = {
       ...queryConfig,
-      shop_slug: meData?.managed_shop?.slug,
+      shopSlug: meData?.managed_shop?.slug,
     };
   }
   
