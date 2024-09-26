@@ -16,7 +16,7 @@ import { useMeQuery } from '@/data/user';
 import { CustomerIcon } from '../icons/sidebar/customer';
 import { AllPermission } from '@/utils/AllPermission';
 import { useGetStockSeals } from '@/data/stock';
-import { DEALER } from '@/utils/constants';
+import { Company, DEALER } from '@/utils/constants';
 
 export default function Dashboard() {
   const { t } = useTranslation();
@@ -25,6 +25,8 @@ export default function Dashboard() {
   const canWrite = permissionTypes.includes('sidebar-nav-item-dealerlist');
   const { data: meData } = useMeQuery();
   const customerId = meData?.id;
+  const DealerShow = meData?.permission.type_name === DEALER;
+  const ShopShow = meData?.permission.type_name === Company;
  
 
   const analyticsQuery = {
@@ -41,26 +43,58 @@ export default function Dashboard() {
   console.log("analyticsData",analyticsData)
   // console.log("meData",meData)
 
+  // const {
+  //   orders: orderData,
+  //   paginatorInfo,
+  //   error: orderError,
+  //   loading: orderLoading,
+  // } = useOrdersQuery({    
+  //   shop_slug: meData?.managed_shop?.slug,
+  //   language: locale,
+  //   limit: 10,
+  //   page: 1,
+  // });
+
+  let queryConfig = {
+    language: locale,
+    limit: 10,
+    page: 1,
+  };
+  
+  // Conditional assignment for DealerShow
+  if (DealerShow) {
+    queryConfig = {
+      ...queryConfig, // Spread the previous properties
+      shop_slug: meData?.managed_shop?.slug,
+      customer_id: meData?.id,
+    };
+  } 
+  // Conditional assignment for ShopShow
+  else if (ShopShow) {
+    queryConfig = {
+      ...queryConfig,
+      shop_slug: meData?.managed_shop?.slug,
+    };
+  }
+  
+  // Destructure the response from useOrdersQuery
   const {
     orders: orderData,
     paginatorInfo,
     error: orderError,
     loading: orderLoading,
-  } = useOrdersQuery({    
-    shop_slug: meData?.managed_shop?.slug,
-    language: locale,
-    limit: 10,
-    page: 1,
-  });
+  } = useOrdersQuery(queryConfig);
   
- console.log("",orderData)
+
+  
+ console.log("orderData",orderData)
   const customer_id = meData?.id
   const shop_id =  meData?.managed_shop?.id
 
   const { data: response } = useGetStockSeals(customer_id, shop_id);
 
   const DealerSalesList = response?.data
-  const DealerShow = meData?.permission.type_name === DEALER;
+  // const DealerShow = meData?.permission.type_name === DEALER;
 
   if (orderError) {
     console.error('Error fetching orders:', orderError);

@@ -316,6 +316,13 @@ export interface AttributeValueInput {
   meta?: string;
 }
 
+export interface Blogs{
+  id:string,
+  title:string,
+  content:string,
+  
+}
+
 export interface CreateAttributeInput {
   name: string;
   shop_id: number;

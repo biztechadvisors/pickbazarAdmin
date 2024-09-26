@@ -281,6 +281,8 @@ const CustForm = () => {
 
   console.log("selectedPermissionType", selectedPermissionType)
 
+  console.log("id-------------------------------------", id)
+
   const shopSlug =
     typeof window !== 'undefined' ? localStorage.getItem('shopSlug') : null;
 

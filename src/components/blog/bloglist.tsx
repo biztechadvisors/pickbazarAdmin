@@ -5,9 +5,13 @@ import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import Table from 'rc-table';
 import Pagination from 'rc-pagination';
+import LanguageSwitcher from '../ui/lang-action/action';
+import { Routes } from '@/config/routes';
+import ActionButtons from '../common/action-buttons';
+import TitleWithSort from '../ui/title-with-sort';
 
 const BlogList = ({
-  categories,
+  Blogs,
   paginatorInfo,
   onPagination,
   onSort,
@@ -53,7 +57,25 @@ const BlogList = ({
       width: 60,
     },
     {
+      title: (
+        <TitleWithSort
+          title={t('table:table-item-title')}
+          ascending={
+            sortingObj.sort === SortOrder.Asc && sortingObj.column === 'name'
+          }
+          isActive={sortingObj.column === 'name'}
+        />
+      ),
+      className: 'cursor-pointer',
+      dataIndex: 'name',
+      key: 'name',
+      align: alignLeft,
+      onHeaderCell: () => onHeaderClick('name'),
+      render: (name: any) => <span className="whitespace-nowrap">{name}</span>,
+    },
+    {
       title: t('table:table-item-content'),
+      dataIndex: 'title',
     },
     {
       title: t('table:table-item-image'),
@@ -66,12 +88,18 @@ const BlogList = ({
       ...(canWrite
         ? {
             title: t('table:table-item-actions'),
-            dataIndex: 'slug',
+            dataIndex: 'id',
             key: 'actions',
-            align: alignRight,
-            width: 290,
+            align: 'right',
+            render: (id: string) => (
+              <ActionButtons
+                id={id}
+                editUrl={`${Routes.blog.list}/edit/${id}`}
+                deleteModalView="DELETE_BLOG"
+              />
+            ),
           }
-        : null),
+        : {}),
     },
   ];
 
@@ -82,7 +110,7 @@ const BlogList = ({
           //@ts-ignore
           columns={columns}
           emptyText={t('table:empty-table-data')}
-          data={categories}
+          data={Blogs}
           rowKey="id"
           scroll={{ x: 1000 }}
           expandable={{

@@ -166,16 +166,16 @@ export const useDealerStatusChange = () => {
   const queryClient = useQueryClient();
 
   return useMutation(
-    async ({ id, status }: { id: string; status: string }) => {
+    async ({ id, order_status }: { id: string; order_status: string }) => {
       console.log('ID:', id);
-      console.log('Status:', status);
+      console.log('Status:', order_status);
 
-      if (!status) {
+      if (!order_status) {
         throw new Error('Status is undefined');
       }
 
       const url = `${API_ENDPOINTS.DEALER_STATUS_CHANGE}/${id}/status`;
-      const data = { name: status };
+      const data = { name: order_status };
 
       console.log('Sending data to server:', data); // Log the data object
       return await HttpClient.patch(url, data);

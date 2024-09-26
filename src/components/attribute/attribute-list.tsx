@@ -18,8 +18,10 @@ const AttributeList = ({ attributes, onSort, onOrder }: IProps) => {
   const { t } = useTranslation();
   const router = useRouter();
 
-  const alignLeft = router.locale === 'ar' || router.locale === 'he' ? 'right' : 'left';
-  const alignRight = router.locale === 'ar' || router.locale === 'he' ? 'left' : 'right';
+  const alignLeft =
+    router.locale === 'ar' || router.locale === 'he' ? 'right' : 'left';
+  const alignRight =
+    router.locale === 'ar' || router.locale === 'he' ? 'left' : 'right';
 
   const [sortingObj, setSortingObj] = useState<{
     sort: SortOrder;
@@ -30,6 +32,11 @@ const AttributeList = ({ attributes, onSort, onOrder }: IProps) => {
   });
 
   const permissionTypes = AllPermission();
+
+  console.log(
+    'permissionTypes===============================',
+    permissionTypes
+  );
   const canWrite = permissionTypes.includes('sidebar-nav-item-attributes');
 
   const onHeaderClick = (column: string | null) => ({
@@ -40,7 +47,8 @@ const AttributeList = ({ attributes, onSort, onOrder }: IProps) => {
       onOrder(column!);
 
       setSortingObj({
-        sort: sortingObj.sort === SortOrder.Desc ? SortOrder.Asc : SortOrder.Desc,
+        sort:
+          sortingObj.sort === SortOrder.Desc ? SortOrder.Asc : SortOrder.Desc,
         column: column,
       });
     },
@@ -58,7 +66,9 @@ const AttributeList = ({ attributes, onSort, onOrder }: IProps) => {
       title: (
         <TitleWithSort
           title={t('table:table-item-title')}
-          ascending={sortingObj.sort === SortOrder.Asc && sortingObj.column === 'name'}
+          ascending={
+            sortingObj.sort === SortOrder.Asc && sortingObj.column === 'name'
+          }
           isActive={sortingObj.column === 'name'}
         />
       ),
@@ -89,7 +99,9 @@ const AttributeList = ({ attributes, onSort, onOrder }: IProps) => {
         return (
           <span className="whitespace-nowrap">
             {values?.map((singleValue: any, index: number) => {
-              return index > 0 ? `, ${singleValue.value}` : `${singleValue.value}`;
+              return index > 0
+                ? `, ${singleValue.value}`
+                : `${singleValue.value}`;
             })}
           </span>
         );
@@ -98,19 +110,19 @@ const AttributeList = ({ attributes, onSort, onOrder }: IProps) => {
     {
       ...(canWrite
         ? {
-          title: t('table:table-item-actions'),
-          dataIndex: 'slug',
-          key: 'actions',
-          align: alignRight,
-          render: (slug: string, record: Attribute) => (
-            <LanguageSwitcher
-              slug={slug}
-              record={record}
-              deleteModalView="DELETE_ATTRIBUTE"
-              routes={Routes?.attribute}
-            />
-          ),
-        }
+            title: t('table:table-item-actions'),
+            dataIndex: 'slug',
+            key: 'actions',
+            align: alignRight,
+            render: (slug: string, record: Attribute) => (
+              <LanguageSwitcher
+                slug={slug}
+                record={record}
+                deleteModalView="DELETE_ATTRIBUTE"
+                routes={Routes?.attribute}
+              />
+            ),
+          }
         : {}),
     },
   ];

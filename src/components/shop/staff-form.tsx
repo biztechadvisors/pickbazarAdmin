@@ -61,6 +61,9 @@ const AddStaffForm = () => {
       id: permission.id,
     })) ?? [];
 
+
+    console.log("permissionOptions",permissionOptions)
+
   function onSubmit({ name, email, password }: FormValues) {
     addStaff(
       {

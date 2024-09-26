@@ -39,6 +39,9 @@ export const useUpdateAttributeMutation = () => {
     onSuccess: () => {
       toast.success(t('common:successfully-updated'));
     },
+    onError: (error: any) => {
+      toast.error(t('common:update-failed'));
+    },
     // Always refetch after error or success:
     onSettled: () => {
       queryClient.invalidateQueries(API_ENDPOINTS.ATTRIBUTES);
@@ -81,7 +84,7 @@ export const useAttributesQuery = (
       ...options,
     }
   );
- console.log("DATA+++++++",params)
+  console.log('DATA+++++++', params);
   return {
     attributes: data ?? [],
     error,

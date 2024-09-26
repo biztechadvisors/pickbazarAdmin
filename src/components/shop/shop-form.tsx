@@ -159,10 +159,10 @@ function SelectUser({ control, errors }: SelectUserProps) {
   const { t } = useTranslation();
   const { data } = useMeQuery();
   const usrById = data?.shop_id;
-  console.log("DATA_________",data);
+  console.log('DATA_________', data);
   const { permissions } = getAuthCredentials();
   const isOwner = permissions?.[0].includes(OWNER);
-  const { data: users, isLoading } = useVendorQuery(usrById);
+  const { data: users, isLoading } = useVendorQuery(data?.id);
   const options: any = users || [];
   const shouldDisable = control._defaultValues.owner != null || !isOwner;
 
@@ -215,7 +215,13 @@ const ShopForm = ({ initialValues }: { initialValues?: any }) => {
   const [modalIsOpen, setIsOpen] = useState(false);
   const [permissionSelectedOption, setPermissionSelectedOption] =
     useAtom(selectedOption);
-    const { permissions } = getAuthCredentials(); 
+  const [additionalPerm] = useAtom(addPermission);
+  const { permissions } = getAuthCredentials();
+
+  console.log(
+    'additionalPerm------------------------------------',
+    additionalPerm
+  );
 
   function openModal() {
     setIsOpen(true);
@@ -227,7 +233,6 @@ const ShopForm = ({ initialValues }: { initialValues?: any }) => {
 
   const permissionId = permissionSelectedOption?.e?.id;
 
-  
   const {
     register,
     handleSubmit,
@@ -285,12 +290,13 @@ const ShopForm = ({ initialValues }: { initialValues?: any }) => {
   } = usePermissionData(userId);
 
   const filterdEcomm = permissionData?.filter((e: any) => {
-  return (
-    e && // Ensure the object exists
-    (e.type_name === 'Company' && e.permission_name === 'E-commerce') || 
-    (e.type_name === 'Company' && e.permission_name === 'Non-ecommerce')
-  );
-});
+    return (
+      (e && // Ensure the object exists
+        e.type_name === 'Company' &&
+        e.permission_name === 'E-commerce') ||
+      (e.type_name === 'Company' && e.permission_name === 'Non-ecommerce')
+    );
+  });
 
   const option = filterdEcomm?.map((e: any) => ({
     name: e?.permission_name,
@@ -367,6 +373,52 @@ const ShopForm = ({ initialValues }: { initialValues?: any }) => {
   //   }
   // }
 
+  // async function onSubmit(values: FormValues) {
+  //   const settings = {
+  //     ...values?.settings,
+  //     location: { ...omit(values?.settings?.location, '__typename') },
+  //     socials: values?.settings?.socials
+  //       ? values?.settings?.socials?.map((social: any) => ({
+  //           icon: social?.icon?.value,
+  //           url: social?.url,
+  //         }))
+  //       : [],
+  //   };
+
+  //   // Remove companyType from values
+  //   const { companyType, ...filteredValues } = values;
+
+  //   console.log('settings**********', settings);
+  //   try {
+  //     if (initialValues) {
+  //       const { ...restAddress } = filteredValues.address;
+  //       await updateShop({
+  //         id: initialValues.id,
+  //         ...filteredValues,
+  //         address: restAddress,
+  //         settings,
+  //         balance: {
+  //           id: initialValues.balance?.id,
+  //           ...filteredValues.balance,
+  //         },
+  //       });
+  //     } else {
+  //       await createShop({
+  //         ...filteredValues,
+  //         settings,
+  //         balance: {
+  //           ...filteredValues.balance,
+  //         },
+  //         additionalPermissions: additionalPerm, // Ensure this is set as needed
+  //         permission: permissionProps?.permission_name,
+  //       });
+  //     }
+  //     router.push('/shops'); // Navigate to the shops list or appropriate page
+  //   } catch (error) {
+  //     console.error('Error while saving the shop:', error);
+  //   }
+  // }
+
   async function onSubmit(values: FormValues) {
     const settings = {
       ...values?.settings,
@@ -394,6 +446,11 @@ const ShopForm = ({ initialValues }: { initialValues?: any }) => {
           balance: {
             id: initialValues.balance?.id,
             ...filteredValues.balance,
+            // Ensure admin_commission_rate, current_balance, total_earnings, withdrawn_amount are updated when updating a shop
+            admin_commission_rate: 0, // Example value
+            current_balance: 0, // Example value
+            total_earnings: 0, // Example value
+            withdrawn_amount: 0, // Example value
           },
         });
       } else {
@@ -402,6 +459,11 @@ const ShopForm = ({ initialValues }: { initialValues?: any }) => {
           settings,
           balance: {
             ...filteredValues.balance,
+            // Pass these fields inside the balance object when creating a shop
+            admin_commission_rate: 0, // Example value
+            current_balance: 0, // Example value
+            total_earnings: 0, // Example value
+            withdrawn_amount: 0, // Example value
           },
           additionalPermissions: additionalPerm, // Ensure this is set as needed
           permission: permissionProps?.permission_name,

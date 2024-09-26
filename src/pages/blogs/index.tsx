@@ -7,6 +7,7 @@ import LinkButton from '@/components/ui/link-button';
 import { Routes } from '@/config/routes';
 import { useBlogsQuery } from '@/data/blog';
 import { useMeQuery } from '@/data/user';
+import { SortOrder } from '@/types';
 import { adminOwnerAndStaffOnly } from '@/utils/auth-utils';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import { useRouter } from 'next/router';
@@ -19,18 +20,32 @@ const Blogs = () => {
   const { data: meData } = useMeQuery();
   const [searchTerm, setSearchTerm] = useState('');
   const [page, setPage] = useState(1);
+  const [orderBy, setOrder] = useState('updated_at');
+  const [sortedBy, setColumn] = useState<SortOrder>(SortOrder.Desc);
 
   const shop: string | undefined = meData?.managed_shop?.id;
   const shopSlug = meData?.managed_shop?.slug;
 
-  const { data, isLoading, error } = useBlogsQuery(shopSlug);
+  const {
+    data: Blogs,
+    isLoading,
+    error,
+  } = useBlogsQuery({
+    shopSlug,
+    orderBy,
+    sortedBy,
+    language: locale,
+    search: searchTerm,
+  });
 
   function handleSearch({ searchText }: { searchText: string }) {
     setSearchTerm(searchText);
     setPage(1);
   }
 
-  console.log("shopSlug", shopSlug)
+  function handlePagination(current: any) {
+    setPage(current);
+  }
   return (
     <>
       <Card className="mb-8 flex flex-col">
@@ -46,7 +61,7 @@ const Blogs = () => {
             <TypeFilter className="md:ms-6" />
 
             <LinkButton
-              href={`/${shopSlug}${Routes.blog.create}`}
+              href={`${Routes.blog.create}`}
               className="h-12 w-full md:w-auto md:ms-6"
             >
               <span className="block md:hidden xl:block">
@@ -56,7 +71,12 @@ const Blogs = () => {
           </div>
         </div>
       </Card>
-      <BlogList />
+      <BlogList
+        Blogs={Blogs?.data}
+        onPagination={handlePagination}
+        onOrder={setOrder}
+        onSort={setColumn}
+      />
     </>
   );
 };
