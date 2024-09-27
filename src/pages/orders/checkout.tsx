@@ -21,6 +21,7 @@ import { checkoutCustAtom, shopIdAtom } from '@/utils/atoms';
 import UserAddressSelection from '@/components/UserAddressSelection';
 import PageLoader from '@/components/ui/page-loader/page-loader';
 import ErrorMessage from '@/components/ui/error-message';
+import { setCustomer } from '@/components/checkout/customer/CustomerEmail';
 
 const CustomerEmail = dynamic(
   () => import('@/components/checkout/customer/CustomerEmail')
@@ -41,7 +42,10 @@ export default function CheckoutPage() {
   const [shopId] = useAtom(shopIdAtom);
   const [customer] = useAtom(customerAtom);
 
-  console.log("customer",customer)
+ 
+  const { data: meData } = useMeQuery();
+
+  
   const { t } = useTranslation();
 
   const {
@@ -56,6 +60,19 @@ export default function CheckoutPage() {
       refetch(customer?.id);
     }
   }, [customer?.id]);
+
+  // const {
+  //   data: user,
+  //   isLoading: loading,
+  //   error,
+  //   refetch,
+  // } = useUserQuery({ id: meData?.id });
+
+  // useEffect(() => {
+  //   if (meData?.id) {
+  //     refetch(meData?.id);
+  //   }
+  // }, [meData?.id]);
 
   console.log('billingAddressAtom', billingAddressAtom);
 

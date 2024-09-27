@@ -101,7 +101,7 @@ export const userClient = {
     return HttpClient.post<any>(API_ENDPOINTS.ADD_WALLET_POINTS, variables);
   },
   fetchUsers: ({ email, usrById, ...params }: Partial<UserQueryOptions>) => {
-    return HttpClient.get<UserPaginator>(API_ENDPOINTS.USERS, {
+    return HttpClient.get<UserPaginator>(`${API_ENDPOINTS.USERS}/all`, {
       searchJoin: 'and',
       with: 'wallet',
       ...params,
