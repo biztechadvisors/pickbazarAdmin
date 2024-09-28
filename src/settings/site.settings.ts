@@ -53,7 +53,7 @@ export const siteSettings = {
         label: 'sidebar-nav-item-dashboard',
         icon: 'DashboardIcon',
         permissions: ownerOnly,
-      },
+      },    
       {
         href: Routes.shop.list,
         label: 'sidebar-nav-item-shops',

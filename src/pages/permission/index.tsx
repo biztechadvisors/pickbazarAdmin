@@ -36,6 +36,8 @@ const PermissionComponent: React.FC & PermissionComponentProps = () => {
     data: permissionData,
   } = usePermissionData(id);
 
+  console.log("permissionData",permissionData)
+
   function handleSearch({ searchText }: { searchText: string }) {
     // Implement search functionality here
   }

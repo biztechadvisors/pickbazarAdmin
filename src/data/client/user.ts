@@ -110,7 +110,7 @@ export const userClient = {
     });
   },
   fetchVendor: ({ type, usrById }: { type: string; usrById: number }) => {
-    return HttpClient.get<User>(`${API_ENDPOINTS.USERS}?type=${type}&usrById=${usrById}`);
+    return HttpClient.get<User>(`${API_ENDPOINTS.USERS}/all/?type=${type}&usrById=${usrById}`);
   },
   fetchAdmins: ({ ...params }: Partial<UserQueryOptions>) => {
     return HttpClient.get<UserPaginator>(API_ENDPOINTS.ADMIN_LIST, {

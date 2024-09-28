@@ -56,6 +56,8 @@ const AddStaffForm = () => {
   const { id } = meData || {};
   const { data: permissionData } = usePermissionData(id);
 
+  console.log("permissionData-staff", permissionData)
+
   const permissionOptions =
     permissionData?.map((permission: { id: any; permission_name: string }) => ({
       value: permission.permission_name,
@@ -64,7 +66,7 @@ const AddStaffForm = () => {
     })) ?? [];
 
 
-    console.log("permissionOptions",permissionOptions)
+    console.log("permissionOptions- staff",permissionOptions)
 
   function onSubmit({ name, email, password }: FormValues) {
     addStaff(

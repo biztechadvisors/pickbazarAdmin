@@ -15,6 +15,9 @@ export const CART_KEY = 'pick-cart';
 export const STOCK_KEY = 'pick-stock';
 export const CHECKOUT = 'pickbazar-checkout';
 export const RESPONSIVE_WIDTH = 659 as number;
+export const E_COMMERCE = 'E-Commerce';
+export const NON_E_COMMERCE = 'Non-Ecommerce';
+
 // https://developer.mozilla.org/en-US/docs/Web/HTTP/Basics_of_HTTP/MIME_types/Common_types
 // export const ACCEPTED_FILE_TYPES =
 //   'image/*,application/pdf,application/zip,application/vnd.rar,application/epub+zip,.psd';
