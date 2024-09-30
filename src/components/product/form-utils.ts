@@ -251,7 +251,7 @@ export function getProductInputValues(
   // const { locale } = useRouter();
   // const router = useRouter();
   const processedFile = processFileWithName(digital_file_input);
-
+console.log("variation+++++++++option", variation_options);
   return {
     ...simpleValues,
     is_digital,
@@ -313,12 +313,13 @@ export function getProductInputValues(
                 file_name: digital_file?.file_name,
               },
             }),
+           
             options: processOptions(options).map(
               ({ name, value }: VariationOption) => ({
                 name,
                 value,
               })
-            ),
+            ),          
           })
         ),
         delete: initialValues?.variation_options
