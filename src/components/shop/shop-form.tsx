@@ -441,6 +441,8 @@ const ShopForm = ({ initialValues }: { initialValues?: any }) => {
     try {
       if (initialValues) {
         const { ...restAddress } = filteredValues.address;
+
+        console.log("restAddress", restAddress)
         await updateShop({
           id: initialValues.id,
           ...filteredValues,
