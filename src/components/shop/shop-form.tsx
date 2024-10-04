@@ -327,6 +327,9 @@ const ShopForm = ({ initialValues }: { initialValues?: any }) => {
     name: 'settings.socials',
   });
 
+  console.log("fields",fields)
+ 
+
   const handleSelectChange = (selectedOption: any) => {
     setPermissionSelectedOption(selectedOption);
   };
@@ -459,8 +462,11 @@ const ShopForm = ({ initialValues }: { initialValues?: any }) => {
           },
         });
       } else {
+        const { ...restAddress } = filteredValues.address;
+        console.log("restAddress-create", restAddress)
         await createShop({
           ...filteredValues,
+          address: restAddress,
           settings,
           balance: {
             ...filteredValues.balance,
