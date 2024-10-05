@@ -1,356 +1,307 @@
-import Input from '@/components/ui/input';
-import { useFieldArray, useFormContext } from 'react-hook-form';
-import Button from '@/components/ui/button';
-import Description from '@/components/ui/description';
-import Card from '@/components/common/card';
-import Label from '@/components/ui/label';
-import Title from '@/components/ui/title';
-import Checkbox from '@/components/ui/checkbox/checkbox';
-import SelectInput from '@/components/ui/select-input';
-import { useEffect, useState } from 'react';
-import { Product, Settings } from '@/types';
-import { useTranslation } from 'next-i18next';
-import { useAttributesQuery } from '@/data/attributes';
-import FileInput from '@/components/ui/file-input';
-import ValidationError from '@/components/ui/form-validation-error';
-import { getCartesianProduct, filterAttributes } from './form-utils';
-import { useRouter } from 'next/router';
-import { Config } from '@/config';
-import { useSettingsQuery } from '@/data/settings';
+// import Input from '@/components/ui/input';
+// import { useFieldArray, useFormContext } from 'react-hook-form';
+// import Button from '@/components/ui/button';
+// import Description from '@/components/ui/description';
+// import Card from '@/components/common/card';
+// import Label from '@/components/ui/label';
+// import Title from '@/components/ui/title';
+// import Checkbox from '@/components/ui/checkbox/checkbox';
+// import SelectInput from '@/components/ui/select-input';
+// import { useEffect, useState } from 'react';
+// import { Product, Settings } from '@/types';
+// import { useTranslation } from 'next-i18next';
+// import { useAttributesQuery } from '@/data/attributes';
+// import FileInput from '@/components/ui/file-input';
+// import ValidationError from '@/components/ui/form-validation-error';
+// import { getCartesianProduct, filterAttributes } from './form-utils';
+// import { useRouter } from 'next/router';
+// import { Config } from '@/config';
+// import { useSettingsQuery } from '@/data/settings';
 
-type IProps = {
-  initialValues?: Product | null;
-  shopId: string | undefined;
-  settings: Settings | undefined;
-};
+// type IProps = {
+//   initialValues?: Product | null;
+//   shopId: string | undefined;
+//   settings: Settings | undefined;
+// };
 
-export default function ProductVariableForm({
-  shopId,
-  initialValues,
-  settings,
-}: IProps) {
+// export default function ProductVariableForm({
+//   shopId,
+//   initialValues,
+//   settings,
+// }: IProps) {
 
-  const { t } = useTranslation();
-  const { locale } = useRouter();
-  const {
+//   const { t } = useTranslation();
+//   const { locale } = useRouter();
+//   const {
 
-    // @ts-ignore
-    settings: { options },
-  } = useSettingsQuery({
-    language: locale!,
+//     // @ts-ignore
+//     settings: { options },
+//   } = useSettingsQuery({
+//     language: locale!,
 
-  });
+//   });
 
-  const upload_max_filesize = options?.server_info?.upload_max_filesize / 1024;
+//   const upload_max_filesize = options?.server_info?.upload_max_filesize / 1024;
 
-  const { attributes, loading } = useAttributesQuery({
+//   const { attributes, loading } = useAttributesQuery({
 
-    shop_id: initialValues ? initialValues.shop_id : shopId,
+//     shop_id: initialValues ? initialValues.shop_id : shopId,
 
-    language: locale,
+//     language: locale,
 
-  });
+//   });
 
-  const {
+//   console.log("attributes++++++++++++", attributes);
+//   const {
 
-    register,
+//     register,
 
-    control,
+//     control,
 
-    watch,
+//     watch,
 
-    setValue,
+//     setValue,
 
-    getValues,
+//     getValues,
 
-    formState: { errors },
+//     formState: { errors },
 
-  } = useFormContext();
+//   } = useFormContext();
 
-  // This field array will keep all the attribute dropdown fields
+//   console.log("selcet value aaaa", setValue, "get values++++++++++++++++", getValues)
+//   // This field array will keep all the attribute dropdown fields
 
-  const { fields, append, remove } = useFieldArray({
+//   const { fields, append, remove } = useFieldArray({
 
-    shouldUnregister: true,
+//     shouldUnregister: true,
 
-    control,
+//     control,
 
-    name: 'variations',
+//     name: 'variations',
 
-  });
+//   });
+// console.log("feildssssssss", fields);
+//   const variations = watch('variations');
 
-  const variations = watch('variations');
+// console.log("variant//////", variations)
 
-  const cartesianProduct = getCartesianProduct(getValues('variations')) || [];
+//   const cartesianProduct = getCartesianProduct(getValues('variations')) || [];
+// console.log("cartesian Product", cartesianProduct);
+//   // const [autoFill, setAutoFill] = useState(false);
 
-  // const [autoFill, setAutoFill] = useState(false);
+//   // const combinedVariationOptions = [
 
-  // const combinedVariationOptions = [
+//   //   ...(initialValues?.variation_options || []),
 
-  //   ...(initialValues?.variation_options || []),
+//   //   ...cartesianProduct,
 
-  //   ...cartesianProduct,
+//   // ];
 
-  // ];
+//   // useEffect(() => {
+//   //   if (initialValues?.variations) {
+//   //     initialValues.variations.forEach((variation: any) => {
+//   //       append({
+//   //         attribute: variation.attribute,
+//   //         value: variation.value,
+//   //       });
+//   //     });
+//   //   }
+//   // }, [initialValues, append]);
+//   return (
 
-  // useEffect(() => {
-  //   if (initialValues?.variations) {
-  //     initialValues.variations.forEach((variation: any) => {
-  //       append({
-  //         attribute: variation.attribute,
-  //         value: variation.value,
-  //       });
-  //     });
-  //   }
-  // }, [initialValues, append]);
-  return (
+//     <><div className="my-5 flex flex-wrap sm:my-8">
+//       <Description
+//         title={t('form:form-title-variation-product-info')}
+//         details={`${initialValues
+//           ? t('form:item-description-update')
+//           : t('form:item-description-choose')} ${t('form:form-description-variation-product-info')}`}
+//         className="w-full px-0 pb-5 sm:w-4/12 sm:py-8 sm:pe-4 md:w-1/3 md:pe-5" />
 
-    <><div className="my-5 flex flex-wrap sm:my-8">
-      <Description
-        title={t('form:form-title-variation-product-info')}
-        details={`${initialValues
-          ? t('form:item-description-update')
-          : t('form:item-description-choose')} ${t('form:form-description-variation-product-info')}`}
-        className="w-full px-0 pb-5 sm:w-4/12 sm:py-8 sm:pe-4 md:w-1/3 md:pe-5" />
+//       <Card className="w-full p-0 sm:w-8/12 md:w-2/3 md:p-0">
+//         <div className="mb-5 border-t border-dashed border-border-200 md:mb-8">
 
-      <Card className="w-full p-0 sm:w-8/12 md:w-2/3 md:p-0">
-        <div className="mb-5 border-t border-dashed border-border-200 md:mb-8">
-
-          {/* {(!!combinedVariationOptions.length) && ( */}
-          <Title className="mt-8 mb-0 px-5 text-center text-lg uppercase md:px-8">
-            {t('form:form-title-options')}
-          </Title>
-          <div>
+//           {/* {(!!combinedVariationOptions.length) && ( */}
+//           <Title className="mt-8 mb-0 px-5 text-center text-lg uppercase md:px-8">
+//             {t('form:form-title-options')}
+//           </Title>
+//           <div>
           
 
 
 
-{fields?.map((field, fieldIndex) => (
-  <div
-    key={field.id}
-    className="border-b border-dashed border-border-200 p-5 last:border-0 md:p-8"
-  >
-    <div className="flex items-center justify-between">
-      <Title className="mb-0">
-        {t('form:form-title-options')} {fieldIndex + 1}
-      </Title>
+// {fields?.map((field, fieldIndex) => (
+//   <div
+//     key={field.id}
+//     className="border-b border-dashed border-border-200 p-5 last:border-0 md:p-8"
+//   >
+//     <div className="flex items-center justify-between">
+//       <Title className="mb-0">
+//         {t('form:form-title-options')} {fieldIndex + 1}
+//       </Title>
 
-      <button
-        onClick={() => remove(fieldIndex)} // Ensure we use fieldIndex to remove the entire card
-        type="button"
-        className="text-sm text-red-500 transition-colors duration-200 hover:text-red-700 focus:outline-none"
-      >
-        {t('form:button-label-remove')}
-      </button>
-    </div>
+//       <button
+//         onClick={() => remove(fieldIndex)} // Ensure we use fieldIndex to remove the entire card
+//         type="button"
+//         className="text-sm text-red-500 transition-colors duration-200 hover:text-red-700 focus:outline-none"
+//       >
+//         {t('form:button-label-remove')}
+//       </button>
+//     </div>
 
-    {/* Merged Card */}
-    <div className="mt-5 p-5 border rounded border-gray-300">
-      <div className="grid gap-5">
-        {attributes.map((attribute, attributeIndex) => (
-          <div key={attribute.id} className="flex flex-wrap items-center">
-            <div className="flex-1">
-              <Label>{t('form:input-label-attribute-name')}*</Label>
-              <SelectInput
-                name={`variations.${fieldIndex}.attribute`} // Use fieldIndex here
-                control={control}
-                defaultValue={field.attribute}
-                getOptionLabel={(option) => option.name}
-                getOptionValue={(option) => option.id}
-                options={filterAttributes(attributes, variations)!}
-                // options={attributes}
-                isLoading={loading}
-              />
-            </div>
-            <div className="flex-1">
-              <Label>{t('form:input-label-attribute-value')}*</Label>
-              <SelectInput
-                isMulti
-                name={`variations.${fieldIndex}.value`} // Use fieldIndex here
-                control={control}
-                defaultValue={field.value}
-                getOptionLabel={(option) => option.value}
-                getOptionValue={(option) => option.id}
-                options={watch(`variations.${fieldIndex}.attribute`)?.values}
-                // options={attribute.values}
-              />
-            </div>
-          </div>
-        ))}
-      </div>
+//     {/* Merged Card */}
+//     <div className="mt-5 p-5 border rounded border-gray-300">
+//       <div className="grid gap-5">
+//         {attributes.map((attribute, attributeIndex) => (
+//           <div key={attribute.id} className="flex flex-wrap items-center">
+//             <div className="flex-1">
+//               <Label>{t('form:input-label-attribute-name')}*</Label>
+//               <SelectInput
+//                 name={`variations.${attributeIndex}.attribute`} // Use fieldIndex here
+//                 control={control}
+//                 defaultValue={field.attribute}
+//                 getOptionLabel={(option) => option.name}
+//                 getOptionValue={(option) => option.id}
+//                 options={filterAttributes(attributes, variations)!}
+//                 // options={attributes}
+//                 isLoading={loading}
+//               />
+//             </div>
+//             <div className="flex-1">
+//               <Label>{t('form:input-label-attribute-value')}*</Label>
+//               <SelectInput
+//                 isMulti
+//                 name={`variations.${attributeIndex}.value`} // Use fieldIndex here
+//                 control={control}
+//                 defaultValue={field.value}
+//                 getOptionLabel={(option) => option.value}
+//                 getOptionValue={(option) => option.id}
+//                 options={watch(`variations.${attributeIndex}.attribute`)?.values}
+//                 // options={attribute.values}
+//               />
+//             </div>
+//           </div>
+//         ))}
+//       </div>
 
-      {/* Other Form Fields */}
-      <TitleAndOptionsInput
-        register={register}
-        setValue={setValue}
-        index={fieldIndex}
-        fieldAttributeValue={field}
-      />
+//       {/* Other Form Fields */}
+//       <TitleAndOptionsInput
+//         register={register}
+//         setValue={setValue}
+//         index={fieldIndex}
+//         fieldAttributeValue={field}
+//       />
 
-      {/* Additional Fields */}
-      <div className="flex flex-wrap gap-2 mt-5">
-        <Input
-          label={`${t('form:input-label-price')}*`}
-          type="number"
-          {...register(`variation_options.${fieldIndex}.price`)}
-          error={t(errors.variation_options?.[fieldIndex]?.price?.message)}
-          variant="outline"
-          className="mb-2"
-          style={{ width: '70px', height: '40px' }}
-        />
-        <Input
-          label={t('form:input-label-sale-price')}
-          type="number"
-          {...register(`variation_options.${fieldIndex}.sale_price`)}
-          error={t(errors.variation_options?.[fieldIndex]?.sale_price?.message)}
-          variant="outline"
-          className="mb-2"
-          style={{ width: '70px', height: '40px' }}
-        />
-        <Input
-          label={`${t('form:input-label-sku')}*`}
-          {...register(`variation_options.${fieldIndex}.sku`)}
-          error={t(errors.variation_options?.[fieldIndex]?.sku?.message)}
-          variant="outline"
-          className="mb-2"
-          style={{ width: '70px', height: '40px' }}
-        />
-        <Input
-          label={`${t('form:input-label-quantity')}*`}
-          type="number"
-          {...register(`variation_options.${fieldIndex}.quantity`)}
-          error={t(errors.variation_options?.[fieldIndex]?.quantity?.message)}
-          variant="outline"
-          className="mb-2"
-          style={{ width: '70px', height: '40px' }}
-        />
-        <div className="mb-2" style={{ width: '120px', height: '30px' }}>
-          <Label>Upload an image</Label>
-          <FileInput
-            name={`variation_options.${fieldIndex}.image`}
-            control={control}
-            multiple={false}
-          />
-        </div>
-      </div>
-    </div>
-  </div>
-))}
+//       {/* Additional Fields */}
+//       <div className="flex flex-wrap gap-2 mt-5">
+//         <Input
+//           label={`${t('form:input-label-price')}*`}
+//           type="number"
+//           {...register(`variation_options.${fieldIndex}.price`)}
+//           error={t(errors.variation_options?.[fieldIndex]?.price?.message)}
+//           variant="outline"
+//           className="mb-2"
+//           style={{ width: '70px', height: '40px' }}
+//         />
+//         <Input
+//           label={t('form:input-label-sale-price')}
+//           type="number"
+//           {...register(`variation_options.${fieldIndex}.sale_price`)}
+//           error={t(errors.variation_options?.[fieldIndex]?.sale_price?.message)}
+//           variant="outline"
+//           className="mb-2"
+//           style={{ width: '70px', height: '40px' }}
+//         />
+//         <Input
+//           label={`${t('form:input-label-sku')}*`}
+//           {...register(`variation_options.${fieldIndex}.sku`)}
+//           error={t(errors.variation_options?.[fieldIndex]?.sku?.message)}
+//           variant="outline"
+//           className="mb-2"
+//           style={{ width: '70px', height: '40px' }}
+//         />
+//         <Input
+//           label={`${t('form:input-label-quantity')}*`}
+//           type="number"
+//           {...register(`variation_options.${fieldIndex}.quantity`)}
+//           error={t(errors.variation_options?.[fieldIndex]?.quantity?.message)}
+//           variant="outline"
+//           className="mb-2"
+//           style={{ width: '70px', height: '40px' }}
+//         />
+//         <div className="mb-2" style={{ width: '120px', height: '30px' }}>
+//           <Label>Upload an image</Label>
+//           <FileInput
+//             name={`variation_options.${fieldIndex}.image`}
+//             control={control}
+//             multiple={false}
+//           />
+//         </div>
+//       </div>
+//     </div>
+//   </div>
+// ))}
 
-            <div className="px-5 md:px-8">
-              <Button
-                // disabled={fields.length === attributes?.length}
-                onClick={(e) => {
-                  e.preventDefault();
-                  append({ attribute: '', value: [] });
-                } }
-                type="button"
-              >
-                {t('form:button-label-add-option')}
-              </Button>
-            </div>
+//             <div className="px-5 md:px-8">
+//               <Button
+//                 // disabled={fields.length === attributes?.length}
+//                 onClick={(e) => {
+//                   e.preventDefault();
+//                   append({ attribute: '', value: [] });
+//                 } }
+//                 type="button"
+//               >
+//                 {t('form:button-label-add-option')}
+//               </Button>
+//             </div>
+//           </div>
 
-            {/* Preview generation section */}
-            {/* {!!combinedVariationOptions.length && (
-      <div className="mt-5 border-t border-dashed border-border-200 pt-5 md:mt-8 md:pt-8">
-        <Title className="mb-0 px-5 text-center text-lg uppercase md:px-8">
-          {combinedVariationOptions.length} {t('form:total-variation-added')}
-        </Title>
-        <div className="flex flex-wrap justify-start">
-          {combinedVariationOptions.map((fieldAttributeValue, index) => (
-            <div
-              key={`fieldAttributeValues-${index}`}
-              className="flex flex-col items-start border-b border-dashed border-border-200 p-5 last:mb-8 last:border-0 md:p-8 md:last:pb-0 mx-2 my-2"
-              style={{ height: '250px' }}
-            >
-              <Title className="mb-2 !text-lg">
-                {t('form:form-title-variant')}:
-                <span className="font-normal text-blue-600">
-                  {fieldAttributeValue.title}
-                  <input
-                    type="hidden"
-                    {...register(`variation_options.${index}.title`)}
-                    value={fieldAttributeValue.title}
-                  />
-                </span>
-              </Title>
-              
-              <input {...register(`variation_options.${index}.id`)} type="hidden" />
-              <div className="flex flex-wrap gap-2">
-                <Input
-                  label={`${t('form:input-label-price')}*`}
-                  type="number"
-                  {...register(`variation_options.${index}.price`)}
-                  error={t(errors.variation_options?.[index]?.price?.message)}
-                  variant="outline"
-                  className="mb-2"
-                  style={{ width: '70px', height: '40px' }}
-                />
-                <Input
-                  label={t('form:input-label-sale-price')}
-                  type="number"
-                  {...register(`variation_options.${index}.sale_price`)}
-                  error={t(errors.variation_options?.[index]?.sale_price?.message)}
-                  variant="outline"
-                  className="mb-2"
-                  style={{ width: '70px', height: '40px' }}
-                />
-             
-              </div>
-            </div>
-          ))}
-        </div>
-      </div>
-    )} */}
-          </div>
+//         </div>
+//       </Card>
+//     </div>
+//     <style>
+//       {`
+//       .flex-1 {
+//   margin-right: 1rem; 
+// }
 
-        </div>
-      </Card>
-    </div>
-    <style>
-      {`
-      .flex-1 {
-  margin-right: 1rem; 
-}
+// .flex-wrap > div:last-child {
+//   margin-right: 0;
+// }
 
-.flex-wrap > div:last-child {
-  margin-right: 0;
-}
+//     `}
+//     </style></>
+//   );
+// }
 
-    `}
-    </style></>
-  );
-}
+// export const TitleAndOptionsInput = ({
 
-export const TitleAndOptionsInput = ({
+//   fieldAttributeValue,
+//   index,
+//   setValue,
+//   register,
+// }: any) => {
+//   const title = Array.isArray(fieldAttributeValue)
+//     ? fieldAttributeValue.map((a) => a.value).join('/')
+//     : fieldAttributeValue.value;
+//   const options = Array.isArray(fieldAttributeValue)
+//     ? JSON.stringify(fieldAttributeValue)
+//     : JSON.stringify([fieldAttributeValue]);
+//   useEffect(() => {
+//     setValue(`variation_options.${index}.title`, title);
+//     setValue(`variation_options.${index}.options`, options);
+//   }, [fieldAttributeValue]);
+//   return (
+//     <>
+//       <input {...register(`variation_options.${index}.title`)} type="hidden" />
+//       <input
+//         {...register(`variation_options.${index}.options`)}
+//         type="hidden"
+//       />
+//     </>
+//   );
+// };
 
-  fieldAttributeValue,
-  index,
-  setValue,
-  register,
-}: any) => {
-  const title = Array.isArray(fieldAttributeValue)
-    ? fieldAttributeValue.map((a) => a.value).join('/')
-    : fieldAttributeValue.value;
-  const options = Array.isArray(fieldAttributeValue)
-    ? JSON.stringify(fieldAttributeValue)
-    : JSON.stringify([fieldAttributeValue]);
-  useEffect(() => {
-    setValue(`variation_options.${index}.title`, title);
-    setValue(`variation_options.${index}.options`, options);
-  }, [fieldAttributeValue]);
-  return (
-    <>
-      <input {...register(`variation_options.${index}.title`)} type="hidden" />
-      <input
-        {...register(`variation_options.${index}.options`)}
-        type="hidden"
-      />
-    </>
-  );
-};
-
-
+///////////////////////////////////////////////////////////////
 
 
 // import Input from '@/components/ui/input';
@@ -702,3 +653,461 @@ export const TitleAndOptionsInput = ({
 
 
 
+// import Input from '@/components/ui/input';
+// import { useFieldArray, useFormContext } from 'react-hook-form';
+// import Button from '@/components/ui/button';
+// import Description from '@/components/ui/description';
+// import Card from '@/components/common/card';
+// import Label from '@/components/ui/label';
+// import Title from '@/components/ui/title';
+// import SelectInput from '@/components/ui/select-input';
+// import { useEffect } from 'react';
+// import { Product, Settings } from '@/types';
+// import { useTranslation } from 'next-i18next';
+// import { useAttributesQuery } from '@/data/attributes';
+// import FileInput from '@/components/ui/file-input';
+// import ValidationError from '@/components/ui/form-validation-error';
+// import { getCartesianProduct, filterAttributes } from './form-utils';
+// import { useRouter } from 'next/router';
+// import { Config } from '@/config';
+// import { useSettingsQuery } from '@/data/settings';
+
+// type IProps = {
+//   initialValues?: Product | null;
+//   shopId: string | undefined;
+//   settings: Settings | undefined;
+// };
+
+// export default function ProductVariableForm({
+//   shopId,
+//   initialValues,
+//   settings,
+// }: IProps) {
+//   const { t } = useTranslation();
+//   const { locale } = useRouter();
+  
+//   const { settings: { options } } = useSettingsQuery({
+//     language: locale!,
+//   });
+
+//   const { attributes, loading } = useAttributesQuery({
+//     shop_id: initialValues ? initialValues.shop_id : shopId,
+//     language: locale,
+//   });
+
+//   const {
+//     register,
+//     control,
+//     watch,
+//     setValue,
+//     getValues,
+//     formState: { errors },
+//   } = useFormContext();
+
+//   const { fields, append, remove } = useFieldArray({
+//     control,
+//     name: 'variations',
+//   });
+
+//   const variations = watch('variations');
+//   const cartesianProduct = getCartesianProduct(getValues('variations')) || [];
+
+//   return (
+//     <>
+//       <div className="my-5 flex flex-wrap sm:my-8">
+//         <Description
+//           title={t('form:form-title-variation-product-info')}
+//           details={`${initialValues
+//             ? t('form:item-description-update')
+//             : t('form:item-description-choose')} ${t('form:form-description-variation-product-info')}`}
+//           className="w-full px-0 pb-5 sm:w-4/12 sm:py-8 sm:pe-4 md:w-1/3 md:pe-5"
+//         />
+//         <Card className="w-full p-0 sm:w-8/12 md:w-2/3 md:p-0">
+//           <div className="mb-5 border-t border-dashed border-border-200 md:mb-8">
+//             <Title className="mt-8 mb-0 px-5 text-center text-lg uppercase md:px-8">
+//               {t('form:form-title-options')}
+//             </Title>
+//             <div>
+//               {fields?.map((field, fieldIndex) => (
+//                 <div key={field.id} className="border-b border-dashed border-border-200 p-5 last:border-0 md:p-8">
+//                   <div className="flex items-center justify-between">
+//                     <Title className="mb-0">
+//                       {t('form:form-title-options')} {fieldIndex + 1}
+//                     </Title>
+//                     <button
+//                       onClick={() => remove(fieldIndex)}
+//                       type="button"
+//                       className="text-sm text-red-500 transition-colors duration-200 hover:text-red-700 focus:outline-none"
+//                     >
+//                       {t('form:button-label-remove')}
+//                     </button>
+//                   </div>
+//                   <div className="mt-5 p-5 border rounded border-gray-300">
+//                     <div className="grid gap-5">
+//                       {attributes.map((attribute, attributeIndex) => (
+//                         <div key={attribute.id} className="flex flex-wrap items-center">
+//                           <div className="flex-1">
+//                             <Label>{t('form:input-label-attribute-name')}*</Label>
+//                             <SelectInput
+//                               name={`variations.${attributeIndex}.attribute`}
+//                               control={control}
+//                               defaultValue={field.attribute}
+//                               getOptionLabel={(option) => option.name}
+//                               getOptionValue={(option) => option.id}
+//                               options={filterAttributes(attributes, variations)!}
+//                               isLoading={loading}
+//                             />
+//                           </div>
+//                           <div className="flex-1">
+//                             <Label>{t('form:input-label-attribute-value')}*</Label>
+//                             <SelectInput
+//                               isMulti
+//                               name={`variations.${attributeIndex}.value`}
+//                               control={control}
+//                               defaultValue={field.value}
+//                               getOptionLabel={(option) => option.value}
+//                               getOptionValue={(option) => option.id}
+//                               options={watch(`variations.${attributeIndex}.attribute`)?.values}
+//                             />
+//                           </div>
+//                         </div>
+//                       ))}
+//                     </div>
+//                     <TitleAndOptionsInput
+//                       register={register}
+//                       setValue={setValue}
+//                       index={fieldIndex}
+//                       fieldAttributeValue={field}
+//                     />
+//                     <div className="flex flex-wrap gap-2 mt-5">
+//                       <Input
+//                         label={`${t('form:input-label-price')}*`}
+//                         type="number"
+//                         {...register(`variation_options.${fieldIndex}.price`)}
+//                         error={t(errors.variation_options?.[fieldIndex]?.price?.message)}
+//                         variant="outline"
+//                         className="mb-2"
+//                         style={{ width: '70px', height: '40px' }}
+//                       />
+//                       <Input
+//                         label={t('form:input-label-sale-price')}
+//                         type="number"
+//                         {...register(`variation_options.${fieldIndex}.sale_price`)}
+//                         error={t(errors.variation_options?.[fieldIndex]?.sale_price?.message)}
+//                         variant="outline"
+//                         className="mb-2"
+//                         style={{ width: '70px', height: '40px' }}
+//                       />
+//                       <Input
+//                         label={`${t('form:input-label-sku')}*`}
+//                         {...register(`variation_options.${fieldIndex}.sku`)}
+//                         error={t(errors.variation_options?.[fieldIndex]?.sku?.message)}
+//                         variant="outline"
+//                         className="mb-2"
+//                         style={{ width: '70px', height: '40px' }}
+//                       />
+//                       <Input
+//                         label={`${t('form:input-label-quantity')}*`}
+//                         type="number"
+//                         {...register(`variation_options.${fieldIndex}.quantity`)}
+//                         error={t(errors.variation_options?.[fieldIndex]?.quantity?.message)}
+//                         variant="outline"
+//                         className="mb-2"
+//                         style={{ width: '70px', height: '40px' }}
+//                       />
+//                       <div className="mb-2" style={{ width: '120px', height: '30px' }}>
+//                         <Label>Upload an image</Label>
+//                         <FileInput
+//                           name={`variation_options.${fieldIndex}.image`}
+//                           control={control}
+//                           multiple={false}
+//                         />
+//                       </div>
+//                     </div>
+//                   </div>
+//                 </div>
+//               ))}
+//               <div className="px-5 md:px-8">
+//                 <Button
+//                   onClick={(e) => {
+//                     e.preventDefault();
+//                     append({ attribute: '', value: [] });
+//                   }}
+//                   type="button"
+//                 >
+//                   {t('form:button-label-add-option')}
+//                 </Button>
+//               </div>
+//             </div>
+//           </div>
+//         </Card>
+//       </div>
+//     </>
+//   );
+// }
+
+// export const TitleAndOptionsInput = ({
+//   fieldAttributeValue,
+//   index,
+//   setValue,
+//   register,
+// }: any) => {
+//   const title = Array.isArray(fieldAttributeValue)
+//     ? fieldAttributeValue.map((a) => a.value).join('/')
+//     : fieldAttributeValue.value;
+
+//   const options = Array.isArray(fieldAttributeValue)
+//     ? JSON.stringify(fieldAttributeValue)
+//     : JSON.stringify([fieldAttributeValue]);
+
+//   useEffect(() => {
+//     setValue(`variation_options.${index}.title`, title);
+//     setValue(`variation_options.${index}.options`, options);
+//   }, [fieldAttributeValue, setValue, index, title, options]);
+
+//   return (
+//     <>
+//       <input {...register(`variation_options.${index}.title`)} type="hidden" />
+//       <input {...register(`variation_options.${index}.options`)} type="hidden" />
+//     </>
+//   );
+// };
+
+
+////////////////////////////////////////////////////////////////////
+
+
+import Input from '@/components/ui/input';
+import { useFieldArray, useFormContext } from 'react-hook-form';
+import Button from '@/components/ui/button';
+import Description from '@/components/ui/description';
+import Card from '@/components/common/card';
+import Label from '@/components/ui/label';
+import Title from '@/components/ui/title';
+import SelectInput from '@/components/ui/select-input';
+import { useEffect } from 'react';
+import { Product, Settings } from '@/types';
+import { useTranslation } from 'next-i18next';
+import { useAttributesQuery } from '@/data/attributes';
+import FileInput from '@/components/ui/file-input';
+import ValidationError from '@/components/ui/form-validation-error';
+import { getCartesianProduct, filterAttributes } from './form-utils';
+import { useRouter } from 'next/router';
+import { Config } from '@/config';
+import { useSettingsQuery } from '@/data/settings';
+
+type IProps = {
+  initialValues?: Product | null;
+  shopId: string | undefined;
+  settings: Settings | undefined;
+};
+
+export default function ProductVariableForm({
+  shopId,
+  initialValues,
+  settings,
+}: IProps) {
+  const { t } = useTranslation();
+  const { locale } = useRouter();
+
+  const { settings: { options } } = useSettingsQuery({
+    language: locale!,
+  });
+
+  const { attributes, loading } = useAttributesQuery({
+    shop_id: initialValues ? initialValues.shop_id : shopId,
+    language: locale,
+  });
+
+  const {
+    register,
+    control,
+    watch,
+    setValue,
+    getValues,
+    formState: { errors },
+  } = useFormContext();
+
+  const { fields, append, remove } = useFieldArray({
+    control,
+    name: 'variations',
+  });
+
+  const variations = watch('variations');
+  const cartesianProduct = getCartesianProduct(getValues('variations')) || [];
+
+  return (
+    <>
+      <div className="my-5 flex flex-wrap sm:my-8">
+        <Description
+          title={t('form:form-title-variation-product-info')}
+          details={`${initialValues
+            ? t('form:item-description-update')
+            : t('form:item-description-choose')} ${t('form:form-description-variation-product-info')}`}
+          className="w-full px-0 pb-5 sm:w-4/12 sm:py-8 sm:pe-4 md:w-1/3 md:pe-5"
+        />
+        <Card className="w-full p-0 sm:w-8/12 md:w-2/3 md:p-0">
+          <div className="mb-5 border-t border-dashed border-border-200 md:mb-8">
+            <Title className="mt-8 mb-0 px-5 text-center text-lg uppercase md:px-8">
+              {t('form:form-title-options')}
+            </Title>
+            <div>
+              {fields?.map((field, fieldIndex) => (
+                <div key={field.id} className="border-b border-dashed border-border-200 p-5 last:border-0 md:p-8">
+                  <div className="flex items-center justify-between">
+                    <Title className="mb-0">
+                      {t('form:form-title-options')} {fieldIndex + 1}
+                    </Title>
+                    <button
+                      onClick={() => remove(fieldIndex)}
+                      type="button"
+                      className="text-sm text-red-500 transition-colors duration-200 hover:text-red-700 focus:outline-none"
+                    >
+                      {t('form:button-label-remove')}
+                    </button>
+                  </div>
+                  <div className="mt-5 p-5 border rounded border-gray-300">
+                    <div className="grid gap-5">
+                      {attributes.map((attribute, attributeIndex) => (
+                        <div key={attribute.id} className="flex flex-wrap items-center">
+                          <div className="flex-1">
+                            <Label>{t('form:input-label-attribute-name')}*</Label>
+                            <SelectInput
+                              name={`variations.${attributeIndex}.attribute`}
+                              control={control}
+                              defaultValue={field.attribute}
+                              getOptionLabel={(option) => option.name}
+                              getOptionValue={(option) => option.id}
+                              options={filterAttributes(attributes, variations)!}
+                              isLoading={loading}
+                            />
+                          </div>
+                          <div className="flex-1">
+                            <Label>{t('form:input-label-attribute-value')}*</Label>
+                            <SelectInput
+                              isMulti
+                              name={`variations.${attributeIndex}.value`}
+                              control={control}
+                              defaultValue={field.value}
+                              getOptionLabel={(option) => option.value}
+                              getOptionValue={(option) => option.id}
+                              options={watch(`variations.${attributeIndex}.attribute`)?.values}
+                            />
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                    <TitleAndOptionsInput
+                      register={register}
+                      setValue={setValue}
+                      index={fieldIndex}
+                      fieldAttributeValue={field}
+                      cartesianProduct={cartesianProduct} // Pass cartesianProduct here
+                    />
+                    <div className="flex flex-wrap gap-2 mt-5">
+                      <Input
+                        label={`${t('form:input-label-price')}*`}
+                        type="number"
+                        {...register(`variation_options.${fieldIndex}.price`)}
+                        error={t(errors.variation_options?.[fieldIndex]?.price?.message)}
+                        variant="outline"
+                        className="mb-2"
+                        style={{ width: '70px', height: '40px' }}
+                      />
+                      <Input
+                        label={t('form:input-label-sale-price')}
+                        type="number"
+                        {...register(`variation_options.${fieldIndex}.sale_price`)}
+                        error={t(errors.variation_options?.[fieldIndex]?.sale_price?.message)}
+                        variant="outline"
+                        className="mb-2"
+                        style={{ width: '70px', height: '40px' }}
+                      />
+                      <Input
+                        label={`${t('form:input-label-sku')}*`}
+                        {...register(`variation_options.${fieldIndex}.sku`)}
+                        error={t(errors.variation_options?.[fieldIndex]?.sku?.message)}
+                        variant="outline"
+                        className="mb-2"
+                        style={{ width: '70px', height: '40px' }}
+                      />
+                      <Input
+                        label={`${t('form:input-label-quantity')}*`}
+                        type="number"
+                        {...register(`variation_options.${fieldIndex}.quantity`)}
+                        error={t(errors.variation_options?.[fieldIndex]?.quantity?.message)}
+                        variant="outline"
+                        className="mb-2"
+                        style={{ width: '70px', height: '40px' }}
+                      />
+                      <div className="mb-2" style={{ width: '120px', height: '30px' }}>
+                        <Label>Upload an image</Label>
+                        <FileInput
+                          name={`variation_options.${fieldIndex}.image`}
+                          control={control}
+                          multiple={false}
+                        />
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              ))}
+              <div className="px-5 md:px-8">
+                <Button
+                  onClick={(e) => {
+                    e.preventDefault();
+                    append({ attribute: '', value: [] });
+                  }}
+                  type="button"
+                >
+                  {t('form:button-label-add-option')}
+                </Button>
+              </div>
+            </div>
+          </div>
+        </Card>
+      </div>
+    </>
+  );
+}
+
+export const TitleAndOptionsInput = ({
+  fieldAttributeValue,
+  index,
+  setValue,
+  register,
+  cartesianProduct, // Receive cartesianProduct
+}: any) => {
+  const title = Array.isArray(cartesianProduct)
+    ? cartesianProduct.map((a) => a.value).join('/')
+    : cartesianProduct.value;
+console.log("carr++++++++++", cartesianProduct);
+
+  // const options = Array.isArray(cartesianProduct)
+  //   ? JSON.stringify(cartesianProduct)
+  //   : JSON.stringify([cartesianProduct]);
+
+  const options = Array.isArray(cartesianProduct)
+    ? cartesianProduct.map((item) => ({
+        attribute: item.attribute.name,
+        values: item.value,
+      }))
+    : [{ attribute: cartesianProduct.attribute.name, values: [cartesianProduct.value] }];
+
+
+  useEffect(() => {
+    setValue(`variation_options.${index}.title`, title);
+    setValue(`variation_options.${index}.options`, options);
+    
+    // Add cartesian product to variation_options
+    // setValue(`variation_options.${index}.cartesian_product`, cartesianProduct); 
+  }, [fieldAttributeValue, setValue, index, title, options]); // Add cartesianProduct to dependencies
+
+  return (
+    <>
+      <input {...register(`variation_options.${index}.title`)} type="hidden" />
+      <input {...register(`variation_options.${index}.options`)} type="hidden" />
+      {/* <input {...register(`variation_options.${index}.cartesian_product`)} type="hidden" /> Add hidden input for cartesian product */}
+    </>
+  );
+};
