@@ -60,11 +60,11 @@ export const Routes = {
   tag: {
     ...routesFactory('/tags'),
   },
-  blog:{
-    ...routesFactory('/blogs')
+  blog: {
+    ...routesFactory('/blogs'),
   },
-  event:{
-    ...routesFactory('/events')
+  event: {
+    ...routesFactory('/events'),
   },
   dealerlist: {
     ...routesFactory('/dealerlist'),
@@ -120,8 +120,8 @@ export const Routes = {
   regions: {
     ...routesFactory('/regions'),
   },
-  faq:{
-    ...routesFactory('/faq')
+  faq: {
+    ...routesFactory('/faq'),
   },
   withdraw: {
     ...routesFactory('/withdraws'),
@@ -140,6 +140,9 @@ export const Routes = {
   },
   message: {
     ...routesFactory('/message'),
+  },
+  getInspired: {
+    ...routesFactory('/get-inspired'),
   },
   shopMessage: {
     ...routesFactory('/shop-message'),
