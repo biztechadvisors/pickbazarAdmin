@@ -1,3 +1,5 @@
+import Contacts from '@/pages/contacts';
+
 export const API_ENDPOINTS = {
   ATTACHMENTS: 'attachments',
   ANALYTICS: 'analytics',
@@ -86,4 +88,7 @@ export const API_ENDPOINTS = {
   NOTIFICATION: `/notifications`,
   FAQ: '/faqs',
   GET_INSPIRED: '/get-inspired',
+  QNA: '/qnas',
+  CONTACTS: '/contacts',
+  VACANCY: '/vacancies',
 };

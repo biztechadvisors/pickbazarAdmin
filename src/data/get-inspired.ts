@@ -18,6 +18,7 @@ export const useCreateGetInspiredMutation = (shop_id) => {
   const router = useRouter();
   const { t } = useTranslation();
   console.log('ashasfahvsgf', shop_id);
+
   return useMutation((data) => getInspiredClient.create({ ...data, shop_id }), {
     // Changed to getInspiredClient
     onSuccess: () => {
@@ -69,7 +70,7 @@ export const useUpdateGetInspiredMutation = (shop_id) => {
 };
 
 // Delete GetInspired Entry
-export const useDeleteGetInspiredClassMutation = () => {
+export const useDeleteGetInspiredMutation = () => {
   const queryClient = useQueryClient();
   const { t } = useTranslation();
 

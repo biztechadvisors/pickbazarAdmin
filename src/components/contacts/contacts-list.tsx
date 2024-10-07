@@ -12,15 +12,15 @@ import { Routes } from '@/config/routes';
 import ActionButtons from '../common/action-buttons';
 
 export type IProps = {
-  getInspired: any | undefined | null; // Change to match your data type
+  contacts: any | undefined | null; // Change to match your data type
   onPagination: (key: number) => void;
   onSort: (current: any) => void;
   onOrder: (current: string) => void;
   paginatorInfo: MappedPaginatorInfo | null;
 };
 
-const GetInspiredList = ({
-  getInspired,
+const ContactsList = ({
+  contacts,
   onPagination,
   onSort,
   onOrder,
@@ -51,36 +51,43 @@ const GetInspiredList = ({
     });
   };
 
-  // Transforming getInspired data to include images and tags
+  // Transforming contacts data for the table
   const tableData =
-    getInspired?.data?.map((item) => ({
-      id: item.id,
-      images: item.images.map((image) => (
-        <img
-          key={image.id}
-          src={image.thumbnail} // Display the thumbnail
-          alt={item.title}
-          className="h-12 w-12 object-cover"
-        />
-      )),
-      tags: item.tags.map((tag) => tag.name).join(', '), // Join tag names with commas
+    contacts?.data?.map((contact) => ({
+      id: contact.id,
+      fullName: contact.fullName,
+      phone: contact.phone,
+      email: contact.email,
+      location: contact.location || 'N/A', // Handle optional location
     })) || [];
 
   // Table configuration
   const columns = [
     {
-      title: t('table:table-item-images'),
-      dataIndex: 'images',
-      key: 'images',
+      title: t('table:table-item-full-name'),
+      dataIndex: 'fullName',
+      key: 'fullName',
       align: alignLeft,
-      render: (images: React.ReactNode) => (
-        <div className="flex space-x-2">{images}</div>
-      ),
+      onHeaderClick: onHeaderClick('fullName'),
     },
     {
-      title: t('table:table-item-tags'),
-      dataIndex: 'tags',
-      key: 'tags',
+      title: t('table:table-item-phone'),
+      dataIndex: 'phone',
+      key: 'phone',
+      align: alignLeft,
+      onHeaderClick: onHeaderClick('phone'),
+    },
+    {
+      title: t('table:table-item-email'),
+      dataIndex: 'email',
+      key: 'email',
+      align: alignLeft,
+      onHeaderClick: onHeaderClick('email'),
+    },
+    {
+      title: t('table:table-item-location'),
+      dataIndex: 'location',
+      key: 'location',
       align: alignLeft,
     },
     {
@@ -89,11 +96,7 @@ const GetInspiredList = ({
       key: 'actions',
       align: alignRight,
       render: (id: string) => (
-        <ActionButtons
-          id={id}
-          editUrl={`${Routes.getInspired.list}/edit/${id}`} // Adjust URL as needed
-          deleteModalView="DELETE_GET_INSPIRED"
-        />
+        <ActionButtons id={id} deleteModalView="DELETE_CONTACT" />
       ),
     },
   ];
@@ -129,4 +132,4 @@ const GetInspiredList = ({
   );
 };
 
-export default GetInspiredList;
+export default ContactsList;

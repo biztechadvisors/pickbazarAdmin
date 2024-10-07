@@ -20,6 +20,9 @@ export const Routes = {
   createSales: '/sales/create',
   regions: '/regions',
   Faq: '/faq',
+  GetInspired: '/get-inspired',
+  contacts: '/contacts',
+  vacancies: '/vacancies',
   // groups: `/${getAdminMyShopsRoute()}/groups`,
   shops: (slug: string) => `/shops/${encodeURIComponent(slug)}`,
   // orders: '/orders',
@@ -143,6 +146,12 @@ export const Routes = {
   },
   getInspired: {
     ...routesFactory('/get-inspired'),
+  },
+  contacts: {
+    ...routesFactory('/contacts'),
+  },
+  vacancies: {
+    ...routesFactory('/vacancies'),
   },
   shopMessage: {
     ...routesFactory('/shop-message'),

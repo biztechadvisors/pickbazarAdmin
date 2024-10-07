@@ -1,209 +1,161 @@
-import Input from '@/components/ui/input';
 import { useForm } from 'react-hook-form';
-import Button from '@/components/ui/button';
-import Description from '@/components/ui/description';
-import Card from '@/components/common/card';
-import { useRouter } from 'next/router';
-import { GetInspired } from '@/types';
 import { useTranslation } from 'next-i18next';
+import Button from '@/components/ui/button';
 import {
   useCreateGetInspiredMutation,
   useUpdateGetInspiredMutation,
 } from '@/data/get-inspired';
 import { useMeQuery } from '@/data/user';
-import form from '../ui/forms/form';
-import { useState } from 'react';
+import GetInspiredTagInput from './getInspired-tag-input'; // Import tag input component
+import FileInput from '@/components/ui/file-input'; // Import FileInput for images
+import Description from '@/components/ui/description';
+import Card from '@/components/common/card';
+import { useEffect } from 'react';
 
-const defaultValues = {
-  title: '', // Initialize title
-  type: '', // Initialize type
-  images: [],
-  tagIds: [], // Store the selected tag IDs
-};
-
-type IProps = {
-  initialValues?: GetInspired | null;
-  tags: any[]; // Add tags prop
-  isTagsLoading: boolean; // Add loading state prop for tags
-};
-
-export default function CreateOrUpdateGetInspiredForm({
-  initialValues,
-  tags,
-  isTagsLoading,
-}: IProps) {
-  const router = useRouter();
+export default function CreateOrUpdateGetInspiredForm({ initialValues }) {
+  console.log('initialValues', initialValues);
   const { t } = useTranslation();
-
   const { data: me } = useMeQuery();
   const shop_id = me?.shop_id;
 
   const {
     register,
     handleSubmit,
-    formState: { errors },
     setValue,
     watch,
-  } = useForm<GetInspired>({
-    defaultValues: initialValues ?? defaultValues,
+    control,
+    formState: { errors },
+  } = useForm({
+    defaultValues: initialValues ?? {
+      title: '',
+      type: '',
+      gallery: [], // For images
+      tagIds: [], // For tag IDs
+    },
   });
 
   const { mutate: createGetInspired, isLoading: creating } =
-    useCreateGetInspiredMutation(shop_id);
+    useCreateGetInspiredMutation();
   const { mutate: updateGetInspired, isLoading: updating } =
-    useUpdateGetInspiredMutation(shop_id);
+    useUpdateGetInspiredMutation();
 
-  const onSubmit = async (values: GetInspired) => {
-    console.log('values=', values);
+  // Set tag IDs if initial values are provided
+  useEffect(() => {
+    if (initialValues?.tagIds) {
+      setValue('tagIds', initialValues.tagIds);
+    }
+  }, [initialValues, setValue]);
+
+  const onSubmit = async (values) => {
+    // Process the tags to only include their IDs
+    const tagIds = values.tagIds.map((tag) => tag.id); // Only send the tag IDs
+    const images = values.gallery.map((image) => image.url); // Get URLs from the gallery image objects
+
     const payload = {
-      title: values.title,
-      type: values.type,
-      shopId: shop_id,
-      imageIds: values.images[0], // Assuming this is already processed to get IDs
-      tagIds: values.tagIds.length ? values.tagIds : [],
+      ...values,
+      tagIds, // Send tag IDs in the payload
+      images, // Send image URLs in the payload
+      shopId: shop_id, // Ensure shopId is set correctly
     };
 
     if (initialValues) {
       updateGetInspired({
         id: initialValues.id,
-        shopId: shop_id,
         ...payload,
       });
     } else {
-      createGetInspired({
-        shopId: shop_id,
-        ...payload,
-      });
+      createGetInspired(payload);
     }
   };
 
-  const [selectedImage, setSelectedImage] = useState<string | null>(
-    initialValues?.images?.[0]?.thumbnail || null
-  );
-  const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setSelectedImage(reader.result as string);
-        setValue('images', [reader.result]);
-      };
-      reader.readAsDataURL(file);
-    }
-  };
-  // Watch the selected images
-  const images = watch('images');
-  const selectedTagIds = watch('tagIds'); // Watch the selected tag IDs
+  // Watching for gallery updates
+  const gallery = watch('gallery');
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
-      <div className="my-5 flex flex-wrap sm:my-8">
-        <Description
-          title={t('form:form-title-get-inspired')}
-          className="w-full px-0 pb-5 sm:w-4/12 sm:py-8 sm:pe-4 md:w-1/3 md:pe-5"
-        />
-        <Card className="w-full sm:w-8/12 md:w-2/3">
-          {/* Title Input */}
-          <div className="mb-5">
-            <label className="mb-2 block text-sm font-medium text-gray-700">
-              {t('form:input-label-title')}
-            </label>
-            <Input
-              {...register('title', { required: true })}
-              placeholder={t('form:input-placeholder-title')}
-              className="mt-1"
+      <Card className="w-full p-5">
+        {/* Title Field */}
+        <div className="my-5 flex flex-wrap sm:my-8">
+          <Description
+            title={t('form:input-label-title')}
+            className="w-full px-0 pb-5 sm:w-4/12 sm:py-8 sm:pe-4 md:w-1/3 md:pe-5"
+          />
+          <div className="w-full sm:w-8/12 md:w-2/3">
+            <input
+              {...register('title', { required: 'Title is required' })}
+              className="block w-full rounded-lg border p-2"
             />
             {errors.title && (
-              <p className="text-sm text-red-500">
-                {t('form:error-title-required')}
-              </p>
+              <p className="text-sm text-red-500">{errors.title.message}</p>
             )}
           </div>
+        </div>
 
-          {/* Type Input */}
-          <div className="mb-5">
-            <label className="mb-2 block text-sm font-medium text-gray-700">
-              {t('form:input-label-type')}
-            </label>
-            <Input
-              {...register('type', { required: true })}
-              placeholder={t('form:input-placeholder-type')}
-              className="mt-1"
+        {/* Type Field */}
+        <div className="my-5 flex flex-wrap sm:my-8">
+          <Description
+            title={t('form:input-label-type')}
+            className="w-full px-0 pb-5 sm:w-4/12 sm:py-8 sm:pe-4 md:w-1/3 md:pe-5"
+          />
+          <div className="w-full sm:w-8/12 md:w-2/3">
+            <input
+              {...register('type', { required: 'Type is required' })}
+              className="block w-full rounded-lg border p-2"
             />
             {errors.type && (
-              <p className="text-sm text-red-500">
-                {t('form:error-type-required')}
-              </p>
+              <p className="text-sm text-red-500">{errors.type.message}</p>
             )}
           </div>
+        </div>
 
-          {/* Image Selector */}
-          <div className="mb-5">
-            <label className="mb-2 block text-sm font-medium text-gray-700">
-              {t('form:input-label-image')}
-            </label>
-            <div className="relative">
-              <input
-                type="file"
-                accept="image/*"
-                onChange={handleImageChange}
-                className="absolute inset-0 h-full w-full cursor-pointer opacity-0"
-              />
-              <div className="flex h-32 items-center justify-center rounded-lg border-2 border-dashed border-gray-300 bg-gray-100 transition duration-300 ease-in-out hover:bg-gray-200">
-                {selectedImage ? (
+        {/* Gallery Image Upload */}
+        <div className="my-5 flex flex-wrap border-b border-dashed border-border-base pb-8 sm:my-8">
+          <Description
+            title={t('form:gallery-title')}
+            className="w-full px-0 pb-5 sm:w-4/12 sm:py-8 sm:pe-4 md:w-1/3 md:pe-5"
+          />
+          <div className="w-full sm:w-8/12 md:w-2/3">
+            <FileInput
+              name="gallery"
+              control={control}
+              defaultValue={initialValues?.gallery} // Pass initial gallery values
+              onChange={(files) => setValue('gallery', files)} // Set gallery files
+            />
+            {/* Show selected images */}
+            {gallery && gallery.length > 0 && (
+              <div className="mt-2 flex flex-wrap gap-2">
+                {gallery.map((img, index) => (
                   <img
-                    src={selectedImage}
-                    alt="Selected"
-                    className="h-full w-full rounded-md object-cover"
+                    key={index}
+                    src={img.url} // Accessing image URL
+                    alt={`image-${index}`}
+                    className="h-24 w-24 rounded"
                   />
-                ) : (
-                  <span className="text-gray-400">
-                    {t('form:input-label-select-image')}
-                  </span>
-                )}
-              </div>
-            </div>
-          </div>
-
-          {!isTagsLoading && tags.length > 0 && (
-            <div className="mb-5">
-              <label className="mb-2 block text-sm font-medium text-gray-700">
-                {t('form:input-label-tag')}
-              </label>
-              <select
-                {...register('tag')}
-                className="mt-1 block w-full rounded-lg border border-gray-300 p-2"
-              >
-                <option value="">{t('form:input-label-select-tag')}</option>
-                {tags.map((tag) => (
-                  <option key={tag.id} value={tag.id}>
-                    {tag.name}
-                  </option>
                 ))}
-              </select>
-              {errors.tag && (
-                <p className="text-sm text-red-500">{errors.tag.message}</p>
-              )}
-            </div>
-          )}
-        </Card>
-      </div>
+              </div>
+            )}
+          </div>
+        </div>
 
-      <div className="mb-4 text-end">
-        <Button
-          variant="outline"
-          onClick={router.back}
-          className="me-4"
-          type="button"
-        >
-          {t('form:button-label-back')}
-        </Button>
-        <Button loading={creating || updating}>
-          {initialValues
-            ? t('form:button-label-update')
-            : t('form:button-label-add')}
-        </Button>
-      </div>
+        {/* Tags Selection */}
+        <div className="my-5 flex flex-wrap sm:my-8">
+          <Description
+            title={t('form:tags-title')}
+            className="w-full px-0 pb-5 sm:w-4/12 sm:py-8 sm:pe-4 md:w-1/3 md:pe-5"
+          />
+          <div className="w-full sm:w-8/12 md:w-2/3">
+            <GetInspiredTagInput control={control} setValue={setValue} />
+          </div>
+        </div>
+
+        <div className="text-end">
+          <Button loading={creating || updating}>
+            {initialValues
+              ? t('form:button-label-update')
+              : t('form:button-label-add')}
+          </Button>
+        </div>
+      </Card>
     </form>
   );
 }

@@ -12,12 +12,11 @@ import { adminOnly, getAuthCredentials } from '@/utils/auth-utils';
 import { useRouter } from 'next/router';
 import { Config } from '@/config';
 import { AllPermission } from '@/utils/AllPermission';
-// import GetInspiredList from '@/components/getInspired/getInspired-list';
-import { useGetInspiredQuery } from '@/data/get-inspired';
+import { useContactsQuery } from '@/data/contacts';
 import { useMeQuery } from '@/data/user';
-import GetInspiredList from '@/components/getInspired/getInspired-list';
+import ContactsList from '@/components/contacts/contacts-list';
 
-export default function GetInspired() {
+export default function Contacts() {
   const { t } = useTranslation();
   const { locale } = useRouter();
   const [orderBy, setOrder] = useState('created_at');
@@ -26,16 +25,17 @@ export default function GetInspired() {
   const [page, setPage] = useState(1);
   const { data: me } = useMeQuery();
 
-  // Fetch the inspirations data
-  const { getInspired, loading, paginatorInfo, error } = useGetInspiredQuery({
+  // Fetch the contacts data
+  const { contacts, loading, paginatorInfo, error } = useContactsQuery({
     shopSlug: me?.managed_shop?.slug, // Use shopSlug instead
   });
-  console.log('get inspired data', getInspired);
-  console.log('get inspired me', me);
+  console.log('contacts data', contacts);
+  console.log('contacts me', me);
+
   // Handle permission check
   const { permissions } = getAuthCredentials();
   const permissionTypes = AllPermission();
-  const canWrite = permissionTypes.includes('sidebar-nav-item-getInspired');
+  const canWrite = permissionTypes.includes('sidebar-nav-item-contacts');
 
   console.log('User Permissions:', permissions);
   console.log('Can Write:', canWrite); // Check if canWrite is true
@@ -60,28 +60,28 @@ export default function GetInspired() {
       <Card className="mb-8 flex flex-col items-center xl:flex-row">
         <div className="mb-4 md:mb-0 md:w-1/4">
           <h1 className="text-xl font-semibold text-heading">
-            {t('form:input-label-getInspired')}
+            {t('form:input-label-contacts')}
           </h1>
         </div>
 
         <div className="flex w-full flex-col items-center space-y-4 ms-auto md:flex-row md:space-y-0 xl:w-1/2">
           <Search onSearch={handleSearch} />
 
-          {/* Button to create a new inspiration */}
+          {/* Button to create a new contact */}
           {canWrite && locale === Config.defaultLanguage && (
             <LinkButton
-              href="/getInspired/create"
+              href="/contacts/create"
               className="h-12 w-full md:w-auto md:ms-6"
             >
-              <span>+ {t('form:button-label-add-getInspired')}</span>
+              <span>+ {t('form:button-label-add-contact')}</span>
             </LinkButton>
           )}
         </div>
       </Card>
 
-      {/* List of Inspirations */}
-      <GetInspiredList
-        getInspired={getInspired}
+      {/* List of Contacts */}
+      <ContactsList
+        contacts={contacts}
         paginatorInfo={paginatorInfo}
         onPagination={handlePagination}
         onOrder={setOrder}
@@ -92,12 +92,12 @@ export default function GetInspired() {
 }
 
 // Authentication and Permissions for Admin Only
-GetInspired.authenticate = {
+Contacts.authenticate = {
   permissions: adminOnly,
 };
 
 // Page Layout
-GetInspired.Layout = Layout;
+Contacts.Layout = Layout;
 
 // Static translations
 export const getStaticProps = async ({ locale }: any) => ({

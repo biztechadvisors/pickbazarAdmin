@@ -568,6 +568,40 @@ export interface GetInspired {
   updatedAt: string;
 }
 
+export interface Vacancy {
+  id: string;
+  title: string;
+  description: string;
+  employmentType: string;
+  salaryRange: string;
+  locationId: number;
+  shopId: number;
+  careerId?: number;
+  createdAt: string;
+}
+
+export interface Contact {
+  id: string;
+  fullName: string;
+  phone: string;
+  email: string;
+  location?: string;
+  subject: string;
+  message: string;
+  shopSlug: string;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+export interface Qna {
+  id: string;
+  question: string;
+  answer?: string;
+  type?: string[];
+  createdAt: Date;
+  updatedAt: Date;
+}
+
 export interface CouponInput {
   code: string;
   type: CouponType;
@@ -588,6 +622,22 @@ export interface FaqInput {
   code: string;
 }
 
+export interface ContactInput {
+  fullName: string;
+  phone: string;
+  email: string;
+  location?: string;
+  subject: string;
+  message: string;
+  shopSlug: string;
+}
+
+export interface QnaInput {
+  faqId?: number;
+  question: string;
+  answer?: string;
+}
+
 export interface GetInspiredInput {
   code: string;
   title: string;
@@ -596,6 +646,16 @@ export interface GetInspiredInput {
   imageIds?: number[];
   tagIds?: number[];
 }
+
+export interface VacancyInput {
+  title: string;
+  description: string;
+  employmentType: string;
+  salaryRange: string;
+  locationId: number;
+  careerId?: number;
+}
+
 export interface StoreNotice {
   id: string;
   translated_languages: string[];
@@ -1655,6 +1715,10 @@ export interface UserQueryOptions extends QueryOptions {
   usrById: string;
 }
 
+export interface ContactQueryOptions extends QueryOptions {
+  shopSlug?: string; // Optional shop slug for filtering contacts
+}
+
 export interface ManufacturerQueryOptions extends QueryOptions {
   shop_id: string;
   name: string;
@@ -1694,6 +1758,12 @@ export interface SalesQueryOptions extends QueryOptions {
   customer_id: number;
 }
 
+export interface VacancyQueryOptions {
+  city?: string;
+  page?: number;
+  limit?: number;
+}
+
 export interface CouponQueryOptions extends QueryOptions {
   code: string;
 }
@@ -1711,6 +1781,12 @@ import { SortOrder } from '@/types'; // Ensure SortOrder is imported from the co
 // Updated GetInspiredQueryOptions interface
 export interface GetInspiredQueryOptions extends QueryOptions {
   shopSlug: string; // Required for identifying the shop
+}
+
+export interface QnaQueryOptions extends QueryOptions {
+  faqId?: number; // Ensure faqId is defined as optional
+  page?: number;
+  limit?: number;
 }
 
 export interface StoreNoticeQueryOptions extends QueryOptions {
@@ -1774,6 +1850,8 @@ export interface DealerQueryOptions extends Omit<QueryOptions, 'language'> {
 
 export interface ShopPaginator extends PaginatorInfo<Shop> {}
 
+export interface ContactPaginator extends PaginatorInfo<Shop> {}
+
 export interface WithdrawPaginator extends PaginatorInfo<Withdraw> {}
 
 export interface UserPaginator extends PaginatorInfo<User> {}
@@ -1819,6 +1897,10 @@ export interface ShippingPaginator extends PaginatorInfo<Shipping> {}
 export interface AuthorPaginator extends PaginatorInfo<Author> {}
 
 export interface ManufacturerPaginator extends PaginatorInfo<Manufacturer> {}
+
+export interface QnaPaginator extends PaginatorInfo<Qna> {}
+
+export interface VacancyPaginator extends PaginatorInfo<Vacancy> {}
 
 export interface OrderStatusPaginator extends PaginatorInfo<OrderStatus> {}
 
