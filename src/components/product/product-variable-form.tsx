@@ -935,7 +935,7 @@ export default function ProductVariableForm({
   });
 
   const variations = watch('variations');
-  const cartesianProduct = getCartesianProduct(getValues('variations')) || [];
+  const cartesianProduct = getCartesianProduct(getValues('variations')) || {};
 
   return (
     <>
@@ -1123,19 +1123,27 @@ export const TitleAndOptionsInput = ({
   register,
   cartesianProduct, 
 }: any) => {
+
+  // const title = Array.isArray(cartesianProduct)
+  //   ? cartesianProduct.map((a) => a.value).join('/')
+  //   : cartesianProduct.value;
+
   const title = Array.isArray(cartesianProduct)
-    ? cartesianProduct.map((a) => a.value).join('/')
+    ? cartesianProduct
+        .flatMap((a) => a.value) // Flatten the values
+        .join('/') // Join with a slash
+        .replace(/,\s*/g, '/') // Replace any commas with slashes
     : cartesianProduct.value;
 
-  
-console.log("carr++++++++++", cartesianProduct);
+console.log("carr++++++++++", cartesianProduct, title);
 
   const options = Array.isArray(cartesianProduct)
     ? cartesianProduct.map((item) => ({
         attribute: item.attribute.name,
         values: item.value,
       }))
-    : [{ attribute: cartesianProduct.attribute.name, values: [cartesianProduct.value] }];
+    : [{ attribute: cartesianProduct.attribute.name, values: cartesianProduct.value }];
+
 
 
   useEffect(() => {

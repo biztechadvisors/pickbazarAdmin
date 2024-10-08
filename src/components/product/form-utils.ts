@@ -190,23 +190,24 @@ export function filterAttributes(attributes: any, variations: any) {
   return res;
 }
 
-
+//correct code for return array
 export function getCartesianProduct(values: any) {
   const formattedValues = values?.map((v: any) => {
       const { attribute } = v;
 
       // Create a comma-separated string for the values
-      const valueString = v?.value?.map((a: any) => a.value).join(', ');
+      const valueString: string = v?.value?.map((a: any) => a.value).join(', ');
 
       return {
         attribute: { name: attribute?.name ? attribute?.name : null },
-        value: [valueString ? valueString : null ], // Wrap the string in an array
+        value: valueString ? valueString : null , // Wrap the string in an array
       };
     }).filter((i: any) => i !== undefined);
 
-  if (isEmpty(formattedValues)) return [];
+  if (isEmpty(formattedValues)) return {};
   return formattedValues; // Return the formatted values directly
 }
+
 
 // export function getCartesianProduct(values: any) {
 //   const formattedValues = values
@@ -628,11 +629,12 @@ variation_options: {
       quantity: quantity || 0,               
       sale_price: sale_price || 0,          
       sku: sku || '',                       
-      title: title || options?.map((opt: any) => opt.value).join('/'), 
-    })
-  ),
+      // title: title || options?.map((opt: any) => opt.value).join('/'), 
+      title: title || (options ? options.map((opt: { value: any; }) => opt.value).join('/').replace(/,\s*/g, '/') : ''),
 
- 
+
+    })
+  ), 
   delete: initialValues?.variation_options?.map((initialVariationOption: Variation) => {
       // Check if the variation option exists in the current `variation_options`
       //@ts-ignore
@@ -643,9 +645,9 @@ variation_options: {
       if (!find) {
         return initialVariationOption?.id;
       }
-    }).filter((item?: number) => item !== undefined),
+    }).filter((item?: number) => item !== undefined) || null,
 },
-    }) || null,
+    }),
 
     ...calculateMinMaxPrice(variation_options),
   };
