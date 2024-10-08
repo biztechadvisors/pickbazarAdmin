@@ -7,32 +7,49 @@ import { Router, useRouter } from 'next/router';
 import { Routes } from '@/config/routes';
 import { Config } from '@/config';
 
-export const usecreateBlogMutation = () => {
-  const { t } = useTranslation();
-  const router = useRouter();
+export const useCreateBlogMutation = () => { 
   const queryClient = useQueryClient();
+  const router = useRouter();
+  const { t } = useTranslation();
+  
   return useMutation(blogClient.create, {
     onSuccess: () => {
+      // Generate the redirect URL based on whether there's a shop query
       const generateRedirectUrl = router.query.shop
         ? `/${router.query.shop}${Routes.blog.list}`
         : Routes.blog.list;
-      Router.push(generateRedirectUrl, undefined, {
+
+      // Correct usage of router.push
+      router.push(generateRedirectUrl, undefined, {
         locale: Config.defaultLanguage,
       });
+
+      // Show a success toast notification
       toast.success(t('common:successfully-created'));
     },
-    // Always refetch after error or success:
+    // Always refetch after mutation is settled (success or error)
     onSettled: () => {
       queryClient.invalidateQueries(API_ENDPOINTS.BLOG);
     },
   });
 };
 
+
 export const useUpdateBlogMutation = () => {
   const { t } = useTranslation();
   const queryClient = useQueryClient();
+  const router = useRouter();
   return useMutation(blogClient.update, {
     onSuccess: () => {
+      const generateRedirectUrl = router.query.shop
+      ? `/${router.query.shop}${Routes.blog.list}`
+      : Routes.blog.list;
+
+    // Correct usage of router.push
+    router.push(generateRedirectUrl, undefined, {
+      locale: Config.defaultLanguage,
+    });
+
       toast.success(t('common:successfully-updated'));
     },
     onError: (error: any) => {
@@ -50,23 +67,32 @@ export const useBlogQuery = ({ slug, language }: any) => {
     blogClient.get({ slug, language })
   );
 };
-
-export const useBlogsQuery = (params: any) => {
-  return useQuery(
-    [API_ENDPOINTS.BLOG, params],
-    () => blogClient.getAll(params),
-    {
-      onSuccess: (data) => {
-        // Handle successful data fetching (e.g., log data, set additional state)
-        console.log('Blogs fetched successfully:', data);
-      },
-      onError: (error) => {
-        // Handle errors (e.g., show an error message)
-        console.error('Error fetching blogs:', error);
-      },
-    }
+export const useBlogsQuery = (params: { shopSlug: string; search?: string; language?: string; orderBy?: string; sortedBy?: string; page?: number }) => {
+  return useQuery([API_ENDPOINTS.BLOG, params], () =>
+    blogClient.get({
+      slug: params.shopSlug,
+      search: params.search, // Send search term to the API
+      language: params.language,
+      // shop_id: params.shopSlug,
+    })
   );
 };
+// export const useBlogsQuery = (params: any) => {
+//   return useQuery(
+//     [API_ENDPOINTS.BLOG, params],
+//     () => blogClient.getAll(params),
+//     {
+//       onSuccess: (data) => {
+//         // Handle successful data fetching (e.g., log data, set additional state)
+//         console.log('Blogs fetched successfully:', data);
+//       },
+//       onError: (error) => {
+//         // Handle errors (e.g., show an error message)
+//         console.error('Error fetching blogs:', error);
+//       },
+//     }
+//   );
+// };
 
 export const useDeleteBlogMutation = (params: any) => {
   const queryClient = useQueryClient();

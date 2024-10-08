@@ -9,7 +9,7 @@ export const typeClient = {
     return HttpClient.get<Type[]>(API_ENDPOINTS.TYPES, {
       searchJoin: 'and',
       ...params,
-      search: HttpClient.formatSearchParams({ name }),
+      // search: HttpClient.formatSearchParams({ name }),
     });
   },
 };

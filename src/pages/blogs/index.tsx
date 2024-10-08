@@ -36,6 +36,7 @@ const Blogs = () => {
     sortedBy,
     language: locale,
     search: searchTerm,
+    page,
   });
 
   function handleSearch({ searchText }: { searchText: string }) {

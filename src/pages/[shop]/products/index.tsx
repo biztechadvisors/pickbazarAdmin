@@ -75,6 +75,7 @@ export default function ProductsPage() {
       shop_id: shopId,
       type,
       categories: category,
+      // tags: tags,
       orderBy,
       sortedBy,
       page,
@@ -163,13 +164,13 @@ export default function ProductsPage() {
                 <ArrowDown className="ms-2" />
               )}
             </button>
-
+{/* 
             <button
               onClick={handleImportModal}
               className="hidden h-8 w-8 flex-shrink-0 items-center justify-center rounded-full bg-gray-50 transition duration-300 ms-5 hover:bg-gray-100 md:flex"
             >
               {canWrite && <MoreIcon className="w-3.5 text-body" />}
-            </button>
+            </button> */}
           </div>
         </div>
 

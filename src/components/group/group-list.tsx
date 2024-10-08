@@ -32,7 +32,7 @@ const TypeList = ({ types, onSort, onOrder }: IProps) => {
   //   : getPermission?.find(
   //       (permission) => permission.type === 'sidebar-nav-item-groups'
   //     )?.write;
-
+  const rowExpandable = (record: any) => record.children?.length;
   const permissionTypes = AllPermission(); 
 
   const canWrite = permissionTypes.includes('sidebar-nav-item-groups');
@@ -132,6 +132,10 @@ const TypeList = ({ types, onSort, onOrder }: IProps) => {
         data={types}
         rowKey="id"
         scroll={{ x: 380 }}
+        expandable={{
+          expandedRowRender: () => ' ',
+          rowExpandable: rowExpandable,
+        }}
       />
     </div>
   );

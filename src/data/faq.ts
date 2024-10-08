@@ -55,9 +55,10 @@ export const useUpdateFaqClassMutation = (shop_id) => {
   console.log('shop_id =', shop_id)
   const { t } = useTranslation();
   const queryClient = useQueryClient();
-
+  const router = useRouter();
   return useMutation((data) => faqClient.update({ ...data , shop_id }), {
     onSuccess: () => {
+      router.push(Routes.faq.list);
       toast.success(t('common:successfully-updated'));
     },
     onSettled: () => {
