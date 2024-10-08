@@ -895,6 +895,7 @@ import { getCartesianProduct, filterAttributes } from './form-utils';
 import { useRouter } from 'next/router';
 import { Config } from '@/config';
 import { useSettingsQuery } from '@/data/settings';
+import Checkbox from '@/components/ui/checkbox/checkbox';
 
 type IProps = {
   initialValues?: Product | null;
@@ -1004,6 +1005,17 @@ export default function ProductVariableForm({
                       fieldAttributeValue={field}
                       cartesianProduct={cartesianProduct} // Pass cartesianProduct here
                     />
+                    <div className="flex flex-wrap mt-5">
+                    <Input
+                        label={`${t('form:input-label-name')}*`}
+                        type="text"
+                        {...register(`variation_options.${fieldIndex}.name`)}
+                        error={t(errors.variation_options?.[fieldIndex]?.name?.message)}
+                        variant="outline"
+                        className="mb-2"
+                        style={{ width: '70px', height: '40px' }}
+                      />
+                      </div>
                     <div className="flex flex-wrap gap-2 mt-5">
                       <Input
                         label={`${t('form:input-label-price')}*`}
@@ -1048,6 +1060,39 @@ export default function ProductVariableForm({
                           multiple={false}
                         />
                       </div>
+                      <div className="mb-2">
+                       <Checkbox
+                        {...register(`variation_options.${fieldIndex}.is_digital`)}
+                        label={t('form:input-label-is-digital')}
+                      />
+                      {!!watch(`variation_options.${fieldIndex}.is_digital`) && (
+                        <div className="mt-2">
+                          <Label>{t('form:input-label-digital-file')}</Label>
+                          <FileInput
+                            name={`variation_options.${fieldIndex}.digital_file_input`}
+                            control={control}
+                            multiple={false}
+                            acceptFile={true}
+                            helperText={t('form:text-upload-digital-file')}
+                            defaultValue={{}}
+                          />
+                          <ValidationError
+                            message={t(errors?.variation_options?.[fieldIndex]?.digital_file_input?.message)}
+                          />
+                          <input
+                            type="hidden"
+                            {...register(`variation_options.${fieldIndex}.digital_file`)}
+                          />
+                        </div>
+                      )}
+                    </div>
+                    <div className="mb-2">
+                       <Checkbox
+                        {...register(`variation_options.${fieldIndex}.is_disable`)}
+                        error={t(errors.variation_options?.[fieldIndex]?.is_disable?.message)}
+                        label={t('form:input-label-disable-variant')}
+                      />
+                    </div>
                     </div>
                   </div>
                 </div>
@@ -1076,16 +1121,14 @@ export const TitleAndOptionsInput = ({
   index,
   setValue,
   register,
-  cartesianProduct, // Receive cartesianProduct
+  cartesianProduct, 
 }: any) => {
   const title = Array.isArray(cartesianProduct)
     ? cartesianProduct.map((a) => a.value).join('/')
     : cartesianProduct.value;
-console.log("carr++++++++++", cartesianProduct);
 
-  // const options = Array.isArray(cartesianProduct)
-  //   ? JSON.stringify(cartesianProduct)
-  //   : JSON.stringify([cartesianProduct]);
+  
+console.log("carr++++++++++", cartesianProduct);
 
   const options = Array.isArray(cartesianProduct)
     ? cartesianProduct.map((item) => ({
@@ -1099,15 +1142,19 @@ console.log("carr++++++++++", cartesianProduct);
     setValue(`variation_options.${index}.title`, title);
     setValue(`variation_options.${index}.options`, options);
     
-    // Add cartesian product to variation_options
-    // setValue(`variation_options.${index}.cartesian_product`, cartesianProduct); 
-  }, [fieldAttributeValue, setValue, index, title, options]); // Add cartesianProduct to dependencies
+  
+  }, [fieldAttributeValue, setValue, index, title, options]); 
 
   return (
     <>
       <input {...register(`variation_options.${index}.title`)} type="hidden" />
       <input {...register(`variation_options.${index}.options`)} type="hidden" />
-      {/* <input {...register(`variation_options.${index}.cartesian_product`)} type="hidden" /> Add hidden input for cartesian product */}
+     
     </>
   );
 };
+
+
+  // const options = Array.isArray(cartesianProduct)
+  //   ? JSON.stringify(cartesianProduct)
+  //   : JSON.stringify([cartesianProduct]);

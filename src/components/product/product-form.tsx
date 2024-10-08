@@ -22,8 +22,8 @@ import ProductTagInput from './product-tag-input';
 import { Config } from '@/config';
 import Alert from '@/components/ui/alert';
 import { useMemo, useState } from 'react';
-import ProductAuthorInput from './product-author-input';
-import ProductManufacturerInput from './product-manufacturer-input';
+// import ProductAuthorInput from './product-author-input';
+// import ProductManufacturerInput from './product-manufacturer-input';
 import { EditIcon } from '@/components/icons/edit';
 import {
   getProductDefaultValues,
