@@ -91,4 +91,5 @@ export const API_ENDPOINTS = {
   QNA: '/qnas',
   CONTACTS: '/contacts',
   VACANCY: '/vacancies',
+  CAREERS: '/careers',
 };

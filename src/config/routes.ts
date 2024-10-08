@@ -23,6 +23,7 @@ export const Routes = {
   GetInspired: '/get-inspired',
   contacts: '/contacts',
   vacancies: '/vacancies',
+  careers: '/careers',
   // groups: `/${getAdminMyShopsRoute()}/groups`,
   shops: (slug: string) => `/shops/${encodeURIComponent(slug)}`,
   // orders: '/orders',
@@ -152,6 +153,9 @@ export const Routes = {
   },
   vacancies: {
     ...routesFactory('/vacancies'),
+  },
+  careers: {
+    ...routesFactory('/careers'),
   },
   shopMessage: {
     ...routesFactory('/shop-message'),

@@ -568,6 +568,21 @@ export interface GetInspired {
   updatedAt: string;
 }
 
+export interface Career {
+  id: string;
+  fullName: string;
+  phone: string;
+  email: string;
+  position: string;
+  location: string;
+  cv_resume?: string;
+  shopSlug: string;
+  locationId: number;
+  vacancyId: number;
+  createdAt: string;
+  updatedAt?: string;
+}
+
 export interface Vacancy {
   id: string;
   title: string;
@@ -645,6 +660,18 @@ export interface GetInspiredInput {
   shopId: number;
   imageIds?: number[];
   tagIds?: number[];
+}
+
+export interface CareerInput {
+  fullName: string;
+  phone: string;
+  email: string;
+  position: string;
+  location: string;
+  cv_resume?: string;
+  shopSlug: string;
+  locationId: number;
+  vacancyId: number;
 }
 
 export interface VacancyInput {
@@ -1783,6 +1810,10 @@ export interface GetInspiredQueryOptions extends QueryOptions {
   shopSlug: string; // Required for identifying the shop
 }
 
+export interface CareerQueryOptions {
+  shopSlug: string;
+}
+
 export interface QnaQueryOptions extends QueryOptions {
   faqId?: number; // Ensure faqId is defined as optional
   page?: number;
@@ -1872,6 +1903,8 @@ export interface RegionPaginator extends PaginatorInfo<Region> {}
 export interface FaqPaginator extends PaginatorInfo<Faq> {}
 
 export interface GetInspiredPaginator extends PaginatorInfo<GetInspired> {}
+
+export interface CareerPaginator extends PaginatorInfo<Career> {}
 
 export interface StoreNoticePaginator extends PaginatorInfo<StoreNotice> {}
 

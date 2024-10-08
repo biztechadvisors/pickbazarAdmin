@@ -6,6 +6,7 @@ import PaymentModal from '@/components/payment/payment-modal';
 import GetInspiredDeleteView from '@/components/getInspired/getInspired-delete-view';
 import QnaDeleteView from '@/components/qna/qna-delete-view';
 import ContactDeleteView from '@/components/contacts/contacts-delete-view';
+import CareerDeleteView from '@/components/careers/careers-delete-view';
 const TagDeleteView = dynamic(() => import('@/components/tag/tag-delete-view'));
 const TaxDeleteView = dynamic(() => import('@/components/tax/tax-delete-view'));
 const BanCustomerView = dynamic(
@@ -210,6 +211,8 @@ function renderModal(view: MODAL_VIEWS | undefined, data: any) {
       return <GetInspiredDeleteView />;
     case 'DELETE_CONTACTS':
       return <ContactDeleteView />;
+    case 'DELETE_CAREER':
+      return <CareerDeleteView />;
     case 'DELETE_REGIONS':
       return <RegionsDeleteView />;
     case 'ACCEPT_ABUSE_REPORT':

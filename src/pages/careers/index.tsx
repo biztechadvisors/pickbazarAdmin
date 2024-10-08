@@ -12,11 +12,11 @@ import { adminOnly, getAuthCredentials } from '@/utils/auth-utils';
 import { useRouter } from 'next/router';
 import { Config } from '@/config';
 import { AllPermission } from '@/utils/AllPermission';
-import { useVacancyQuery } from '@/data/vacancies'; // Use vacancy query instead of faq
+import { useCareersQuery } from '@/data/careers'; // Assuming there's a careers query hook
+import CareersList from '@/components/careers/careers-list'; // Import a CareersList component
 import { useMeQuery } from '@/data/user';
-import VacancyList from '@/components/vacancy/vacancy-list'; // Import the VacancyList component
 
-export default function Vacancies() {
+export default function Careers() {
   const { t } = useTranslation();
   const { locale } = useRouter();
   const [orderBy, setOrder] = useState('created_at');
@@ -25,16 +25,16 @@ export default function Vacancies() {
   const [page, setPage] = useState(1);
   const { data: me } = useMeQuery();
 
-  const { vacancies, loading, paginatorInfo, error } = useVacancyQuery({
-    code: me?.managed_shop?.slug,
+  const shopSlug = me?.managed_shop?.slug; // Extract shopSlug
+
+  const { careers, loading, paginatorInfo, error } = useCareersQuery({
+    shopSlug, // Use shopSlug instead of code
   });
 
-  console.log('Datame', me);
-  console.log('Vacancies in index', vacancies);
-
+  console.log('Career in index', careers);
   const { permissions } = getAuthCredentials();
   const permissionTypes = AllPermission();
-  const canWrite = permissionTypes.includes('sidebar-nav-item-vacancies');
+  const canWrite = permissionTypes.includes('sidebar-nav-item-careers'); // Adjust permissions accordingly
 
   if (loading) return <Loader text={t('common:text-loading')} />;
   if (error) return <ErrorMessage message={error.message} />;
@@ -53,23 +53,27 @@ export default function Vacancies() {
       <Card className="mb-4 flex flex-col items-center xl:flex-row">
         <div className="mb-4 md:mb-0 md:w-1/4">
           <h1 className="text-xl font-semibold text-heading">
-            {t('form:input-label-vacancies')}
+            {t('form:input-label-careers')} {/* Change label for Careers */}
           </h1>
         </div>
 
         <div className="flex w-full flex-col items-center space-y-4 ms-auto md:flex-row md:space-y-0 xl:w-1/2">
           <Search onSearch={handleSearch} />
-          <LinkButton
-            href="/vacancies/create" // Change the URL to match your routing
-            className="h-12 w-full md:w-auto md:ms-6"
-          >
-            <span>+ {t('form:button-label-add-vacancy')}</span>
-          </LinkButton>
+          {canWrite && (
+            <LinkButton
+              href="/careers/create" // Adjust the URL for the careers creation page
+              className="h-12 w-full md:w-auto md:ms-6"
+            >
+              <span>+ {t('form:button-label-add-career')}</span>{' '}
+              {/* Button to add new Career */}
+            </LinkButton>
+          )}
         </div>
       </Card>
 
-      <VacancyList
-        vacancies={vacancies} // Pass the vacancies data
+      {/* Careers List */}
+      <CareersList
+        careers={careers} // Pass the careers data
         paginatorInfo={paginatorInfo} // Pass the paginator info
         onPagination={handlePagination}
         onOrder={setOrder}
@@ -79,11 +83,11 @@ export default function Vacancies() {
   );
 }
 
-Vacancies.authenticate = {
+Careers.authenticate = {
   permissions: adminOnly,
 };
 
-Vacancies.Layout = Layout;
+Careers.Layout = Layout;
 
 export const getStaticProps = async ({ locale }: any) => ({
   props: {

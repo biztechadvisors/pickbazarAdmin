@@ -6,14 +6,14 @@ import Card from '@/components/common/card';
 import { useRouter } from 'next/router';
 import { Vacancy } from '@/types';
 import { useTranslation } from 'next-i18next';
-import { yupResolver } from '@hookform/resolvers/yup';
 import { useMeQuery } from '@/data/user';
-import { useState, useEffect } from 'react';
+import { useEffect } from 'react';
 import {
   useCreateVacancyMutation,
   useUpdateVacancyMutation,
-  useVacancyQuery,
 } from '@/data/vacancies'; // Import vacancy queries
+import { title } from 'process';
+import { values } from 'lodash';
 
 const defaultValues = {
   title: '',
@@ -27,19 +27,22 @@ const defaultValues = {
 
 type IProps = {
   initialValues?: Vacancy | null;
+  locations: Array<{ id: number; title: string }>; // Adjust according to your location data structure
 };
 
-export default function CreateOrUpdateVacancyForm({ initialValues }: IProps) {
+export default function CreateOrUpdateVacancyForm({
+  initialValues,
+  locations,
+}: IProps) {
   const router = useRouter();
   const { t } = useTranslation();
   const { data: me } = useMeQuery();
-  const { id } = router.query; // Get ID from URL
 
   const {
     register,
     handleSubmit,
     formState: { errors },
-    reset, // Add reset to manually update the form values
+    reset,
   } = useForm<Vacancy>({
     shouldUnregister: true,
     defaultValues: initialValues ?? defaultValues,
@@ -52,46 +55,34 @@ export default function CreateOrUpdateVacancyForm({ initialValues }: IProps) {
   const { mutate: updateVacancy, isLoading: updating } =
     useUpdateVacancyMutation(shopId);
 
-  // Fetch existing vacancy details if `id` is present
-  const {
-    data: vacancyData,
-    error: vacancyError,
-    isLoading: isVacancyLoading,
-  } = useVacancyQuery(id as string);
-
-  // Update form with initial values when vacancy data is fetched
+  // Populate the form with initial values if provided
   useEffect(() => {
-    if (vacancyData && id) {
+    if (initialValues) {
       reset({
-        title: vacancyData.title,
-        description: vacancyData.description,
-        employmentType: vacancyData.employmentType,
-        salaryRange: vacancyData.salaryRange,
-        locationId: vacancyData.locationId,
-        shopId: vacancyData.shopId,
-        careerId: vacancyData.careerId,
+        title: initialValues.title,
+        description: initialValues.description,
+        employmentType: initialValues.employmentType,
+        salaryRange: initialValues.salaryRange,
+        locationId: initialValues.locationId,
+        shopId: initialValues.shopId,
+        careerId: initialValues.careerId,
       });
     }
-  }, [vacancyData, reset, id]);
+  }, [initialValues, reset]);
 
   const onSubmit = async (values: Vacancy) => {
-    if (id && initialValues) {
-      // If updating an existing vacancy
+    console.log('Form values:', values); // Log the form values on submit
+    if (initialValues) {
       updateVacancy({
-        id: id as string, // Use the `id` from URL params
+        id: initialValues.id,
         ...values,
       });
     } else {
-      // If creating a new vacancy
       createVacancy({
         ...values,
       });
     }
   };
-
-  if (isVacancyLoading) return <p>Loading...</p>;
-  if (vacancyError)
-    return <p>Error fetching vacancy data: {vacancyError.message}</p>;
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
@@ -130,14 +121,14 @@ export default function CreateOrUpdateVacancyForm({ initialValues }: IProps) {
             variant="outline"
             className="mb-5"
           />
-          <Input
-            label={t('form:input-label-location-id')}
-            type="number"
-            {...register('locationId')}
-            error={t(errors.locationId?.message!)}
-            variant="outline"
-            className="mb-5"
-          />
+          <select {...register('locationId')} className="mb-5">
+            <option value="">{t('form:select-location')}</option>
+            {locations.map((location) => (
+              <option key={location.id} value={location.id}>
+                {location.title}
+              </option>
+            ))}
+          </select>
         </Card>
       </div>
 
@@ -151,7 +142,7 @@ export default function CreateOrUpdateVacancyForm({ initialValues }: IProps) {
           {t('form:button-label-back')}
         </Button>
         <Button loading={creating || updating}>
-          {initialValues || id
+          {initialValues
             ? t('form:button-label-update')
             : t('form:button-label-add')}{' '}
           {t('form:form-title-vacancy')}
