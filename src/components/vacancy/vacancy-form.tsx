@@ -11,9 +11,7 @@ import { useEffect } from 'react';
 import {
   useCreateVacancyMutation,
   useUpdateVacancyMutation,
-} from '@/data/vacancies'; // Import vacancy queries
-import { title } from 'process';
-import { values } from 'lodash';
+} from '@/data/vacancies';
 
 const defaultValues = {
   title: '',
@@ -22,12 +20,12 @@ const defaultValues = {
   salaryRange: '',
   locationId: 0,
   shopId: 0,
-  careerId: undefined, // Optional
+  careerId: undefined,
 };
 
 type IProps = {
   initialValues?: Vacancy | null;
-  locations: Array<{ id: number; title: string }>; // Adjust according to your location data structure
+  locations: Array<{ id: number; title: string }>;
 };
 
 export default function CreateOrUpdateVacancyForm({
@@ -38,6 +36,8 @@ export default function CreateOrUpdateVacancyForm({
   const { t } = useTranslation();
   const { data: me } = useMeQuery();
 
+  const shopId = me?.shop_id;
+
   const {
     register,
     handleSubmit,
@@ -45,10 +45,8 @@ export default function CreateOrUpdateVacancyForm({
     reset,
   } = useForm<Vacancy>({
     shouldUnregister: true,
-    defaultValues: initialValues ?? defaultValues,
+    defaultValues: { ...defaultValues, shopId },
   });
-
-  const shopId = me?.shop_id;
 
   const { mutate: createVacancy, isLoading: creating } =
     useCreateVacancyMutation(shopId);
@@ -63,23 +61,30 @@ export default function CreateOrUpdateVacancyForm({
         description: initialValues.description,
         employmentType: initialValues.employmentType,
         salaryRange: initialValues.salaryRange,
-        locationId: initialValues.locationId,
-        shopId: initialValues.shopId,
+        locationId: initialValues.locationId || 0, // Ensure it has a valid default
+        shopId: initialValues.shopId || shopId,
         careerId: initialValues.careerId,
       });
     }
-  }, [initialValues, reset]);
+  }, [initialValues, reset, shopId]);
 
   const onSubmit = async (values: Vacancy) => {
-    console.log('Form values:', values); // Log the form values on submit
+    const formData = {
+      ...values,
+      shopId,
+      locationId: Number(values.locationId),
+    };
+
+    console.log('Form values (with shopId):', formData);
+
     if (initialValues) {
       updateVacancy({
         id: initialValues.id,
-        ...values,
+        ...formData,
       });
     } else {
       createVacancy({
-        ...values,
+        ...formData,
       });
     }
   };
@@ -121,13 +126,18 @@ export default function CreateOrUpdateVacancyForm({
             variant="outline"
             className="mb-5"
           />
-          <select {...register('locationId')} className="mb-5">
-            <option value="">{t('form:select-location')}</option>
-            {locations.map((location) => (
-              <option key={location.id} value={location.id}>
-                {location.title}
+          <select name="location">
+            {locations && locations.length > 0 ? ( // Check that locations is defined and has length
+              locations.map((location) => (
+                <option key={location.id} value={location.id}>
+                  {location.title}
+                </option>
+              ))
+            ) : (
+              <option value="" disabled>
+                {t('form:no-locations')} {/* Fallback message */}
               </option>
-            ))}
+            )}
           </select>
         </Card>
       </div>

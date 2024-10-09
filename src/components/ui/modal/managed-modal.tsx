@@ -7,6 +7,7 @@ import GetInspiredDeleteView from '@/components/getInspired/getInspired-delete-v
 import QnaDeleteView from '@/components/qna/qna-delete-view';
 import ContactDeleteView from '@/components/contacts/contacts-delete-view';
 import CareerDeleteView from '@/components/careers/careers-delete-view';
+import VacancyDeleteView from '@/components/vacancy/vacancy-delete-view';
 const TagDeleteView = dynamic(() => import('@/components/tag/tag-delete-view'));
 const TaxDeleteView = dynamic(() => import('@/components/tax/tax-delete-view'));
 const BanCustomerView = dynamic(
@@ -205,6 +206,8 @@ function renderModal(view: MODAL_VIEWS | undefined, data: any) {
       return <ReviewDeleteView />;
     case 'DELETE_FAQ':
       return <FaqDeleteView />;
+    case 'DELETE_VACANCY':
+      return <VacancyDeleteView />;
     case 'DELETE_QNA':
       return <QnaDeleteView />;
     case 'DELETE_GET_INSPIRED':

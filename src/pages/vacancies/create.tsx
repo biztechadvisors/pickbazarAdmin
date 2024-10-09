@@ -1,3 +1,4 @@
+// Assuming you have the following component context
 import CreateOrUpdateVacancyForm from '@/components/vacancy/vacancy-form'; // Import the Vacancy form
 import Layout from '@/components/layouts/admin';
 import { useTranslation } from 'next-i18next';
@@ -8,8 +9,8 @@ export default function CreateVacancyPage() {
   const { t } = useTranslation();
   const { data: me } = useMeQuery(); // Fetch user data to get locations
 
-  // Check if me is defined and has adds array
-  const locations = me?.adds || [];
+  // Ensure locations is an array even if me or adds is undefined
+  const locations = Array.isArray(me?.adds) ? me.adds : []; // Default to an empty array
 
   console.log('Me data:', me); // Log user data
   console.log('Locations:', locations); // Log locations data

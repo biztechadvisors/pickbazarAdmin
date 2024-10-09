@@ -615,6 +615,7 @@ export interface Qna {
   type?: string[];
   createdAt: Date;
   updatedAt: Date;
+  faqId: number;
 }
 
 export interface CouponInput {
@@ -679,6 +680,7 @@ export interface VacancyInput {
   description: string;
   employmentType: string;
   salaryRange: string;
+  shopId: number;
   locationId: number;
   careerId?: number;
 }

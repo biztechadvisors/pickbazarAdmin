@@ -15,7 +15,7 @@ export const useCreateQnaMutation = (faqId: string) => {
   const { t } = useTranslation();
 
   return useMutation(
-    (data: Omit<Qna, 'id'>) => qnaClient.createQna({ data, faqId }), // Include faqId in the data being sent
+    (data: Omit<Qna, 'id'>) => qnaClient.createQna(data), // Include faqId in the data being sent
     {
       onSuccess: () => {
         router.push(Routes.faq.list); // Navigate to QnA list after creation
@@ -58,7 +58,8 @@ export const useUpdateQnaMutation = (shop_id) => {
   const { t } = useTranslation();
   const queryClient = useQueryClient();
 
-  return useMutation((data) => qnaClient.updateQna({ ...data, shop_id }), {
+  return useMutation(({ id, ...data }) => qnaClient.updateQna(data, id), {
+    // Pass `id` (qnaId) separately
     onSuccess: () => {
       toast.success(t('common:successfully-updated'));
     },

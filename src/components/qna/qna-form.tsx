@@ -4,52 +4,61 @@ import Button from '@/components/ui/button';
 import Description from '@/components/ui/description';
 import Card from '@/components/common/card';
 import { useRouter } from 'next/router';
-import { Qna } from '@/types'; // Assuming Qna type is defined in your types
+import { Qna } from '@/types';
 import { useTranslation } from 'next-i18next';
 import { useMeQuery } from '@/data/user';
-import { useCreateQnaMutation, useUpdateQnaMutation } from '@/data/qna'; // Make sure these hooks are defined
-
-const defaultValues = {
-  question: '',
-  answer: '',
-};
+import { useCreateQnaMutation, useUpdateQnaMutation } from '@/data/qna';
+import { useSingleQnaQuery } from '@/data/qna'; // Hook for fetching single QnA
+import { useEffect } from 'react';
 
 type IProps = {
-  initialValues?: Qna | null;
-  faqId: number; // Add faqId to props
+  faqId: number;
+  qnaId?: number; // Optional, for updating QnA
 };
 
-export default function CreateOrUpdateQnaForm({
-  initialValues,
-  faqId,
-}: IProps) {
+export default function CreateOrUpdateQnaForm({ faqId, qnaId }: IProps) {
   const router = useRouter();
   const { t } = useTranslation();
   const { data: me } = useMeQuery();
 
+  // Fetch QnA data when qnaId is present
+  const { data: fetchedQna, isLoading: fetchingQna } = useSingleQnaQuery(
+    qnaId!,
+    {
+      enabled: !!qnaId, // Fetch only if qnaId exists
+    }
+  );
+
   const {
     register,
     handleSubmit,
+    reset,
     formState: { errors },
   } = useForm<Qna>({
     shouldUnregister: true,
-    defaultValues: initialValues ?? defaultValues,
+    defaultValues: fetchedQna ?? { question: '', answer: '' }, // Default form values
   });
 
-  console.log(faqId, 'ashish');
+  // Reset form when QnA data is fetched
+  useEffect(() => {
+    if (fetchedQna) {
+      reset(fetchedQna); // Populate the form with fetched QnA
+    }
+  }, [fetchedQna, reset]);
 
-  const { mutate: createQna, isLoading: creating } = useCreateQnaMutation(); // Pass faqId to the mutation hook
-  const { mutate: updateQna, isLoading: updating } = useUpdateQnaMutation(); // Assuming updateQna does not require faqId
+  const { mutate: createQna, isLoading: creating } = useCreateQnaMutation();
+  const { mutate: updateQna, isLoading: updating } = useUpdateQnaMutation();
 
   const onSubmit = async (values: Qna) => {
-    if (initialValues) {
+    if (qnaId) {
+      // Update QnA
       updateQna({
-        id: initialValues.id!,
+        id: qnaId,
         ...values,
       });
     } else {
-      // Pass faqId to createQna mutation
-      createQna(values, faqId); // Pass faqId here
+      // Create new QnA
+      createQna({ ...values, faqId });
     }
   };
 
@@ -60,7 +69,6 @@ export default function CreateOrUpdateQnaForm({
           title={t('form:form-title-qna')}
           className="w-full px-0 pb-5 sm:w-4/12 sm:py-8 sm:pe-4 md:w-1/3 md:pe-5"
         />
-
         <Card className="w-full sm:w-8/12 md:w-2/3">
           <Input
             label={t('form:input-label-question')}
@@ -88,10 +96,8 @@ export default function CreateOrUpdateQnaForm({
         >
           {t('form:button-label-back')}
         </Button>
-        <Button loading={creating || updating}>
-          {initialValues
-            ? t('form:button-label-update')
-            : t('form:button-label-add')}{' '}
+        <Button loading={creating || updating || fetchingQna}>
+          {qnaId ? t('form:button-label-update') : t('form:button-label-add')}{' '}
           {t('form:form-title-qna')}
         </Button>
       </div>

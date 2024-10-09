@@ -9,7 +9,6 @@ import { MappedPaginatorInfo } from '@/types';
 import { Routes } from '@/config/routes';
 import ActionButtons from '../common/action-buttons';
 import { AllPermission } from '@/utils/AllPermission';
-import vacancies from '@/pages/vacancies';
 
 export type IProps = {
   vacancies: any | undefined | null;
@@ -30,7 +29,6 @@ const VacancyList = ({
   const rowExpandable = (record: any) => record.children?.length;
   const permissionTypes = AllPermission();
   const canWrite = permissionTypes.includes('sidebar-nav-item-tags');
-  console.log('Vacancy data hero', vacancies);
   const { alignLeft, alignRight } = useIsRTL();
 
   const [sortingObj, setSortingObj] = useState<{
@@ -63,6 +61,8 @@ const VacancyList = ({
       description: item.description,
       employmentType: item.employmentType,
       salaryRange: item.salaryRange,
+      // Assuming `location` is an object and we want the title
+      location: item.location ? item.location.title : null, // Update here
     })) || [];
 
   const columns = [
@@ -132,6 +132,15 @@ const VacancyList = ({
       key: 'salaryRange',
       align: alignLeft,
       onHeaderCell: () => onHeaderClick('salaryRange'),
+    },
+    {
+      title: t('table:table-item-locations'), // New Column Title
+      dataIndex: 'location', // Data index for location
+      key: 'location', // Key for the location column
+      align: alignLeft,
+      render: (location: any) => (
+        <span>{location ? location : t('table:no-locations')}</span>
+      ),
     },
     {
       title: t('table:table-item-actions'),

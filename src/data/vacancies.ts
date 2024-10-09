@@ -15,7 +15,7 @@ export const useCreateVacancyMutation = (shop_id) => {
 
   return useMutation((data) => vacancyClient.create({ ...data, shop_id }), {
     onSuccess: () => {
-      router.push(Routes.vacancy.list); // Adjust the route for vacancies
+      router.push(Routes.vacancies.list); // Adjust the route for vacancies
       toast.success(t('common:successfully-created'));
     },
     onSettled: () => {
