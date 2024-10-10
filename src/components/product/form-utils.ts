@@ -493,8 +493,7 @@ export function getProductInputValues(
   } = values;
 
   const processedFile = processFileWithName(digital_file_input);
-  console.log("variation+++++++++option", variation_options);
-  console.log("variationsssssssssssssssssssss", variations);
+
   return {
     ...simpleValues,
     is_digital,
