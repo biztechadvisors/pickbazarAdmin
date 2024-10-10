@@ -72,11 +72,13 @@ export const useUpdateTagMutation = () => {
   });
 };
 
-export const useTagQuery = ({ slug, language  }: GetParams) => {
+export const useTagQuery = ({ slug, language }: GetParams) => {
+  console.log('tag slug', slug);
   const { data, error, isLoading } = useQuery<Tag, Error>(
-    [API_ENDPOINTS.TYPES , { slug, language }],
+    [API_ENDPOINTS.TAGS, { slug, language }],
     () => tagClient.get({ slug, language })
   );
+  console.log('Tag data', data);
   return {
     tag: data,
     error,
@@ -86,26 +88,32 @@ export const useTagQuery = ({ slug, language  }: GetParams) => {
 // export const useRegionsQuery = ({ shopSlug, language }: GetParams) => {
 //   const { data, error, isLoading } = useQuery<Region[], Error>(
 //     [API_ENDPOINTS.REGIONS, { shopSlug, language }],
-//     () => regionClient.get({ shopSlug, language })  
+//     () => regionClient.get({ shopSlug, language })
 //   );
 
-//   console.log("REGION DATA: ", data); 
+//   console.log("REGION DATA: ", data);
 //    return {
-//     regions: data,   
+//     regions: data,
 //     error,
 //     loading: isLoading,
 //   };
 // };
 
-export const useTagsQuery = (options: Partial<TagQueryOptions>) => {
+export const useTagsQuery = (
+  params: Partial<TagQueryOptions>,
+  options: any = {}
+) => {
   const { data, error, isLoading } = useQuery<TagPaginator, Error>(
-    [API_ENDPOINTS.TAGS, options],
+    [API_ENDPOINTS.TAGS, params],
     ({ queryKey, pageParam }) =>
       tagClient.paginated(Object.assign({}, queryKey[1], pageParam)),
     {
       keepPreviousData: true,
+      ...options,
     }
   );
+
+  console.log('dfata= ===', data);
 
   return {
     tags: data?.data ?? [],

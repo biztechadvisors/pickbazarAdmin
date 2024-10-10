@@ -53,7 +53,7 @@ export const siteSettings = {
         label: 'sidebar-nav-item-dashboard',
         icon: 'DashboardIcon',
         permissions: ownerOnly,
-      },    
+      },
       {
         href: Routes.shop.list,
         label: 'sidebar-nav-item-shops',
@@ -262,6 +262,12 @@ export const siteSettings = {
         href: (shop: string) => `/${shop}${Routes.blog.list}`,
         label: 'sidebar-nav-item-blogs',
         icon: 'TagIcon',
+        permissions: adminOwnerAndStaffOnly,
+      },
+      {
+        href: (shop: string) => `/${shop}${Routes.getInspired.list}`,
+        label: 'sidebar-nav-item-getInspired',
+        icon: 'DashboardIcon',
         permissions: adminOwnerAndStaffOnly,
       },
     ],

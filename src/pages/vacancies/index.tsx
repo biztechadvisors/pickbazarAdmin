@@ -12,13 +12,11 @@ import { adminOnly, getAuthCredentials } from '@/utils/auth-utils';
 import { useRouter } from 'next/router';
 import { Config } from '@/config';
 import { AllPermission } from '@/utils/AllPermission';
-import { useFaqQuery } from '@/data/faq';
+import { useVacancyQuery } from '@/data/vacancies'; // Use vacancy query instead of faq
 import { useMeQuery } from '@/data/user';
-import FaqList from '@/components/faq/faq-list';
-import { useQnaQuery } from '@/data/qna';
-import QnaList from '@/components/qna/qna-list'; // Import the QnaList component
+import VacancyList from '@/components/vacancy/vacancy-list'; // Import the VacancyList component
 
-export default function Faq() {
+export default function Vacancies() {
   const { t } = useTranslation();
   const { locale } = useRouter();
   const [orderBy, setOrder] = useState('created_at');
@@ -27,28 +25,19 @@ export default function Faq() {
   const [page, setPage] = useState(1);
   const { data: me } = useMeQuery();
 
-  const { faq, loading, paginatorInfo, error } = useFaqQuery({
+  const { vacancies, loading, paginatorInfo, error } = useVacancyQuery({
     code: me?.managed_shop?.slug,
   });
 
-  const faqId = faq?.data?.[0]?.id;
-
-  const {
-    qna,
-    loading: qnaLoading,
-    error: qnaError,
-    paginatorInfo: qnaPaginatorInfo, // Assuming you handle pagination here
-  } = useQnaQuery({
-    faqId,
-  });
+  console.log('Datame', me);
+  console.log('Vacancies in index', vacancies);
 
   const { permissions } = getAuthCredentials();
   const permissionTypes = AllPermission();
-  const canWrite = permissionTypes.includes('sidebar-nav-item-faq');
+  const canWrite = permissionTypes.includes('sidebar-nav-item-vacancies');
 
-  if (loading || qnaLoading) return <Loader text={t('common:text-loading')} />;
+  if (loading) return <Loader text={t('common:text-loading')} />;
   if (error) return <ErrorMessage message={error.message} />;
-  if (qnaError) return <ErrorMessage message={qnaError.message} />;
 
   function handleSearch({ searchText }: { searchText: string }) {
     setSearchTerm(searchText);
@@ -64,69 +53,37 @@ export default function Faq() {
       <Card className="mb-4 flex flex-col items-center xl:flex-row">
         <div className="mb-4 md:mb-0 md:w-1/4">
           <h1 className="text-xl font-semibold text-heading">
-            {t('form:input-label-faq')}
+            {t('form:input-label-vacancies')}
           </h1>
         </div>
 
         <div className="flex w-full flex-col items-center space-y-4 ms-auto md:flex-row md:space-y-0 xl:w-1/2">
           <Search onSearch={handleSearch} />
           <LinkButton
-            href="/faq/create"
+            href="/vacancies/create" // Change the URL to match your routing
             className="h-12 w-full md:w-auto md:ms-6"
           >
-            <span>+ {t('form:button-label-add-faq')}</span>
+            <span>+ {t('form:button-label-add-vacancy')}</span>
           </LinkButton>
         </div>
       </Card>
 
-      <FaqList
-        faq={faq}
-        paginatorInfo={paginatorInfo}
+      <VacancyList
+        vacancies={vacancies} // Pass the vacancies data
+        paginatorInfo={paginatorInfo} // Pass the paginator info
         onPagination={handlePagination}
         onOrder={setOrder}
         onSort={setColumn}
       />
-
-      <Card className="mb-4 mt-11 flex flex-col items-center xl:flex-row">
-        <div className="mb-4 md:mb-0 md:w-1/4">
-          <h1 className="text-xl font-semibold text-heading">
-            {t('form:input-label-qna')} {/* Change the label accordingly */}
-          </h1>
-        </div>
-
-        <div className="flex w-full flex-col items-center space-y-4 ms-auto md:flex-row md:space-y-0 xl:w-1/2">
-          <Search onSearch={handleSearch} />
-          <LinkButton
-            href="/qna/create" // Adjust the URL to match your routing
-            className="h-12 w-full md:w-auto md:ms-6"
-          >
-            <span>+ {t('form:button-label-add-qna')}</span>{' '}
-            {/* Change the button label accordingly */}
-          </LinkButton>
-        </div>
-      </Card>
-      {/* Add the QnA List below the FAQ List */}
-      <Card className="mb-8">
-        <h2 className="mb-4 text-xl font-semibold text-heading">
-          {t('form:input-label-qna')}
-        </h2>
-        <QnaList
-          qna={qna} // Pass the QnA data
-          paginatorInfo={qnaPaginatorInfo} // Pass the paginator info
-          onPagination={handlePagination}
-          onOrder={setOrder}
-          onSort={setColumn} // Assuming you have pagination handling
-        />
-      </Card>
     </>
   );
 }
 
-Faq.authenticate = {
+Vacancies.authenticate = {
   permissions: adminOnly,
 };
 
-Faq.Layout = Layout;
+Vacancies.Layout = Layout;
 
 export const getStaticProps = async ({ locale }: any) => ({
   props: {
