@@ -1535,8 +1535,11 @@ export interface UserProfileInput {
 export interface CategoryQueryOptions extends QueryOptions {
   type: string;
   name: string;
-  parent: number | null;
+  region_name?: string; 
+  parent: number | null; 
   shop: string | null;
+  search:string;
+  shopSlug:string;
 }
 
 export interface SubCategoryQueryOptions extends QueryOptions {
