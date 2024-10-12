@@ -6,8 +6,8 @@ import Label from '@/components/ui/label';
 //   CardCvcElement,
 //   CardExpiryElement,
 // } from '@stripe/react-stripe-js';
-// import Input from '@/components/ui/forms/input';
-// import Checkbox from '@/components/ui/forms/checkbox/checkbox';
+import Input from '@/components/ui/input';
+import Checkbox from '@/components/ui/checkbox/checkbox';
 import Alert from '@/components/ui/alert';
 import isEmpty from 'lodash/isEmpty';
 import { useUser } from '@/framework/rest/user';

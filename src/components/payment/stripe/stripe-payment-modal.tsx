@@ -1,6 +1,6 @@
 import { PaymentGateway, PaymentIntentInfo } from '@/types';
-// import { Elements } from '@stripe/react-stripe-js';
-// import getStripe from '@/lib/get-stripejs';
+import { Elements } from '@stripe/react-stripe-js';
+import getStripe from '@/lib/get-stripejs';
 import StripePaymentForm from '@/components/payment/stripe/stripe-payment-form';
 import SavedCardViewHeader from '@/components/payment/saved-card-view-header';
 import StripeSavedCardsList from '@/components/payment/stripe/stripe-saved-cards-list';

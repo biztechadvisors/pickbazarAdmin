@@ -5,18 +5,18 @@ import { useModalAction } from '@/components/ui/modal/modal.context';
 // import { useStripe, useElements } from '@stripe/react-stripe-js';
 import { useModalState } from '@/components/ui/modal/modal.context';
 import { toast } from 'react-toastify';
-// import { Image } from '@/components/ui/image';
+import { Image } from '@/components/ui/image';
 import { Table } from '@/components/ui/table';
 // import { useIsRTL } from '@/lib/locals';
-// import amex from '@/assets/cards/amex.svg';
-// import diners from '@/assets/cards/diners.svg';
-// import discover from '@/assets/cards/discover.svg';
-// import jcb from '@/assets/cards/jcb.svg';
-// import mastercard from '@/assets/cards/mastercard.svg';
-// import unionpay from '@/assets/cards/unionpay.svg';
-// import visa from '@/assets/cards/visa.svg';
-// import CheckIconWithBg from '@/components/icons/check-icon-with-bg';
-// import Fallback from '@/assets/cards/fallback-image.png';
+import amex from '@/assets/cards/amex.svg';
+import diners from '@/assets/cards/diners.svg';
+import discover from '@/assets/cards/discover.svg';
+import jcb from '@/assets/cards/jcb.svg';
+import mastercard from '@/assets/cards/mastercard.svg';
+import unionpay from '@/assets/cards/unionpay.svg';
+import visa from '@/assets/cards/visa.svg';
+import CheckIconWithBg from '@/components/icons/check-icon-with-bg';
+import Fallback from '@/assets/cards/fallback-image.png';
 import { useTranslation } from 'next-i18next';
 
 interface CardViewProps {
