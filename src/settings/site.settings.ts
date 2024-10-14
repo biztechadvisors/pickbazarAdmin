@@ -264,6 +264,12 @@ export const siteSettings = {
         icon: 'TagIcon',
         permissions: adminOwnerAndStaffOnly,
       },
+      {
+        href: (shop: string) => `/${shop}${Routes.getInspired.list}`,
+        label: 'sidebar-nav-item-getInspired',
+        icon: 'DashboardIcon',
+        permissions: adminOwnerAndStaffOnly,
+      },
     ],
   },
   product: {

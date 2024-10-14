@@ -18,7 +18,7 @@ export type IProps = {
   onPagination: (key: number) => void;
   onSort: (current: any) => void;
   onOrder: (current: string) => void;
-  paginatorInfo: MappedPaginatorInfo | null;
+  qnaPaginatorInfo: MappedPaginatorInfo | null;
 };
 
 const FaqList = ({
@@ -26,12 +26,12 @@ const FaqList = ({
   onPagination,
   onSort,
   onOrder,
-  paginatorInfo,
+  qnaPaginatorInfo,
 }: IProps) => {
   const { t } = useTranslation();
-  const rowExpandable = (record: any) => record.children?.length; 
+  const rowExpandable = (record: any) => record.children?.length;
 
-  const permissionTypes = AllPermission(); 
+  const permissionTypes = AllPermission();
 
   const canWrite = permissionTypes.includes('sidebar-nav-item-tags');
 
@@ -59,12 +59,13 @@ const FaqList = ({
       });
     },
   });
-  const tableData = faq?.data?.map((item) => ({
-    id: item.id,
-    title: item.title,
-    description: item.description
-  })) || [];
-  
+  const tableData =
+    faq?.data?.map((item) => ({
+      id: item.id,
+      title: item.title,
+      description: item.description,
+    })) || [];
+
   // Table configuration remains the same.
   const columns = [
     {
@@ -88,7 +89,8 @@ const FaqList = ({
         <TitleWithSort
           title={t('table:table-item-description')}
           ascending={
-            sortingObj.sort === SortOrder.Asc && sortingObj.column === 'description'
+            sortingObj.sort === SortOrder.Asc &&
+            sortingObj.column === 'description'
           }
           isActive={sortingObj.column === 'description'}
         />
@@ -101,25 +103,25 @@ const FaqList = ({
     },
     {
       // ...(canWrite
-      // ? 
+      // ?
       // {
-        title: t('table:table-item-actions'),
-        dataIndex: 'id',
-        key: 'actions',
-        align: alignRight,
-        render: (id:string) => (
-          <ActionButtons
-            id={id}
-            editUrl={`${Routes.faq.list}/edit/${id}`}
-            deleteModalView="DELETE_FAQ"
-          />
-        ),
-      // }      
+      title: t('table:table-item-actions'),
+      dataIndex: 'id',
+      key: 'actions',
+      align: alignRight,
+      render: (id: string) => (
+        <ActionButtons
+          id={id}
+          editUrl={`${Routes.faq.list}/edit/${id}`}
+          deleteModalView="DELETE_FAQ"
+        />
+      ),
+      // }
       // : null),
-      }
+    },
   ];
 
-  console.log('paginatorInfo = ', paginatorInfo)
+  console.log('qnaPaginatorInfo = ', qnaPaginatorInfo);
 
   return (
     <>
@@ -138,14 +140,12 @@ const FaqList = ({
         />
       </div>
 
-
-
-      {!!paginatorInfo?.total && (
+      {!!qnaPaginatorInfo?.total && (
         <div className="flex items-center justify-end">
           <Pagination
-            total={paginatorInfo?.total}
-            current={paginatorInfo?.currentPage}
-            pageSize={paginatorInfo?.page}
+            total={qnaPaginatorInfo?.total}
+            current={qnaPaginatorInfo?.currentPage}
+            pageSize={qnaPaginatorInfo?.page}
             onChange={onPagination}
           />
         </div>
@@ -158,4 +158,3 @@ export default FaqList;
 function onHeaderClick(arg0: string) {
   throw new Error('Function not implemented.');
 }
-

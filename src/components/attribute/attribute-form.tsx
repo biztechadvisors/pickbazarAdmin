@@ -24,6 +24,8 @@ type IProps = {
   initialValues?: Attribute | null;
 };
 export default function CreateOrUpdateAttributeForm({ initialValues }: IProps) {
+
+  console.log("0000000000000000000000000", initialValues)
   const router = useRouter();
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 

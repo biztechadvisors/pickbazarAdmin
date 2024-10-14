@@ -110,6 +110,8 @@ export const customerAtom = atom(
     });
   }
 );
+
+
 export const verifiedResponseAtom = atom(
   (get) => get(checkoutAtom).verified_response,
   (get, set, data: VerifiedResponse | null) => {

@@ -21,28 +21,28 @@ import { Company, DEALER, STAFF } from '@/utils/constants';
 import { CUSTOMER } from '@/lib/constants';
 
 export const userClient = {
-
   me: (params: { username: any; sub: any }) => {
     return HttpClient.get<User>(
       `${API_ENDPOINTS.ME}?username=${params.username}&sub=${params.sub}`
-    ).then(response => {
+    )
+      .then((response) => {
+        if (response.permission.type_name === Company) {
+          localStorage.setItem('userId', response.id);
+        } else if (
+          (response.permission.type_name === DEALER ||
+            response.permission.type_name === CUSTOMER ||
+            response.permission.type_name === STAFF) &&
+          response?.createdBy
+        ) {
+          localStorage.setItem('userId', response.createdBy.id);
+        }
 
-      if (response.permission.type_name === Company) {
-        localStorage.setItem('userId', response.id);
-      } else if (
-        (response.permission.type_name === DEALER ||
-          response.permission.type_name === CUSTOMER ||
-          response.permission.type_name === STAFF) &&
-        response?.createdBy
-      ) {
-        localStorage.setItem('userId', response.createdBy.id);
-      }
-
-      return response;
-    }).catch(error => {
-      console.error('Error fetching user details:', error);
-      throw error;
-    });
+        return response;
+      })
+      .catch((error) => {
+        console.error('Error fetching user details:', error);
+        throw error;
+      });
   },
 
   login: async (variables: LoginInput) => {
@@ -53,7 +53,8 @@ export const userClient = {
       );
       const token = response.token;
 
-      if (typeof window !== 'undefined' && token) { // Check if we're in the browser environment
+      if (typeof window !== 'undefined' && token) {
+        // Check if we're in the browser environment
         localStorage.setItem('authToken', token);
       }
 
@@ -62,8 +63,7 @@ export const userClient = {
       console.error('Error during login:', error);
       throw error;
     }
-  }
-  ,
+  },
   logout: () => {
     return HttpClient.post<any>(API_ENDPOINTS.LOGOUT, {});
   },
@@ -101,7 +101,7 @@ export const userClient = {
     return HttpClient.post<any>(API_ENDPOINTS.ADD_WALLET_POINTS, variables);
   },
   fetchUsers: ({ email, usrById, ...params }: Partial<UserQueryOptions>) => {
-    return HttpClient.get<UserPaginator>(API_ENDPOINTS.USERS, {
+    return HttpClient.get<UserPaginator>(`${API_ENDPOINTS.USERS}/all`, {
       searchJoin: 'and',
       with: 'wallet',
       ...params,
@@ -110,7 +110,9 @@ export const userClient = {
     });
   },
   fetchVendor: ({ type, usrById }: { type: string; usrById: number }) => {
-    return HttpClient.get<User>(`${API_ENDPOINTS.USERS}?type=${type}&usrById=${usrById}`);
+    return HttpClient.get<User>(
+      `${API_ENDPOINTS.USERS}/all/?type=${type}&usrById=${usrById}`
+    );
   },
   fetchAdmins: ({ ...params }: Partial<UserQueryOptions>) => {
     return HttpClient.get<UserPaginator>(API_ENDPOINTS.ADMIN_LIST, {
@@ -119,6 +121,7 @@ export const userClient = {
     });
   },
   fetchUser: ({ id }: { id: string }) => {
+    console.log('hello');
     return HttpClient.get<User>(`${API_ENDPOINTS.USERS}/${id}`);
   },
   resendVerificationEmail: () => {

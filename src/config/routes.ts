@@ -20,6 +20,10 @@ export const Routes = {
   createSales: '/sales/create',
   regions: '/regions',
   Faq: '/faq',
+  GetInspired: '/get-inspired',
+  contacts: '/contacts',
+  vacancies: '/vacancies',
+  careers: '/careers',
   // groups: `/${getAdminMyShopsRoute()}/groups`,
   shops: (slug: string) => `/shops/${encodeURIComponent(slug)}`,
   // orders: '/orders',
@@ -60,11 +64,11 @@ export const Routes = {
   tag: {
     ...routesFactory('/tags'),
   },
-  blog:{
-    ...routesFactory('/blogs')
+  blog: {
+    ...routesFactory('/blogs'),
   },
-  event:{
-    ...routesFactory('/events')
+  event: {
+    ...routesFactory('/events'),
   },
   dealerlist: {
     ...routesFactory('/dealerlist'),
@@ -120,8 +124,8 @@ export const Routes = {
   regions: {
     ...routesFactory('/regions'),
   },
-  faq:{
-    ...routesFactory('/faq')
+  faq: {
+    ...routesFactory('/faq'),
   },
   withdraw: {
     ...routesFactory('/withdraws'),
@@ -140,6 +144,18 @@ export const Routes = {
   },
   message: {
     ...routesFactory('/message'),
+  },
+  getInspired: {
+    ...routesFactory('/get-inspired'),
+  },
+  contacts: {
+    ...routesFactory('/contacts'),
+  },
+  vacancies: {
+    ...routesFactory('/vacancies'),
+  },
+  careers: {
+    ...routesFactory('/careers'),
   },
   shopMessage: {
     ...routesFactory('/shop-message'),

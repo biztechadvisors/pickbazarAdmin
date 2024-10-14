@@ -334,9 +334,8 @@ const CustForm = () => {
         password,
         contact,
         createdBy: id,
-        permission: selectedPermissionType?.name,
-        numberOfDealers,
-        managed_shop: shopData, // Added new field to payload
+        permission: selectedPermissionType?.e,
+       
       },
       {
         onError: (error: any) => {

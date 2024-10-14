@@ -206,7 +206,7 @@
 
 // export default BlogCreateOrUpdateForm;
 
-import { usecreateBlogMutation, useUpdateBlogMutation } from '@/data/blog';
+import { useCreateBlogMutation, useUpdateBlogMutation } from '@/data/blog';
 import { useShopQuery } from '@/data/shop';
 import { useEffect, useState } from 'react';
 import { useFieldArray, useForm } from 'react-hook-form';
@@ -265,7 +265,7 @@ const BlogCreateOrUpdateForm = ({ initialValues }: any) => {
       : { title: '', content: '', shopId: shopId || 0, attachmentIds: [] },
   });
 
-  const { mutate: createBlog, isLoading: creating } = usecreateBlogMutation();
+  const { mutate: createBlog, isLoading: creating } = useCreateBlogMutation();
   const { mutate: updateBlog, isLoading: updating } = useUpdateBlogMutation();
 
   const onSubmit = (values: FormValues) => {

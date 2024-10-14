@@ -125,6 +125,7 @@ function SelectTypes({
     // type: type?.slug,
     language: locale,
   });
+  // console.log("types",types)
   return (
     <div className="mb-5">
       <Label>{t('form:input-label-types')}</Label>

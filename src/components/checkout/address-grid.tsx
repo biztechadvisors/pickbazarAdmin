@@ -31,18 +31,23 @@ export const AddressGrid: React.FC<AddressesProps> = ({
   const { openModal } = useModalAction();
 
   useEffect(() => {
-    if (addresses?.length) {
-      if (selectedAddress?.id) {
-        const index = addresses.findIndex((a) => a.id === selectedAddress.id);
-        setAddress(addresses[index]);
+    if (addresses && addresses.length > 0) {
+      // Ensure selectedAddress is valid
+      if (
+        selectedAddress &&
+        addresses.find((a) => a.id === selectedAddress.id)
+      ) {
+        setAddress(selectedAddress); // Keep the currently selected address if valid
       } else {
-        setAddress(addresses?.[0]);
+        setAddress(addresses[0]); // Set the first address as default
       }
     }
-  }, [addresses, addresses?.length, selectedAddress?.id, setAddress]);
+  }, [addresses, selectedAddress, setAddress]);
 
-  console.log('selectedAddress', selectedAddress);
-  console.log('userId', userId,"type",type);
+  if (process.env.NODE_ENV !== 'production') {
+    console.log('selectedAddress', selectedAddress);
+    console.log('userId', userId, 'type', type);
+  }
 
   function onAdd() {
     openModal('ADD_OR_UPDATE_ADDRESS', { customerId: userId, type });
@@ -52,11 +57,11 @@ export const AddressGrid: React.FC<AddressesProps> = ({
     <div className={className}>
       <AddressHeader onAdd={onAdd} count={count} label={label} />
 
-      {addresses && addresses?.length ? (
+      {addresses && addresses.length > 0 ? (
         <RadioGroup value={selectedAddress} onChange={setAddress}>
           <RadioGroup.Label className="sr-only">{label}</RadioGroup.Label>
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-2 xl:grid-cols-3">
-            {addresses?.map((address) => (
+            {addresses.map((address) => (
               <RadioGroup.Option value={address} key={address.id}>
                 {({ checked }) => (
                   <AddressCard
@@ -79,4 +84,5 @@ export const AddressGrid: React.FC<AddressesProps> = ({
     </div>
   );
 };
+
 export default AddressGrid;

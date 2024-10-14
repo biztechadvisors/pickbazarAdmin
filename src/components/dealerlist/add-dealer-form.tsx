@@ -302,10 +302,11 @@ export default function CreateOrUpdateDealerForm({ initialValues, id }: IProps) 
   const { mutate: createDealer, isLoading: creating } = useAddDealerMutation();
   const { mutate: updateDealer, isLoading: updating } = useUpdateDealerMutation();
   const AddressGrid = dynamic(() => import('@/components/checkout/address-grid'));
+  const billingAddresses = useAtomValue(billingAddressAtom);
+  const shippingAddresses = useAtomValue(shippingAddressAtom);
   const onSubmit = (values: FormValues) => {
     const isActiveVal: any = values.isActive;
-    const billingAddresses = useAtomValue(billingAddressAtom);
-    const shippingAddresses = useAtomValue(shippingAddressAtom);
+  
     const input = {
       language: router.locale!,
       name: values.name!,

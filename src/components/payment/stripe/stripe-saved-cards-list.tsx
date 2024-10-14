@@ -1,13 +1,13 @@
 import { useState } from 'react';
 import Button from '@/components/ui/button';
 import { useModalAction } from '@/components/ui/modal/modal.context';
-// import { useOrderPayment } from '@/framework/order';
-// import { useStripe, useElements } from '@stripe/react-stripe-js';
+import { useOrderPayment } from '@/framework/order';
+import { useStripe, useElements } from '@stripe/react-stripe-js';
 import { useModalState } from '@/components/ui/modal/modal.context';
 import { toast } from 'react-toastify';
-// import { Image } from '@/components/ui/image';
+import { Image } from '@/components/ui/image';
 import { Table } from '@/components/ui/table';
-// import { useIsRTL } from '@/lib/locals';
+import { useIsRTL } from '@/lib/locals';
 // import amex from '@/assets/cards/amex.svg';
 // import diners from '@/assets/cards/diners.svg';
 // import discover from '@/assets/cards/discover.svg';
@@ -16,8 +16,9 @@ import { Table } from '@/components/ui/table';
 // import unionpay from '@/assets/cards/unionpay.svg';
 // import visa from '@/assets/cards/visa.svg';
 // import CheckIconWithBg from '@/components/icons/check-icon-with-bg';
-// import Fallback from '@/assets/cards/fallback-image.png';
+import Fallback from '@/assets/cards/fallback-image.png';
 import { useTranslation } from 'next-i18next';
+
 
 interface CardViewProps {
   view?: 'modal' | 'normal';
@@ -93,15 +94,15 @@ const StripeSavedCardsList = ({
       dataIndex: '',
       width: 50,
       align: alignLeft,
-      render: (record: any) => {
-        return selected?.id === record?.id ? (
-          <div className="w-10 text-accent">
-            <CheckIconWithBg />
-          </div>
-        ) : (
-          ''
-        );
-      },
+      // render: (record: any) => {
+      //   return selected?.id === record?.id ? (
+      //     <div className="w-10 text-accent">
+      //       <CheckIconWithBg />
+      //     </div>
+      //   ) : (
+      //     ''
+      //   );
+      // },
     },
     {
       title: (

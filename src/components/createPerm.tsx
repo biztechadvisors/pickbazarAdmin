@@ -19,7 +19,7 @@ import { addPermission } from '@/utils/atoms';
 const CreatePerm = ({ PermissionDatas }) => {
   const router = useRouter();
   const { t } = useTranslation();
-  const [typeName, setTypeName] = useState(PermissionDatas.type_name);
+  const [typeName, setTypeName] = useState(PermissionDatas?.type_name);
   const [selectedType, setSelectedType] = useState('');
   const [menusData, setMenusData] = useState(PermissionJson.Advance_Permission);
   const [permissionName, setPermissionName] = useState('');
@@ -171,7 +171,7 @@ const CreatePerm = ({ PermissionDatas }) => {
 
   useEffect(() => {
     if (permissions.includes(OWNER)) {
-      setTypeName(PermissionDatas.type_name);
+      setTypeName(PermissionDatas?.type_name);
     } else {
       const permList = permissions;
       const newArray = Object.values(PermissionDatas.type_name);

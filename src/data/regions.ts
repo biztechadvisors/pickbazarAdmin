@@ -67,9 +67,10 @@ export const useUpdateRegionClassMutation = (shop_id) => {
   // console.log('shop_id =', shop_id)
   const { t } = useTranslation();
   const queryClient = useQueryClient();
- 
+  const router = useRouter();
   return useMutation((data) => regionClient.update({ ...data , shop_id }), {
     onSuccess: () => {
+      router.push(Routes.regions.list);
       toast.success(t('common:successfully-updated'));
     },
     onSettled: () => {

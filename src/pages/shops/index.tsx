@@ -38,6 +38,7 @@ export default function AllShopPage() {
     sortedBy,
   });
 
+
   const canWrite = permissions?.includes(OWNER);
 
   if (loading) return <Loader text={t('common:text-loading')} />;

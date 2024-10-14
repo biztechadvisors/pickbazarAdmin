@@ -23,6 +23,15 @@ export const useCreateShippingMutation = () => {
     onSettled: () => {
       queryClient.invalidateQueries(API_ENDPOINTS.SHIPPINGS);
     },
+    onError: (error: any) => {
+      const { data, status } = error?.response;
+      if (status === 422) {
+        const errorMessage: any = Object.values(data).flat();
+        toast.error(errorMessage[0]);
+      } else {
+        toast.error(t(`common:${error?.response?.data.message}`));
+      }
+    },
   });
 };
 

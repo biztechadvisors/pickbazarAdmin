@@ -33,7 +33,7 @@ import * as socialIcons from '@/components/icons/social';
 import omit from 'lodash/omit';
 import SwitchInput from '@/components/ui/switch-input';
 import { getAuthCredentials } from '@/utils/auth-utils';
-import { SUPER_ADMIN, Company, OWNER } from '@/utils/constants';
+import { SUPER_ADMIN, Company, OWNER, E_COMMERCE, NON_E_COMMERCE } from '@/utils/constants';
 import { useModalAction } from '../ui/modal/modal.context';
 import OpenAIButton from '../openAI/openAI.button';
 import { useCallback, useMemo, useState } from 'react';
@@ -158,8 +158,7 @@ type SelectUserProps = {
 function SelectUser({ control, errors }: SelectUserProps) {
   const { t } = useTranslation();
   const { data } = useMeQuery();
-  const usrById = data?.shop_id;
-  console.log('DATA_________', data);
+  const usrById = data?.shop_id;  
   const { permissions } = getAuthCredentials();
   const isOwner = permissions?.[0].includes(OWNER);
   const { data: users, isLoading } = useVendorQuery(data?.id);
@@ -266,6 +265,7 @@ const ShopForm = ({ initialValues }: { initialValues?: any }) => {
     resolver: yupResolver(shopValidationSchema),
   });
   const router = useRouter();
+  console.log("control",control)
   // const { openModal } = useModalAction();
   const { locale } = router;
   const { data, isLoading: loading, isError } = useMeQuery();
@@ -289,12 +289,14 @@ const ShopForm = ({ initialValues }: { initialValues?: any }) => {
     data: permissionData,
   } = usePermissionData(userId);
 
+  console.log("permissionData",permissionData)
+
   const filterdEcomm = permissionData?.filter((e: any) => {
     return (
       (e && // Ensure the object exists
-        e.type_name === 'Company' &&
-        e.permission_name === 'E-commerce') ||
-      (e.type_name === 'Company' && e.permission_name === 'Non-ecommerce')
+        e.type_name === Company &&
+        e.permission_name === E_COMMERCE) ||
+      (e.type_name === Company && e.permission_name === NON_E_COMMERCE )
     );
   });
 
@@ -307,6 +309,7 @@ const ShopForm = ({ initialValues }: { initialValues?: any }) => {
   console.log('Permission Filtered Ecomm:', filterdEcomm);
   console.log('Permission Options:', option);
   const permissionProps = permissionSelectedOption?.e;
+
 
   const handleGenerateDescription = useCallback(() => {
     openModal('GENERATE_DESCRIPTION', {
@@ -323,6 +326,9 @@ const ShopForm = ({ initialValues }: { initialValues?: any }) => {
     control,
     name: 'settings.socials',
   });
+
+  console.log("fields",fields)
+ 
 
   const handleSelectChange = (selectedOption: any) => {
     setPermissionSelectedOption(selectedOption);
@@ -438,6 +444,8 @@ const ShopForm = ({ initialValues }: { initialValues?: any }) => {
     try {
       if (initialValues) {
         const { ...restAddress } = filteredValues.address;
+
+        console.log("restAddress", restAddress)
         await updateShop({
           id: initialValues.id,
           ...filteredValues,
@@ -454,8 +462,11 @@ const ShopForm = ({ initialValues }: { initialValues?: any }) => {
           },
         });
       } else {
+        const { ...restAddress } = filteredValues.address;
+        console.log("restAddress-create", restAddress)
         await createShop({
           ...filteredValues,
+          address: restAddress,
           settings,
           balance: {
             ...filteredValues.balance,

@@ -421,7 +421,6 @@ export default function OrderDetailsPage() {
         order={data}
         dealerId={dealerId}
         updateDispatch={handleDispatchUpdate}
-        dealerId={dealerId}
       />
     </>
   );

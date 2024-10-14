@@ -41,20 +41,21 @@ export default function Categories() {
   const shop: string | undefined = meData?.managed_shop?.id;
   const shopSlug = meData?.managed_shop?.slug;
 
-  const { categories, paginatorInfo, loading, error } = useCategoriesQuery({
-    shop,
+  const { categories, paginatorInfo, loading, error } = useCategoriesQuery({  
+    // shop,
     limit: 20,
-    page,
     type,
-    name: searchTerm,
+    // name: searchTerm,
     orderBy,
     sortedBy,
+    shopSlug,
+    page,
     parent: null,
     language: locale,
     search:searchTerm,
   });
 
-
+console.log("first++++",type)
   const permissionTypes = AllPermission();
 
   const canWrite = permissionTypes.includes('sidebar-nav-item-categories');
@@ -86,8 +87,8 @@ export default function Categories() {
 
             <TypeFilter
               className="md:ms-6"
-              onTypeFilter={({ slug }: { slug: string }) => {
-                setType(slug);
+              onTypeFilter={({ name }: { name: string }) => {
+                setType(name);
                 setPage(1);
               }}
             />

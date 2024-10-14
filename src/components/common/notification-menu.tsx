@@ -132,7 +132,7 @@ const NotificationMenu: React.FC<MenuType> = ({ data }) => {
               ) : (
                 <div className="flex items-center justify-center border-b border-border-200 bg-light">
                   <p className="py-5 text-sm text-body">
-                    You don't have any notifications.
+                    You do not have any notifications.
                   </p>
                 </div>
               )}
