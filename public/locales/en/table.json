@@ -88,5 +88,8 @@
   "table-item-issued-by": "Issued By",
   "table-item-category": "Category",
   "table-item-tags": "Tag",
-  "table-item-images": "Image"
+  "table-item-images": "Image",
+  "table-item-question": "Question",
+  "table-item-answer": "Answer"
+
 }

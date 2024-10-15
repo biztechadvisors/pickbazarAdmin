@@ -466,5 +466,11 @@
   "button-label-add-faq": "Add Faq",
   "input-label-tags": "Select Tags",
   "tags-title": "Tag Title",
-  "form-title-create-get-inspired": "Create GetInspired"
+  "form-title-create-get-inspired": "Create GetInspired",
+  "input-label-qna": "Q&A",
+  "button-label-add-qna": "Add Q&A",
+  "input-label-question": "Question",
+  "input-label-answer": "Answer",
+  "form-title-create-qna": "Create Q&A",
+  "form-title-qna": "Q&A"
 }

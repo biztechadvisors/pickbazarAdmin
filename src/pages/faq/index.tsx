@@ -107,9 +107,9 @@ export default function Faq() {
       </Card>
       {/* Add the QnA List below the FAQ List */}
       <Card className="mb-8">
-        <h2 className="mb-4 text-xl font-semibold text-heading">
+        {/* <h2 className="mb-4 text-xl font-semibold text-heading">
           {t('form:input-label-qna')}
-        </h2>
+        </h2> */}
         <QnaList
           qna={qna} // Pass the QnA data
           paginatorInfo={qnaPaginatorInfo} // Pass the paginator info

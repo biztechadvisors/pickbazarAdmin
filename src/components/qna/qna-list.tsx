@@ -17,7 +17,6 @@ export type IProps = {
 const QnaList = ({ qna, onPagination, paginatorInfo }: IProps) => {
   const { t } = useTranslation();
   const { alignLeft, alignRight } = useIsRTL();
-  console.log(qna, 'qna');
   const [sortingObj, setSortingObj] = useState<{
     sort: SortOrder;
     column: string | null;
