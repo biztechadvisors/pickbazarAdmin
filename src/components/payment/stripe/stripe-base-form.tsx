@@ -1,14 +1,13 @@
 // import Button from '@/components/ui/button';
 // import { useTranslation } from 'next-i18next';
 // import Label from '@/components/ui/label';
+// // import {
+// //   CardNumberElement,
+// //   CardCvcElement,
+// //   CardExpiryElement,
+// // } from '@stripe/react-stripe-js';
 // import Input from '@/components/ui/input';
-// import {
-//   CardNumberElement,
-//   CardCvcElement,
-//   CardExpiryElement,
-// } from '@stripe/react-stripe-js';
-// // import Input from '@/components/ui/forms/input';
-// // import Checkbox from '@/components/ui/forms/checkbox/checkbox';
+// import Checkbox from '@/components/ui/checkbox/checkbox';
 // import Alert from '@/components/ui/alert';
 // import isEmpty from 'lodash/isEmpty';
 // import { useUser } from '@/framework/rest/user';
@@ -18,7 +17,6 @@
 // } from '@/components/ui/modal/modal.context';
 // import { useCards } from '@/framework/rest/card';
 // import StipeElementViewHeader from '../stripe-element-view-header';
-// import Checkbox from '@/components/ui/checkbox/checkbox';
 
 // interface Props {
 //   handleSubmit: any;

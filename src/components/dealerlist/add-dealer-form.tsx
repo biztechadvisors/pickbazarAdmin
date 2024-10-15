@@ -284,6 +284,9 @@ export default function CreateOrUpdateDealerForm({ initialValues, id }: IProps) 
 
   const marproduct: any = `{initialValues?.dealerProductMargins}`
   const marcategory: any = `initialValues?.dealerCategoryMargins`
+ // Move these hook calls outside of the `onSubmit` function
+ const billingAddresses = useAtomValue(billingAddressAtom);
+ const shippingAddresses = useAtomValue(shippingAddressAtom);
 
   const {
     register,
@@ -297,8 +300,7 @@ export default function CreateOrUpdateDealerForm({ initialValues, id }: IProps) 
       ...initialValues,
       ...user,
     },
-  });
-
+  }); 
   const { mutate: createDealer, isLoading: creating } = useAddDealerMutation();
   const { mutate: updateDealer, isLoading: updating } = useUpdateDealerMutation();
   const AddressGrid = dynamic(() => import('@/components/checkout/address-grid'));
@@ -306,7 +308,8 @@ export default function CreateOrUpdateDealerForm({ initialValues, id }: IProps) 
   const shippingAddresses = useAtomValue(shippingAddressAtom);
   const onSubmit = (values: FormValues) => {
     const isActiveVal: any = values.isActive;
-  
+    // const billingAddresses = useAtomValue(billingAddressAtom);
+    // const shippingAddresses = useAtomValue(shippingAddressAtom);
     const input = {
       language: router.locale!,
       name: values.name!,

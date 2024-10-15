@@ -41,6 +41,8 @@ export default function Dashboard() {
   } = useAnalyticsQuery(analyticsQuery);
 
   console.log("analyticsData",analyticsData)
+
+  
   // console.log("meData",meData)
 
   // const {
@@ -119,7 +121,7 @@ export default function Dashboard() {
   }
 
   const salesByYear =
-    analyticsData?.totalYearSaleByMonth?.map((item) => item.total.toFixed(2)) ||
+    analyticsData?.totalYearSaleByMonth?.map((item) => item?.total?.toFixed(2)) ||
     Array(12).fill(0);
 
   const errorMessage =
