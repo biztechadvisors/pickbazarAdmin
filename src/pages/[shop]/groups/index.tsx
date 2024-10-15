@@ -51,12 +51,13 @@ export default function TypesPage() {
   const shop: string | undefined = meData?.managed_shop?.id;
   const shopSlug: string | undefined = meData?.managed_shop?.slug;
   const { types, loading, error } = useTypesQuery({
-    name: searchTerm,
+    // name: searchTerm,
     language: locale,
     orderBy,
     sortedBy,
     shop,
     slug: shop_Slug,
+    search:searchTerm,
   });
   const { permissions } = getAuthCredentials();
   const permissionTypes = AllPermission();
