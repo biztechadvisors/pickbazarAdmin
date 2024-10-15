@@ -75,6 +75,9 @@
   "sidebar-nav-item-tags": "Tags",
   "sidebar-nav-item-dealerlist": "Dealer List",
   "sidebar-nav-item-withdraws": "Withdrawals",
+  "sidebar-nav-item-getInspired": "GetInspired",
+  "sidebar-nav-item-blogs": "Blogs",
+  "sidebar-nav-item-event": "Events",
   "navbar-add-products": "Add Products",
   "authorized-nav-item-settings": "Settings",
   "authorized-nav-item-profile": "Profile",
@@ -405,5 +408,6 @@
   "text-total-item": "Total Item",
   "text-deliver-time": "Delivery Time",
   "text-order-failed": "Order Failed",
-  "form:input-label-number-of-dealers": "Total dealers"
+  "input-label-number-of-dealers": "Total dealers",
+  "text-out-stock": "Out of stock"
 }

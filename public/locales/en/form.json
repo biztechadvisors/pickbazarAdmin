@@ -153,8 +153,10 @@
   "input-label-twitter-handle": "Twitter Handle",
   "input-label-twitter-card-type": "Twitter Card Type",
   "button-label-update-product": "Update Product",
+  "button-label-add-getInspired": "Add GetInspired",
   "button-label-add-product": "Add Product",
   "input-placeholder-search": "Type your query and press enter",
+  "input-label-getInspired": "GetInspired",
   "input-placeholder-order-status": "Order status",
   "button-label-remove": "Remove",
   "input-label-url": "URL",
@@ -460,6 +462,9 @@
   "input-label-select-company": "Company Type",
   "input-label-extra-permission": "Add More Permission (Optional)",
   "button-label-more-permission": "Advance permission",
-  "button-label-add-regions": "Add Regions",
-  "button-label-add-faq": "Add Faq"
+  "button-label-add-regions": "Add Region",
+  "button-label-add-faq": "Add Faq",
+  "input-label-tags": "Select Tags",
+  "tags-title": "Tag Title",
+  "form-title-create-get-inspired": "Create GetInspired"
 }
