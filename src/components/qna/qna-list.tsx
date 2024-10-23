@@ -7,6 +7,7 @@ import { useState } from 'react';
 import TitleWithSort from '@/components/ui/title-with-sort';
 import { MappedPaginatorInfo } from '@/types';
 import ActionButtons from '../common/action-buttons';
+import { Routes } from '@/config/routes';
 
 export type IProps = {
   qna: any | undefined | null; // QnA data
@@ -85,6 +86,7 @@ const QnaList = ({ qna, onPagination, paginatorInfo }: IProps) => {
         <ActionButtons
           id={id}
           editUrl={`/qna/edit/${id}`} // Update the edit URL according to your routes
+          // editUrl={`${Routes.faq.list}/editqna/${id}`}
           deleteModalView="DELETE_QNA"
         />
       ),
