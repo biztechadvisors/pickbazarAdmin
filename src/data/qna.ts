@@ -86,6 +86,7 @@ export const useDeleteQnaMutation = () => {
 
 // Hook to fetch single QnA item data
 export const useQnaSingleDataQuery = (id: string) => {
+  console.log('idQna = ',id)
   return useQuery<Qna, Error>([API_ENDPOINTS.QNA, id], () =>
     qnaClient.get({ id })
   );
