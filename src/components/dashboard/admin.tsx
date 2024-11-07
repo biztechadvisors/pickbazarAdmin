@@ -115,7 +115,7 @@ export default function Dashboard() {
     language: locale,
     shop_id: meData?.managed_shop?.id,
   });
-
+console.log("first+++++++++++",popularProductData)
   if (analyticsLoading || orderLoading || popularProductLoading) {
     return <Loader text={t('common:text-loading')} />;
   }

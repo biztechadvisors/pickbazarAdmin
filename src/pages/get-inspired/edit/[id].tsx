@@ -24,17 +24,19 @@ export default function UpdateGetInspiredPage() {
   // Check if loading or error occurs
   if (loading) return <Loader text={t('common:text-loading')} />;
   if (error) return <ErrorMessage message={error.message} />;
-  console.log('data =', data);
+
+  // Ensure data exists before accessing its properties
+  if (!data) return <ErrorMessage message="Data not found" />;
 
   // Transforming the initial values to match the expected format
   const initialValues = {
-    id: data.id,
-    title: data.title,
-    type: data.type,
-    gallery: data.images.map((image) => ({
+    id: data?.id,
+    title: data?.title,
+    type: data?.type,
+    gallery: data?.images?.map((image) => ({
       url: image.original, // Using the original URL for the gallery
-    })),
-    tagIds: data.tags.map((tag) => tag.id), // Only getting the tag IDs
+    })) || [], // Fallback to an empty array if `data.images` is undefined
+    tagIds: data?.tags?.map((tag) => tag.id) || [], // Fallback to an empty array if `data.tags` is undefined
   };
 
   return (
@@ -55,6 +57,7 @@ export const getStaticProps = async ({ locale }: any) => ({
     ...(await serverSideTranslations(locale, ['table', 'common', 'form'])),
   },
 });
+
 export const getStaticPaths: GetStaticPaths = async () => {
   return { paths: [], fallback: 'blocking' };
 };

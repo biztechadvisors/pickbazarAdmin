@@ -1667,6 +1667,7 @@ export interface TagQueryOptions extends QueryOptions {
   shopSlug: string;
   slug: string;
   region_name: string[];
+  search: string; 
 }
 export interface RegionQueryOptions extends QueryOptions {
   shopSlug: string;

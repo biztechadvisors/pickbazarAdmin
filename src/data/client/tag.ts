@@ -19,7 +19,10 @@ export const tagClient = {
   }: Partial<TagQueryOptions>) => {
     console.log('params=params', params);
     return HttpClient.get<TagPaginator>(API_ENDPOINTS.TAGS, {
-      shopSlug: params.slug,
+      ...params,
+      shopSlug,
+      name,
+      type,
     });
   },
 };

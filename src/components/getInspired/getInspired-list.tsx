@@ -54,7 +54,7 @@ const GetInspiredList = ({
   // Transforming getInspired data to include images and tags
   const tableData =
     getInspired?.data?.map((item) => ({
-      id: item.id,
+      id: item.id,  
       images: item.images.map((image) => (
         <img
           key={image.id}
@@ -63,7 +63,10 @@ const GetInspiredList = ({
           className="h-12 w-12 object-cover"
         />
       )),
-      tags: item.tags.map((tag) => tag.name).join(', '), // Join tag names with commas
+      tags: item.tags.map((tag) => tag.name).join(', '), 
+      title: item.title,  
+      type: item.type,  
+       
     })) || [];
 
   // Table configuration
@@ -76,6 +79,18 @@ const GetInspiredList = ({
       render: (images: React.ReactNode) => (
         <div className="flex space-x-2">{images}</div>
       ),
+    },
+    {
+      title: t('table:table-item-title'),
+      dataIndex: 'title',
+      key: 'title',
+      align: alignLeft,
+    },
+    {
+      title: t('table:table-item-type'),
+      dataIndex: 'type',
+      key: 'type',
+      align: alignLeft,
     },
     {
       title: t('table:table-item-tags'),

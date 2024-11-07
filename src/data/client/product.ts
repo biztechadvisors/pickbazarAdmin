@@ -101,14 +101,14 @@ export const productClient = {
   }: Partial<ProductQueryOptions>) => {
     const filter = HttpClient.formatFilterParams({
       category: categories,
-      // tags,
+      tags,
       type,
     });
     return HttpClient.get<ProductPaginator>(API_ENDPOINTS.PRODUCTS, {
       dealerId,
       shop_id,
       searchJoin: 'and',
-      with: 'shop;type',
+      with: ' type',
       ...params,
       filter,
       // search: HttpClient.formatSearchParams({
@@ -122,7 +122,7 @@ export const productClient = {
   popular({ shop_id, ...params }: Partial<ProductQueryOptions>) {
     return HttpClient.get<Product[]>(API_ENDPOINTS.POPULAR_PRODUCTS, {
       searchJoin: 'and',
-      with: 'type;shop',
+      with: 'type',
       ...params,
       search: HttpClient.formatSearchParams({ shop_id }),
     });
