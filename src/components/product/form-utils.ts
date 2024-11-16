@@ -521,13 +521,32 @@ export function getProductDefaultValues(
   });
 }
  
-export function filterAttributes(attributes: any, variations: any) {
-  let res = [];
-  res = attributes?.filter((el: any) => {
-    return !variations?.find((element: any) => {
-      return element?.attribute?.slug === el?.slug;
-    });
+// export function filterAttributes(attributes: any, variations: any) {
+
+//   console.log(attributes,variations ,'======================123')
+//   let res = [];
+//   res = attributes?.filter((el: any) => {
+//     return !variations?.find((element: any) => {
+//       return element?.attribute?.slug === el?.slug;
+//     });
+//   });
+//   console.log(res,'res==============')
+//   return res;
+// }
+export function filterAttributes(attributes: any, variations: any, fieldIndex: number) {
+  console.log(attributes, variations, '======================123');
+  
+  // Get selected attributes from the **current card only**
+  const selectedAttributes = variations[fieldIndex]?.attributes?.map(
+    (attr: any) => attr?.attribute?.slug
+  ) || [];
+
+  // Filter attributes to exclude already selected in the current card
+  const res = attributes?.filter((el: any) => {
+    return !selectedAttributes.includes(el?.slug);
   });
+
+  console.log(res, 'res==============');
   return res;
 }
 
@@ -536,6 +555,7 @@ export function getCartesianProduct(values: any) {
   const formattedValues = values?.map((v: any) => {
       const { attribute } = v;
 
+      console.log("DATA ____________________",attribute);
       // Create a comma-separated string for the values
       const valueString: string = v?.value?.map((a: any) => a.value).join(', ');
 
