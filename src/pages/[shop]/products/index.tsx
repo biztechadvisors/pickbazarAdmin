@@ -147,7 +147,7 @@ export default function ProductsPage() {
             </div>
 
             <Button
-              onClick={handleOpenModal}
+              onClick={handleImportModal}
               className="h-12 ms-4 md:ms-6 "
             >
               {t('common:text-export-import')}

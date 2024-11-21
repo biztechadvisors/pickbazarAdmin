@@ -1846,14 +1846,29 @@ type IProps = {
 export default function ProductVariableForm({
   shopId,
   initialValues,
-  settings,
+  settings: initialSettings, // Rename settings prop to initialSettings
 }: IProps) {
   const { t } = useTranslation();
   const { locale } = useRouter();
 
-  const { settings: { options } } = useSettingsQuery({
+  // Rename loading from useSettingsQuery to avoid conflict
+  const { settings, error, loading: isSettingsLoading } = useSettingsQuery({
     language: locale!,
   });
+
+  if (isSettingsLoading) {
+    console.log("Loading settings...");
+  }
+  
+  if (error) {
+    console.log("Error fetching settings:", error);
+  }
+
+  // Use `settings` from the query instead of the `initialSettings` prop here
+  console.log("settings from query:", settings);
+  console.log("initialSettings from props:", initialSettings);
+}
+
 
   const { attributes, loading } = useAttributesQuery({
     shop_id: initialValues ? initialValues.shop_id : shopId,
@@ -1864,7 +1879,7 @@ export default function ProductVariableForm({
     control,
     watch,
     setValue,
-    getValues,
+    getValues,                                         
     formState: { errors },
   } = useFormContext();
   console.log("CONTROLLER",control);
@@ -1875,6 +1890,7 @@ export default function ProductVariableForm({
 
   const variations = watch('variations');
   const cartesianProduct = getCartesianProduct(getValues('variations')) || {};
+  console.log("cartesianProduct",cartesianProduct)
 
   return (
     <>

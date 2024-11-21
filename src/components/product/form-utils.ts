@@ -552,6 +552,7 @@ export function filterAttributes(attributes: any, variations: any, fieldIndex: n
 
 //correct code for return array
 export function getCartesianProduct(values: any) {
+   
   const formattedValues = values?.map((v: any) => {
       const { attribute } = v;
 
@@ -852,6 +853,7 @@ export function getProductInputValues(
     variations,
     ...simpleValues
   } = values;
+  console.log("data&&&&&",values)
   const processedFile = processFileWithName(digital_file_input);
  
   return {
