@@ -1541,9 +1541,9 @@
 //   const { t } = useTranslation();
 //   const { locale } = useRouter();
 
-//   const { settings: { options } } = useSettingsQuery({
-//     language: locale!,
-//   });
+  // const { settings: { options } } = useSettingsQuery({
+  //   language: locale!,
+  // });
 
 //   const { attributes, loading } = useAttributesQuery({
 //     shop_id: initialValues ? initialValues.shop_id : shopId,
@@ -1852,23 +1852,10 @@ export default function ProductVariableForm({
   const { locale } = useRouter();
 
   // Rename loading from useSettingsQuery to avoid conflict
-  const { settings, error, loading: isSettingsLoading } = useSettingsQuery({
+  const { settings: { options } } = useSettingsQuery({
     language: locale!,
   });
-
-  if (isSettingsLoading) {
-    console.log("Loading settings...");
-  }
-  
-  if (error) {
-    console.log("Error fetching settings:", error);
-  }
-
-  // Use `settings` from the query instead of the `initialSettings` prop here
-  console.log("settings from query:", settings);
-  console.log("initialSettings from props:", initialSettings);
-}
-
+console.log("settings+++++++",options)
 
   const { attributes, loading } = useAttributesQuery({
     shop_id: initialValues ? initialValues.shop_id : shopId,

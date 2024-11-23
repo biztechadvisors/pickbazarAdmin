@@ -1270,7 +1270,8 @@ export type SeoSettings = {
 export interface Settings {
   id: string;
   language: string;
-  options: SettingsOptions;
+  // options: SettingsOptions;
+  options: any;
 }
 
 export interface SettingsInput {
