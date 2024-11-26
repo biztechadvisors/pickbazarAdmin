@@ -554,14 +554,14 @@ export function filterAttributes(attributes: any, variations: any, fieldIndex: n
 export function getCartesianProduct(values: any) {
    
   const formattedValues = values?.map((v: any) => {
-      const { attribute } = v;
+      const { attributes } = v;
 
-      console.log("DATA ____________________",attribute);
+      console.log("DATA ____________________",attributes);
       // Create a comma-separated string for the values
       const valueString: string = v?.value?.map((a: any) => a.value).join(', ');
 
       return {
-        attribute: { name: attribute?.name ? attribute?.name : null },
+        attribute: { name: attributes?.name ? attributes?.name : null },
         value: valueString ? valueString : null , // Wrap the string in an array
       };
     }).filter((i: any) => i !== undefined);

@@ -29,6 +29,7 @@ export default function Regions() {
 
   const { regions, loading, paginatorInfo, error } = useRegionsQuery({
     code: me?.managed_shop?.slug,
+    // search: searchTerm,
   });
 
   console.log("regions",regions)

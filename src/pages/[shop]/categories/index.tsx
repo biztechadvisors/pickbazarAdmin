@@ -45,6 +45,7 @@ export default function Categories() {
     // shop,
     limit: 20,
     type,
+    shopId: shop,
     // name: searchTerm,
     orderBy,
     sortedBy,

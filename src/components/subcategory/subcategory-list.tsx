@@ -178,7 +178,7 @@ console.log("subcategories++++", subcategories);
           //@ts-ignore
           columns={columns}
           emptyText={t('table:empty-table-data')}
-          data={subcategories.data}
+          data={subcategories}
           rowKey="id"
           scroll={{ x: 1000 }}
           expandable={{

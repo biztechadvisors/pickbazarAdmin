@@ -60,6 +60,7 @@ export default function ProductsPage() {
         categories: category,
         dealerId,
         shop_id,
+        search:searchTerm,
     });
 
    

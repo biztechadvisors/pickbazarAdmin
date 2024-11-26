@@ -1643,6 +1643,7 @@ export interface UserProfileInput {
 export interface CategoryQueryOptions extends QueryOptions {
   type: string;
   name: string;
+  shopId: number | null;
   region_name?: string; 
   parent: number | null; 
   shop: string | null;
@@ -1808,6 +1809,7 @@ export interface RegionsQueryOptions extends QueryOptions {
   shop_id: string[];
   shopSlug?: string;
   code?: string;
+  search:string;
 }
 
 import { SortOrder } from '@/types'; // Ensure SortOrder is imported from the correct path
