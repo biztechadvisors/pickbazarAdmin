@@ -177,6 +177,8 @@ export interface GetParams {
   language: string;
   categoryId?: number;
   shopId?: number;
+  shop_id?:number;
+  id?:number;
 }
 
 export interface QueryOptions {
@@ -1643,7 +1645,7 @@ export interface UserProfileInput {
 export interface CategoryQueryOptions extends QueryOptions {
   type: string;
   name: string;
-  shopId: number | null;
+  shopId?: number;
   region_name?: string; 
   parent: number | null; 
   shop: string | null;
@@ -1725,6 +1727,7 @@ export interface TypeQueryOptions extends QueryOptions {
 }
 
 export interface ProductQueryOptions extends QueryOptions {
+  id?:number;
   type: string;
   name: string;
   slug: string;

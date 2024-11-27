@@ -188,6 +188,7 @@ function SelectCategories({
     limit: 999,
     type: type?.slug,
     language: locale,
+    // shopId,
   });
   return (
     <div>

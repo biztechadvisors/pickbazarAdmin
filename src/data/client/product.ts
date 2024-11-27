@@ -79,9 +79,9 @@ import { HttpClient } from './http-client';
 export const productClient = {
   ...crudFactory<Product, QueryOptions, CreateProduct>(API_ENDPOINTS.PRODUCTS),
 
-  get({ slug, userId, language, shop_id }: GetParams) {
+  get({ slug, id, language, shop_id }: GetParams) {
     return HttpClient.get<Product>(
-      `${API_ENDPOINTS.PRODUCTS}/${slug}/${shop_id}`,
+      `${API_ENDPOINTS.PRODUCTS}/${slug}/${id}/${shop_id}`,
       {
         language,
         with: 'type;shop;categories;tags;variations.attribute.values;variation_options;author;manufacturer;digital_file',

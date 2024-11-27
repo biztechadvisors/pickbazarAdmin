@@ -72,10 +72,10 @@ export const useUpdateCategoryMutation = () => {
   });
 };
 
-export const useCategoryQuery = ({ slug, language }: GetParams) => {
+export const useCategoryQuery = ({ slug, language, shopId }: GetParams) => {
   const { data, error, isLoading } = useQuery<Category, Error>(
-    [API_ENDPOINTS.CATEGORIES, { slug, language }],
-    () => categoryClient.get({ slug, language })
+    [API_ENDPOINTS.CATEGORIES, { slug, language, shopId }],
+    () => categoryClient.get({ slug, language, shopId })
   );
 
   return {
@@ -86,6 +86,7 @@ export const useCategoryQuery = ({ slug, language }: GetParams) => {
 };
 
 export const useCategoriesQuery = (options: Partial<CategoryQueryOptions>) => {
+  console.log("Request options:", options); 
   const { data, error, isLoading } = useQuery<CategoryPaginator, Error>(
     [API_ENDPOINTS.CATEGORIES, options],
     ({ queryKey, pageParam }) =>

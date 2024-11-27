@@ -11,7 +11,7 @@ import {
   getAuthCredentials,
   hasAccess,
 } from '@/utils/auth-utils';
-import { useProductQuery } from '@/data/product';
+import { useProductQuery, useProductsQuery } from '@/data/product';
 import { Config } from '@/config';
 import { Routes } from '@/config/routes';
 import { useShopQuery } from '@/data/shop';
@@ -27,7 +27,19 @@ export default function UpdateProductPage() {
   const { data: shopData } = useShopQuery({
     slug: query?.shop as string,
   });
+  
+  // const shop_id = shopData?.id ? Number(shopData.id) : undefined; 
   const shop_id = shopData?.id!;
+  const { products, loading: productsLoading } = useProductsQuery({
+    shop_id,
+    slug: query.productSlug as string, // Ensure filtering by slug
+  });
+  
+  // Extract productId if available
+  const productId = products?.find(
+    (product) => product.slug === query.productSlug
+  )?.id; 
+
   const {
     product,
     isLoading: loading,
@@ -35,11 +47,11 @@ export default function UpdateProductPage() {
   } = useProductQuery({
     slug: query.productSlug as string,
     shop_id,
-    id: me?.id,
+    id: productId,
     language:
       query.action!.toString() === 'edit' ? locale! : Config.defaultLanguage,
-  });
-  console.log("product json", product);
+  });  
+
   if (loading) return <Loader text={t('common:text-loading')} />;
   if (error) return <ErrorMessage message={error.message} />;
 

@@ -84,9 +84,11 @@ export const useCouponQuery = ({
 }) => {
   const { data, error, isLoading } = useQuery<Coupon, Error>(
     [API_ENDPOINTS.COUPONS, { code, language }],
-    () => couponClient.get({ code, language })
+    () => couponClient.get({ code, language }), // Ensure this matches the API's query params
+    {
+      enabled: !!code && !!language, // Avoid making requests if code or language is missing
+    }
   );
-
   return {
     coupon: data,
     error,

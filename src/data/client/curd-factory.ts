@@ -15,8 +15,8 @@ export function crudFactory<Type, QueryParams extends LanguageParam, InputType>(
     paginated(params: QueryParams) {
       return HttpClient.get<PaginatorInfo<Type>>(endpoint, params);
     },
-    get({ slug, language }: any) {
-      return HttpClient.get<Type>(`${endpoint}/${slug}`, { language });
+    get({ slug, language, shopId }: any) {
+      return HttpClient.get<Type>(`${endpoint}/${slug}`, { language,shopId } ) ;
     },
     create(data: InputType) {
       console.log('asgg', data);

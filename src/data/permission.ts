@@ -34,7 +34,9 @@ export const useSavePermissionData = () => {
 
   const mutationPost = useMutation(permissionClient.postPermission, {
     onSuccess: () => {
-      toast.success('Permission saved successfully');
+      router.push('/permission').then(() => {
+        toast.success('Permission saved successfully'); // Show success toast after navigation
+      });
     },
     onError: () => {
       toast.error('Failed to save permission');
