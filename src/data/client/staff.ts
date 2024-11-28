@@ -1,4 +1,4 @@
-import { StaffQueryOptions, StaffPaginator, AddStaffInput } from '@/types';
+import { StaffQueryOptions, StaffPaginator, AddStaffInput, RegisterInput, AuthResponse } from '@/types';
 import { API_ENDPOINTS } from './api-endpoints';
 import { HttpClient } from './http-client';
 
@@ -10,9 +10,11 @@ export const staffClient = {
       search: HttpClient.formatSearchParams({}),
     });
   },
-  addStaff: (variables: AddStaffInput) => {
-    return HttpClient.post<any>(API_ENDPOINTS.ADD_STAFF, variables);
+  addStaff:(variables: RegisterInput) => {
+    return HttpClient.post<AuthResponse>(API_ENDPOINTS.REGISTER, variables);
   },
+  
+  
   removeStaff: ({ id }: { id: string }) => {
     return HttpClient.delete<any>(`${API_ENDPOINTS.REMOVE_STAFF}/${id}`);
   },
