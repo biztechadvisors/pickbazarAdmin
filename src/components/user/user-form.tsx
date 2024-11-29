@@ -111,7 +111,8 @@ const CustomerCreateForm = () => {
         createdBy: id,
         permission: type?.value,
         numberOfDealers,
-        managed_shop: shopData, // Added new field to payload
+        managed_shop: shopData, 
+        shopSlug,
       },
       {
         onError: (error: any) => {

@@ -10,10 +10,17 @@ export const staffClient = {
       search: HttpClient.formatSearchParams({}),
     });
   },
-  addStaff:(variables: RegisterInput) => {
-    return HttpClient.post<AuthResponse>(API_ENDPOINTS.REGISTER, variables);
-  },
+  // addStaff:(variables: RegisterInput) => {
+  //   return HttpClient.post<AuthResponse>(API_ENDPOINTS.REGISTER, variables);
+  // },
   
+  addStaff: (variables: RegisterInput & { shopSlug: string }) => {
+    const { shopSlug, ...restVariables } = variables;
+    return HttpClient.post<AuthResponse>(
+      `${API_ENDPOINTS.REGISTER}?shopSlug=${shopSlug}`,
+      restVariables
+    );
+  },
   
   removeStaff: ({ id }: { id: string }) => {
     return HttpClient.delete<any>(`${API_ENDPOINTS.REMOVE_STAFF}/${id}`);

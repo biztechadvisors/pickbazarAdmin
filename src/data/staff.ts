@@ -36,7 +36,8 @@ export const useAddStaffMutation = () => {
 
   return useMutation(staffClient.addStaff, {
     onSuccess: () => {
-      router.push(`/${router?.query?.shop}${Routes.staff.list}`);
+      router.push('/staff')
+      // router.push(`/${router?.query?.shop}${Routes.staff.list}`);
       toast.success(t('common:successfully-created'));
     },
     // Always refetch after error or success:

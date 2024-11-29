@@ -10,18 +10,32 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
 import { useShopQuery } from '@/data/shop';
 import { useAddStaffMutation } from '@/data/staff';
-import { useMeQuery } from '@/data/user';
+import { useMeQuery, useRegisterMutation } from '@/data/user';
 import PhoneInput from 'react-phone-input-2';
 import Label from '../ui/label';
 import Select from '../ui/select/select';
 import { usePermissionData } from '@/data/permission';
+import { getAuthCredentials } from '@/utils/auth-utils';
 
 
 type FormValues = {
   name: string;
   email: string;
   password: string;
+  contact: string;
+  type: { value: string; label: string };
+  createdBy: string;
+  numberOfDealers: number;
 };
+const defaultValues = {
+  name: '',
+  email: '',
+  password: '',
+  contact: '',
+  type: { value: '', label: '' },
+  numberOfDealers: 0, // Added default value for new field
+};
+
 const staffFormSchema = yup.object().shape({
   name: yup.string().required('form:error-name-required'),
   email: yup
@@ -29,19 +43,32 @@ const staffFormSchema = yup.object().shape({
     .email('form:error-email-format')
     .required('form:error-email-required'),
   password: yup.string().required('form:error-password-required'),
+  contact: yup.string().required('form:error-contact-required'),
 });
+
 const AddStaffForm = () => {
   const router = useRouter();
   const { data: meData } = useMeQuery();
+  const { id } = meData || {};
+  const { data: permissionData } = usePermissionData(id);
+  // const { mutate: registerUser, isLoading: loading } = useRegisterMutation();
+  const { mutate: addStaff, isLoading: loading } = useAddStaffMutation();
+  const { t } = useTranslation();
+  const { permissions } = getAuthCredentials();
+  console.log("permissionData-staff", permissionData)
+
   const {
     query: { shop },
   } = router;
-  const { data: shopData } = useShopQuery({
-    slug: shop as string,
-  });
-  const shopId = shopData?.id!;
-  console.log("shopData",shopData)
-  console.log("shopId",shopId)
+  const shopSlug =
+  typeof window !== 'undefined' ? localStorage.getItem('shopSlug') : null;
+
+const { data: shopData, isLoading: fetchingShopId } = useShopQuery({
+  slug: shopSlug as string,
+});
+  // const shopId = shopData?.id!;
+  console.log("shopSlug&&",shopSlug)
+  // console.log("shopId",shopId)
   const {
     register,
     handleSubmit,
@@ -49,14 +76,10 @@ const AddStaffForm = () => {
     formState: { errors },
     control,
   } = useForm<FormValues>({
+    defaultValues,
     resolver: yupResolver(staffFormSchema),
   });
-  const { mutate: addStaff, isLoading: loading } = useAddStaffMutation();
-  const { t } = useTranslation();
-  const { id } = meData || {};
-  const { data: permissionData } = usePermissionData(id);
-
-  console.log("permissionData-staff", permissionData)
+ 
 
   const permissionOptions =
     permissionData?.map((permission: { id: any; permission_name: string }) => ({
@@ -68,13 +91,18 @@ const AddStaffForm = () => {
 
     console.log("permissionOptions- staff",permissionOptions)
 
-  function onSubmit({ name, email, password }: FormValues) {
+  function onSubmit({ name, email, password ,contact,type,numberOfDealers}: FormValues) {
     addStaff(
       {
         name,
         email,
         password,
-        shop_id: Number(shopId),
+        contact,
+        permission: type?.value,
+        numberOfDealers,
+        managed_shop: shopData,
+        // slug: "hilltop-marble",
+        shopSlug, 
       },
       {
         onError: (error: any) => {
