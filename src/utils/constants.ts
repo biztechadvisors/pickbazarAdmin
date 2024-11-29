@@ -31,3 +31,5 @@ export const ACCEPTED_FILE_TYPES = {
   'application/epub+zip': [],
   '.psd': [],
 };
+
+export const backendApi = process.env.NEXT_PUBLIC_REST_API_ENDPOINT

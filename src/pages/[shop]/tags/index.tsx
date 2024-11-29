@@ -1,30 +1,22 @@
 import Card from '@/components/common/card';
-import Layout from '@/components/layouts/admin';
+import AdminLayout from '@/components/layouts/admin';
 import Search from '@/components/common/search';
 import LinkButton from '@/components/ui/link-button';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import ErrorMessage from '@/components/ui/error-message';
 import Loader from '@/components/ui/loader/loader';
 import { useTranslation } from 'next-i18next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import TagList from '@/components/tag/tag-list';
-import {
-  adminOnly,
-  adminOwnerAndStaffOnly,
-  getAuthCredentials,
-} from '@/utils/auth-utils';
+import { adminOwnerAndStaffOnly } from '@/utils/auth-utils';
 import { SortOrder } from '@/types';
 import { Routes } from '@/config/routes';
 import { useTagsQuery } from '@/data/tag';
 import { useRouter } from 'next/router';
 import { Config } from '@/config';
-import { newPermission } from '@/contexts/permission/storepermission';
-import { useAtom } from 'jotai';
-import { siteSettings } from '@/settings/site.settings';
 
 import { useMeQuery } from '@/data/user';
 import { AllPermission } from '@/utils/AllPermission';
-import AdminLayout from '@/components/layouts/admin';
 
 export default function Tags() {
   const { t } = useTranslation();
@@ -50,8 +42,10 @@ export default function Tags() {
     shopSlug,
     search:searchTerm,
   });
-
-
+  const totalPages = Math.ceil((paginatorInfo?.total || 0) / (paginatorInfo?.perPage || 1));
+  useEffect(() => {
+    if (page > totalPages) setPage(1);
+  }, [paginatorInfo?.total, paginatorInfo?.perPage, page]);
 
   // const [getPermission, _] = useAtom(newPermission);
   // const { permissions } = getAuthCredentials();

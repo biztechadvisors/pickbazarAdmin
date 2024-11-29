@@ -15,7 +15,7 @@ import { orderClient, orderStocks } from './client/order';
 import { useRouter } from 'next/router';
 import { Routes } from '@/config/routes';
 import { HttpClient } from './client/http-client';
-
+import {backendApi} from "@/utils/constants";
 
 export const useOrdersQuery = (
   params: Partial<OrderQueryOptions>,
@@ -141,6 +141,7 @@ export function useCreateOrderMutation() {
 
 
 export const useUpdateOrderMutation = () => {
+  const router = useRouter();
   const { t } = useTranslation();
   const queryClient = useQueryClient();
 
@@ -155,7 +156,7 @@ export const useUpdateOrderMutation = () => {
       }
 
       // API endpoint with the dynamic ID
-      const url = `http://localhost:5000/api/order-status/${id}`;
+      const url = `${backendApi}/order-status/${id}`;
 
       // Data object to send in the PUT request
       const data = { name, color, serial, language };
@@ -166,6 +167,7 @@ export const useUpdateOrderMutation = () => {
     {
       onSuccess: () => {
         toast.success(t('common:successfully-updated'));
+        return router.push('/orders')
       },
       // Always refetch after error or success:
       onSettled: () => {
