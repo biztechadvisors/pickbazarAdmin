@@ -135,7 +135,7 @@ const GetInspiredList = ({
           <Pagination
             total={paginatorInfo?.total}
             current={paginatorInfo?.currentPage}
-            // pageSize={paginatorInfo?.page}
+            // pageSize={paginatorInfo?.perPage}
             onChange={onPagination}
           />
         </div>

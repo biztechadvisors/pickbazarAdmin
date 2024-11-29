@@ -337,7 +337,7 @@ export const useUsersQuery = (params: Partial<QueryOptionsType>) => {
       keepPreviousData: true,
     }
   );
-
+  console.log('API Response:', data); 
   return {
     users: data?.data ?? [],
     paginatorInfo: mapPaginatorData(data as any),

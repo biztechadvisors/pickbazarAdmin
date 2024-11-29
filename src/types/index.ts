@@ -619,7 +619,11 @@ export interface Qna {
   updatedAt: Date;
   faqId: number;
 }
-
+export type QnaFormValues = {
+  question?: string;
+  answer?: string;
+  type?: string; // Adjust according to `QnAType` enum
+}; 
 export interface CouponInput {
   code: string;
   type: CouponType;

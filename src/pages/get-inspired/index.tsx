@@ -51,7 +51,7 @@ export default function GetInspired() {
   }
 
   // Handle pagination functionality
-  function handlePagination(current: number) {
+  function handlePagination(current: any) {
     setPage(current);
   }
 

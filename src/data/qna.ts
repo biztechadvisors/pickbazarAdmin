@@ -4,7 +4,7 @@ import { toast } from 'react-toastify';
 import { useTranslation } from 'next-i18next';
 import { mapPaginatorData } from '@/utils/data-mappers';
 import { qnaClient } from './client/qna'; // Import your QnA client
-import { Qna, QnaPaginator, QnaQueryOptions } from '@/types';
+import { Qna, QnaFormValues, QnaPaginator, QnaQueryOptions } from '@/types';
 import { Routes } from '@/config/routes';
 import { API_ENDPOINTS } from './client/api-endpoints';
 
@@ -54,19 +54,37 @@ export const useQnaQuery = (
 };
 
 // Hook to update an existing QnA item
-export const useUpdateQnaMutation = (shop_id) => {
-  const { t } = useTranslation();
-  const queryClient = useQueryClient();
+// export const useUpdateQnaMutation = (shop_id) => {
+//   const { t } = useTranslation();
+//   const queryClient = useQueryClient();
 
-  return useMutation(({ id, ...data }) => qnaClient.updateQna(data, id), {
-    // Pass `id` (qnaId) separately
-    onSuccess: () => {
-      toast.success(t('common:successfully-updated'));
-    },
-    onSettled: () => {
-      queryClient.invalidateQueries(API_ENDPOINTS.QNA); // Invalidate QnA queries on success
-    },
-  });
+//   return useMutation(({ id, ...data }) => qnaClient.updateQna(data, id), {
+//     // Pass `id` (qnaId) separately
+//     onSuccess: () => {
+//       toast.success(t('common:successfully-updated'));
+//     },
+    // onSettled: () => {
+    //   queryClient.invalidateQueries(API_ENDPOINTS.QNA); // Invalidate QnA queries on success
+    // },
+//   });
+// };
+export const useUpdateQnaMutation = () => {
+  const queryClient = useQueryClient();
+  const { t } = useTranslation();
+  const router = useRouter();
+  return useMutation(
+    ({ id, ...data }: { id: number } & QnaFormValues) => qnaClient.updateQna(data, id),
+    {
+      onSuccess: () => {
+        router.push(Routes.faq.list);
+        toast.success(t('common:successfully-updated'));
+        queryClient.invalidateQueries(API_ENDPOINTS.QNA);
+      },
+      onSettled: () => {
+        queryClient.invalidateQueries(API_ENDPOINTS.QNA); // Invalidate QnA queries on success
+      },
+    }
+  );
 };
 
 // Hook to delete a QnA item

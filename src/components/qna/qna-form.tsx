@@ -221,17 +221,22 @@ import Button from '@/components/ui/button';
 import Description from '@/components/ui/description';
 import Card from '@/components/common/card';
 import { useRouter } from 'next/router';
-import { Qna } from '@/types';
+import { Qna, QnaFormValues } from '@/types';
 import { useTranslation } from 'next-i18next';
 import { useCreateQnaMutation, useUpdateQnaMutation } from '@/data/qna';
 import { useEffect } from 'react';
 
-type IProps = {
-  faqId: number;
-  qnaId?: number; // Optional, for updating QnA
-  initialValues?: Qna; // For pre-filled data in case of editing
-};
 
+// type IProps = {
+//   faqId: number;
+//   qnaId?: number; // Optional, for updating QnA
+//   initialValues?: QnaFormValues; // For pre-filled data in case of editing
+// };
+interface IProps {
+  faqId: number;
+  qnaId?: number;
+  initialValues?: QnaFormValues;
+}
 export default function CreateOrUpdateQnaForm({ faqId, qnaId, initialValues }: IProps) {
   const router = useRouter();
   const { t } = useTranslation();
@@ -241,7 +246,7 @@ export default function CreateOrUpdateQnaForm({ faqId, qnaId, initialValues }: I
     handleSubmit,
     reset,
     formState: { errors },
-  } = useForm<Qna>({
+  } = useForm<QnaFormValues>({
     defaultValues: initialValues || { question: '', answer: '' }, // Initialize with empty or fetched data
   });
 
@@ -257,10 +262,7 @@ export default function CreateOrUpdateQnaForm({ faqId, qnaId, initialValues }: I
 
   const onSubmit = async (values: Qna) => {
     if (qnaId) {
-      updateQna({
-        id: qnaId,
-        ...values,
-      });
+      updateQna({ id: qnaId, ...values });
     } else {
       createQna({ ...values, faqId });
     }

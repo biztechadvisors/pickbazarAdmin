@@ -57,10 +57,11 @@ export const useGetInspiredQuery = (
 export const useUpdateGetInspiredMutation = (shop_id) => {
   const { t } = useTranslation();
   const queryClient = useQueryClient();
-
+  const router = useRouter();
   return useMutation((data) => getInspiredClient.update({ ...data, shop_id }), {
     // Changed to getInspiredClient
     onSuccess: () => {
+      router.push(Routes.getInspired.list);
       toast.success(t('common:successfully-updated'));
     },
     onSettled: () => {
