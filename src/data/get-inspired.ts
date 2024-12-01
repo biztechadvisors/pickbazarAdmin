@@ -32,22 +32,42 @@ export const useCreateGetInspiredMutation = (shop_id) => {
 };
 
 // Query GetInspired List
+// export const useGetInspiredQuery = (
+//   params: Partial<GetInspiredQueryOptions>, // Changed type to GetInspiredQueryOptions
+//   options: any = {}
+// ) => {
+//   const { data, error, isLoading } = useQuery<GetInspiredPaginator, Error>( // Changed to GetInspiredPaginator
+//     [API_ENDPOINTS.GET_INSPIRED, params], // Updated endpoint
+//     ({ queryKey, pageParam }) =>
+//       getInspiredClient.paginated(Object.assign({}, queryKey[1], pageParam)), // Changed to getInspiredClient
+//     {
+//       keepPreviousData: true,
+//       ...options,
+//     }
+//   );
+//   return {
+//     getInspired: data || [], // Updated to getInspired
+//     paginatorInfo: mapPaginatorData(data),
+//     error,
+//     loading: isLoading,
+//   };
+// };
 export const useGetInspiredQuery = (
-  params: Partial<GetInspiredQueryOptions>, // Changed type to GetInspiredQueryOptions
+  params: Partial<GetInspiredQueryOptions>, 
   options: any = {}
 ) => {
-  const { data, error, isLoading } = useQuery<GetInspiredPaginator, Error>( // Changed to GetInspiredPaginator
-    [API_ENDPOINTS.GET_INSPIRED, params], // Updated endpoint
-    ({ queryKey, pageParam }) =>
-      getInspiredClient.paginated(Object.assign({}, queryKey[1], pageParam)), // Changed to getInspiredClient
+  const { data, error, isLoading } = useQuery<GetInspiredPaginator, Error>(
+    [API_ENDPOINTS.GET_INSPIRED, params],
+    ({ queryKey }) =>
+      getInspiredClient.paginated(queryKey[1]), // Pass params to the client
     {
       keepPreviousData: true,
       ...options,
     }
   );
   return {
-    getInspired: data || [], // Updated to getInspired
-    paginatorInfo: mapPaginatorData(data),
+    getInspired: data?.data || [], // Access data correctly
+    paginatorInfo: mapPaginatorData(data?.paginatorInfo),
     error,
     loading: isLoading,
   };

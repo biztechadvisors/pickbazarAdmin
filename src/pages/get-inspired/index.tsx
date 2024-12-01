@@ -28,7 +28,9 @@ export default function GetInspired() {
 
   // Fetch the inspirations data
   const { getInspired, loading, paginatorInfo, error } = useGetInspiredQuery({
-    shopSlug: me?.managed_shop?.slug, // Use shopSlug instead
+    shopSlug: me?.managed_shop?.slug,
+    limit: 20,  
+    page: page,
   });
   console.log('get inspired data', getInspired);
   console.log('get inspired me', me);
@@ -51,9 +53,9 @@ export default function GetInspired() {
   }
 
   // Handle pagination functionality
-  function handlePagination(current: any) {
-    setPage(current);
-  }
+  const handlePagination = (newPage: number) => {
+    setPage(newPage);
+  };
 
   console.log(canWrite);
 

@@ -43,9 +43,10 @@ export const useDeleteTaxMutation = () => {
 export const useUpdateTaxClassMutation = (shop_id) => {
   const { t } = useTranslation();
   const queryClient = useQueryClient();
-
+  const router = useRouter();
   return useMutation((data) => taxClient.update({ ...data, shop_id }), {
     onSuccess: () => {
+      router.push(Routes.tax.list);
       toast.success(t('common:successfully-updated'));
     },
     onSettled: () => {

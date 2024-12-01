@@ -53,9 +53,11 @@ export const useDeleteShippingClassMutation = () => {
 export const useUpdateShippingMutation = () => {
   const { t } = useTranslation();
   const queryClient = useQueryClient();
+  const router = useRouter();
 
   return useMutation(shippingClient.update, {
     onSuccess: () => {
+      router.push(Routes.shipping.list);
       toast.success(t('common:successfully-updated'));
     },
     // Always refetch after error or success:
