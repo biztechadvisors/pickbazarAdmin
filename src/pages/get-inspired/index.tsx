@@ -29,7 +29,7 @@ export default function GetInspired() {
   // Fetch the inspirations data
   const { getInspired, loading, paginatorInfo, error } = useGetInspiredQuery({
     shopSlug: me?.managed_shop?.slug,
-    limit: 20,  
+    limit: 10,  
     page: page,
   });
   console.log('get inspired data', getInspired);
