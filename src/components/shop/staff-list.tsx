@@ -163,7 +163,7 @@ const StaffList = ({
           <Pagination
             total={paginatorInfo.total}
             current={paginatorInfo.currentPage}
-            pageSize={paginatorInfo.perPage}
+            pageSize={paginatorInfo.perPage || 10}
             onChange={onPagination}
             showLessItems
           />

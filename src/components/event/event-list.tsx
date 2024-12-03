@@ -15,13 +15,19 @@ import { AllPermission } from '@/utils/AllPermission';
 import ActionButtons from '../common/action-buttons';
 
 export type IProps = {
-  categories: Category[] | undefined;
+  events: Event[] | undefined;
   paginatorInfo: MappedPaginatorInfo | null;
   onPagination: (key: number) => void;
   onSort: (current: any) => void;
   onOrder: (current: string) => void;
 };
-const EventLists = ({ events }: any) => {
+const EventLists = ({ 
+  events,
+  paginatorInfo,
+  onPagination,
+  onSort,
+  onOrder,
+}: IProps) => {
 
   console.log("eventseventsevents", events)
   const { t } = useTranslation();
@@ -81,7 +87,7 @@ const EventLists = ({ events }: any) => {
       // onHeaderCell: () => onHeaderClick('name'),
     },
     {
-      title: t('table:table-item-details'),
+      title: t('table:table-item-event-name'),
       dataIndex: 'eventName',
       key: 'eventName',
       ellipsis: true,
@@ -137,8 +143,9 @@ const EventLists = ({ events }: any) => {
             render: (id: string) => (
               <ActionButtons
                 id={id}
+                // editUrl={`${Routes.event.list}/edit/${id}`}
                 editUrl={`${Routes.event.list}/edit/${id}`}
-                deleteModalView="DELETE_BLOG"
+                deleteModalView="DELETE_EVENT"
               />
             ),
           }
@@ -163,16 +170,16 @@ const EventLists = ({ events }: any) => {
         />
       </div>
 
-      {/* {!!paginatorInfo?.total && (
+      {!!paginatorInfo?.total && (
         <div className="flex items-center justify-end">
           <Pagination
             total={paginatorInfo.total}
             current={paginatorInfo.currentPage}
-            pageSize={paginatorInfo.perPage}
+            pageSize={paginatorInfo.perPage || 10}
             onChange={onPagination}
           />
         </div>
-      )} */}
+      )}
     </>
   );
 };

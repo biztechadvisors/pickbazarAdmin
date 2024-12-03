@@ -5,6 +5,8 @@ import { toast } from 'react-toastify';
 import Router from 'next/router';
 import { Routes } from '@/config/routes';
 import { API_ENDPOINTS } from './client/api-endpoints';
+import { useState } from 'react';
+import { mapPaginatorData } from '@/utils/data-mappers';
 
 export const useCreateEventMutation = () => {
   const queryClient = useQueryClient();
@@ -41,26 +43,48 @@ export const useUpdateeventMutation = () => {
   });
 };
 
-export const useEventQuery = (params: any) => {
-  return useQuery(
+// export const useEventQuery = (params: any) => {
+//   return useQuery(
+//     [API_ENDPOINTS.EVENTS, params],
+//     () => eventClient.getAll(params),
+//     {
+//       onSuccess: (data) => {
+//         // Handle successful data fetching (e.g., log data, set additional state)
+//         console.log('Blogs fetched successfully:', data);
+//       },
+//       onError: (error) => {
+//         // Handle errors (e.g., show an error message)
+//         console.error('Error fetching blogs:', error);
+//       },
+//     }
+//   );
+// };
+
+// 
+
+export const useEventQuery = (params: any, options: any = {}) => {
+  const { data, error, isLoading } = useQuery(
     [API_ENDPOINTS.EVENTS, params],
-    () => eventClient.getAll(params),
+    () => eventClient.getAll(params), // Call the paginated API method
     {
-      onSuccess: (data) => {
-        // Handle successful data fetching (e.g., log data, set additional state)
-        console.log('Blogs fetched successfully:', data);
-      },
-      onError: (error) => {
-        // Handle errors (e.g., show an error message)
-        console.error('Error fetching blogs:', error);
-      },
+      keepPreviousData: true, // Keeps the previous data while loading new data
+      ...options,
     }
   );
+console.log("@@@@@@",data) 
+  return {
+    events: data?.data || [], // Fallback to an empty array if no data is available
+    paginatorInfo: data ? mapPaginatorData(data) : {}, // Assuming mapPaginatorData handles pagination info
+    error,
+    loading: isLoading,
+  };
 };
+
+
 
 export const useEventSingleData = (id: any) => {
   return useQuery(
-    [API_ENDPOINTS.EVENT, id],
+    [API_ENDPOINTS.EVENTS, id],
     () => eventClient.singleData({ id }),
     {
       enabled: !!id, // Fetch only if id exists
@@ -75,11 +99,11 @@ export const useDeleteEventMutation = () => {
   return useMutation(eventClient.delete, {
     onSuccess: () => {
       toast.success(t('common:successfully-deleted'));
-      queryClient.invalidateQueries([API_ENDPOINTS.BLOG]);
+      queryClient.invalidateQueries([API_ENDPOINTS.EVENTS]);
     },
     // Always refetch after error or success:
     onSettled: () => {
-      queryClient.invalidateQueries(API_ENDPOINTS.BLOG);
+      queryClient.invalidateQueries(API_ENDPOINTS.EVENTS);
     },
   });
 };

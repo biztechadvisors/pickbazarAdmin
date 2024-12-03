@@ -53,7 +53,8 @@ export default function StaffsPage() {
   } = useStaffsQuery(
     {
       shop_id: shopId,
-      page,
+      limit: 10,  
+      page: page,
       orderBy,
       sortedBy,
     },
@@ -65,9 +66,9 @@ export default function StaffsPage() {
     return <Loader text={t('common:text-loading')} />;
   if (error) return <ErrorMessage message={error?.message} />;
 
-  function handlePagination(current: any) {
-    setPage(current);
-  }
+  const handlePagination = (newPage: number) => {
+    setPage(newPage);
+  };
 
   if (
     !hasAccess(adminOnly, permissions) &&

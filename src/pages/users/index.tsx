@@ -32,7 +32,7 @@ export default function Customers() {
   const { data } = useMeQuery();
 
   const { users, paginatorInfo, loading, error } = useUsersQuery({
-    limit: 20,
+    limit: 10,
     usrById: data?.id,
     email: searchTerm,
     page,

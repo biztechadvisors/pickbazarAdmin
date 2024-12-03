@@ -13,7 +13,7 @@ import { useMeQuery } from '@/data/user';
 import { useRouter } from 'next/router';
 import { useShopQuery } from '@/data/shop';
 import AdminLayout from '@/components/layouts/admin';
-import BlogCreateOrUpdateForm from '@/components/blog/blog-form';
+// import BlogCreateOrUpdateForm from '@/components/blog/blog-form';
 import EventCreateOrUpdate from '@/components/event/event-form';
 
 export default function CreateAttributePage() {

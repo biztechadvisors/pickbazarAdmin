@@ -66,9 +66,12 @@ const AddStaffForm = () => {
 const { data: shopData, isLoading: fetchingShopId } = useShopQuery({
   slug: shopSlug as string,
 });
+console.log("DA^^^^",meData);
   // const shopId = shopData?.id!;
+  const userId = shopData?.owner_id;
+    
   console.log("shopSlug&&",shopSlug)
-  // console.log("shopId",shopId)
+  console.log("shopId^^^^",userId)
   const {
     register,
     handleSubmit,
@@ -103,6 +106,7 @@ const { data: shopData, isLoading: fetchingShopId } = useShopQuery({
         managed_shop: shopData,
         // slug: "hilltop-marble",
         shopSlug, 
+        createdBy:userId,
       },
       {
         onError: (error: any) => {

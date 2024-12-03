@@ -22,7 +22,7 @@ export const API_ENDPOINTS = {
   SHIPPINGS: 'shippings',
   SETTINGS: 'settings',
   CATEGORIES: 'categories',
-  SUBCATEGORIES: 'subcategories',
+  SUBCATEGORIES: 'subCategories',
   TAGS: 'tags',
   TYPES: 'types',
   PROFILE_UPDATE: 'profile-update',

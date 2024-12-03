@@ -27,26 +27,27 @@ const Events = () => {
   const shop: string | undefined = meData?.managed_shop?.id;
   const shopSlug = meData?.managed_shop?.slug;
 
-  const {
-    data: events,
-    isLoading,
-    error,
-  } = useEventQuery({
+  const { events, paginatorInfo, isLoading, error } = useEventQuery({
     shopSlug,
     orderBy,
     sortedBy,
     language: locale,
     search: searchTerm,
+    page,
+    limit: 10,
   });
 
+  console.log("events fetched:", events);
+
+  
   function handleSearch({ searchText }: { searchText: string }) {
     setSearchTerm(searchText);
     setPage(1);
   }
 
-  function handlePagination(current: any) {
-    setPage(current);
-  }
+  const handlePagination = (newPage: number) => {
+    setPage(newPage);
+  };
 
   console.log("eventseventsevents", events)
   return (
@@ -59,7 +60,7 @@ const Events = () => {
             </h1>
           </div>
           <div className="flex w-full flex-col items-center space-y-4 ms-auto md:flex-row md:space-y-0 xl:w-3/4">
-            <Search onSearch={handleSearch} />
+            {/* <Search onSearch={handleSearch} /> */}
 
             <TypeFilter className="md:ms-6" />
 
@@ -74,7 +75,12 @@ const Events = () => {
           </div>
         </div>
       </Card>
-      <EventLists events={events?.data}/>
+      <EventLists 
+      events={events}
+      paginatorInfo={paginatorInfo}
+      onPagination={handlePagination}
+      onOrder={setOrder}
+      onSort={setColumn}/>
     </>
   );
 };

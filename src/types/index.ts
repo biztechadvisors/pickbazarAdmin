@@ -310,7 +310,18 @@ export interface Attribute {
   translated_languages: string[];
   language?: string;
 }
-
+export interface Event {
+  id: string; 
+  title: string;
+  eventName: string;
+  description: string;
+  date: string;
+  time: string;
+  location: string;
+  collaboration: string;
+  shopId: number;
+  imageIds: number[]; 
+}
 export interface AttributeValueInput {
   id?: number;
   value: string;

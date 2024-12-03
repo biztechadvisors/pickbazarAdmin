@@ -244,6 +244,7 @@ export default function CreateOrUpdateSubCategoriesForm({
     useUpdateSubCategoryMutation();
 
   const onSubmit = async (values: FormValues) => {
+    console.log("values####",values)
     const transformedRegions = values.region?.name ? [values.region.name] : [];
     const input = {
       language: router.locale,
@@ -254,7 +255,8 @@ export default function CreateOrUpdateSubCategoriesForm({
         original: values?.image?.original,
         id: values?.image?.id,
       },
-      category_id: values.category_id?.id ?? null,
+      category_id: values.category?.id ?? null,
+
       shop_id: shop,
       regionName: transformedRegions,
     };

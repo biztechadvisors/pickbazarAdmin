@@ -40,8 +40,7 @@ export const getInspiredClient = {
   },
   paginated: (params: Partial<GetInspiredQueryOptions>) => {
     console.log('params', params); // Debugging
-    const query = new URLSearchParams(params as Record<string, string>).toString();
-    console.log("query+++++++++++++",query)
+    const query = new URLSearchParams(params as Record<string, string>).toString(); 
     return HttpClient.get<GetInspiredPaginator>(
       `${API_ENDPOINTS.GET_INSPIRED}/shop?${query}` // Use /shop route
     );

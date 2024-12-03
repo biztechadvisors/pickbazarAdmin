@@ -32,15 +32,12 @@ export default function GetInspired() {
     limit: 10,  
     page: page,
   });
-  console.log('get inspired data', getInspired);
-  console.log('get inspired me', me);
+  
   // Handle permission check
   const { permissions } = getAuthCredentials();
   const permissionTypes = AllPermission();
   const canWrite = permissionTypes.includes('sidebar-nav-item-getInspired');
-
-  console.log('User Permissions:', permissions);
-  console.log('Can Write:', canWrite); // Check if canWrite is true
+ 
 
   // Loader and error handling
   if (loading) return <Loader text={t('common:text-loading')} />;

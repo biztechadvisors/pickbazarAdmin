@@ -52,10 +52,11 @@ export default function StaffsPage() {
   const { data } = useMeQuery();
   const shopId = shopData?.id!;
   const { users, paginatorInfo, loading, error } = useUsersQuery({
-    limit: 20,
+    // limit: 20,
     usrById: data?.id,
     email: searchTerm,
-    page,
+    limit: 10,  
+    page: page,
     name: searchTerm,
     // orderBy,
     // sortedBy,
