@@ -60,6 +60,9 @@ export const useUpdateCategoryMutation = () => {
   const queryClient = useQueryClient();
   return useMutation(categoryClient.update, {
     onSuccess: () => {
+      Router.push(`/${getShopSlug()}/${Routes.category.list}`, undefined, {
+        locale: Config.defaultLanguage,
+      }); 
       toast.success(t('common:successfully-updated'));
     },
     // Always refetch after error or success:

@@ -16,6 +16,10 @@ import { useIsRTL } from '@/utils/locals';
 import { useState } from 'react';
 import TitleWithSort from '@/components/ui/title-with-sort';
 import { AllPermission } from '@/utils/AllPermission';
+import { getAuthCredentials } from '@/utils/auth-utils';
+import { OWNER } from '@/utils/constants';
+import { filter } from 'lodash';
+import { CUSTOMER } from '@/lib/constants';
 
 type IProps = {
   customers: User[] | undefined;
@@ -33,12 +37,12 @@ const CustomerList = ({
 }: IProps) => {
   const { t } = useTranslation();
   const { alignLeft } = useIsRTL();
-
+  const { permissions } = getAuthCredentials();
   const permissionTypes = AllPermission();
+  const canWrite =
+    permissionTypes.includes('sidebar-nav-item-users') ||
+    permissions?.[0] === OWNER;
 
-  console.log('customers', customers);
-
-  const canWrite = permissionTypes.includes('sidebar-nav-item-users');
   const [sortingObj, setSortingObj] = useState<{
     sort: SortOrder;
     column: any | null;
@@ -64,6 +68,13 @@ const CustomerList = ({
   });
 
   const columns = [
+    {
+      title: t('table:table-item-id'),
+      dataIndex: 'id',
+      key: 'id',
+      align: 'left',
+      width: 60,
+    },
     {
       title: t('table:table-item-avatar'),
       dataIndex: 'profile',
@@ -131,31 +142,35 @@ const CustomerList = ({
     {
       ...(canWrite
         ? {
-            title: t('table:table-item-actions'),
-            dataIndex: 'id',
-            key: 'actions',
-            align: 'right',
-            render: function Render(id: string, { is_active }: any) {
-              const { data } = useMeQuery();
-              return (
-                <>
-                  {data?.id != id && (
-                    <ActionButtons
-                      id={id}
-                      userStatus={true}
-                      isUserActive={is_active}
-                      showAddWalletPoints={true}
-                      showMakeAdminButton={true}
-                    />
-                  )}
-                </>
-              );
-            },
-          }
+          title: t('table:table-item-actions'),
+          dataIndex: 'id',
+          key: 'actions',
+          align: 'right',
+          render: function Render(id: string, { is_active }: any) {
+            const { data } = useMeQuery();
+            return (
+              <>
+                {data?.id != id && (
+                  <ActionButtons
+                    id={id}
+                    userStatus={true}
+                    isUserActive={is_active}
+                    // editModalView={true}
+                    editUrl='/user-details'
+                  // showAddWalletPoints={true}
+                  // showMakeAdminButton={true}
+                  />
+                )}
+              </>
+            );
+          },
+        }
         : null),
     },
   ];
-
+  const filteredCustomers = customers?.filter(
+    (customer) => customer.permission?.type_name === CUSTOMER // Adjust the condition as needed
+  );
   return (
     <>
       <div className="mb-6 overflow-hidden rounded shadow">
@@ -164,6 +179,7 @@ const CustomerList = ({
           columns={columns}
           emptyText={t('table:empty-table-data')}
           data={customers}
+          // data={filteredCustomers}
           rowKey="id"
           scroll={{ x: 800 }}
         />

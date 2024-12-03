@@ -67,6 +67,10 @@ export class UserService {
   }
 }
 
+
+
+
+
 export const useMeQuery = () => {
   const router = useRouter();
   const queryClient = useQueryClient();
@@ -75,8 +79,12 @@ export const useMeQuery = () => {
   );
 
   useEffect(() => {
-    const user = UserService.getUserDetails();
-    setUserDetails(user);
+    const fetchUserData = async () => {
+      const user = await UserService.getUserDetails();
+      setUserDetails(user);
+    };
+
+    fetchUserData();
   }, []);
 
   const { username, sub } = userDetails;
@@ -115,7 +123,7 @@ export const useMeQuery = () => {
       isLoading: false,
       isError: false,
       error: null,
-      refetch: () => {},
+      refetch: () => { },
     };
   }
 
@@ -126,40 +134,33 @@ export function useLogin() {
   return useMutation(userClient.login);
 }
 
+
 export const useLogoutMutation = () => {
   const router = useRouter();
-  const { t } = useTranslation();
+const { t } = useTranslation();
 
   const logoutMutation = useMutation(userClient.logout, {
     onSuccess: () => {
-      // Check if logout occurred due to a window refresh
-      const isWindowRefresh = !router.query.noredirect;
-
-      if (isWindowRefresh) {
-        console.log('Logout: Window Refresh');
-      } else {
-        console.log('Logout: Route Change');
+      if (typeof window !== 'undefined') { 
+        Cookies.remove(AUTH_CRED);
+        localStorage.clear(); 
+        router.replace(Routes.login);
       }
-
-      // Remove auth credentials and redirect to login route
-      Cookies.remove(AUTH_CRED);
-      router.replace(Routes.login);
-      toast.success(t('common:successfully-logout'));
     },
     onError: (error) => {
-      console.error('Logout Error:', error);
+      if (typeof window !== 'undefined') { 
+        toast.error(t('common:logout-failed', { error: error.message }));
+        console.error('Logout Error:', error);
+      }
     },
   });
 
   return logoutMutation;
 };
-
 export const useRegisterMutation = () => {
   const router = useRouter();
   const queryClient = useQueryClient();
   const { t } = useTranslation();
-  // console.log(t, queryClient)
-
   return useMutation(userClient.register, {
     onSuccess: () => {
       const queryParams = new URLSearchParams(window.location.search);
@@ -312,12 +313,18 @@ export const useUserQuery = ({ id }: { id: string }) => {
 };
 
 export const useVendorQuery = (usrById: number) => {
-  const type: string = API_ENDPOINTS.VENDOR_LIST;
+  const type: string = API_ENDPOINTS.STORE_OWNER;
+
   return useQuery<User, Error>(
     [API_ENDPOINTS.USERS, type, usrById],
-    () => userClient.fetchVendor({ type, usrById }),
+    () => {
+      if (isNaN(usrById)) {
+        throw new Error('usrById must be a valid number');
+      }
+      return userClient.fetchVendor({ type, usrById });
+    },
     {
-      enabled: Boolean(type),
+      enabled: !isNaN(usrById) && Boolean(type), // Enable query only if usrById is a valid number and type is truthy
     }
   );
 };

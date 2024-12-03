@@ -4,8 +4,6 @@ import { Attribute, Shop, SortOrder } from '@/types';
 import { useRouter } from 'next/router';
 import { useTranslation } from 'next-i18next';
 import TitleWithSort from '@/components/ui/title-with-sort';
-import { Config } from '@/config';
-import Link from '@/components/ui/link';
 import { Routes } from '@/config/routes';
 import LanguageSwitcher from '@/components/ui/lang-action/action';
 import { AllPermission } from '@/utils/AllPermission';
@@ -15,6 +13,7 @@ export type IProps = {
   onSort: (current: any) => void;
   onOrder: (current: string) => void;
 };
+
 const AttributeList = ({ attributes, onSort, onOrder }: IProps) => {
   const { t } = useTranslation();
   const router = useRouter();
@@ -32,9 +31,12 @@ const AttributeList = ({ attributes, onSort, onOrder }: IProps) => {
     column: null,
   });
 
+  const permissionTypes = AllPermission();
 
-  const permissionTypes = AllPermission(); 
-
+  console.log(
+    'permissionTypes===============================',
+    permissionTypes
+  );
   const canWrite = permissionTypes.includes('sidebar-nav-item-attributes');
 
   const onHeaderClick = (column: string | null) => ({
@@ -61,7 +63,6 @@ const AttributeList = ({ attributes, onSort, onOrder }: IProps) => {
       width: 60,
     },
     {
-      // title: t("table:table-item-title"),
       title: (
         <TitleWithSort
           title={t('table:table-item-title')}
@@ -97,40 +98,39 @@ const AttributeList = ({ attributes, onSort, onOrder }: IProps) => {
       render: (values: any) => {
         return (
           <span className="whitespace-nowrap">
-            {values?.map((singleValues: any, index: number) => {
+            {values?.map((singleValue: any, index: number) => {
               return index > 0
-                ? `, ${singleValues.value}`
-                : `${singleValues.value}`;
+                ? `, ${singleValue.value}`
+                : `${singleValue.value}`;
             })}
           </span>
         );
       },
     },
-    {      
+    {
       ...(canWrite
         ? {
-          title: t('table:table-item-actions'),
-          dataIndex: 'slug',
-          key: 'actions',
-          align: alignRight,
-          render: (slug: string, record: Attribute) =>  (
-            <LanguageSwitcher
-              slug={slug}
-              record={record}
-              deleteModalView="DELETE_ATTRIBUTE"
-              routes={Routes?.attribute}
-            />
+            title: t('table:table-item-actions'),
+            dataIndex: 'slug',
+            key: 'actions',
+            align: alignRight,
+            render: (slug: string, record: Attribute) => (
+              <LanguageSwitcher
+                slug={slug}
+                record={record}
+                deleteModalView="DELETE_ATTRIBUTE"
+                routes={Routes?.attribute}
+              />
             ),
-        }
-        
-        : null),
-    },    
-    
+          }
+        : {}),
+    },
   ];
 
   if (router?.query?.shop) {
     columns = columns?.filter((column) => column?.key !== 'shop');
   }
+
   return (
     <div className="mb-8 overflow-hidden rounded shadow">
       <Table

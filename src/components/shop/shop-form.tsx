@@ -22,6 +22,7 @@ import {
   ItemProps,
   ShopSettings,
   ShopSocialInput,
+  User,
   UserAddressInput,
 } from '@/types';
 import GooglePlacesAutocomplete from '@/components/form/google-places-autocomplete';
@@ -32,14 +33,31 @@ import * as socialIcons from '@/components/icons/social';
 import omit from 'lodash/omit';
 import SwitchInput from '@/components/ui/switch-input';
 import { getAuthCredentials } from '@/utils/auth-utils';
-import { SUPER_ADMIN, STORE_OWNER } from '@/utils/constants';
+import { SUPER_ADMIN, Company, OWNER, E_COMMERCE, NON_E_COMMERCE } from '@/utils/constants';
 import { useModalAction } from '../ui/modal/modal.context';
 import OpenAIButton from '../openAI/openAI.button';
-import { useCallback, useMemo } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import { useSettingsQuery } from '@/data/settings';
-import Select from '../ui/select/select';
-import { useMeQuery, useUserQuery, useVendorQuery } from '@/data/user';
+import {
+  useMeQuery,
+  useUserQuery,
+  useUsersQuery,
+  useVendorQuery,
+} from '@/data/user';
 import ValidationError from '../ui/form-validation-error';
+import { Routes } from '@/config/routes';
+import LinkButton from '../ui/link-button';
+import { usePermissionData } from '@/data/permission';
+import Loader from '../ui/loader/loader';
+import UserModal from '../ui/modal/user-modal';
+import Modal from '../ui/modal/modal';
+import CustomerCreateForm from '../user/user-form';
+import CustForm from '../user/custForm';
+import CreateCustomerPage from '@/pages/users/create';
+import CreatePermission from '@/pages/permission/create';
+import CreatePerm from '../createPerm';
+import { useAtom } from 'jotai';
+import { addPermission, selectedOption } from '@/utils/atoms';
 
 export const chatbotAutoSuggestion = ({ name }: { name: string }) => {
   return [
@@ -132,44 +150,60 @@ type FormValues = {
   settings: ShopSettings;
 };
 
-function SelectUser({
-  control,
-  errors,
-}: {
-  control: Control<FormValues>;
+type SelectUserProps = {
+  control: Control<User>;
   errors: FieldErrors;
-}) {
+};
+
+function SelectUser({ control, errors }: SelectUserProps) {
   const { t } = useTranslation();
-
   const { data } = useMeQuery();
-  const usrById = data?.id;
-
-  const { data: users, isLoading } = useVendorQuery(usrById);
-
+  const usrById = data?.shop_id;  
+  const { permissions } = getAuthCredentials();
+  const isOwner = permissions?.[0].includes(OWNER);
+  const { data: users, isLoading } = useVendorQuery(data?.id);
   const options: any = users || [];
+  const shouldDisable = control._defaultValues.owner != null || !isOwner;
+
+  const [isModalOpen, setModalOpen] = useState(false);
+
+  const openModal = () => setModalOpen(true);
+  const closeModal = () => setModalOpen(false);
+
+  console.log('users&&&&', users);
 
   return (
-    <div className="mb-5">
-      <Label>{t('form:input-label-search')}</Label>
-      <SelectInput
-        name="user"
-        control={control}
-        getOptionLabel={(option: any) => `${option.name} - ${option.email}`}
-        getOptionValue={(option: any) => option}
-        options={options.data}
-        isLoading={isLoading}
-        isSearchable={true}
-        filterOption={(option: any, inputValue: any) => {
-          // Customize the filter logic as needed
-          const searchValue = inputValue.toLowerCase();
-          return (
-            option.name.toLowerCase().includes(searchValue) ||
-            option.email.toLowerCase().includes(searchValue)
-          );
-        }}
-        defaultValue={[]}
-      />
+    <div className="mb-5 flex w-full justify-between gap-2">
+      <div className="w-4/5">
+        <SelectInput
+          name="user"
+          control={control}
+          getOptionLabel={(option) => `${option.name} - ${option.email}`}
+          getOptionValue={(option) => option}
+          options={options.data}
+          isLoading={isLoading}
+          isSearchable={true}
+          filterOption={(option, inputValue) => {
+            const searchValue = inputValue.toLowerCase();
+            return (
+              option.name.toLowerCase().includes(searchValue) ||
+              option.email.toLowerCase().includes(searchValue)
+            );
+          }}
+          defaultValue={control._defaultValues.owner}
+          disabled={shouldDisable}
+        />
+      </div>
+      <div>
+        <Button className="mb-5" onClick={openModal}>
+          {t('form:form-title-create-user')}
+        </Button>
+      </div>
       <ValidationError message={t(errors.user?.message)} />
+      <Modal open={isModalOpen} onClose={closeModal}>
+        {/* <CustomerCreateForm /> */}
+        <CustForm />
+      </Modal>
     </div>
   );
 }
@@ -177,9 +211,27 @@ function SelectUser({
 const ShopForm = ({ initialValues }: { initialValues?: any }) => {
   const { mutate: createShop, isLoading: creating } = useCreateShopMutation();
   const { mutate: updateShop, isLoading: updating } = useUpdateShopMutation();
-  // const { permissions } = getAuthCredentials();
-  // let permission = hasAccess(adminAndOwnerOnly, permissions);
+  const [modalIsOpen, setIsOpen] = useState(false);
+  const [permissionSelectedOption, setPermissionSelectedOption] =
+    useAtom(selectedOption);
+  const [additionalPerm] = useAtom(addPermission);
   const { permissions } = getAuthCredentials();
+
+  console.log(
+    'additionalPerm------------------------------------',
+    additionalPerm
+  );
+
+  function openModal() {
+    setIsOpen(true);
+  }
+
+  function closeModal() {
+    setIsOpen(false);
+  }
+
+  const permissionId = permissionSelectedOption?.e?.id;
+
   const {
     register,
     handleSubmit,
@@ -192,29 +244,31 @@ const ShopForm = ({ initialValues }: { initialValues?: any }) => {
     shouldUnregister: true,
     ...(initialValues
       ? {
-        defaultValues: {
-          ...initialValues,
-          logo: getFormattedImage(initialValues.logo),
-          cover_image: getFormattedImage(initialValues.cover_image),
-          settings: {
-            ...initialValues?.settings,
-            socials: initialValues?.settings?.socials
-              ? initialValues?.settings?.socials.map((social: any) => ({
-                icon: updatedIcons?.find(
-                  (icon) => icon?.value === social?.icon
-                ),
-                url: social?.url,
-              }))
-              : [],
+          defaultValues: {
+            ...initialValues,
+            logo: getFormattedImage(initialValues.logo),
+            cover_image: getFormattedImage(initialValues.cover_image),
+            settings: {
+              ...initialValues?.settings,
+              socials: initialValues?.settings?.socials
+                ? initialValues?.settings?.socials.map((social: any) => ({
+                    icon: updatedIcons?.find(
+                      (icon) => icon?.value === social?.icon
+                    ),
+                    url: social?.url,
+                  }))
+                : [],
+            },
           },
-        },
-      }
+        }
       : {}),
     resolver: yupResolver(shopValidationSchema),
   });
   const router = useRouter();
-  const { openModal } = useModalAction();
+  console.log("control",control)
+  // const { openModal } = useModalAction();
   const { locale } = router;
+  const { data, isLoading: loading, isError } = useMeQuery();
   const {
     // @ts-ignore
     settings: { options },
@@ -226,6 +280,36 @@ const ShopForm = ({ initialValues }: { initialValues?: any }) => {
   const autoSuggestionList = useMemo(() => {
     return chatbotAutoSuggestion({ name: generateName ?? '' });
   }, [generateName]);
+
+  const userId = data?.id;
+
+  const {
+    isLoading: permissionLoading,
+    error,
+    data: permissionData,
+  } = usePermissionData(userId);
+
+  console.log("permissionData",permissionData)
+
+  const filterdEcomm = permissionData?.filter((e: any) => {
+    return (
+      (e && // Ensure the object exists
+        e.type_name === Company &&
+        e.permission_name === E_COMMERCE) ||
+      (e.type_name === Company && e.permission_name === NON_E_COMMERCE )
+    );
+  });
+
+  const option = filterdEcomm?.map((e: any) => ({
+    name: e?.permission_name,
+    email: e?.type_name,
+    e,
+  }));
+  console.log('Fetched Permission Data:', permissionData);
+  console.log('Permission Filtered Ecomm:', filterdEcomm);
+  console.log('Permission Options:', option);
+  const permissionProps = permissionSelectedOption?.e;
+
 
   const handleGenerateDescription = useCallback(() => {
     openModal('GENERATE_DESCRIPTION', {
@@ -242,37 +326,163 @@ const ShopForm = ({ initialValues }: { initialValues?: any }) => {
     control,
     name: 'settings.socials',
   });
-  function onSubmit(values: FormValues) {
+
+  console.log("fields",fields)
+ 
+
+  const handleSelectChange = (selectedOption: any) => {
+    setPermissionSelectedOption(selectedOption);
+  };
+
+  // async function onSubmit(values: FormValues) {
+  //   const settings = {
+  //     ...values?.settings,
+  //     location: { ...omit(values?.settings?.location, '__typename') },
+  //     socials: values?.settings?.socials
+  //       ? values?.settings?.socials?.map((social: any) => ({
+  //           icon: social?.icon?.value,
+  //           url: social?.url,
+  //         }))
+  //       : [],
+  //   };
+
+  //   const { companyType, ...filteredValues } = values;
+
+  //   console.log('settings**********', settings);
+  //   try {
+  //     if (initialValues) {
+  //       const { ...restAddress } = values.address;
+  //       await updateShop({
+  //         id: initialValues.id,
+  //         ...values,
+  //         address: restAddress,
+  //         settings,
+  //         balance: {
+  //           id: initialValues.balance?.id,
+  //           ...values.balance,
+  //         },
+  //       });
+  //     } else {
+  //       await createShop({
+  //         ...values,
+  //         settings,
+  //         balance: {
+  //           ...values.balance,
+  //         },
+  //         additionalPermissions: {},
+  //         permission: permissionProps,
+  //       });
+  //     }
+  //     router.push('/shops'); // Navigate to the shops list or appropriate page
+  //   } catch (error) {
+  //     console.error('Error while saving the shop:', error);
+  //   }
+  // }
+
+  // async function onSubmit(values: FormValues) {
+  //   const settings = {
+  //     ...values?.settings,
+  //     location: { ...omit(values?.settings?.location, '__typename') },
+  //     socials: values?.settings?.socials
+  //       ? values?.settings?.socials?.map((social: any) => ({
+  //           icon: social?.icon?.value,
+  //           url: social?.url,
+  //         }))
+  //       : [],
+  //   };
+
+  //   // Remove companyType from values
+  //   const { companyType, ...filteredValues } = values;
+
+  //   console.log('settings**********', settings);
+  //   try {
+  //     if (initialValues) {
+  //       const { ...restAddress } = filteredValues.address;
+  //       await updateShop({
+  //         id: initialValues.id,
+  //         ...filteredValues,
+  //         address: restAddress,
+  //         settings,
+  //         balance: {
+  //           id: initialValues.balance?.id,
+  //           ...filteredValues.balance,
+  //         },
+  //       });
+  //     } else {
+  //       await createShop({
+  //         ...filteredValues,
+  //         settings,
+  //         balance: {
+  //           ...filteredValues.balance,
+  //         },
+  //         additionalPermissions: additionalPerm, // Ensure this is set as needed
+  //         permission: permissionProps?.permission_name,
+  //       });
+  //     }
+  //     router.push('/shops'); // Navigate to the shops list or appropriate page
+  //   } catch (error) {
+  //     console.error('Error while saving the shop:', error);
+  //   }
+  // }
+
+  async function onSubmit(values: FormValues) {
     const settings = {
       ...values?.settings,
       location: { ...omit(values?.settings?.location, '__typename') },
       socials: values?.settings?.socials
         ? values?.settings?.socials?.map((social: any) => ({
-          icon: social?.icon?.value,
-          url: social?.url,
-        }))
+            icon: social?.icon?.value,
+            url: social?.url,
+          }))
         : [],
     };
-    if (initialValues) {
-      const { ...restAddress } = values.address;
-      updateShop({
-        id: initialValues.id,
-        ...values,
-        address: restAddress,
-        settings,
-        balance: {
-          id: initialValues.balance?.id,
-          ...values.balance,
-        },
-      });
-    } else {
-      createShop({
-        ...values,
-        settings,
-        balance: {
-          ...values.balance,
-        },
-      });
+
+    // Remove companyType from values
+    const { companyType, ...filteredValues } = values;
+
+    console.log('settings**********', settings);
+    try {
+      if (initialValues) {
+        const { ...restAddress } = filteredValues.address;
+
+        console.log("restAddress", restAddress)
+        await updateShop({
+          id: initialValues.id,
+          ...filteredValues,
+          address: restAddress,
+          settings,
+          balance: {
+            id: initialValues.balance?.id,
+            ...filteredValues.balance,
+            // Ensure admin_commission_rate, current_balance, total_earnings, withdrawn_amount are updated when updating a shop
+            admin_commission_rate: 0, // Example value
+            current_balance: 0, // Example value
+            total_earnings: 0, // Example value
+            withdrawn_amount: 0, // Example value
+          },
+        });
+      } else {
+        const { ...restAddress } = filteredValues.address;
+        console.log("restAddress-create", restAddress)
+        await createShop({
+          ...filteredValues,
+          address: restAddress,
+          settings,
+          balance: {
+            ...filteredValues.balance,
+            // Pass these fields inside the balance object when creating a shop
+            admin_commission_rate: 0, // Example value
+            current_balance: 0, // Example value
+            total_earnings: 0, // Example value
+            withdrawn_amount: 0, // Example value
+          },
+          additionalPermissions: additionalPerm, // Ensure this is set as needed
+          permission: permissionProps?.permission_name,
+        });
+      }
+      router.push('/shops'); // Navigate to the shops list or appropriate page
+    } catch (error) {
+      console.error('Error while saving the shop:', error);
     }
   }
 
@@ -284,9 +494,64 @@ const ShopForm = ({ initialValues }: { initialValues?: any }) => {
     </span>
   );
 
+  // Fixed the loading and error handling.
+  if (permissionLoading || creating || updating) {
+    return <Loader text="Loading..." />;
+  }
+
+  if (error) {
+    return <div>Error: {error.message}</div>;
+  }
+
+  console.log(' initialValues_____________________', initialValues);
+
   return (
     <>
       <form onSubmit={handleSubmit(onSubmit)} noValidate>
+        <div className="my-5 flex flex-wrap border-b border-dashed border-border-base pb-8 sm:my-8">
+          <Description
+            title={t('form:input-label-comapny-type')}
+            details={t('form:shop-company-help-text')}
+            className="w-full px-0 pb-5 sm:w-4/12 sm:py-8 sm:pe-4 md:w-1/3 md:pe-5"
+          />
+          <Card className="w-full sm:w-8/12 md:w-2/3">
+            <div className="relative mb-5">
+              <Label>{t('form:input-label-select-company')}</Label>
+              <SelectInput
+                name="companyType"
+                placeholder="Choose company type"
+                control={control}
+                getOptionLabel={(option: any) =>
+                  `${option.name} - ${option.email}`
+                }
+                getOptionValue={(option: any) => option}
+                options={option}
+                isSearchable={true}
+                filterOption={(option: any, inputValue: any) => {
+                  const searchValue = inputValue.toLowerCase();
+                  return (
+                    option.name.toLowerCase().includes(searchValue) ||
+                    option.email.toLowerCase().includes(searchValue)
+                  );
+                }}
+                onChange={handleSelectChange}
+                defaultValue={control._defaultValues.owner}
+              />
+            </div>
+            <div className="relative">
+              <Label>{t('form:input-label-extra-permission')}</Label>
+              <Button onClick={openModal}>
+                {t('form:button-label-more-permission')}
+              </Button>
+              <Modal open={modalIsOpen} onClose={closeModal}>
+                <CreatePerm
+                  PermissionDatas={permissionProps}
+                  permissionId={permissionId}
+                />
+              </Modal>
+            </div>
+          </Card>
+        </div>
         <div className="my-5 flex flex-wrap border-b border-dashed border-border-base pb-8 sm:my-8">
           <Description
             title={t('form:input-label-logo')}
@@ -324,8 +589,7 @@ const ShopForm = ({ initialValues }: { initialValues?: any }) => {
               className="mb-5"
               error={t(errors.name?.message!)}
             />
-
-            <SelectUser control={control} errors={errors} />
+            {<SelectUser control={control} errors={errors} />}
 
             <div className="relative">
               {options?.useAi && (
@@ -425,7 +689,7 @@ const ShopForm = ({ initialValues }: { initialValues?: any }) => {
           </Card>
         </div>
 
-        {permissions?.includes(STORE_OWNER) ? (
+        {permissions?.includes(Company) ? (
           <div className="my-5 flex flex-wrap border-b border-dashed border-border-base pb-8 sm:my-8">
             <Description
               title={t('form:form-notification-title')}
@@ -473,6 +737,7 @@ const ShopForm = ({ initialValues }: { initialValues?: any }) => {
                 name="settings.location"
                 render={({ field: { onChange } }) => (
                   <GooglePlacesAutocomplete
+                    apiKey={process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY}
                     onChange={onChange}
                     data={getValues('settings.location')!}
                   />
@@ -511,13 +776,6 @@ const ShopForm = ({ initialValues }: { initialValues?: any }) => {
                           defaultValue={item?.icon!}
                         />
                       </div>
-                      {/* <Input
-                        className="sm:col-span-2"
-                        label={t("form:input-label-icon")}
-                        variant="outline"
-                        {...register(`settings.socials.${index}.icon` as const)}
-                        defaultValue={item?.icon!} // make sure to set up defaultValue
-                      /> */}
                       <Input
                         className="sm:col-span-2"
                         label={t('form:input-label-url')}

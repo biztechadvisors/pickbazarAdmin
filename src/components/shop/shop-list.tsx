@@ -7,14 +7,14 @@ import { siteSettings } from '@/settings/site.settings';
 import { useTranslation } from 'next-i18next';
 import { useIsRTL } from '@/utils/locals';
 import Badge from '@/components/ui/badge/badge';
-import { ShopPaginator, SortOrder } from '@/types';
+import { SortOrder } from '@/types';
 import TitleWithSort from '@/components/ui/title-with-sort';
 import Link from '@/components/ui/link';
 import { Shop, MappedPaginatorInfo } from '@/types';
-import { newPermission } from '@/contexts/permission/storepermission';
-import { useAtom } from 'jotai';
 import { getAuthCredentials } from '@/utils/auth-utils';
 import { AllPermission } from '@/utils/AllPermission';
+import { OWNER } from '@/utils/constants';
+import { Routes } from '@/config/routes';
 
 type IProps = {
   shops: Shop[] | undefined;
@@ -33,17 +33,11 @@ const ShopList = ({
 }: IProps) => {
   const { t } = useTranslation();
   const { alignLeft, alignRight } = useIsRTL();
-  // const [getPermission, _] = useAtom(newPermission)
-  // const { permissions } = getAuthCredentials();
-  // const canWrite = permissions.includes('super_admin')
-  //   ? siteSettings.sidebarLinks
-  //   : getPermission?.find(
-  //     (permission) => permission.type === 'sidebar-nav-item-shops'
-  //   )?.write;
-
-  const permissionTypes = AllPermission(); 
-
-  const canWrite = permissionTypes.includes('sidebar-nav-item-shops');
+  const { permissions } = getAuthCredentials();
+  const permissionTypes = AllPermission();
+  const canWrite =
+    permissionTypes.includes('sidebar-nav-item-shops') ||
+    permissions?.[0] === OWNER;
 
   const [sortingObj, setSortingObj] = useState<{
     sort: SortOrder;
@@ -77,7 +71,7 @@ const ShopList = ({
       width: 74,
       render: (logo: any, record: any) => (
         <Image
-          src={logo?.thumbnail ?? siteSettings.product.placeholder ? logo?.thumbnail ?? siteSettings.product.placeholder : ''}
+          src={logo?.thumbnail ?? siteSettings.product.placeholder}
           alt={record?.name}
           width={42}
           height={42}
@@ -178,26 +172,25 @@ const ShopList = ({
           key: 'actions',
           align: alignRight,
           render: (id: string, { slug, is_active }: any) => {
+
             return (
               <ActionButtons
                 id={id}
                 approveButton={true}
                 detailsUrl={`/${slug}`}
+                // detailsUrl={`${Routes.shop.edit}/${id}`}
                 isShopActive={is_active}
               />
             );
           },
-        } : null),
+        } : {}),
     },
   ];
-
-  console.log("shops", shops)
 
   return (
     <>
       <div className="mb-6 overflow-hidden rounded shadow">
         <Table
-          //@ts-ignore
           columns={columns}
           emptyText={t('table:empty-table-data')}
           data={shops}

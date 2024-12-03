@@ -28,7 +28,7 @@ interface Props {
 }
 
 const CreateMessageForm = ({ className, shop,dealer, ...rest }: Props) => {
-  console.log("myDataShop",dealer)
+
   const {
     register,
     handleSubmit,
@@ -44,8 +44,7 @@ const CreateMessageForm = ({ className, shop,dealer, ...rest }: Props) => {
   const {data:user}= useMeQuery();
   const router = useRouter();
   const { query } = router;
-  const {data:me}= useMeQuery();
-  console.log("userData", me)
+
   const { mutate: createMessage, isLoading: creating } = useSendMessage();
   useEffect(() => {
     const listener = (event: any) => {
@@ -64,7 +63,6 @@ const CreateMessageForm = ({ className, shop,dealer, ...rest }: Props) => {
     };
   }, [query?.id]);
   const onSubmit = async (values: FormValues) => {
-    console.log("valueMessagedData", query?.id as string)
     if (isEmpty(values.message)) {
       toast?.error('Message is required');
       return;

@@ -19,6 +19,9 @@ import { PlusIcon } from '@/components/icons/plus-icon';
 import AddCustomerSlider from './AddCustomerSlider';
 import { checkoutCustAtom, shopIdAtom } from '@/utils/atoms';
 import UserAddressSelection from '@/components/UserAddressSelection';
+import PageLoader from '@/components/ui/page-loader/page-loader';
+import ErrorMessage from '@/components/ui/error-message';
+import { setCustomer } from '@/components/checkout/customer/CustomerEmail';
 
 const CustomerEmail = dynamic(
   () => import('@/components/checkout/customer/CustomerEmail')
@@ -38,11 +41,17 @@ const RightSideView = dynamic(
 export default function CheckoutPage() {
   const [shopId] = useAtom(shopIdAtom);
   const [customer] = useAtom(customerAtom);
+
+  const { data: meData } = useMeQuery();
+  console.log('Ashish', meData);
+  console.log('customerData', customer);
+
   const { t } = useTranslation();
 
   const {
     data: user,
     isLoading: loading,
+    error,
     refetch,
   } = useUserQuery({ id: customer?.id });
 
@@ -51,6 +60,31 @@ export default function CheckoutPage() {
       refetch(customer?.id);
     }
   }, [customer?.id]);
+
+  // const {
+  //   data: user,
+  //   isLoading: loading,
+  //   error,
+  //   refetch,
+  // } = useUserQuery({ id: meData?.id });
+
+  // useEffect(() => {
+  //   if (meData?.id) {
+  //     refetch(meData?.id);
+  //   }
+  // }, [meData?.id]);
+
+  console.log('billingAddressAtom', billingAddressAtom);
+
+  console.log('userAshish', user);
+
+  if (loading) {
+    <div>
+      <PageLoader />
+    </div>;
+  }
+
+  if (error) return <ErrorMessage message={error.message} />;
 
   return (
     <div className="bg-gray-100">
@@ -66,7 +100,7 @@ export default function CheckoutPage() {
           />
 
           <AddressGrid
-            userId={user?.id!}
+            userId={user?.id}
             className="shadow-700 bg-light p-5 md:p-8"
             label={t('text-billing-address')}
             count={3}

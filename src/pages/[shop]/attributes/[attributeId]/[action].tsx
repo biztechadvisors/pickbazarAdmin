@@ -4,7 +4,7 @@ import Loader from '@/components/ui/loader/loader';
 import CreateOrUpdateAttributeForm from '@/components/attribute/attribute-form';
 import { useTranslation } from 'next-i18next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
-import ShopLayout from '@/components/layouts/shop';
+
 import {
   adminOnly,
   adminOwnerAndStaffOnly,
@@ -17,6 +17,7 @@ import { Routes } from '@/config/routes';
 import { useMeQuery } from '@/data/user';
 import shop from '@/components/layouts/shop';
 import { useShopQuery } from '@/data/shop';
+import AdminLayout from '@/components/layouts/admin';
 
 export default function UpdateAttributePage() {
   const { t } = useTranslation();
@@ -38,6 +39,8 @@ export default function UpdateAttributePage() {
     language:
       query.action!.toString() === 'edit' ? locale! : Config.defaultLanguage,
   });
+
+  console.log("data_____________for Attri---------------------", data)
 
   if (loading) return <Loader text={t('common:text-loading')} />;
   if (error) return <ErrorMessage message={error.message} />;
@@ -64,7 +67,7 @@ export default function UpdateAttributePage() {
 UpdateAttributePage.authenticate = {
   permissions: adminOwnerAndStaffOnly,
 };
-UpdateAttributePage.Layout = ShopLayout;
+UpdateAttributePage.Layout = AdminLayout;
 export const getServerSideProps = async ({ locale }: any) => ({
   props: {
     ...(await serverSideTranslations(locale, ['table', 'common', 'form'])),

@@ -21,19 +21,22 @@ const ProductSubCategoryInput = ({ control, setValue }: Props) => {
   const { dirtyFields } = useFormState({
     control,
   });
+
   useEffect(() => {
     if (type?.slug && dirtyFields?.type) {
       setValue('subcategories', []);
     }
   }, [type?.slug]);
 
-  const { subcategories, loading } = useSubCategoriesQuery({
+  // Extract the 'data' array from the response
+  const { subcategories: { data: subcategoryData = [] } = {}, loading } = useSubCategoriesQuery({
     limit: 999,
     type: type?.slug,
     language: locale,
-    categoryId: 2,
-    shopId: '9',
+    categoryId: null,
   });
+
+  console.log("@SUBCATEGORY+++", subcategoryData);
 
   return (
     <div className="mb-5">
@@ -44,9 +47,10 @@ const ProductSubCategoryInput = ({ control, setValue }: Props) => {
         control={control}
         getOptionLabel={(option: any) => option.name}
         getOptionValue={(option: any) => option.id}
-        // @ts-ignore
-        options={subcategories}
-        isLoading={loading} defaultValue={[]}      />
+        options={subcategoryData} // Use the extracted array here
+        isLoading={loading}
+        defaultValue={[]}
+      />
     </div>
   );
 };

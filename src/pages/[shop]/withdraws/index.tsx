@@ -5,7 +5,7 @@ import { useTranslation } from 'next-i18next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import WithdrawList from '@/components/withdraw/withdraw-list';
 import LinkButton from '@/components/ui/link-button';
-import ShopLayout from '@/components/layouts/shop';
+
 import { useRouter } from 'next/router';
 import {
   adminAndOwnerOnly,
@@ -20,6 +20,7 @@ import { SortOrder } from '@/types';
 import { Routes } from '@/config/routes';
 import { useMeQuery } from '@/data/user';
 import { AllPermission } from '@/utils/AllPermission';
+import AdminLayout from '@/components/layouts/admin';
 
 export default function WithdrawsPage() {
   const router = useRouter();
@@ -38,7 +39,7 @@ export default function WithdrawsPage() {
   const shopId = shopData?.id!;
 
 
-const permissionTypes = AllPermission(); 
+  const permissionTypes = AllPermission();
 
   const canWrite = permissionTypes.includes('sidebar-nav-item-withdraws');
 
@@ -79,13 +80,13 @@ const permissionTypes = AllPermission();
           </h1>
         </div>
         {canWrite ? (
-        <LinkButton
-          href={`/${shop}/withdraws/create`}
-          className="h-12 w-full md:w-auto md:ms-auto"
-        >
-          <span>+ {t('form:button-label-add-withdraw')}</span>
-        </LinkButton>
-         ) : null}
+          <LinkButton
+            href={`/${shop}/withdraws/create`}
+            className="h-12 w-full md:w-auto md:ms-auto"
+          >
+            <span>+ {t('form:button-label-add-withdraw')}</span>
+          </LinkButton>
+        ) : null}
       </Card>
 
       <WithdrawList
@@ -101,7 +102,7 @@ const permissionTypes = AllPermission();
 WithdrawsPage.authenticate = {
   permissions: adminAndOwnerOnly,
 };
-WithdrawsPage.Layout = ShopLayout;
+WithdrawsPage.Layout = AdminLayout;
 
 export const getServerSideProps = async ({ locale }: any) => ({
   props: {

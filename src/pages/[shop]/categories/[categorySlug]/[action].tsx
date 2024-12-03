@@ -7,7 +7,8 @@ import { useTranslation } from 'next-i18next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import { useCategoryQuery } from '@/data/category';
 import { Config } from '@/config';
-import ShopLayout from '@/components/layouts/shop';
+import AdminLayout from '@/components/layouts/admin';
+
 
 export default function UpdateCategoriesPage() {
   const { query, locale } = useRouter();
@@ -38,7 +39,7 @@ export default function UpdateCategoriesPage() {
   );
 }
 
-UpdateCategoriesPage.Layout = ShopLayout;
+UpdateCategoriesPage.Layout = AdminLayout;
 
 export const getServerSideProps = async ({ locale }: any) => ({
   props: {

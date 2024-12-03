@@ -52,6 +52,9 @@ export const useUpdateTypeMutation = () => {
   const queryClient = useQueryClient();
   return useMutation(typeClient.update, {
     onSuccess: () => {
+      Router.push(`/${getShopSlug()}/${Routes.type.list}`, undefined, {
+        locale: Config.defaultLanguage,
+      });
       toast.success(t('common:successfully-updated'));
     },
     // Always refetch after error or success:

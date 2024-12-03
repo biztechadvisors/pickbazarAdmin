@@ -11,6 +11,7 @@ import Link from '@/components/ui/link';
 import { Routes } from '@/config/routes';
 import LanguageSwitcher from '@/components/ui/lang-action/action';
 import { AllPermission } from '@/utils/AllPermission';
+import { useEffect } from 'react';
 
 export type IProps = {
   tags: any | undefined | null;
@@ -29,7 +30,7 @@ const TagList = ({
 }: IProps) => {
   const { t } = useTranslation();
   const rowExpandable = (record: any) => record.children?.length; 
-
+console.log("tag data+++++%%%%%%",tags);
   const permissionTypes = AllPermission(); 
 
   const canWrite = permissionTypes.includes('sidebar-nav-item-tags');
@@ -42,8 +43,12 @@ const TagList = ({
   }>({
     sort: SortOrder.Desc,
     column: null,
-  });
+  }); 
 
+  useEffect(() => {
+    console.log('Updated tags data:', tags);
+  }, [tags]);
+  
   const onHeaderClick = (column: string | null) => ({
     onClick: () => {
       onSort((currentSortDirection: SortOrder) =>

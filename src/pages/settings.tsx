@@ -4,57 +4,42 @@ import ErrorMessage from '@/components/ui/error-message';
 import Loader from '@/components/ui/loader/loader';
 import { useSettingsQuery } from '@/data/settings';
 import { useShippingClassesQuery } from '@/data/shipping';
-import { useShopsQuery } from '@/data/shop';
 import { useTaxesQuery } from '@/data/tax';
 import { useMeQuery } from '@/data/user';
-import { SortOrder } from '@/types';
 import { adminOnly } from '@/utils/auth-utils';
+import { GetStaticProps } from 'next';
 import { useTranslation } from 'next-i18next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import { useRouter } from 'next/router';
-import { useState } from 'react';
 
-export default function Settings() {
+const Settings: React.FC = () => {
   const { t } = useTranslation();
   const { locale } = useRouter();
   const { data: meData } = useMeQuery();
-  const shop_slug = meData?.shops[0]?.slug;
-  const shop_id = meData?.shop_id;
+  const shop_id = meData?.managed_shop?.id;
+
+  const { settings, loading: settingsLoading, error: settingsError, shopSlug } = useSettingsQuery({
+    language: locale!,
+  });
+
   const { taxes, loading: taxLoading } = useTaxesQuery({
     limit: 999,
-    shop_id,
+    shop_id: shop_id,
   });
 
-  const [searchTerm, setSearchTerm] = useState('');
-  const [page, setPage] = useState(1);
-  const [orderBy, setOrder] = useState('created_at');
-  const [sortedBy, setColumn] = useState<SortOrder>(SortOrder.Desc);
+  const { shippingClasses, loading: shippingLoading } = useShippingClassesQuery();
 
-  const {
-    shops,
-    loading: shopsLoading,
-    error: shopsError,
-  } = useShopsQuery({
-    name: searchTerm,
-    limit: 10,
-    page,
-    orderBy,
-    sortedBy,
-  });
-
-  const shop_slug = shops?.[0]?.slug;
-
-  const { shippingClasses, loading: shippingLoading } =
-    useShippingClassesQuery();
-
-  const { settings, loading, error } = useSettingsQuery({
-    language: locale!,
-    shop_slug,
-  });
-
-  if (loading || shippingLoading || taxLoading)
+  if (!shopSlug) {
     return <Loader text={t('common:text-loading')} />;
-  if (error) return <ErrorMessage message={error.message} />;
+  }
+
+  if (settingsLoading || taxLoading || shippingLoading) {
+    return <Loader text={t('common:text-loading')} />;
+  }
+
+  if (settingsError) {
+    return <ErrorMessage message={settingsError.message} />;
+  }
 
   return (
     <>
@@ -64,22 +49,24 @@ export default function Settings() {
         </h1>
       </div>
       <SettingsForm
-        // TODO: fix it
-        // @ts-ignore
         settings={settings}
         taxClasses={taxes}
         shippingClasses={shippingClasses}
       />
     </>
   );
-}
+};
+
 Settings.authenticate = {
   permissions: adminOnly,
 };
+
 Settings.Layout = AdminLayout;
 
-export const getStaticProps = async ({ locale }: any) => ({
+export const getStaticProps: GetStaticProps = async ({ locale }) => ({
   props: {
-    ...(await serverSideTranslations(locale, ['form', 'common'])),
+    ...(await serverSideTranslations(locale || 'en', ['form', 'common'])),
   },
 });
+
+export default Settings;

@@ -1,25 +1,29 @@
 import { useMemo } from 'react';
 import { siteSettings } from '@/settings/site.settings';
 import { useSettings } from '@/contexts/settings.context';
+
 export function formatPrice({
   amount,
-  currencyCode,
+  currencyCode = 'IND', // Default value for currencyCode
   locale,
   fractions = 2,
 }: {
   amount: number;
-  currencyCode: string;
+  currencyCode?: string; // Made optional
   locale: string;
   fractions: number;
 }) {
+  if (!currencyCode) {
+    throw new Error('Currency code is required with currency style.');
+  }
+
   const formatCurrency = new Intl.NumberFormat(locale, {
     style: 'currency',
     currency: currencyCode,
-    maximumFractionDigits:
-      fractions > 20 || fractions < 0 || !fractions ? 2 : fractions,
+    maximumFractionDigits: fractions > 20 || fractions < 0 ? 2 : fractions,
   });
 
-  return formatCurrency.format(amount);
+  return formatCurrency?.format(amount);
 }
 
 export function formatVariantPrice({
@@ -63,12 +67,12 @@ export default function usePrice(data?: PriceProps | null) {
 
     return baseAmount
       ? formatVariantPrice({
-          amount,
-          baseAmount,
-          currencyCode,
-          locale,
-          fractions,
-        })
+        amount,
+        baseAmount,
+        currencyCode,
+        locale,
+        fractions,
+      })
       : formatPrice({ amount, currencyCode, locale, fractions });
   }, [amount, baseAmount, currencyCode]);
 

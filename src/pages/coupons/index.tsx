@@ -31,10 +31,8 @@ export default function Coupons() {
     sortedBy,
   });
 
- 
   const { permissions } = getAuthCredentials();
   
-
   const permissionTypes = AllPermission(); 
 
   const canWrite = permissionTypes.includes('sidebar-nav-item-coupons');

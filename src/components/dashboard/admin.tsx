@@ -15,6 +15,8 @@ import { useRouter } from 'next/router';
 import { useMeQuery } from '@/data/user';
 import { CustomerIcon } from '../icons/sidebar/customer';
 import { AllPermission } from '@/utils/AllPermission';
+import { useGetStockSeals } from '@/data/stock';
+import { Company, DEALER } from '@/utils/constants';
 
 export default function Dashboard() {
   const { t } = useTranslation();
@@ -23,10 +25,15 @@ export default function Dashboard() {
   const canWrite = permissionTypes.includes('sidebar-nav-item-dealerlist');
   const { data: meData } = useMeQuery();
   const customerId = meData?.id;
+  const DealerShow = meData?.permission.type_name === DEALER;
+  const ShopShow = meData?.permission.type_name === Company;
+
+  const shopId = meData?.id;
 
   const analyticsQuery = {
     customerId: parseInt(customerId),
     state: '',
+    shop_id: shopId,
   };
 
   const {
@@ -35,16 +42,68 @@ export default function Dashboard() {
     error: analyticsError,
   } = useAnalyticsQuery(analyticsQuery);
 
-  const {
-    data: orderData,
-    error: orderError,
-    isLoading: orderLoading,
-  } = useOrdersQuery({
-    customer_id: customerId,
+  console.log('analyticsData', analyticsData);
+
+  // console.log("meData",meData)
+
+  // const {
+  //   orders: orderData,
+  //   paginatorInfo,
+  //   error: orderError,
+  //   loading: orderLoading,
+  // } = useOrdersQuery({
+  //   shop_slug: meData?.managed_shop?.slug,
+  //   language: locale,
+  //   limit: 10,
+  //   page: 1,
+  // });
+
+  let queryConfig = {
     language: locale,
     limit: 10,
     page: 1,
-  });
+  };
+
+  // Conditional assignment for DealerShow
+  if (DealerShow) {
+    queryConfig = {
+      ...queryConfig, // Spread the previous properties
+      shopSlug: meData?.managed_shop?.slug,
+      customer_id: meData?.id,
+    };
+  }
+  // Conditional assignment for ShopShow
+  else if (ShopShow) {
+    queryConfig = {
+      ...queryConfig,
+      shopSlug: meData?.managed_shop?.slug,
+    };
+  }
+
+  // Destructure the response from useOrdersQuery
+  const {
+    orders: orderData,
+    paginatorInfo,
+    error: orderError,
+    loading: orderLoading,
+  } = useOrdersQuery(queryConfig);
+
+  console.log('orderData', orderData);
+  const customer_id = meData?.id;
+  const shop_id = meData?.managed_shop?.id;
+
+  const { data: response } = useGetStockSeals(customer_id, shop_id);
+
+  const DealerSalesList = response?.data;
+  // const DealerShow = meData?.permission.type_name === DEALER;
+
+  if (orderError) {
+    console.error('Error fetching orders:', orderError);
+  }
+
+  if (orderLoading) {
+    console.log('Loading orders...');
+  }
 
   const {
     data: popularProductData,
@@ -53,16 +112,17 @@ export default function Dashboard() {
   } = usePopularProductsQuery({
     limit: 10,
     language: locale,
-    shop_id: meData?.shop_id ? meData.shops : meData?.managed_shop?.id,
+    shop_id: meData?.managed_shop?.id,
   });
-
+  console.log('first+++++++++++', popularProductData);
   if (analyticsLoading || orderLoading || popularProductLoading) {
     return <Loader text={t('common:text-loading')} />;
   }
 
   const salesByYear =
-    analyticsData?.totalYearSaleByMonth?.map((item) => item.total.toFixed(2)) ||
-    Array(12).fill(0);
+    analyticsData?.totalYearSaleByMonth?.map((item) =>
+      item?.total?.toFixed(2)
+    ) || Array(12).fill(0);
 
   const errorMessage =
     analyticsError?.message ||
@@ -136,11 +196,19 @@ export default function Dashboard() {
         />
       </div>
 
-      <div className="mb-6 flex w-full flex-wrap space-y-6 xl:flex-nowrap xl:space-y-0 xl:space-x-5">
+      <div className="mb-6  w-full flex-wrap space-y-6 xl:flex-nowrap xl:space-y-0 xl:space-x-5">
         <RecentOrders
           orders={orderData}
           title={t('table:recent-order-table-title')}
         />
+      </div>
+      {DealerShow ? (
+        <div className="mb-6  w-full flex-wrap space-y-6 xl:flex-nowrap xl:space-y-0 xl:space-x-5">
+          <RecentOrders orders={DealerSalesList} title={t('Recent Sales')} />
+        </div>
+      ) : null}
+
+      <div className="mb-6 w-full flex-wrap space-y-6 xl:flex-nowrap xl:space-y-0 xl:space-x-5">
         <PopularProductList
           products={popularProductData}
           title={t('table:popular-products-table-title')}

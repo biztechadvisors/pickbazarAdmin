@@ -7,13 +7,19 @@ import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import ShopList from '@/components/shop/shop-list';
 import { useState } from 'react';
 import Search from '@/components/common/search';
-import { adminOnly, getAuthCredentials, ownerOnly } from '@/utils/auth-utils';
+import {
+  adminAndOwnerOnly,
+  adminOnly,
+  getAuthCredentials,
+  ownerOnly,
+} from '@/utils/auth-utils';
 import { useShopsQuery } from '@/data/shop';
 import { SortOrder } from '@/types';
 import permission from '../permission';
 import OwnerLayout from '@/components/layouts/owner';
 import LinkButton from '@/components/ui/link-button';
 import { Routes } from '@/config/routes';
+import { OWNER } from '@/utils/constants';
 
 export default function AllShopPage() {
   const { t } = useTranslation();
@@ -32,7 +38,8 @@ export default function AllShopPage() {
     sortedBy,
   });
 
-  const canWrite = permissions?.includes('owner');
+
+  const canWrite = permissions?.includes(OWNER);
 
   if (loading) return <Loader text={t('common:text-loading')} />;
   if (error) return <ErrorMessage message={error.message} />;
@@ -63,7 +70,7 @@ export default function AllShopPage() {
                 className="h-12 ms-4 md:ms-6"
               >
                 <span className="hidden md:block">
-                  {t('common:text-create-shop')}
+                  {t('text-create-company')}
                 </span>
               </LinkButton>
             ) : null}
@@ -81,7 +88,7 @@ export default function AllShopPage() {
   );
 }
 AllShopPage.authenticate = {
-  permissions: ownerOnly,
+  permissions: adminAndOwnerOnly,
 };
 AllShopPage.Layout = OwnerLayout;
 

@@ -6,10 +6,13 @@ export type MODAL_VIEWS =
   | 'DELETE_TYPE'
   | 'DELETE_DEALER'
   | 'DELETE_ATTRIBUTE'
+  | 'DELETE_BLOG'
+  | 'DELETE_EVENT'
   | 'DELETE_CATEGORY'
   | 'DELETE_SUBCATEGORY'
   | 'DELETE_ORDER'
   | 'DELETE_COUPON'
+  | 'DELETE_REGIONS'
   | 'DELETE_TAX'
   | 'DELETE_STORE_NOTICE'
   | 'DELETE_SHIPPING'
@@ -30,6 +33,7 @@ export type MODAL_VIEWS =
   | 'SELECT_PRODUCT_VARIATION'
   | 'SELECT_CUSTOMER'
   | 'EXPORT_IMPORT_PRODUCT'
+  | 'MODEL_IMPORT'
   | 'EXPORT_IMPORT_ATTRIBUTE'
   | 'REPLY_QUESTION'
   | 'DELETE_QUESTION'
@@ -114,6 +118,8 @@ export function useModalAction() {
   }
   return {
     openModal(view?: MODAL_VIEWS, payload?: unknown) {
+      console.log("payload",payload)
+      console.log("view",view)
       dispatch({ type: 'open', view, payload });
     },
     closeModal() {

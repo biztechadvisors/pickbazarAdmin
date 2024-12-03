@@ -15,6 +15,10 @@ export const stockClient = {
     return HttpClient.get<any>(`${API_ENDPOINTS.STOCK}/${id}`);
   },
 
+  getByCustomer_id: (customer_id: number) => {
+    return HttpClient.get<any>(`${API_ENDPOINTS.DEALER_SEALS_STOCK}/${customer_id}`);
+  },
+
   get: ({ id, language }: { id: string; language: string }) => {
     return HttpClient.get<Order>(`${API_ENDPOINTS.STOCKBYID}/${id}`, {
       language,
@@ -22,7 +26,6 @@ export const stockClient = {
   },
 
   paginated: ({ tracking_number, ...params }: Partial<OrderQueryOptions>) => {
-    console.log('track', tracking_number);
     return HttpClient.get<OrderPaginator>(API_ENDPOINTS.STOCK, {
       searchJoin: 'and',
       tracking_number,
@@ -39,8 +42,6 @@ export const stockClient = {
   },
 
   updateStockData: async (user_id: any, updatedData: any) => {
-    console.log('user_id', user_id);
-    console.log('updateddata', updatedData);
     return await HttpClient.put(
       `${API_ENDPOINTS.STOCK}/${user_id}`,
       updatedData
@@ -58,11 +59,19 @@ export const stockClient = {
   // update stock by admin
 
   updateStockDataById: async (user_id: any, updatedData: any) => {
-    console.log('user_id', user_id);
-    console.log('updateddata', updatedData);
     return await HttpClient.put(
       `${API_ENDPOINTS.STOCK}/update/admin/${user_id}`,
       updatedData
     );
   },
+
+
+ // update stock by dealer
+
+ updateStockDataByDealer: async (user_id: any, updatedData: any) => {
+  return await HttpClient.put(
+    `${API_ENDPOINTS.STOCK_DEALER_UPDATE}/${user_id}`,
+    updatedData
+  );
+},
 };

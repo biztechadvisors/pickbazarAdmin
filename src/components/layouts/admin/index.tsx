@@ -10,8 +10,10 @@ import { newPermission } from '@/contexts/permission/storepermission';
 import { useAtom } from 'jotai';
 import { getAuthCredentials } from '@/utils/auth-utils';
 import { useMeQuery } from '@/data/user';
+import { useShopQuery } from '@/data/shop';
 import { Routes } from '@/config/routes';
 import { shopSlugAtom } from '@/utils/atoms';
+import { DEALER } from '@/utils/constants';
 
 const AdminLayout: React.FC<{ children?: React.ReactNode }> = ({
   children,
@@ -20,23 +22,44 @@ const AdminLayout: React.FC<{ children?: React.ReactNode }> = ({
   const { locale } = useRouter();
 
   const router = useRouter();
+  const {
+    query: { shop },
+  } = router;
+  // const { data, isLoading, error } = useShopQuery({ slug: shop?.toString() });
   const dir = locale === 'ar' || locale === 'he' ? 'rtl' : 'ltr';
 
   const [matched, _] = useAtom(newPermission);
   const { permissions } = getAuthCredentials();
-
   const { data, isLoading: loading, error } = useMeQuery();
-
   const [shopSlug, setShopSlug] = useAtom(shopSlugAtom);
+  const [shopId, setShopId] = useAtom(shopSlugAtom);
+
+  const shopStatus = data?.managed_shop?.is_active ? 'active' : 'inactive' || data?.dealer?.id?.is_active ? 'active' : 'inactive';
+  const isDisabled = shopStatus !== 'active';
+
+  console.log("matched________________________________", matched)
 
   useEffect(() => {
-    if (data && data.shops && data.shops.length > 0) {
-      const newShopSlug = data.shops[0].slug;
+    if (typeof window !== 'undefined' && data) {
+      let newShopSlug = null;
+      let newshopId = null
 
-      setShopSlug(newShopSlug);
-      localStorage.setItem('shopSlug', newShopSlug);
+      if (permissions?.[0].includes(DEALER) && data.createdBy?.managed_shop?.slug) {
+        newShopSlug = data.createdBy.managed_shop.slug;
+        newshopId  = data.createdBy.managed_shop.id
+
+      } else if (data.managed_shop) {
+        newShopSlug = data.managed_shop.slug;
+        newshopId  = data.managed_shop.id
+      }
+      if (newShopSlug && newshopId) {
+        setShopSlug(newShopSlug);
+        setShopId(newshopId)
+        localStorage.setItem('shopSlug', newShopSlug);
+        localStorage.setItem('shopId', newshopId);
+      }
     }
-  }, [data]);
+  }, [data, permissions, setShopSlug, setShopId]);
 
   let matchedLinks = [];
 
@@ -418,8 +441,8 @@ const AdminLayout: React.FC<{ children?: React.ReactNode }> = ({
     matchedLinks = permissions?.includes('super_admin')
       ? siteSettings.sidebarLinks.admin
       : siteSettings.sidebarLinks.admin.filter((link) =>
-          matched.some((newItem) => newItem.type === link.label)
-        );
+        matched.some((newItem) => newItem.type === link.label)
+      );
 
     matchedLinks = matchedLinks.filter(
       (link) =>
@@ -443,7 +466,13 @@ const AdminLayout: React.FC<{ children?: React.ReactNode }> = ({
   const SidebarItemMap = () => (
     <Fragment>
       {matchedLinks.map(({ href, label, icon }) => (
-        <SidebarItem href={href} label={t(label)} icon={icon} key={href} />
+        <SidebarItem
+          href={isDisabled ? '#' : href}
+          label={t(label)}
+          icon={icon}
+          key={href}
+          shopStatus={shopStatus}
+        />
       ))}
     </Fragment>
   );

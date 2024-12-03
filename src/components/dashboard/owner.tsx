@@ -1,46 +1,24 @@
 import { CartIconBig } from '@/components/icons/cart-icon-bag';
-import { CoinIcon } from '@/components/icons/coin-icon';
-import ColumnChart from '@/components/widgets/column-chart';
 import StickerCard from '@/components/widgets/sticker-card';
-import ErrorMessage from '@/components/ui/error-message';
-import usePrice from '@/utils/use-price';
-import Loader from '@/components/ui/loader/loader';
-import RecentOrders from '@/components/order/recent-orders';
-import PopularProductList from '@/components/product/popular-product-list';
-import { useOrdersQuery } from '@/data/order';
 import { useTranslation } from 'next-i18next';
-import { ShopIcon } from '@/components/icons/sidebar';
 import { DollarIcon } from '@/components/icons/shops/dollar';
-import { useAnalyticsQuery, usePopularProductsQuery } from '@/data/dashboard';
 import { useRouter } from 'next/router';
 import { useMeQuery, useUsersQuery } from '@/data/user';
-import { useAtom } from 'jotai';
-import { newPermission } from '@/contexts/permission/storepermission';
-import { getAuthCredentials } from '@/utils/auth-utils';
-import { siteSettings } from '@/settings/site.settings';
-import { CustomerIcon } from '../icons/sidebar/customer';
-import { useShopQuery, useShopsQuery } from '@/data/shop';
+import { useShopsQuery } from '@/data/shop';
 import { useState } from 'react';
 import { SortOrder } from '@/types';
+import { CustomerIcon } from '../icons/sidebar/customer';
+import { MyShopIcon } from '../icons/sidebar';
 
 export default function OwnerDashboard(user: any) {
   const { t } = useTranslation();
   const { locale } = useRouter();
-  const [getPermission, _] = useAtom(newPermission);
-  const { permissions } = getAuthCredentials();
   const [searchTerm, setSearchTerm] = useState('');
   const [page, setPage] = useState(1);
   const [orderBy, setOrder] = useState('created_at');
   const [sortedBy, setColumn] = useState<SortOrder>(SortOrder.Desc);
 
   const { data: useMe } = useMeQuery();
-
-  const customerId = useMe?.id ?? '';
-
-  const query = {
-    customerId: parseInt(customerId),
-    state: '',
-  };
 
   const { shops } = useShopsQuery({
     name: searchTerm,
@@ -68,91 +46,22 @@ export default function OwnerDashboard(user: any) {
       <div className="mb-6 grid w-full grid-cols-1 gap-5 sm:grid-cols-2 xl:grid-cols-4">
         <div className="w-full ">
           <StickerCard
-            titleTransKey="sticker-card-title-shops"
-            subtitleTransKey="sticker-card-subtitle-shops"
-            icon={<DollarIcon className="h-7 w-7" color="#047857" />}
-            iconBgStyle={{ backgroundColor: '#A7F3D0' }}
+            titleTransKey="sticker-card-title-company"
+            // subtitleTransKey="sticker-card-subtitle-company"
+            icon={<MyShopIcon className="h-7 w-7" color="#1D4ED8" />}
+            iconBgStyle={{ backgroundColor: '#93C5FD' }}
             price={total_shops}
           />
         </div>
         <div className="w-full ">
           <StickerCard
             titleTransKey="sticker-card-title-users"
-            icon={<CartIconBig />}
+            icon={ <CustomerIcon className="w-8 h-8" color="#1D4ED8" />}
+            iconBgStyle={{ backgroundColor: '#93C5FD' }}
             price={total_users}
           />
         </div>
-        {/* <div className="w-full ">
-          <StickerCard
-            titleTransKey="sticker-card-title-today-rev"
-            icon={<CoinIcon />}
-            price={todays_revenue}
-          />
-        </div> */}
-        {/* {canWrite ? (
-          <div className="w-full ">
-            <StickerCard
-              titleTransKey="sticker-card-title-total-shops"
-              icon={<ShopIcon className="w-6" color="#1D4ED8" />}
-              iconBgStyle={{ backgroundColor: '#93C5FD' }}
-              price={data?.totalShops}
-            />
-          </div>
-        ) : (
-          <div className="w-full ">
-            <StickerCard
-              titleTransKey="sticker-card-title-total-cutomer"
-              icon={<CustomerIcon className="w-6" color="#1D4ED8" />}
-              iconBgStyle={{ backgroundColor: '#93C5FD' }}
-              price={data?.totalShops}
-            />
-          </div>
-        )} */}
       </div>
-
-      {/* <div className="mb-6 flex w-full flex-wrap md:flex-nowrap">
-        <ColumnChart
-          widgetTitle={t('common:sale-history')}
-          colors={['#03D3B5']}
-          series={salesByYear}
-          categories={[
-            t('common:january'),
-            t('common:february'),
-            t('common:march'),
-            t('common:april'),
-            t('common:may'),
-            t('common:june'),
-            t('common:july'),
-            t('common:august'),
-            t('common:september'),
-            t('common:october'),
-            t('common:november'),
-            t('common:december'),
-          ]}
-        />
-      </div> */}
-
-      <div className="mb-6 flex w-full flex-wrap space-y-6 rtl:space-x-reverse xl:flex-nowrap xl:space-y-0 xl:space-x-5">
-        {/* <div className="w-full">
-          <RecentOrders
-            orders={orderData}
-            title={t('table:recent-order-table-title')}
-          />
-        </div> */}
-
-        {/* <div className="w-full xl:w-1/2">
-          <WithdrawTable
-            withdraws={withdraws}
-            title={t('table:withdraw-table-title')}
-          />
-        </div> */}
-      </div>
-      {/* <div className="mb-6 w-full xl:mb-0">
-        <PopularProductList
-          products={popularProductData}
-          title={t('table:popular-products-table-title')}
-        />
-      </div> */}
     </>
   );
 }

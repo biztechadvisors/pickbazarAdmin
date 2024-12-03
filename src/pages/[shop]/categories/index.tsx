@@ -24,8 +24,9 @@ import { useAtom } from 'jotai';
 import { siteSettings } from '@/settings/site.settings';
 import { useQuery } from 'react-query';
 import { useMeQuery } from '@/data/user';
-import ShopLayout from '@/components/layouts/shop';
+
 import { AllPermission } from '@/utils/AllPermission';
+import AdminLayout from '@/components/layouts/admin';
 
 export default function Categories() {
   const { locale } = useRouter();
@@ -37,30 +38,25 @@ export default function Categories() {
   const [sortedBy, setColumn] = useState<SortOrder>(SortOrder.Desc);
   const { data: meData } = useMeQuery();
 
-  const shop: string | undefined = meData?.shops?.[0]?.id;
-  const shopSlug = meData?.shops?.[0]?.slug;
+  const shop: string | undefined = meData?.managed_shop?.id;
+  const shopSlug = meData?.managed_shop?.slug;
 
-  const { categories, paginatorInfo, loading, error } = useCategoriesQuery({
+  const { categories, paginatorInfo, loading, error } = useCategoriesQuery({  
+    // shop,
     limit: 20,
-    page,
     type,
-    name: searchTerm,
+    // name: searchTerm,
     orderBy,
     sortedBy,
+    shopSlug,
+    page,
     parent: null,
     language: locale,
-    shop,
+    search:searchTerm,
   });
 
-  // const [getPermission, _] = useAtom(newPermission);
-  // const { permissions } = getAuthCredentials();
-  // const canWrite = permissions?.includes('super_admin')
-  //   ? siteSettings.sidebarLinks
-  //   : getPermission?.find(
-  //       (permission) => permission.type === 'sidebar-nav-item-categories'
-  //     )?.write;
-
-  const permissionTypes = AllPermission(); 
+console.log("first++++",type)
+  const permissionTypes = AllPermission();
 
   const canWrite = permissionTypes.includes('sidebar-nav-item-categories');
 
@@ -91,8 +87,8 @@ export default function Categories() {
 
             <TypeFilter
               className="md:ms-6"
-              onTypeFilter={({ slug }: { slug: string }) => {
-                setType(slug);
+              onTypeFilter={({ name }: { name: string }) => {
+                setType(name);
                 setPage(1);
               }}
             />
@@ -127,7 +123,7 @@ export default function Categories() {
 Categories.authenticate = {
   permissions: adminOwnerAndStaffOnly,
 };
-Categories.Layout = ShopLayout;
+Categories.Layout = AdminLayout;
 
 // export const getServerSideProps = async ({ locale }: any) => ({
 //   props: {

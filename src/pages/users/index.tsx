@@ -11,9 +11,16 @@ import { useTranslation } from 'next-i18next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import { Routes } from '@/config/routes';
 import { SortOrder } from '@/types';
-import { adminOnly, getAuthCredentials, ownerOnly } from '@/utils/auth-utils';
+import {
+  adminAndOwnerOnly,
+  adminOnly,
+  getAuthCredentials,
+  ownerOnly,
+} from '@/utils/auth-utils';
 import { AllPermission } from '@/utils/AllPermission';
 import OwnerLayout from '@/components/layouts/owner';
+import AppLayout from '@/components/layouts/app';
+import AdminLayout from '@/components/layouts/admin';
 
 export default function Customers() {
   const [searchTerm, setSearchTerm] = useState('');
@@ -32,13 +39,11 @@ export default function Customers() {
     name: searchTerm,
     orderBy,
     sortedBy,
+    role: 'user',
   });
 
-  const { permissions }: any = getAuthCredentials();
-
-  const permissionTypes = AllPermission();
-
-  const canWrite = permissionTypes.includes('sidebar-nav-item-users');
+  console.log('data?.id', data?.id);
+  console.log('users', users);
 
   if (loading) return <Loader text={t('common:text-loading')} />;
   if (error) return <ErrorMessage message={error.message} />;
@@ -57,18 +62,19 @@ export default function Customers() {
       <Card className="mb-8 flex flex-col items-center md:flex-row">
         <div className="mb-4 md:mb-0 md:w-1/4">
           <h1 className="text-lg font-semibold text-heading">
-            {t('common:sidebar-nav-item-users')}
+            {t('common:sidebar-nav-item-customer')}
           </h1>
         </div>
-
-        <div className="flex w-full items-center ms-auto md:w-3/4">
-          <Search onSearch={handleSearch} />
-          <LinkButton
-            href={`${Routes.user.create}`}
-            className="h-12 ms-4 md:ms-6"
-          >
-            <span>+ {t('form:button-label-add-user')}</span>
-          </LinkButton>
+        <div className="flex w-full flex-col items-center ms-auto md:w-1/2 md:flex-row">
+          <div className="flex w-full items-center">
+            <Search onSearch={handleSearch} />
+            <LinkButton
+              href={`${Routes.user.create}`}
+              className="h-12 ms-4 md:ms-6"
+            >
+              <span>+ {t('form:button-label-add-user')}</span>
+            </LinkButton>
+          </div>
         </div>
       </Card>
 
@@ -86,7 +92,7 @@ export default function Customers() {
 }
 
 Customers.authenticate = {
-  permissions: ownerOnly,
+  permissions: adminAndOwnerOnly,
 };
 Customers.Layout = OwnerLayout;
 

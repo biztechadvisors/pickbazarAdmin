@@ -7,35 +7,20 @@ import {
   EMAIL_VERIFIED,
   PERMISSIONS,
   STAFF,
-  STORE_OWNER,
+  Company,
   SUPER_ADMIN,
-  // SERVICE_PROVIDER,
   OWNER,
   TOKEN,
 } from './constants';
 
-export const allowedRoles = [
-  SUPER_ADMIN,
-  STORE_OWNER,
-  STAFF,
-  DEALER,
-  ADMIN,
-  OWNER,
-];
-export const adminAndOwnerOnly = [
-  SUPER_ADMIN,
-  STORE_OWNER,
-  ADMIN,
-  DEALER,
-  OWNER,
-];
-export const adminOwnerAndStaffOnly = [SUPER_ADMIN, STORE_OWNER, STAFF, OWNER];
+export const allowedRoles = [SUPER_ADMIN, Company, STAFF, DEALER, ADMIN, OWNER];
+export const adminAndOwnerOnly = [SUPER_ADMIN, Company, ADMIN, DEALER, OWNER];
+export const adminOwnerAndStaffOnly = [SUPER_ADMIN, Company, STAFF, OWNER];
 export const superAdminOnly = [SUPER_ADMIN];
-export const adminOnly = [SUPER_ADMIN, ADMIN, DEALER, STORE_OWNER];
-export const ownerOnly = [SUPER_ADMIN, OWNER, DEALER, STORE_OWNER];
+export const adminOnly = [OWNER, SUPER_ADMIN, ADMIN, DEALER, Company];
+export const ownerOnly = [SUPER_ADMIN, OWNER, DEALER, Company, STAFF];
 export const dealerOnly = [DEALER];
-export const ownerAndStaffOnly = [STORE_OWNER, STAFF];
-// export const serviceProviderOnly = [SERVICE_PROVIDER];
+export const ownerAndStaffOnly = [Company, STAFF];
 
 export interface AuthCredentials {
   token: string | null;

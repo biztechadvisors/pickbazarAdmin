@@ -7,10 +7,6 @@ import { useTranslation } from 'next-i18next';
 import { PlusIcon } from '@/components/icons/plus-icon';
 import { Product, ProductType } from '@/types';
 import React, { useState } from 'react';
-import { useAtom } from 'jotai';
-import { newPermission } from '@/contexts/permission/storepermission';
-import { getAuthCredentials } from '@/utils/auth-utils';
-import { siteSettings } from '@/settings/site.settings';
 import { AllPermission } from '@/utils/AllPermission';
 
 interface Props {
@@ -54,14 +50,6 @@ const ProductCard = ({ item, isChecked, id, email, phone }: Props) => {
 
   const { shop_id } = item;
 
-  // const [getPermission, _] = useAtom(newPermission);
-  // const { permissions } = getAuthCredentials();
-  // const canWrite = permissions.includes('super_admin')
-  //   ? siteSettings.sidebarLinks
-  //   : getPermission?.find(
-  //       (permission) => permission.type === 'sidebar-nav-item-create-order'
-  //     )?.write;
-
   const permissionTypes = AllPermission();
 
   const canWrite = permissionTypes.includes('sidebar-nav-item-create-order');
@@ -69,10 +57,6 @@ const ProductCard = ({ item, isChecked, id, email, phone }: Props) => {
   function handleVariableProduct() {
     return openModal('SELECT_PRODUCT_VARIATION', { slug, shop_id });
   }
-
-  console.log('item-----check', item);
-
-  console.log('image', image);
 
   return (
     <div className="cart-type-neon h-full overflow-hidden rounded border border-border-200 bg-light shadow-sm transition-all duration-200 hover:shadow-md">

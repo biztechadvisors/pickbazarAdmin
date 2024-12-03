@@ -6,6 +6,7 @@ export interface State {
   displayModal: boolean;
   modalData: any;
   modalView: string;
+  displayInventoryDropdown: boolean;
 }
 
 const initialState = {
@@ -14,6 +15,7 @@ const initialState = {
   displayModal: false,
   modalView: 'LOGIN_VIEW',
   modalData: null,
+  displayInventoryDropdown: false,
 };
 
 type Action =
@@ -42,7 +44,9 @@ type Action =
   | {
       type: 'SET_MODAL_DATA';
       data: MODAL_DATA;
-    };
+    }
+  | { type: 'TOGGLE_INVENTORY_DROPDOWN' }
+  | { type: 'CLOSE_INVENTORY_DROPDOWN' };
 
 type MODAL_VIEWS =
   | 'SIGNUP_VIEW'
@@ -106,11 +110,25 @@ function uiReducer(state: State, action: Action) {
         modalData: action.data,
       };
     }
+    case 'TOGGLE_INVENTORY_DROPDOWN': {
+      return {
+        ...state,
+        displayInventoryDropdown: !state.displayInventoryDropdown,
+      };
+    }
+    case 'CLOSE_INVENTORY_DROPDOWN': {
+      return {
+        ...state,
+        displayInventoryDropdown: false,
+      };
+    }
   }
 }
 
 export const UIProvider: FC<{ children?: React.ReactNode }> = (props) => {
   const [state, dispatch] = React.useReducer(uiReducer, initialState);
+  const toggleInventoryDropdown = () => dispatch({ type: 'TOGGLE_INVENTORY_DROPDOWN' });
+  const closeInventoryDropdown = () => dispatch({ type: 'CLOSE_INVENTORY_DROPDOWN' });
 
   const openSidebar = () => dispatch({ type: 'OPEN_SIDEBAR' });
   const closeSidebar = () => dispatch({ type: 'CLOSE_SIDEBAR' });
@@ -149,6 +167,8 @@ export const UIProvider: FC<{ children?: React.ReactNode }> = (props) => {
       closeModal,
       setModalView,
       setModalData,
+      toggleInventoryDropdown,
+      closeInventoryDropdown,
     }),
     [state]
   );

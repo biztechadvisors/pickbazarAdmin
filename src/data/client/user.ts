@@ -17,42 +17,60 @@ import {
 } from '@/types';
 import { API_ENDPOINTS } from './api-endpoints';
 import { HttpClient } from './http-client';
+import { Company, DEALER, STAFF } from '@/utils/constants';
+import { CUSTOMER } from '@/lib/constants';
 
 export const userClient = {
   me: (params: { username: any; sub: any }) => {
     return HttpClient.get<User>(
       `${API_ENDPOINTS.ME}?username=${params.username}&sub=${params.sub}`
-    );
-  },
-
-  login: (variables: LoginInput) => {
-    const result = HttpClient.post<AuthResponse>(
-      API_ENDPOINTS.TOKEN,
-      variables
-    );
-    result
+    )
       .then((response) => {
-        // Assuming the token is in the response object
-        const token = response.token;
-        if (token) {
-          localStorage.setItem('authToken', token);
+        if (response.permission.type_name === Company) {
+          localStorage.setItem('userId', response.id);
+        } else if (
+          (response.permission.type_name === DEALER ||
+            response.permission.type_name === CUSTOMER ||
+            response.permission.type_name === STAFF) &&
+          response?.createdBy
+        ) {
+          localStorage.setItem('userId', response.createdBy.id);
         }
+
+        return response;
       })
       .catch((error) => {
-        console.error('Error during login:', error);
+        console.error('Error fetching user details:', error);
+        throw error;
       });
-    return result;
   },
 
+  login: async (variables: LoginInput) => {
+    try {
+      const response = await HttpClient.post<AuthResponse>(
+        API_ENDPOINTS.TOKEN,
+        variables
+      );
+      const token = response.token;
+
+      if (typeof window !== 'undefined' && token) {
+        // Check if we're in the browser environment
+        localStorage.setItem('authToken', token);
+      }
+
+      return response;
+    } catch (error) {
+      console.error('Error during login:', error);
+      throw error;
+    }
+  },
   logout: () => {
     return HttpClient.post<any>(API_ENDPOINTS.LOGOUT, {});
   },
   register: (variables: RegisterInput) => {
-    // console.log('variables', variables)
     return HttpClient.post<AuthResponse>(API_ENDPOINTS.REGISTER, variables);
   },
   update: ({ id, input }: { id: string; input: UpdateUser }) => {
-    // console.log('myUpdateUser', input);
     return HttpClient.put<User>(`${API_ENDPOINTS.USERS}/${id}`, input);
   },
   changePassword: (variables: ChangePasswordInput) => {
@@ -83,7 +101,7 @@ export const userClient = {
     return HttpClient.post<any>(API_ENDPOINTS.ADD_WALLET_POINTS, variables);
   },
   fetchUsers: ({ email, usrById, ...params }: Partial<UserQueryOptions>) => {
-    return HttpClient.get<UserPaginator>(API_ENDPOINTS.USERS, {
+    return HttpClient.get<UserPaginator>(`${API_ENDPOINTS.USERS}/all`, {
       searchJoin: 'and',
       with: 'wallet',
       ...params,
@@ -93,7 +111,7 @@ export const userClient = {
   },
   fetchVendor: ({ type, usrById }: { type: string; usrById: number }) => {
     return HttpClient.get<User>(
-      `${API_ENDPOINTS.USERS}?type=${type}&usrById=${usrById}`
+      `${API_ENDPOINTS.USERS}/all/?type=${type}&usrById=${usrById}`
     );
   },
   fetchAdmins: ({ ...params }: Partial<UserQueryOptions>) => {
@@ -103,7 +121,7 @@ export const userClient = {
     });
   },
   fetchUser: ({ id }: { id: string }) => {
-    console.log('id******', id);
+    console.log('hello');
     return HttpClient.get<User>(`${API_ENDPOINTS.USERS}/${id}`);
   },
   resendVerificationEmail: () => {

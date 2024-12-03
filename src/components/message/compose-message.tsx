@@ -7,6 +7,7 @@ import { useShopsQuery } from '@/data/shop';
 import { useAdminsQuery, useMeQuery, useUsersQuery } from '@/data/user';
 import { Shop, SortOrder } from '@/types';
 import { adminOnly, getAuthCredentials, hasAccess } from '@/utils/auth-utils';
+import { DEALER } from '@/utils/constants';
 import isEmpty from 'lodash/isEmpty';
 import { useTranslation } from 'next-i18next';
 import Image from 'next/image';
@@ -56,16 +57,16 @@ const ComposeMessageModal = () => {
     sortedBy: SortOrder.Desc as SortOrder,
   };
 
-  const {data:user}=useMeQuery()
+  const { data: user } = useMeQuery()
 
   let { shops, loading, error } = useShopsQuery(options);
-  const { users, loading:dealer } = useUsersQuery({
-    type: 'Dealer',
+  const { users, loading: dealer } = useUsersQuery({
+    type: DEALER,
     usrById: user?.id,
   });
-  
-  const userdealer = users.filter((user)=>user?.type?.type_name==='dealer')
-  const getdealer = userdealer.map((dealer)=> dealer.dealer)
+
+  const userdealer = users.filter((user) => user?.permission?.type_name === DEALER)
+  const getdealer = userdealer.map((dealer) => dealer.dealer)
 
   let {
     admins,
@@ -79,7 +80,6 @@ const ComposeMessageModal = () => {
   let loadingState = permission ? loading : adminLoading;
   let errorState = permission ? error : adminError;
   const mergeList = lists.concat(getdealer)
-  console.log("HiDealer",mergeList)
 
   if (errorState) return <ErrorMessage message={error?.message} />;
 
@@ -94,27 +94,27 @@ const ComposeMessageModal = () => {
       createConversations({
         // @ts-ignore
         shop_id: shop?.id,
-        latest_message: { 
+        latest_message: {
           user_id: user?.id,
           // body:''
         },
-        shop:shop,
-        user:user,
+        shop: shop,
+        user: user,
         user_id: user?.id,
         // message: '',
         // id: ''
       });
     }
-    else if(shop?.isActive){
+    else if (shop?.isActive) {
       createConversations({
         // @ts-ignore
         dealer_id: shop?.id,
-        latest_message: { 
+        latest_message: {
           user_id: user?.id,
           // body:''
         },
-        dealer:shop,
-        user:user,
+        dealer: shop,
+        user: user,
         user_id: user?.id,
         // message: '',
         // id: ''

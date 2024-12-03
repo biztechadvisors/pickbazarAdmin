@@ -1,7 +1,6 @@
 import Input from '@/components/ui/input';
 import {
   Control,
-  FieldErrors,
   useForm,
   useFormState,
   useWatch,
@@ -12,31 +11,27 @@ import TextArea from '@/components/ui/text-area';
 import Label from '@/components/ui/label';
 import Card from '@/components/common/card';
 import Description from '@/components/ui/description';
-// import * as categoriesIcon from '@/components/icons/category';
-// import { getIcon } from '@/utils/get-icon';
 import { useRouter } from 'next/router';
-// import ValidationError from '@/components/ui/form-validation-error';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { SubCategory, ItemProps } from '@/types';
-// import { categoryIcons } from './category-icons';
 import { useTranslation } from 'next-i18next';
 import FileInput from '@/components/ui/file-input';
 import SelectInput from '@/components/ui/select-input';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { subcategoryValidationSchema } from './subcategory-validation-schema';
 import {
-  // useSubCategoriesQuery,
   useCreateSubCategoryMutation,
   useUpdateSubCategoryMutation,
 } from '@/data/subcategory';
 import { useCategoriesQuery } from '@/data/category';
-// import { useTypesQuery } from '@/data/type';
 import { useSettingsQuery } from '@/data/settings';
 import { useModalAction } from '../ui/modal/modal.context';
 import OpenAIButton from '../openAI/openAI.button';
 import { useMeQuery } from '@/data/user';
 import { Config } from '@/config';
 import { EditIcon } from '../icons/edit';
+import ValidationError from '@/components/ui/form-validation-error';
+import { useRegionsQuery } from '@/data/regions';
 
 export const chatbotAutoSuggestion = ({ name }: { name: string }) => {
   return [
@@ -82,47 +77,43 @@ export const chatbotAutoSuggestion = ({ name }: { name: string }) => {
     },
   ];
 };
+function SelectRegion({
+  control,
+  errors,
+}: {
+  control: Control<FormValues>;
+  errors: FieldErrors;
+}) {
+  const { locale } = useRouter();
+  const { t } = useTranslation(); 
 
-// export const updatedIcons = categoryIcons.map((item: any) => {
-//   item.label = (
-//     <div className="flex items-center space-s-5">
-//       <span className="flex h-5 w-5 items-center justify-center">
-//         {getIcon({
-//           iconList: categoriesIcon,
-//           iconName: item.value,
-//           className: 'max-h-full max-w-full',
-//         })}
-//       </span>
-//       <span>{item.label}</span>
-//     </div>
-//   );
-//   return item;
-// });
+  const { data: meData } = useMeQuery();
 
-// function SelectTypes({
-//   control,
-//   errors,
-// }: {
-//   control: Control<FormValues>;
-//   errors: FieldErrors;
-// }) {
-//   const { locale } = useRouter();
-//   const { t } = useTranslation();
-//   const { types, loading } = useTypesQuery({ language: locale });
-//   return (
-//     <div className="mb-5">
-//       <Label>{t('form:input-label-types')}</Label>
-//       <SelectInput
-//               name="type"
-//               control={control}
-//               getOptionLabel={(option: any) => option.name}
-//               getOptionValue={(option: any) => option.slug}
-//               options={types!}
-//               isLoading={loading} defaultValue={[]}      />
-//       <ValidationError message={t(errors.type?.message)} />
-//     </div>
-//   );
-// }
+  const ShopSlugName = 'hilltop-marble';
+  // const { data: me } = useMeQuery()
+
+  const { regions, loading, paginatorInfo, error } = useRegionsQuery({
+    code: meData?.managed_shop?.slug,
+  });
+console.log("REgions===",regions);
+  if (error) {
+    console.error("Error fetching regions:", error);
+  }
+  return (
+    <div className="mb-5">
+      <Label>Select Region</Label>
+      <SelectInput
+        name="region"
+        control={control}
+        getOptionLabel={(option: any) => option.name}
+        getOptionValue={(option: any) => option.id}
+        options={regions || []}
+        isLoading={!regions}  
+      />
+    <ValidationError message={t(errors.type?.message)} />
+    </div>
+  );
+}
 
 function SelectCategories({
   control,
@@ -146,8 +137,6 @@ function SelectCategories({
     }
   }, [type?.slug]);
 
-  // const shop: string | undefined = meData?.shops?.[0]?.id;
-
   const { categories, loading } = useCategoriesQuery({
     limit: 999,
     type: type?.slug,
@@ -164,7 +153,7 @@ function SelectCategories({
         options={categories}
         isClearable={true}
         isLoading={loading}
-        defaultValue={[]}
+        defaultValue={control._defaultValues}
       />
     </div>
   );
@@ -175,20 +164,19 @@ type FormValues = {
   details: string;
   category_id: any;
   image: any;
-  // parent: any;
-  // icon: any;
   type: any;
   slug: string;
+  region_name:string;
 };
+
 const defaultValues = {
   image: [],
   name: '',
   details: '',
   category_id: '',
-  // parent: '',
-  // icon: '',
   type: '',
   slug: '',
+  region_name:'',
 };
 
 type IProps = {
@@ -197,6 +185,7 @@ type IProps = {
 export default function CreateOrUpdateSubCategoriesForm({
   initialValues,
 }: IProps) {
+
   const [isSlugDisable, setIsSlugDisable] = useState<boolean>(true);
   const router = useRouter();
   const { t } = useTranslation();
@@ -204,37 +193,25 @@ export default function CreateOrUpdateSubCategoriesForm({
     router?.query?.action === 'edit' &&
     router?.locale === Config.defaultLanguage;
   const isNewTranslation = router?.query?.action === 'translate';
-  const {
-    register,
-    handleSubmit,
-    control,
-    setValue,
-    watch,
 
-    formState: { errors },
-  } = useForm<FormValues>({
-    // shouldUnregister: true,
-    //@ts-ignore
-    defaultValues: initialValues
-      ? {
-          ...initialValues,
-          //   icon: initialValues?.icon
-          //     ? categoryIcons.find(
-          //         (singleIcon) => singleIcon.value === initialValues?.icon!
-          //       )
-          //     : '',
-          ...(isNewTranslation && {
-            type: null,
-          }),
-        }
-      : defaultValues,
-    resolver: yupResolver(subcategoryValidationSchema),
+  const [formValues, setFormValues] = useState<FormValues>(initialValues || defaultValues);
+
+  useEffect(() => {
+    if (initialValues) {
+      setFormValues(initialValues);
+    } else {
+      setFormValues(defaultValues);
+    }
+  }, [initialValues]);
+
+  const { register, handleSubmit, control, watch, setValue, formState: { errors } } = useForm<FormValues>({
+    defaultValues: formValues,
+    resolver: yupResolver(subcategoryValidationSchema), // Replace with your actual schema
   });
 
   const { data: meData } = useMeQuery();
 
-  // console.log('meData', meData);
-  const shop = meData?.shops?.[0]?.id;
+  const shop = meData?.managed_shop.id;
 
   const { openModal } = useModalAction();
   const slugAutoSuggest = join(split(watch('name'), ' '), '-').toLowerCase();
@@ -266,10 +243,8 @@ export default function CreateOrUpdateSubCategoriesForm({
   const { mutate: updateSubCategory, isLoading: updating } =
     useUpdateSubCategoryMutation();
 
-  // const categoryvalue = initialValues?.category
-  // console.log("category+++++++", categoryvalue)
-
   const onSubmit = async (values: FormValues) => {
+    const transformedRegions = values.region?.name ? [values.region.name] : [];
     const input = {
       language: router.locale,
       name: values.name,
@@ -279,10 +254,9 @@ export default function CreateOrUpdateSubCategoriesForm({
         original: values?.image?.original,
         id: values?.image?.id,
       },
-      // icon: values.icon?.value || '',
       category_id: values.category_id?.id ?? null,
-      // type_id: values.type?.id,
       shop_id: shop,
+      regionName: transformedRegions,
     };
     if (
       !initialValues ||
@@ -292,16 +266,19 @@ export default function CreateOrUpdateSubCategoriesForm({
       createSubCategory({
         ...input,
         ...(initialValues?.slug && { slug: initialValues.slug }),
-        shop_id: meData?.shops?.[0]?.id || initialValues?.shop_id,
+        shop_id: meData?.managed_shop?.id || initialValues?.shop_id,
       });
     } else {
       updateSubCategory({
         ...input,
         id: initialValues.id!,
-        shop_id: meData?.shops?.[0]?.id,
+        shop_id: meData?.managed_shop?.id,
       });
     }
+    console.log("Category ID:", values.category_id);
+
   };
+  
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
@@ -320,11 +297,10 @@ export default function CreateOrUpdateSubCategoriesForm({
       <div className="my-5 flex flex-wrap sm:my-8">
         <Description
           title={t('form:input-label-description')}
-          details={`${
-            initialValues
-              ? t('form:item-description-edit')
-              : t('form:item-description-add')
-          } ${t('form:subcategory-description-helper-text')}`}
+          details={`${initialValues
+            ? t('form:item-description-edit')
+            : t('form:item-description-add')
+            } ${t('form:subcategory-description-helper-text')}`}
           className="w-full px-0 pb-5 sm:w-4/12 sm:py-8 sm:pe-4 md:w-1/3 md:pe-5 "
         />
 
@@ -381,17 +357,8 @@ export default function CreateOrUpdateSubCategoriesForm({
             />
           </div>
 
-          {/* <div className="mb-5">
-            <Label>{t('form:input-label-select-icon')}</Label>
-            <SelectInput
-              name="icon"
-              control={control}
-              options={updatedIcons}
-              isClearable={true}
-            />
-          </div> */}
-          {/* <SelectTypes control={control} errors={errors} /> */}
           <SelectCategories control={control} setValue={setValue} />
+          <SelectRegion control={control} errors={errors} />
         </Card>
       </div>
       <div className="mb-4 text-end">

@@ -28,7 +28,6 @@ export const PlaceOrderAction: React.FC<{
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const { createOrder, isLoading } = useCreateOrder();
   const { items } = useCart();
-  const { me } = useUser();
   const [selectedAddress] = useAtom(dealerAddress);
   const router = useRouter();
 
@@ -46,23 +45,34 @@ export const PlaceOrderAction: React.FC<{
       payment_sub_gateway,
       note,
       token,
-      payable_amount,
+      payable_amount
+      
     },
   ] = useAtom(checkoutAtom);
+
+  console.log("billing_address____________________________________________", billing_address)
+  console.log("customer_name-------------------------", customer_name)
   const [discount] = useAtom(discountAtom);
   const [use_wallet_points] = useAtom(walletAtom);
 
   const { data: meData } = useMeQuery();
+  console.log("first-meData",meData)
+  console.log("first-billing_address",billing_address?.address)
+  console.log("customer",customer)
+  console.log("customer_name",customer_name)
   const dealerId = meData?.id;
+  const shop_id = meData?.shop_id;
+
+  const checkDealerId = meData?.dealer?.id;
 
   useEffect(() => {
-    if (!selectedAddress) {
+    if (!selectedAddress && checkDealerId) {
       router.push({
         pathname: '/profile-update',
         query: { from: 'order-checkout' },
       });
     }
-  }, [selectedAddress]);
+  }, [selectedAddress, router, checkDealerId]);
 
   useEffect(() => {
     setErrorMessage(null);
@@ -73,10 +83,12 @@ export const PlaceOrderAction: React.FC<{
   );
 
   const subtotal = calculateTotal(available_items);
-  const {
-    settings: { freeShippingAmount, freeShipping },
-  } = useSettings();
-  let freeShippings = freeShipping && Number(freeShippingAmount) <= subtotal;
+
+  const { settings: option } = useSettings();
+
+  let freeShippings =
+    option?.freeShipping && Number(option?.freeShippingAmount) <= subtotal;
+
   const total = calculatePaidTotal(
     {
       totalAmount: subtotal,
@@ -85,24 +97,26 @@ export const PlaceOrderAction: React.FC<{
     },
     Number(discount)
   );
+
+ 
+
   const handlePlaceOrder = () => {
     if (!customer_contact) {
       setErrorMessage('Contact Number Is Required');
       return;
     }
     if (!use_wallet_points && !payment_gateway) {
-      setErrorMessage('Gateway Is Required');
+      setErrorMessage('Payment Gateway Is Required');
       return;
     }
 
-    const isFullWalletPayment =
-      use_wallet_points && payable_amount == 0 ? true : false;
+    const isFullWalletPayment = use_wallet_points && payable_amount === 0;
+
     const gateWay = isFullWalletPayment
       ? PaymentGateway.FULL_WALLET_PAYMENT
       : payment_gateway;
 
-    let input = {
-      //@ts-ignore
+    const input = {
       products: available_items?.map((item) => formatOrderedProduct(item)),
       amount: subtotal,
       coupon_id: Number(coupon?.id),
@@ -123,34 +137,93 @@ export const PlaceOrderAction: React.FC<{
       payment_sub_gateway,
       use_wallet_points,
       isFullWalletPayment,
+      shop_id,
+      status: "order-pending",
+      payment_status: "payment-pending",
+      payment_id: "payment12345",  
+      payment_method: gateWay,
+      statusId: 1,
+      order_date: billing_address?.customer?.created_at,
+      currency: billing_address?.address?.country,      
+      shipping_method: "standard",
       billing_address: {
         ...(billing_address?.address && billing_address.address),
       },
       shipping_address: {
         ...(shipping_address?.address && shipping_address.address),
       },
-      saleBy: selectedAddress.address,
+      soldByUserAddress: {
+        ...(billing_address?.address && billing_address.address),
+      },
     };
 
     createOrder(input);
   };
+
+
+  //  const handlePlaceOrder = () => {
+  //   if (!customer_contact) {
+  //     setErrorMessage('Contact Number Is Required');
+  //     return;
+  //   }
+  //   if (!use_wallet_points && !payment_gateway) {
+  //     setErrorMessage('Payment Gateway Is Required');
+  //     return;
+  //   }
+
+  //   const isFullWalletPayment = use_wallet_points && payable_amount === 0;
+
+  //   const gateWay = isFullWalletPayment
+  //     ? PaymentGateway.FULL_WALLET_PAYMENT
+  //     : payment_gateway;
+
+  //   const input = {
+  //     products: available_items?.map((item) => formatOrderedProduct(item)),
+  //     amount: subtotal,
+  //     coupon_id: Number(coupon?.id),
+  //     discount: discount ?? 0,
+  //     paid_total: total,
+  //     sales_tax: verified_response?.total_tax,
+  //     delivery_fee: freeShippings ? 0 : verified_response?.shipping_charge,
+  //     total,
+  //     dealerId,
+  //     delivery_time: delivery_time?.title,
+  //     customer,
+  //     customer_id: customer?.id,
+  //     customer_contact,
+  //     customer_name,
+  //     note,
+  //     payment_gateway: gateWay,
+  //     payment_sub_gateway,
+  //     use_wallet_points,
+  //     isFullWalletPayment,
+  //     billing_address: {
+  //       ...(billing_address?.address && billing_address.address),
+  //     },
+  //     shipping_address: {
+  //       ...(shipping_address?.address && shipping_address.address),
+  //     },
+  //     saleBy: selectedAddress?.address ?? null,
+  //   };
+
+  //   createOrder(input);
+  // };
+
+
   const isDigitalCheckout = available_items.find((item) =>
     Boolean(item.is_digital)
   );
 
-  let formatRequiredFields = isDigitalCheckout
+  const formatRequiredFields = isDigitalCheckout
     ? [customer_contact, payment_gateway, available_items]
     : [
-        customer_contact,
-        payment_gateway,
-        billing_address,
-        shipping_address,
-        delivery_time,
-        available_items,
-      ];
-  // if (!isDigitalCheckout && !me) {
-  //   formatRequiredFields.push(customer_name);
-  // }
+      customer_contact,
+      payment_gateway,
+      billing_address,
+      shipping_address,
+      delivery_time,
+      available_items,
+    ];
 
   const isAllRequiredFieldSelected = formatRequiredFields.every(
     (item) => !isEmpty(item)
@@ -172,7 +245,8 @@ export const PlaceOrderAction: React.FC<{
       )}
       {!isAllRequiredFieldSelected && (
         <div className="mt-3">
-          <ValidationError message={t('text-place-order-helper-text')} />
+          {/* <ValidationError message={t('text-place-order-helper-text')} /> */}
+          
         </div>
       )}
     </>

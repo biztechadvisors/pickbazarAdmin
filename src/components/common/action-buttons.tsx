@@ -47,6 +47,8 @@ const ActionButtons = ({
   const { t } = useTranslation();
   const { openModal } = useModalAction();
 
+  // console.log(id ,' = ActionButtons')
+
   function handleDelete() {
     openModal(deleteModalView, id);
   }
@@ -82,10 +84,6 @@ const ActionButtons = ({
   function handleReplyQuestion() {
     openModal('REPLY_QUESTION', id);
   }
-
-
-
- 
 
   return (
     <div className="inline-flex w-auto items-center gap-8">

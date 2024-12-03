@@ -1,5 +1,5 @@
 import Card from '@/components/common/card';
-import ShopLayout from '@/components/layouts/shop';
+
 import ErrorMessage from '@/components/ui/error-message';
 import Loader from '@/components/ui/loader/loader';
 import { useTranslation } from 'next-i18next';
@@ -19,6 +19,7 @@ import { useState } from 'react';
 import { SortOrder } from '@/types';
 import { Routes } from '@/config/routes';
 import { useMeQuery } from '@/data/user';
+import AdminLayout from '@/components/layouts/admin';
 
 export default function RefundsPage() {
   const router = useRouter();
@@ -87,7 +88,7 @@ export default function RefundsPage() {
 RefundsPage.authenticate = {
   permissions: adminOwnerAndStaffOnly,
 };
-RefundsPage.Layout = ShopLayout;
+RefundsPage.Layout = AdminLayout;
 
 export const getServerSideProps = async ({ locale }: any) => ({
   props: {

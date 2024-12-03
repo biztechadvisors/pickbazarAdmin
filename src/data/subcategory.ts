@@ -13,6 +13,8 @@ import {
 import { mapPaginatorData } from '@/utils/data-mappers';
 import { subcategoryClient } from './client/subcategory';
 import { Config } from '@/config';
+import { useState } from 'react';
+import { useEffect } from 'react';
 
 export const getShopSlug = () => {
   if (typeof window !== 'undefined') {
@@ -26,6 +28,7 @@ export const useCreateSubCategoryMutation = () => {
 
   return useMutation(subcategoryClient.create, {
     onSuccess: () => {
+      queryClient.invalidateQueries([API_ENDPOINTS.SUBCATEGORIES, getShopSlug()]);
       Router.push(`/${getShopSlug()}/${Routes.subcategory.list}`, undefined, {
         locale: Config.defaultLanguage,
       });
@@ -67,23 +70,24 @@ export const useUpdateSubCategoryMutation = () => {
   });
 };
 
-export const useSubCategoryQuery = ({
-  slug,
-  language,
-  userId,
-  categoryId,
-  shopId,
-}: GetParams) => {
-  console.log('slug+++++++++++++', slug, categoryId, shopId);
+export const useSubCategoryQuery = ({ slug, language }: GetParams) => {
+  const [shopSlug, setShopSlug] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const storedSlug = localStorage.getItem('shopSlug');
+      setShopSlug(storedSlug);
+    }
+  }, []);
+
   const { data, error, isLoading } = useQuery<SubCategory, Error>(
-    [
-      API_ENDPOINTS.SUBCATEGORIES,
-      { slug, language, categoryId, userId, shopId },
-    ],
-    () =>
-      subcategoryClient.getSubCategory({ slug, language, categoryId, shopId })
+    [API_ENDPOINTS.SUBCATEGORIES, slug, language, shopSlug],
+    () => subcategoryClient.getSubCategory({ slug, language, shopSlug }),
+    {
+      enabled: !!shopSlug,
+    }
   );
-  console.log('slug data', data, categoryId, shopId);
+
   return {
     subcategory: data ?? [],
     error,
@@ -94,17 +98,32 @@ export const useSubCategoryQuery = ({
 export const useSubCategoriesQuery = (
   options: Partial<SubCategoryQueryOptions>
 ) => {
+  const [shopSlug, setShopSlug] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const storedSlug = localStorage.getItem('shopSlug');
+      setShopSlug(storedSlug);
+    }
+  }, []);
+
+  const queryOptions = { ...options, shopSlug };
+
   const { data, error, isLoading } = useQuery<SubCategoryPaginator, Error>(
-    [API_ENDPOINTS.SUBCATEGORIES, options],
+    [API_ENDPOINTS.SUBCATEGORIES, queryOptions],
     ({ queryKey, pageParam }) =>
       subcategoryClient.paginated(Object.assign({}, queryKey[1], pageParam)),
     {
       keepPreviousData: true,
+      enabled: !!shopSlug, // Ensures the query runs only when shopSlug is set
+      onSuccess: (data) => {
+        console.log("Subcategories fetched: ", data); // Log the response
+      },
     }
   );
 
   return {
-    subcategories: data ?? [],
+    subcategories: data?.data ?? [],
     paginatorInfo: mapPaginatorData(data),
     error,
     loading: isLoading,

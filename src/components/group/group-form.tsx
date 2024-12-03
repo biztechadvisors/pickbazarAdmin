@@ -21,6 +21,8 @@ import RadioCard from '@/components/ui/radio-card/radio-card';
 import Checkbox from '@/components/ui/checkbox/checkbox';
 import { useCreateTypeMutation, useUpdateTypeMutation } from '@/data/type';
 import { useMeQuery } from '@/data/user';
+import { useRegionsQuery } from '@/data/regions';
+import ValidationError from '@/components/ui/form-validation-error';
 
 export const updatedIcons = typeIconList.map((item: any) => {
   item.label = (
@@ -110,11 +112,52 @@ type FormValues = {
   promotional_sliders: AttachmentInput[];
   banners: BannerInput[];
   settings: TypeSettingsInput;
+  region: string[]; 
 };
 
 type IProps = {
   initialValues?: Type | null;
 };
+function SelectRegion({
+  control,
+  errors,
+}: {
+  control: Control<FormValues>;
+  errors: FieldErrors;
+}) {
+  const { locale } = useRouter();
+  const { t } = useTranslation(); 
+
+  const { data: meData } = useMeQuery();
+
+  const ShopSlugName = 'hilltop-marble';
+  // const { data: me } = useMeQuery()
+  console.log('region-me = ', meData)
+  console.log('region-me = ', meData?.managed_shop?.slug)
+ 
+  const { regions, loading, paginatorInfo, error } = useRegionsQuery({
+    code: meData?.managed_shop?.slug,
+  });
+console.log("REgions===",regions);
+  if (error) {
+    console.error("Error fetching regions:", error);
+  }
+  return (
+    <div className="mb-5">
+      <Label>Select Region</Label>
+      <SelectInput
+        name="region"
+        control={control}
+        getOptionLabel={(option: any) => option.name}
+        getOptionValue={(option: any) => option.id}
+        options={regions || []}
+        isLoading={!regions} // Show loading state if regions data is not yet loaded
+      />
+    <ValidationError message={t(errors.type?.message)} />
+    </div>
+  );
+}
+
 export default function CreateOrUpdateTypeForm({ initialValues }: IProps) {
   const router = useRouter();
   const { t } = useTranslation();
@@ -141,9 +184,10 @@ export default function CreateOrUpdateTypeForm({ initialValues }: IProps) {
       },
       icon: initialValues?.icon
         ? typeIconList.find(
-            (singleIcon) => singleIcon.value === initialValues?.icon
-          )
+          (singleIcon) => singleIcon.value === initialValues?.icon
+        )
         : '',
+        region: initialValues?.region || [],
     },
   });
   const { fields, append, remove } = useFieldArray({
@@ -157,10 +201,14 @@ export default function CreateOrUpdateTypeForm({ initialValues }: IProps) {
   const { mutate: createType, isLoading: creating } = useCreateTypeMutation();
   const { mutate: updateType, isLoading: updating } = useUpdateTypeMutation();
   const onSubmit = (values: FormValues) => {
+    console.log("Submitted Form Values:", values);
+
+    const transformedRegions = values.region?.name ? [values.region.name] : [];
     const input = {
       language: router.locale,
       name: values.name!,
       icon: values.icon?.value,
+      region_name: transformedRegions ,
       settings: {
         isHome: values?.settings?.isHome,
         productCard: values?.settings?.productCard,
@@ -191,13 +239,13 @@ export default function CreateOrUpdateTypeForm({ initialValues }: IProps) {
       createType({
         ...input,
         ...(initialValues?.slug && { slug: initialValues.slug }),
-        shop_id: meData?.shops?.[0]?.id || initialValues?.shop_id,
+        shop_id: meData?.managed_shop?.id || initialValues?.shop_id,
       });
     } else {
       updateType({
         ...input,
         id: initialValues.id!,
-        shop_id: meData?.shops?.[0]?.id,
+        shop_id: meData?.managed_shop?.id,
       });
     }
   };
@@ -206,11 +254,10 @@ export default function CreateOrUpdateTypeForm({ initialValues }: IProps) {
       <div className="my-5 flex flex-wrap sm:my-8">
         <Description
           title={t('form:item-description')}
-          details={`${
-            initialValues
+          details={`${initialValues
               ? t('form:item-description-update')
               : t('form:item-description-add')
-          } ${t('form:type-description-help-text')}`}
+            } ${t('form:type-description-help-text')}`}
           className="w-full px-0 pb-5 sm:w-4/12 sm:py-8 sm:pe-4 md:w-1/3 md:pe-5"
         />
 
@@ -221,7 +268,7 @@ export default function CreateOrUpdateTypeForm({ initialValues }: IProps) {
             error={t(errors.name?.message!)}
             variant="outline"
             className="mb-5"
-            // disabled={[].includes(Config.defaultLanguage)}
+          // disabled={[].includes(Config.defaultLanguage)}
           />
 
           <div className="mb-5">
@@ -234,6 +281,7 @@ export default function CreateOrUpdateTypeForm({ initialValues }: IProps) {
               placeholder="Select Icon"
             />
           </div>
+          <SelectRegion control={control} errors={errors} />
         </Card>
       </div>
 

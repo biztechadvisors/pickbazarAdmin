@@ -25,9 +25,8 @@ export const ScheduleGrid: React.FC<ScheduleProps> = ({
     setSchedule(schedules?.[0]);
   }, []);
 
-  console.log("selectedSchedule", selectedSchedule)
-
-  console.log("schedules", schedules)
+  console.log("selectedSchedule",selectedSchedule)
+  console.log("schedules",schedules)
 
   return (
     <div className={className}>

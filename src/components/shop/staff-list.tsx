@@ -8,6 +8,9 @@ import { useState } from 'react';
 import TitleWithSort from '@/components/ui/title-with-sort';
 import { User, MappedPaginatorInfo } from '@/types';
 import { AllPermission } from '@/utils/AllPermission';
+import { getAuthCredentials } from '@/utils/auth-utils';
+import { OWNER } from '@/utils/constants';
+import { useMeQuery } from '@/data/user';
 
 type IProps = {
   staffs: User[] | undefined;
@@ -27,9 +30,12 @@ const StaffList = ({
   const { t } = useTranslation();
   const { alignLeft, alignRight } = useIsRTL();
 
-const permissionTypes = AllPermission(); 
+  const { permissions } = getAuthCredentials();
+  const permissionTypes = AllPermission(); 
 
-  const canWrite = permissionTypes.includes('sidebar-nav-item-staffs');
+  const canWrite =
+  permissionTypes.includes('sidebar-nav-item-users') ||
+  permissions?.[0] === OWNER;
 
   const [sortingObj, setSortingObj] = useState<{
     sort: SortOrder;
@@ -55,6 +61,13 @@ const permissionTypes = AllPermission();
   });
 
   const columns = [
+    {
+      title: t('table:table-item-id'),
+      dataIndex: 'id',
+      key: 'id',
+      align: 'left',
+      width: 60,
+    },
     {
       title: (
         <TitleWithSort
@@ -86,16 +99,50 @@ const permissionTypes = AllPermission();
         is_active ? t('common:text-active') : t('common:text-inactive'),
     },
     {
-        ...(canWrite
-        ?{
-        title: t('table:table-item-actions'),
-        dataIndex: 'id',
-        key: 'actions',
-        align: alignRight,
-        render: (id: string) => {
-          return <ActionButtons id={id} deleteModalView="DELETE_STAFF" />;
-        },
-      } : null),
+      title: (
+        <TitleWithSort
+          title={t('table:table-item-status')}
+          ascending={
+            sortingObj.sort === SortOrder.Asc &&
+            sortingObj.column === 'is_active'
+          }
+          isActive={sortingObj.column === 'is_active'}
+        />
+      ),
+      className: 'cursor-pointer',
+      dataIndex: 'is_active',
+      key: 'is_active',
+      align: 'center',
+      onHeaderCell: () => onHeaderClick('is_active'),
+      render: (is_active: boolean) => (is_active ? 'Active' : 'Inactive'),
+    },
+    {
+      ...(canWrite
+        ? {
+          title: t('table:table-item-actions'),
+          dataIndex: 'id',
+          key: 'actions',
+          align: 'right',
+          render: function Render(id: string, { is_active }: any) {
+            const { data } = useMeQuery();
+            return (
+              <>
+                {data?.id != id && (
+                  <ActionButtons
+                    id={id}
+                    userStatus={true}
+                    isUserActive={is_active}
+                    // editModalView={true}
+                    editUrl='/user-details'
+                  // showAddWalletPoints={true}
+                  // showMakeAdminButton={true}
+                  />
+                )}
+              </>
+            );
+          },
+        }
+        : null),
     },
   ];
 
