@@ -70,7 +70,8 @@ import { useRouter } from 'next/router';
 import { useShopQuery } from '@/data/shop';
 import AdminLayout from '@/components/layouts/admin';
 // import BlogCreateOrUpdateForm from '@/components/blog/blog-form';
-import EventCreateOrUpdate from '@/components/event/event-form';
+import EventCreateOrUpdate, { FormValues } from '@/components/event/event-form';
+import { useEventSingleData } from '@/data/event';
 
 export default function CreateAttributePage() {
   const { t } = useTranslation();
@@ -84,6 +85,7 @@ export default function CreateAttributePage() {
     slug: shop as string,
   });
   const shopId = shopData?.id!;
+  const response = useEventSingleData(router.query.id);
 
   if (
     !hasAccess(adminOnly, permissions) &&
@@ -100,7 +102,7 @@ export default function CreateAttributePage() {
           {t('form:form-title-edit-event')}
         </h1>
       </div>
-      <EventCreateOrUpdate  />
+      <EventCreateOrUpdate initialValues={response.data as FormValues}/>
     </>
   );
 }

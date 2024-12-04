@@ -54,8 +54,7 @@ function SelectRegion({
     </div>
   );
 }
-type FormValues = {
-  region: any;
+export type FormValues = {
   title: string;
   eventName: string;
   description: string;
@@ -63,9 +62,10 @@ type FormValues = {
   time: string;
   location: string;
   collaboration: string;
-  shopId: number;
+  shopId: string | number;
   imageIds: number[];
   regionName: string;
+  region:string;
 };
 
 const defaultValues: FormValues = {
@@ -79,9 +79,10 @@ const defaultValues: FormValues = {
   shopId: 0,
   imageIds: [],
   regionName: '',
+  region: '',
 };
 type IProps = {
-  initialValues?: Event | undefined;
+  initialValues: FormValues | undefined;
 };
 const EventCreateOrUpdate = ({ initialValues }: IProps) => {
   const router = useRouter();
@@ -120,7 +121,10 @@ console.log("shopId====",shopId)
   //       },
   // });
   const { register, handleSubmit, control, formState: { errors } } = useForm<FormValues>({
-    defaultValues: initialValues || { ...defaultValues, shopId },
+    defaultValues:{
+      ...initialValues,
+      shopId: shopId
+    },
   });
   const { mutate: createEvent, isLoading: creating } = useCreateEventMutation();
   const { mutate: updateEvent, isLoading: updating } = useUpdateeventMutation();
@@ -188,6 +192,7 @@ console.log("shopId====",shopId)
       updateEvent(
         { id: initialValues.id!, ...input },
         {
+          onSuccess:() => router.push('/events'),
           onError: (error: any) => {
             setErrorMessage(error?.response?.data?.message);
             animateScroll.scrollToTop();
@@ -231,6 +236,7 @@ console.log("shopId====",shopId)
               label={t('form:input-label-title')}
               {...register('title', { required: 'Title is required' })}
               error={t(errors.title?.message!)}
+              defaultValue={initialValues?.title}
               variant="outline"
               className="mb-5"
             />
@@ -249,6 +255,7 @@ console.log("shopId====",shopId)
               label={t('form:input-label-event-name')}
               {...register('eventName', { required: 'Event name is required' })}
               error={t(errors.eventName?.message!)}
+              defaultValue={initialValues?.eventName || ''}
               variant="outline"
               className="mb-5"
             />
@@ -267,6 +274,7 @@ console.log("shopId====",shopId)
               label={t('form:input-label-description')}
               {...register('description', { required: 'Description is required' })}
               error={t(errors.description?.message!)}
+              defaultValue={initialValues?.description || ''}
               variant="outline"
               className="mb-5"
             />
@@ -286,6 +294,7 @@ console.log("shopId====",shopId)
               label={t('form:input-label-date')}
               {...register('date', { required: 'Date is required' })}
               error={t(errors.date?.message!)}
+              defaultValue={initialValues?.date || ''}
               variant="outline"
               className="mb-5"
             />
@@ -305,6 +314,7 @@ console.log("shopId====",shopId)
               label={t('form:input-label-time')}
               {...register('time', { required: 'Time is required' })}
               error={t(errors.time?.message!)}
+              defaultValue={initialValues?.time || ''}
               variant="outline"
               className="mb-5"
             />
@@ -323,6 +333,7 @@ console.log("shopId====",shopId)
               label={t('form:input-label-location')}
               {...register('location', { required: 'Location is required' })}
               error={t(errors.location?.message!)}
+              defaultValue={initialValues?.location || ''}
               variant="outline"
               className="mb-5"
             />
@@ -341,6 +352,7 @@ console.log("shopId====",shopId)
               label={t('form:input-label-collaboration')}
               {...register('collaboration', { required: 'Collaboration is required' })}
               error={t(errors.collaboration?.message!)}
+              defaultValue={initialValues?.collaboration || ''}
               variant="outline"
               className="mb-5"
             />
