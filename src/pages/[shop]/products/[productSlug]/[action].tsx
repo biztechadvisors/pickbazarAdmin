@@ -34,12 +34,13 @@ export default function UpdateProductPage() {
     shop_id,
     slug: query.productSlug as string, // Ensure filtering by slug
   });
-  
+  console.log("changes%%%",products);
   // Extract productId if available
   const productId = products?.find(
     (product) => product.slug === query.productSlug
   )?.id; 
-
+ 
+console.log("Product^^^^",productId)
   const {
     product,
     isLoading: loading,

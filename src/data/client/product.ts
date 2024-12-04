@@ -90,6 +90,7 @@ export const productClient = {
   },
 
   paginated: ({
+    id,
     type,
     name,
     slug,

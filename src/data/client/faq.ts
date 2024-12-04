@@ -16,13 +16,13 @@ import { VerifyCouponInputType, VerifyCouponResponse } from '@/types';
 export const faqClient = {
   ...crudFactory<Faq, any, FaqInput>(API_ENDPOINTS.FAQ),
   get({ id, language }: { id: string; language: string }) {
-    console.log(id, '  = FAQID');
+   
     return HttpClient.get<Faq>(`${API_ENDPOINTS.FAQ}/${id}`, {
       language,
     });
   },
   paginated: ({ ...params }: { params: Partial<FaqQueryOptions> }) => {
-    console.log('params', params);
+  
     if (params.code) {
       return HttpClient.get<Region>(`${API_ENDPOINTS.FAQ}/shop/${params.code}`);
     }

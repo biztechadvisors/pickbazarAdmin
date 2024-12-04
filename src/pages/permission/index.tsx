@@ -23,7 +23,8 @@ const PermissionComponent: React.FC & PermissionComponentProps = () => {
   const { permissions } = getAuthCredentials();
 
   const { data: meData } = useMeQuery();
-  const id = meData?.id ?? '';
+  // const id = meData?.id ?? ''; 
+  const id = meData?.id;
   const permissionTypes = AllPermission();
 
   const canWrite =
