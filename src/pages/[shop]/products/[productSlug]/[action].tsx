@@ -20,6 +20,7 @@ import AdminLayout from '@/components/layouts/admin';
 
 export default function UpdateProductPage() {
   const { query, locale } = useRouter();
+  console.log("#####",query)
   const { t } = useTranslation();
   const router = useRouter();
   const { permissions } = getAuthCredentials();

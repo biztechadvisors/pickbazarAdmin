@@ -156,36 +156,35 @@ export default function CreateOrUpdateCouponForm({ initialValues }: IProps) {
       console.error('Invalid date values');
       return;
     }
+  
     const input = {
       language: router.locale,
       type: values.type,
       description: values.description,
       amount: values.amount,
       minimum_cart_amount: values.minimum_cart_amount,
-      active_from: new Date(values.active_from).toISOString(),
-      expire_at: new Date(values.expire_at).toISOString(),
+      active_from: activeFromDate.toISOString(),
+      expire_at: expireAtDate.toISOString(),
       image: {
         thumbnail: values?.image?.thumbnail,
         original: values?.image?.original,
         id: values?.image?.id,
-      }, 
+      },
     };
-
+  
     try {
-      if (
-        !initialValues ||
-        !initialValues.translated_languages.includes(router.locale!)
-      ) {
+      if (initialValues) {
+        // Perform update
+        updateCoupon({
+          ...input,
+          id: initialValues.id!,
+          ...(initialValues.code !== values.code && { code: values.code }),
+        });
+      } else {
+        // Perform create
         createCoupon({
           ...input,
           code: values.code,
-          ...(initialValues?.code && { code: initialValues.code }),
-        });
-      } else {
-        updateCoupon({
-          ...input,
-          ...(initialValues.code !== values.code && { code: values.code }),
-          id: initialValues.id!,
         });
       }
     } catch (error) {
@@ -198,6 +197,7 @@ export default function CreateOrUpdateCouponForm({ initialValues }: IProps) {
       });
     }
   };
+  
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
