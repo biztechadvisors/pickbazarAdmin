@@ -19,8 +19,7 @@ import { useMeQuery } from '@/data/user';
 import AdminLayout from '@/components/layouts/admin';
 
 export default function UpdateProductPage() {
-  const { query, locale } = useRouter();
-  console.log("#####",query)
+  const { query, locale } = useRouter(); 
   const { t } = useTranslation();
   const router = useRouter();
   const { permissions } = getAuthCredentials();
@@ -35,13 +34,13 @@ export default function UpdateProductPage() {
     shop_id,
     slug: query.productSlug as string, // Ensure filtering by slug
   });
-  console.log("changes%%%",products);
+  
   // Extract productId if available
   const productId = products?.find(
     (product) => product.slug === query.productSlug
   )?.id; 
  
-console.log("Product^^^^",productId)
+ 
   const {
     product,
     isLoading: loading,
