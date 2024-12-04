@@ -360,7 +360,7 @@ import isEmpty from 'lodash/isEmpty';
 import omit from 'lodash/omit';
 import { omitTypename } from '@/utils/omit-typename';
 import { cartesian } from '@/utils/cartesian';
- 
+
 export type ProductFormValues = Omit<
   CreateProduct,
   | 'author_id'
@@ -382,7 +382,7 @@ export type ProductFormValues = Omit<
   slug: string;
   // image: AttachmentInput;
 };
- 
+
 export type ProductTypeOption = {
   value: ProductType;
   name: string;
@@ -393,7 +393,7 @@ export const productTypeOptions: ProductTypeOption[] = Object.entries(
   name: key,
   value,
 }));
- 
+
 export function getFormattedVariations(variations: any) {
   const variationGroup = groupBy(variations, 'attribute.slug');
   return Object.values(variationGroup)?.map((vg) => {
@@ -403,16 +403,15 @@ export function getFormattedVariations(variations: any) {
     };
   });
 }
- 
+
 export function processOptions(options: any) {
   try {
-
-    return JSON.parse(options); 
+    return JSON.parse(options);
   } catch (error) {
     return options;
   }
 }
- 
+
 export function calculateMinMaxPrice(variationOptions: any) {
   if (!variationOptions || !variationOptions.length) {
     return {
@@ -432,13 +431,13 @@ export function calculateMinMaxPrice(variationOptions: any) {
       sortedVariationsByPrice?.[sortedVariationsByPrice?.length - 1]?.price,
   };
 }
- 
+
 export function calculateQuantity(variationOptions: any) {
   return sum(
     variationOptions?.map(({ quantity }: { quantity: number }) => quantity)
   );
 }
- 
+
 export function getProductDefaultValues(
   product: Product,
   isNewTranslation: boolean = false
@@ -482,7 +481,7 @@ export function getProductDefaultValues(
         },
       }),
     }),
- 
+
     ...(product_type === ProductType.Variable && {
       variations: getFormattedVariations(variations),
       variation_options: variation_options?.map(({ image, ...option }: any) => {
@@ -500,7 +499,7 @@ export function getProductDefaultValues(
       }),
     }),
     // isVariation: variations?.length && variation_options?.length ? true : false,
- 
+
     // Remove initial dependent value for new translation
     ...(isNewTranslation && {
       type: null,
@@ -520,7 +519,7 @@ export function getProductDefaultValues(
     }),
   });
 }
- 
+
 // export function filterAttributes(attributes: any, variations: any) {
 
 //   console.log(attributes,variations ,'======================123')
@@ -533,13 +532,18 @@ export function getProductDefaultValues(
 //   console.log(res,'res==============')
 //   return res;
 // }
-export function filterAttributes(attributes: any, variations: any, fieldIndex: number) {
+export function filterAttributes(
+  attributes: any,
+  variations: any,
+  fieldIndex: number
+) {
   console.log(attributes, variations, '======================123');
-  
+
   // Get selected attributes from the **current card only**
-  const selectedAttributes = variations[fieldIndex]?.attributes?.map(
-    (attr: any) => attr?.attribute?.slug
-  ) || [];
+  const selectedAttributes =
+    variations[fieldIndex]?.attributes?.map(
+      (attr: any) => attr?.attribute?.slug
+    ) || [];
 
   // Filter attributes to exclude already selected in the current card
   const res = attributes?.filter((el: any) => {
@@ -551,23 +555,92 @@ export function filterAttributes(attributes: any, variations: any, fieldIndex: n
 }
 
 //correct code for return array
+// export function getCartesianProduct(values: any) {
+//   console.log('values', values);
+//   const formattedValues = values
+//     ?.map((v: any) => {
+//       const { attribute } = v;
+
+//       console.log('DATA ____________________', attribute);
+//       // Create a comma-separated string for the values
+//       const valueString: string = v?.value?.map((a: any) => a.value).join(', ');
+
+//       return {
+//         attribute: { name: attribute?.name ? attribute?.name : null },
+//         value: valueString ? valueString : null, // Wrap the string in an array
+//       };
+//     })
+//     .filter((i: any) => i !== undefined);
+
+//   if (isEmpty(formattedValues)) return {};
+//   return formattedValues; // Return the formatted values directly
+// }
+
+//just for checking purpose
+
+// export function getCartesianProduct(values: any) {
+//   console.log('values', values);
+
+//   const formattedValues = values
+//     ?.map((v: any) => {
+//       const { attributes } = v;
+
+//       console.log('DATA ____________________', attributes);
+//       // Create a comma-separated string for the values
+//       const valueString: string = v?.value?.map((a: any) => a.value).join(', ');
+
+//       return {
+//         attribute: {
+//           name: attributes?.map((e) => {
+//             return e?.attribute?.name;
+//           })
+//             ? attributes?.map((e: any) => {
+//                 return e?.attribute?.name;
+//               })
+//             : null,
+//         },
+//         value: attributes?.map((e: any) => {
+//           return e?.attribute?.values?.[0].value;
+//         })
+//           ? attributes?.map((e: any) => {
+//               return e?.attribute?.values?.[0].value;
+//             })
+//           : null, // Wrap the string in an array
+//       };
+//     })
+//     .filter((i: any) => i !== undefined);
+
+//   console.log('formattedValuesformattedValues', formattedValues);
+
+//   if (isEmpty(formattedValues)) return {};
+//   return formattedValues; // Return the formatted values directly
+// }
+
+
 export function getCartesianProduct(values: any) {
-   
-  const formattedValues = values?.map((v: any) => {
+  console.log('values', values);
+
+  const formattedValues = values
+    ?.map((v: any) => {
       const { attributes } = v;
 
-      console.log("DATA ____________________",attributes);
-      // Create a comma-separated string for the values
-      const valueString: string = v?.value?.map((a: any) => a.value).join(', ');
+      // Ensure proper mapping of attributes to their names and values
+      const nameArray = attributes?.map((e: any) => e?.attribute?.name) || [];
+      const valueArray = attributes?.map((e: any) => e?.attribute?.values?.[0]?.value) || [];
 
-      return {
-        attribute: { name: attributes?.name ? attributes?.name : null },
-        value: valueString ? valueString : null , // Wrap the string in an array
-      };
-    }).filter((i: any) => i !== undefined);
+      // Return formatted object for each attribute
+      return nameArray.map((name: string, index: number) => ({
+        name: name || null,
+        value: [valueArray[index] || null].filter((val) => val !== null), // Ensure array values are non-null
+      }));
+    })
+    .flat()
+    .filter((i: any) => i?.name); // Filter out any invalid entries
 
-  if (isEmpty(formattedValues)) return {};
-  return formattedValues; // Return the formatted values directly
+  console.log('formattedValues', formattedValues);
+
+  if (isEmpty(formattedValues)) return [];
+  return formattedValues;
 }
 
 
@@ -580,7 +653,6 @@ export function getCartesianProduct(values: any) {
 //   if (isEmpty(formattedValues)) return [];
 //   return cartesian(...formattedValues);
 // }
-
 
 // export function getCartesianProduct(values: any, thirdDropdownValue: any) {
 //   const formattedValues = values
@@ -604,7 +676,7 @@ export function processFileWithName(file_input: any) {
   let fileSplitName = splitArray?.[splitArray?.length - 1]?.split('.');
   const fileType = fileSplitName?.pop(); // it will pop the last item from the fileSplitName arr which is the file ext
   const filename = fileSplitName?.join('.'); // it will join the array with dot, which restore the original filename
- 
+
   return [
     {
       fileType: fileType,
@@ -697,13 +769,13 @@ export function processFileWithName(file_input: any) {
 //                 file_name: digital_file?.file_name,
 //               },
 //             }),
-           
+
 //             options: processOptions(options).map(
 //               ({ name, value }: VariationOption) => ({
 //                 name,
 //                 value,
 //               })
-//             ),          
+//             ),
 //           })
 //         ),
 //         delete: initialValues?.variation_options
@@ -745,7 +817,7 @@ export function processFileWithName(file_input: any) {
 //   } = values;
 
 //   const processedFile = processFileWithName(digital_file_input);
-  
+
 //   return {
 //     ...simpleValues,
 //     is_digital,
@@ -853,9 +925,9 @@ export function getProductInputValues(
     variations,
     ...simpleValues
   } = values;
-  console.log("data&&&&&",values)
+  console.log('data&&&&&', values);
   const processedFile = processFileWithName(digital_file_input);
- 
+
   return {
     ...simpleValues,
     is_digital,
@@ -867,7 +939,7 @@ export function getProductInputValues(
     tags: tags.map((tag) => tag?.id),
     image: omitTypename<any>(image),
     gallery: values.gallery?.map((gi: any) => omitTypename(gi)),
- 
+
     ...(product_type?.value === ProductType?.Simple && {
       quantity,
       ...(is_digital && {
@@ -875,13 +947,14 @@ export function getProductInputValues(
           id: initialValues?.digital_file?.id,
           attachment_id: digital_file_input.id,
           url: digital_file_input.original,
-          file_name: processedFile[0].filename + '.' + processedFile[0].fileType,
+          file_name:
+            processedFile[0].filename + '.' + processedFile[0].fileType,
         },
       }),
     }),
 
     variations: [],
-    
+
     variation_options: {
       upsert: [],
       delete: initialValues?.variation_options?.map(
@@ -891,11 +964,11 @@ export function getProductInputValues(
 
     ...(product_type?.value === ProductType?.Variable && {
       quantity: calculateQuantity(variation_options),
-      
+
       variations: variations?.flatMap(({ value }: any) =>
         value?.map(({ id }: any) => ({ attribute_value_id: id }))
       ),
-      
+
       // variation_options: {
       //   // @ts-ignore
       //   upsert: variation_options?.map(
@@ -920,7 +993,7 @@ export function getProductInputValues(
       //           file_name: digital_file?.file_name,
       //         },
       //       }),
-            
+
       //       options: processOptions(options).map(
       //         ({ attribute, values }: VariationOption) => ({
       //           name: attribute || '',  // Handle undefined names
@@ -943,72 +1016,78 @@ export function getProductInputValues(
       //     }).filter((item?: number) => item !== undefined),
       // },
 
-variation_options: {
+      variation_options: {
+        // @ts-ignore
+        upsert: variation_options?.map(
+          ({
+            options,
+            id,
+            digital_file,
+            image: variationImage,
+            digital_file_input: digital_file_input_,
+            price,
+            quantity,
+            sale_price,
+            sku,
+            title,
+            ...rest
+          }: any) => ({
+            // Include the `id` if it exists, otherwise omit it
+            // ...(id !== '' ? { id } : {}),
+            ...omit(rest, '__typename'),
 
-  // @ts-ignore
-  upsert: variation_options?.map(
-    ({
-      options,
-      id,
-      digital_file,
-      image: variationImage,
-      digital_file_input: digital_file_input_,
-      price,
-      quantity,
-      sale_price,
-      sku,
-      title,
-      ...rest
-    }: any) => ({
-      // Include the `id` if it exists, otherwise omit it
-      // ...(id !== '' ? { id } : {}),
-      ...omit(rest, '__typename'),
+            ...(!isEmpty(variationImage) && {
+              image: omitTypename(variationImage),
+            }),
 
-      ...(!isEmpty(variationImage) && {
-        image: omitTypename(variationImage),
-      }),
+            // Handle digital file logic dynamically
+            ...(rest?.is_digital && {
+              digital_file: {
+                id: digital_file?.id,
+                attachment_id: digital_file_input_?.id,
+                url: digital_file_input_?.original,
+                file_name: digital_file?.file_name,
+              },
+            }),
 
-      // Handle digital file logic dynamically
-      ...(rest?.is_digital && {
-        digital_file: {
-          id: digital_file?.id,
-          attachment_id: digital_file_input_?.id,
-          url: digital_file_input_?.original,
-          file_name: digital_file?.file_name,
-        },
-      }),
+            options: options?.map(({ attribute, values }: VariationOption) => ({
+              name: attribute || '',
+              value: values || '',
+            })),
 
-      options: options?.map(({ attribute, values }: VariationOption) => ({
-        name: attribute || '', 
-        value: values || '',   
-      })),
-
-      is_digital: rest?.is_digital || false, 
-      is_disable: rest?.is_disable || false, 
-      price: price || 0,                   
-      quantity: quantity || 0,               
-      sale_price: sale_price || 0,          
-      sku: sku || '',                       
-      // title: title || options?.map((opt: any) => opt.value).join('/'), 
-      title: title || (options ? options.map((opt: { value: any; }) => opt.value).join('/').replace(/,\s*/g, '/') : ''),
-
-
-    })
-  ), 
-  delete: initialValues?.variation_options?.map((initialVariationOption: Variation) => {
-      // Check if the variation option exists in the current `variation_options`
-      //@ts-ignore
-      const find = variation_options?.find(
-        (variationOption: Variation) =>
-          variationOption?.id === initialVariationOption?.id
-      );
-      if (!find) {
-        return initialVariationOption?.id;
-      }
-    }).filter((item?: number) => item !== undefined) || null,
-},
+            is_digital: rest?.is_digital || false,
+            is_disable: rest?.is_disable || false,
+            price: price || 0,
+            quantity: quantity || 0,
+            sale_price: sale_price || 0,
+            sku: sku || '',
+            // title: title || options?.map((opt: any) => opt.value).join('/'),
+            title:
+              title ||
+              (options
+                ? options
+                    .map((opt: { value: any }) => opt.value)
+                    .join('/')
+                    .replace(/,\s*/g, '/')
+                : ''),
+          })
+        ),
+        delete:
+          initialValues?.variation_options
+            ?.map((initialVariationOption: Variation) => {
+              // Check if the variation option exists in the current `variation_options`
+              //@ts-ignore
+              const find = variation_options?.find(
+                (variationOption: Variation) =>
+                  variationOption?.id === initialVariationOption?.id
+              );
+              if (!find) {
+                return initialVariationOption?.id;
+              }
+            })
+            .filter((item?: number) => item !== undefined) || null,
+      },
     }),
     ...calculateMinMaxPrice(variation_options),
   };
 }
- 

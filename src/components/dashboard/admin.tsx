@@ -27,11 +27,13 @@ export default function Dashboard() {
   const customerId = meData?.id;
   const DealerShow = meData?.permission.type_name === DEALER;
   const ShopShow = meData?.permission.type_name === Company;
- 
+
+  const shopId = meData?.id;
 
   const analyticsQuery = {
     customerId: parseInt(customerId),
     state: '',
+    shop_id: shopId,
   };
 
   const {
@@ -40,9 +42,8 @@ export default function Dashboard() {
     error: analyticsError,
   } = useAnalyticsQuery(analyticsQuery);
 
-  console.log("analyticsData",analyticsData)
+  console.log('analyticsData', analyticsData);
 
-  
   // console.log("meData",meData)
 
   // const {
@@ -50,7 +51,7 @@ export default function Dashboard() {
   //   paginatorInfo,
   //   error: orderError,
   //   loading: orderLoading,
-  // } = useOrdersQuery({    
+  // } = useOrdersQuery({
   //   shop_slug: meData?.managed_shop?.slug,
   //   language: locale,
   //   limit: 10,
@@ -62,7 +63,7 @@ export default function Dashboard() {
     limit: 10,
     page: 1,
   };
-  
+
   // Conditional assignment for DealerShow
   if (DealerShow) {
     queryConfig = {
@@ -70,7 +71,7 @@ export default function Dashboard() {
       shopSlug: meData?.managed_shop?.slug,
       customer_id: meData?.id,
     };
-  } 
+  }
   // Conditional assignment for ShopShow
   else if (ShopShow) {
     queryConfig = {
@@ -78,7 +79,7 @@ export default function Dashboard() {
       shopSlug: meData?.managed_shop?.slug,
     };
   }
-  
+
   // Destructure the response from useOrdersQuery
   const {
     orders: orderData,
@@ -86,16 +87,14 @@ export default function Dashboard() {
     error: orderError,
     loading: orderLoading,
   } = useOrdersQuery(queryConfig);
-  
 
-  
- console.log("orderData",orderData)
-  const customer_id = meData?.id
-  const shop_id =  meData?.managed_shop?.id
+  console.log('orderData', orderData);
+  const customer_id = meData?.id;
+  const shop_id = meData?.managed_shop?.id;
 
   const { data: response } = useGetStockSeals(customer_id, shop_id);
 
-  const DealerSalesList = response?.data
+  const DealerSalesList = response?.data;
   // const DealerShow = meData?.permission.type_name === DEALER;
 
   if (orderError) {
@@ -115,14 +114,15 @@ export default function Dashboard() {
     language: locale,
     shop_id: meData?.managed_shop?.id,
   });
-console.log("first+++++++++++",popularProductData)
+  console.log('first+++++++++++', popularProductData);
   if (analyticsLoading || orderLoading || popularProductLoading) {
     return <Loader text={t('common:text-loading')} />;
   }
 
   const salesByYear =
-    analyticsData?.totalYearSaleByMonth?.map((item) => item?.total?.toFixed(2)) ||
-    Array(12).fill(0);
+    analyticsData?.totalYearSaleByMonth?.map((item) =>
+      item?.total?.toFixed(2)
+    ) || Array(12).fill(0);
 
   const errorMessage =
     analyticsError?.message ||
@@ -204,16 +204,10 @@ console.log("first+++++++++++",popularProductData)
       </div>
       {DealerShow ? (
         <div className="mb-6  w-full flex-wrap space-y-6 xl:flex-nowrap xl:space-y-0 xl:space-x-5">
-        <RecentOrders
-          orders={DealerSalesList}
-          title={t('Recent Sales')}
-        />
-      </div>
-      ) : (
-        null
-      )}
+          <RecentOrders orders={DealerSalesList} title={t('Recent Sales')} />
+        </div>
+      ) : null}
 
-     
       <div className="mb-6 w-full flex-wrap space-y-6 xl:flex-nowrap xl:space-y-0 xl:space-x-5">
         <PopularProductList
           products={popularProductData}
