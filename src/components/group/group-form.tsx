@@ -1,5 +1,5 @@
 import Input from '@/components/ui/input';
-import { Controller, useFieldArray, useForm } from 'react-hook-form';
+import { Control, Controller, FieldErrors, useFieldArray, useForm } from 'react-hook-form';
 import Button from '@/components/ui/button';
 import Description from '@/components/ui/description';
 import Card from '@/components/common/card';
@@ -112,7 +112,7 @@ type FormValues = {
   promotional_sliders: AttachmentInput[];
   banners: BannerInput[];
   settings: TypeSettingsInput;
-  region: string[]; 
+  regions: any; 
 };
 
 type IProps = {
@@ -132,13 +132,11 @@ function SelectRegion({
 
   const ShopSlugName = 'hilltop-marble';
   // const { data: me } = useMeQuery()
-  console.log('region-me = ', meData)
-  console.log('region-me = ', meData?.managed_shop?.slug)
- 
+   
   const { regions, loading, paginatorInfo, error } = useRegionsQuery({
     code: meData?.managed_shop?.slug,
   });
-console.log("REgions===",regions);
+ 
   if (error) {
     console.error("Error fetching regions:", error);
   }
@@ -146,7 +144,7 @@ console.log("REgions===",regions);
     <div className="mb-5">
       <Label>Select Region</Label>
       <SelectInput
-        name="region"
+        name="regions"
         control={control}
         getOptionLabel={(option: any) => option.name}
         getOptionValue={(option: any) => option.id}
@@ -187,7 +185,7 @@ export default function CreateOrUpdateTypeForm({ initialValues }: IProps) {
           (singleIcon) => singleIcon.value === initialValues?.icon
         )
         : '',
-        region: initialValues?.region || [],
+        // region: initialValues?.region || [],
     },
   });
   const { fields, append, remove } = useFieldArray({
@@ -203,7 +201,7 @@ export default function CreateOrUpdateTypeForm({ initialValues }: IProps) {
   const onSubmit = (values: FormValues) => {
     console.log("Submitted Form Values:", values);
 
-    const transformedRegions = values.region?.name ? [values.region.name] : [];
+    const transformedRegions = values.regions?.name ? [values.regions.name] : [];
     const input = {
       language: router.locale,
       name: values.name!,

@@ -125,7 +125,7 @@ function SelectRegion({
     <div className="mb-5">
       <Label>Select Region</Label>
       <SelectInput
-        name="region"
+        name="regions"
         control={control}
         getOptionLabel={(option: any) => option.name}
         getOptionValue={(option: any) => option.id}
@@ -208,7 +208,7 @@ function SelectCategories({
 }
 
 type FormValues = {
-  region: any;
+  regions: any; 
   name: string;
   details: string;
   parent: any;
@@ -256,6 +256,7 @@ export default function CreateOrUpdateCategoriesForm({
                 (singleIcon) => singleIcon.value === initialValues?.icon!
               )
             : '',
+            // region: initialValues.regions?.length > 0 ? initialValues.regions[0]?.name : '', 
           ...(isNewTranslation && {
             type: null,
           }),
@@ -263,22 +264,7 @@ export default function CreateOrUpdateCategoriesForm({
       : defaultValues,
     resolver: yupResolver(categoryValidationSchema),
   });
-
-  const { data: meData } = useMeQuery();
-
-  const ShopSlugName = 'hilltop-marble';
-  // const { data: me } = useMeQuery()
-  console.log('region-me = ', meData);
-  console.log('region-me = ', meData?.managed_shop?.slug);
-
-  const { regions, loading, paginatorInfo, error } = useRegionsQuery({
-    code: meData?.managed_shop?.slug,
-  });
-  console.log('REgions===', regions);
-  if (error) {
-    console.error('Error fetching regions:', error);
-  }
-
+ 
   const { openModal } = useModalAction();
   const { locale } = router;
   const {
@@ -310,7 +296,7 @@ export default function CreateOrUpdateCategoriesForm({
 
   const onSubmit = async (values: FormValues) => {
     console.log('Form Data:', values);
-    const transformedRegions = values.region?.name ? [values.region.name] : [];
+    const transformedRegions = values.regions?.name ? [values.regions.name] : [];
 
     const input = {
       language: router.locale,

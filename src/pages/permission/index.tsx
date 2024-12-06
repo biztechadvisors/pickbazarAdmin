@@ -22,20 +22,20 @@ const PermissionComponent: React.FC & PermissionComponentProps = () => {
   const { t } = useTranslation();
   const { permissions } = getAuthCredentials();
 
-  const { data: meData } = useMeQuery();
-  // const id = meData?.id ?? ''; 
-  const id = meData?.id;
+  // const { data: meData } = useMeQuery();
+  // const id = meData?.id ?? '';
   const permissionTypes = AllPermission();
 
   const canWrite =
     permissionTypes.includes('sidebar-nav-item-permissions') ||
     permissions?.[0] === OWNER;
 
-  const {
-    isLoading,
-    error,
-    data: permissionData,
-  } = usePermissionData(id);
+  // const {
+  //   isLoading,
+  //   error,
+  //   data: permissionData,
+  // } = usePermissionData(id);
+  const { isLoading, error, data: permissionData } = usePermissionData();
 
   console.log("permissionData",permissionData)
 

@@ -24,17 +24,11 @@ export default function Regions() {
   const [searchTerm, setSearchTerm] = useState('');
   const [page, setPage] = useState(1);
   const { data: me } = useMeQuery()
-  console.log('region-me = ', me)
-  console.log('region-me = ', me?.managed_shop?.slug)
-
   const { regions, loading, paginatorInfo, error } = useRegionsQuery({
     code: me?.managed_shop?.slug,
     // search: searchTerm,
   });
-
-  console.log("regions",regions)
-
-  const { permissions } = getAuthCredentials();
+   const { permissions } = getAuthCredentials();
   
   const permissionTypes = AllPermission(); 
 

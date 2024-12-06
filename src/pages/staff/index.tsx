@@ -4,7 +4,7 @@ import Loader from '@/components/ui/loader/loader';
 import { useTranslation } from 'next-i18next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import { useRouter } from 'next/router';
-import StaffList from '@/components/shop/staff-list';
+import StaffList from '@/components/staff/staff-list';
 import {
   adminAndOwnerOnly,
   adminOnly,
@@ -103,9 +103,10 @@ export default function StaffsPage() {
     router.replace(Routes.dashboard);
   }
 
-  // const filteredUsers = staffs?.filter(
-  //   (user) => user.permission?.type_name === STAFF
-  // );
+  const filteredUsers = users?.filter(
+    (user) => user.permission?.type_name === STAFF
+  );
+console.log("filteredUsers",filteredUsers)
 
   function handleSearch({ searchText }: { searchText: string }) {
     setSearchTerm(searchText);

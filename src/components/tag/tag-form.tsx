@@ -85,13 +85,12 @@ function SelectRegion({
 
   const ShopSlugName = 'hilltop-marble';
   // const { data: me } = useMeQuery()
-  console.log('region-me = ', meData)
-  console.log('region-me = ', meData?.managed_shop?.slug)
+  
  
   const { regions, loading, paginatorInfo, error } = useRegionsQuery({
     code: meData?.managed_shop?.slug,
   });
-console.log("REgions===",regions);
+ 
   if (error) {
     console.error("Error fetching regions:", error);
   }
@@ -99,7 +98,7 @@ console.log("REgions===",regions);
     <div className="mb-5">
       <Label>Select Region</Label>
       <SelectInput
-        name="region"
+        name="regions"
         control={control}
         getOptionLabel={(option: any) => option.name}
         getOptionValue={(option: any) => option.id}
@@ -159,6 +158,7 @@ export const updatedIcons = tagIcons.map((item: any) => {
 });
 
 type FormValues = {
+  regions: any;
   name: string;
   type: any;
   details: string;
@@ -247,7 +247,7 @@ export default function CreateOrUpdateTagForm({ initialValues }: IProps) {
   
   const onSubmit = async (values: FormValues) => {
  
-    const transformedRegions = values.region?.name ? [values.region.name] : [];
+    const transformedRegions = values.regions?.name ? [values.regions.name] : [];
     const input = {
       language: router.locale,
       name: values.name,

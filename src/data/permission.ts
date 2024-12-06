@@ -6,20 +6,39 @@ import { permissionClient } from './client/permission';
 import { Routes } from '@/config/routes';
 import { useRouter } from 'next/router';
 
-export const usePermissionData = (userId: string) => {
+// export const usePermissionData = (userId: string) => {
 
-  const { isLoading, error, data, refetch } = useQuery<
-    {
-      map(arg0: (e: any, index: any) => JSX.Element): import("react").ReactNode | Record<string, unknown>; Permission: any
+//   const { isLoading, error, data, refetch } = useQuery<
+//     {
+//       map(arg0: (e: any, index: any) => JSX.Element): import("react").ReactNode | Record<string, unknown>; Permission: any
+//     },
+//     Error
+//   >([API_ENDPOINTS.PERMISSION], async () => {
+//     const response = await permissionClient.getAllPermission(userId);
+//     return response;
+//   });
+//   return { data, isLoading, error, refetch };
+// };
+
+export const usePermissionData = () => {
+  const { isLoading, error, data, refetch } = useQuery(
+    ['permissions', localStorage.getItem('userId')], // Key includes userId for better caching
+    async () => {
+      const userId = localStorage.getItem('userId');
+      if (!userId) {
+        throw new Error('User ID is missing');
+      }
+      const response = await permissionClient.getAllPermission(userId);
+      return response;
     },
-    Error
-  >([API_ENDPOINTS.PERMISSION], async () => {
-    const response = await permissionClient.getAllPermission(userId);
-    return response;
-  });
+    {
+      enabled: !!localStorage.getItem('userId'), // Only run if userId exists
+      retry: false, // Optional: prevent retry on missing userId
+    }
+  );
+
   return { data, isLoading, error, refetch };
 };
-
 export const useSavePermissionData = () => {
   const router = useRouter();
   const mutation = useMutation(permissionClient.updatePermission, {

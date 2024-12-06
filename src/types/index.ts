@@ -268,6 +268,7 @@ export declare type AddDealerInput = {
 };
 
 export interface Category {
+  regions: any;
   id: string;
   name: string;
   slug: string;
@@ -311,7 +312,8 @@ export interface Attribute {
   language?: string;
 }
 export interface Event {
-  id: string; 
+  regions: any;
+  id: string;
   title: string;
   eventName: string;
   description: string;
@@ -321,6 +323,7 @@ export interface Event {
   collaboration: string;
   shopId: number;
   imageIds: number[]; 
+  regionName: string;
 }
 export interface AttributeValueInput {
   id?: number;
