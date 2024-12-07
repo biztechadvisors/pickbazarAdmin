@@ -147,7 +147,7 @@ console.log("filteredUsers",filteredUsers)
 StaffsPage.authenticate = {
   permissions: adminOwnerAndStaffOnly,
 };
-StaffsPage.Layout = OwnerLayout;
+StaffsPage.Layout = AdminLayout ;
 
 export const getServerSideProps = async ({ locale }: any) => ({
   props: {
