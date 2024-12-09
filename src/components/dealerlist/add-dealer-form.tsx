@@ -285,8 +285,8 @@ export default function CreateOrUpdateDealerForm({ initialValues, id }: IProps) 
   const marproduct: any = `{initialValues?.dealerProductMargins}`
   const marcategory: any = `initialValues?.dealerCategoryMargins`
  // Move these hook calls outside of the `onSubmit` function
- const billingAddresses = useAtomValue(billingAddressAtom);
- const shippingAddresses = useAtomValue(shippingAddressAtom);
+ // const billingAddresses = useAtomValue(billingAddressAtom);
+ // const shippingAddresses = useAtomValue(shippingAddressAtom);
 
   const {
     register,

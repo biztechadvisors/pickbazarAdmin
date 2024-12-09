@@ -89,14 +89,14 @@ type IProps = {
 const EventCreateOrUpdate = ({ initialValues }: IProps) => {
   const router = useRouter();
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
-  const { data: me } = useMeQuery();
+  const { data: meData } = useMeQuery();
   const {   query: { shop }, } = router;
   const { t } = useTranslation();
   const { data: shopData } = useShopQuery(
     { slug: shop as string, },
     { enabled: !!shop }
   );
-  const shopId = initialValues?.shopId || me?.shop_id || shopData?.id || 0;
+  const shopId = initialValues?.shopId || meData?.shop_id || shopData?.id || 0;
   // const shopId = me?.shop_id ;
   // const shopId = shopData?.id || initialValues?.shopId;
 console.log("shopId====",shopId)
