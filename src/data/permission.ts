@@ -21,10 +21,18 @@ import { useRouter } from 'next/router';
 // };
 
 export const usePermissionData = () => {
+  const getUserId = () => {
+    if (typeof window !== 'undefined') {
+      return localStorage.getItem('userId');
+    }
+    return null;
+  };
   const { isLoading, error, data, refetch } = useQuery(
-    ['permissions', localStorage.getItem('userId')], // Key includes userId for better caching
+    // ['permissions', localStorage.getItem('userId')], // Key includes userId for better caching
+    ['permissions', getUserId()],
     async () => {
-      const userId = localStorage.getItem('userId');
+      // const userId = localStorage.getItem('userId');
+      const userId = getUserId();
       if (!userId) {
         throw new Error('User ID is missing');
       }
@@ -32,7 +40,8 @@ export const usePermissionData = () => {
       return response;
     },
     {
-      enabled: !!localStorage.getItem('userId'), // Only run if userId exists
+      // enabled: !!localStorage.getItem('userId'),  
+      enabled:!!getUserId(),
       retry: false, // Optional: prevent retry on missing userId
     }
   );

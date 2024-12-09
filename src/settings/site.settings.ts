@@ -99,10 +99,15 @@ export const siteSettings = {
         label: 'sidebar-nav-item-permissions',
         icon: 'CalendarScheduleIcon',
       },
+      {
+        href: Routes.blog.list,
+        label: 'sidebar-nav-item-blog',
+        icon: 'DashboardIcon',
+      },
       // {
-      //   href: Routes.blog.list,
-      //   label: 'sidebar-nav-item-blog',
-      //   icon: 'CalendarScheduleIcon',
+      //   href: Routes.event.list,
+      //   label: 'sidebar-nav-item-event',
+      //   icon: 'DashboardIcon', 
       // },
       {
         href: Routes.user.list,

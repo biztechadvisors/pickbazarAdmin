@@ -13,6 +13,7 @@ import { useMeQuery } from '@/data/user';
 import { AllPermission } from '@/utils/AllPermission';
 import OwnerLayout from '@/components/layouts/owner';
 import { OWNER } from '@/utils/constants';
+import AdminLayout from '@/components/layouts/admin';
 
 interface PermissionComponentProps {
   Layout: React.FC;
@@ -142,7 +143,8 @@ const PermissionComponent: React.FC & PermissionComponentProps = () => {
 };
 
 // Assign Layout to the PermissionComponent
-PermissionComponent.Layout = OwnerLayout;
+// PermissionComponent.Layout = OwnerLayout;
+PermissionComponent.Layout = AdminLayout;
 
 export const getStaticProps = async ({ locale }: any) => ({
   props: {

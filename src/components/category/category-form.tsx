@@ -108,11 +108,9 @@ function SelectRegion({
   const { t } = useTranslation();
 
   const { data: meData } = useMeQuery();
-
   const ShopSlugName = 'hilltop-marble';
   // const { data: me } = useMeQuery()
-  console.log('region-me = ', meData);
-  console.log('region-me = ', meData?.managed_shop?.slug);
+  
 
   const { regions, loading, paginatorInfo, error } = useRegionsQuery({
     code: meData?.managed_shop?.slug,
@@ -185,7 +183,7 @@ function SelectCategories({
     }
   }, [type?.slug]);
   const { categories, loading } = useCategoriesQuery({
-    limit: 999,
+    limit: 10,
     type: type?.slug,
     language: locale,
     // shopId,
@@ -295,7 +293,12 @@ export default function CreateOrUpdateCategoriesForm({
     useUpdateCategoryMutation();
 
   const onSubmit = async (values: FormValues) => {
-    console.log('Form Data:', values);
+    const shopIdFromLocalStorage = localStorage.getItem("shopId");
+console.log("shopIdFromLocalStorage",shopIdFromLocalStorage)
+    if (!shopIdFromLocalStorage) {
+      console.error("Shop ID not found in localStorage");
+      return;
+    }
     const transformedRegions = values.regions?.name ? [values.regions.name] : [];
 
     const input = {
@@ -321,13 +324,15 @@ export default function CreateOrUpdateCategoriesForm({
       createCategory({
         ...input,
         ...(initialValues?.slug && { slug: initialValues.slug }),
-        shop_id: meData?.managed_shop?.id || initialValues?.shop_id,
+        // shop_id: meData?.managed_shop?.id || initialValues?.shop_id,
+        shop_id: shopIdFromLocalStorage || initialValues?.shop_id,
       });
     } else {
       updateCategory({
         ...input,
         id: initialValues.id!,
-        shop_id: meData?.managed_shop?.id,
+        // shop_id: meData?.managed_shop?.id,
+        shop_id: shopIdFromLocalStorage,
       });
     }
   };
