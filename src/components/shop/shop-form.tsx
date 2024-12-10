@@ -217,10 +217,6 @@ const ShopForm = ({ initialValues }: { initialValues?: any }) => {
   const [additionalPerm] = useAtom(addPermission);
   const { permissions } = getAuthCredentials();
 
-  console.log(
-    'additionalPerm------------------------------------',
-    additionalPerm
-  );
 
   function openModal() {
     setIsOpen(true);
@@ -480,7 +476,7 @@ const ShopForm = ({ initialValues }: { initialValues?: any }) => {
           permission: permissionProps?.permission_name,
         });
       }
-      router.push('/shops'); // Navigate to the shops list or appropriate page
+      // router.push('/shops'); // Navigate to the shops list or appropriate page
     } catch (error) {
       console.error('Error while saving the shop:', error);
     }

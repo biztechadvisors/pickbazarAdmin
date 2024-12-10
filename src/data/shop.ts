@@ -71,7 +71,6 @@ export const useUpdateShopMutation = () => {
 };
 
 export const useShopQuery = ({ slug }: { slug: string }, options?: any) => {
-  console.log("shopDAta***",options);
   return useQuery<Shop, Error>(
     [API_ENDPOINTS.SHOPS, { slug }],
     () => shopClient.get({ slug }),

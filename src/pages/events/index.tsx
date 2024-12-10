@@ -2,6 +2,7 @@
 import TypeFilter from '@/components/category/type-filter';
 import Card from '@/components/common/card';
 import Search from '@/components/common/search';
+import DateRegionFilter from '@/components/event/event-filter';
 import EventLists from '@/components/event/event-list';
 import AdminLayout from '@/components/layouts/admin';
 import LinkButton from '@/components/ui/link-button';
@@ -23,33 +24,47 @@ const Events = () => {
   const [page, setPage] = useState(1);
   const [orderBy, setOrder] = useState('updated_at');
   const [sortedBy, setColumn] = useState<SortOrder>(SortOrder.Desc);
+  const [region, setRegion] = useState('');
+  const [startDate, setStartDate] = useState('');
+  // const [endDate, setEndDate] = useState<string | null>(null);
+
 
   const shop: string | undefined = meData?.managed_shop?.id;
   const shopSlug = meData?.managed_shop?.slug;
 
-  const { events, paginatorInfo, isLoading, error } = useEventQuery({
+  const { events, paginatorInfo, error } = useEventQuery({
     shopSlug,
     orderBy,
     sortedBy,
     language: locale,
-    search: searchTerm,
+    // search: searchTerm,
     page,
     limit: 10,
+    regionName: region,
+    ...(startDate && { startDate }),
   });
 
-  console.log("events fetched:", events);
-
-  
-  function handleSearch({ searchText }: { searchText: string }) {
-    setSearchTerm(searchText);
+ 
+  function handleRegionFilter(regionName: string) {
+    setRegion(regionName);
     setPage(1);
   }
+
+  function handleDateFilter(start: string | null) {
+    setStartDate(start);
+    // setEndDate(null);
+    setPage(1);
+  }
+  
+  // function handleSearch({ searchText }: { searchText: string }) {
+  //   setSearchTerm(searchText);
+  //   setPage(1);
+  // }
 
   const handlePagination = (newPage: number) => {
     setPage(newPage);
   };
-
-  console.log("eventseventsevents", events)
+ 
   return (
     <>
       <Card className="mb-8 flex flex-col">
@@ -62,8 +77,12 @@ const Events = () => {
           <div className="flex w-full flex-col items-center space-y-4 ms-auto md:flex-row md:space-y-0 xl:w-3/4">
             {/* <Search onSearch={handleSearch} /> */}
 
-            <TypeFilter className="md:ms-6" />
-
+            {/* <TypeFilter className="md:ms-6" /> */}
+            <DateRegionFilter
+              onRegionFilter={handleRegionFilter}
+              onDateFilter={handleDateFilter}
+              className="w-full"
+            />
             <LinkButton
               href={`/${Routes.event.create}`}
               className="h-12 w-full md:w-auto md:ms-6"
