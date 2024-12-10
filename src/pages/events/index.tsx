@@ -12,7 +12,7 @@ import { SortOrder } from '@/types';
 import { adminOwnerAndStaffOnly } from '@/utils/auth-utils';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import { useRouter } from 'next/router';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 const Events = () => {
@@ -27,7 +27,7 @@ const Events = () => {
   const shop: string | undefined = meData?.managed_shop?.id;
   const shopSlug = meData?.managed_shop?.slug;
 
-  const { events, paginatorInfo, isLoading, error } = useEventQuery({
+  const { events, paginatorInfo, loading, error } = useEventQuery({
     shopSlug,
     orderBy,
     sortedBy,
@@ -36,6 +36,11 @@ const Events = () => {
     page,
     limit: 10,
   });
+
+  const totalPages = Math.ceil((paginatorInfo?.total || 0) / (paginatorInfo?.limit || 1));
+  useEffect(() => {
+    if (page > totalPages) setPage(1);
+  }, [paginatorInfo?.total, paginatorInfo?.perPage, page]);
 
   console.log("events fetched:", events);
 
