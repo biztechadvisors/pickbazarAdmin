@@ -700,13 +700,19 @@ const ProductList = ({
         align: 'right',
         width: 120,
         render: (slug: string, record: Product) => {
+          const Shop = record.shop;
           return (
             <LanguageSwitcher
               slug={slug}
               record={record}
               deleteModalView="DELETE_PRODUCT"
-              routes={Routes?.product}
-            />
+              // routes={Routes?.product}
+            routes={{
+             edit: `/${Shop}/products/${slug}/edit?productId=${record.id}`,
+             editWithoutLang: (slug: string, shop: string) =>
+             `/${shop}/products/${slug}/edit?productId=${record.id}`,
+            }}
+             />
           );
         },
       }),

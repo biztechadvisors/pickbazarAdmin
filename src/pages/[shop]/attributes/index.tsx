@@ -48,8 +48,10 @@ export default function AttributePage() {
   const shopId = shopData?.id!;
   const shopSlug = shopData?.slug;
 
-  const { attributes, loading, error } = useAttributesQuery(
+  const { attributes,paginatorInfo, loading, error } = useAttributesQuery(
     {
+      limit:10,
+      page,
       shop_id: shopId,
       slug: shopSlug,
       orderBy,
@@ -138,6 +140,7 @@ export default function AttributePage() {
       </Card>
       <AttributeList
         attributes={attributes}
+        paginatorInfo={paginatorInfo}
         onPagination={handlePagination}
         onOrder={setOrder}
         onSort={setColumn}
