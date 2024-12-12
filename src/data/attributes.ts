@@ -9,6 +9,7 @@ import { attributeClient } from '@/data/client/attribute';
 import { Config } from '@/config';
 import { Company, SUPER_ADMIN } from '@/utils/constants';
 import { getAuthCredentials } from '@/utils/auth-utils';
+import { mapPaginatorData } from '@/utils/data-mappers';
 
 export const useCreateAttributeMutation = () => {
   const router = useRouter();
@@ -94,6 +95,7 @@ export const useAttributesQuery = (
   console.log('DATA+++++++', params, data);
   return {
     attributes: data ?? [],
+    paginatorInfo: mapPaginatorData(data),
     error,
     loading: isLoading,
   };

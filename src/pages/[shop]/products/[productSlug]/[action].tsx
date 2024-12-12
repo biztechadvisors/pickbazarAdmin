@@ -27,20 +27,13 @@ export default function UpdateProductPage() {
   const { data: shopData } = useShopQuery({
     slug: query?.shop as string,
   });
-  
+  const { productSlug, productId } = router.query;
+
+  // console.log('Product Slug:', productSlug);
+  console.log('Product ID:', query);
   // const shop_id = shopData?.id ? Number(shopData.id) : undefined; 
   const shop_id = shopData?.id!;
-  const { products, loading: productsLoading } = useProductsQuery({
-    shop_id,
-    slug: query.productSlug as string, // Ensure filtering by slug
-  });
-  
-  // Extract productId if available
-  const productId = products?.find(
-    (product) => product.slug === query.productSlug
-  )?.id; 
- 
- 
+   
   const {
     product,
     isLoading: loading,

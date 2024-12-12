@@ -19,11 +19,11 @@ export function crudFactory<Type, QueryParams extends LanguageParam, InputType>(
       return HttpClient.get<Type>(`${endpoint}/${slug}`, { language,shopId } ) ;
     },
     create(data: InputType) {
-      console.log('asgg', data);
+       
       return HttpClient.post<Type>(endpoint, data);
     },
     update({ id, ...input }: Partial<InputType> & { id: string }) {
-      console.log('ididdii = ', id, input);
+       
       return HttpClient.put<Type>(`${endpoint}/${id}`, input);
     },
     delete({ id }: { id: string }) {

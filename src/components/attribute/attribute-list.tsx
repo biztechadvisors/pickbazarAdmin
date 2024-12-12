@@ -1,22 +1,32 @@
 import { useState } from 'react';
 import { Table } from '@/components/ui/table';
-import { Attribute, Shop, SortOrder } from '@/types';
+import { Attribute, MappedPaginatorInfo, Shop, SortOrder } from '@/types';
 import { useRouter } from 'next/router';
 import { useTranslation } from 'next-i18next';
 import TitleWithSort from '@/components/ui/title-with-sort';
 import { Routes } from '@/config/routes';
 import LanguageSwitcher from '@/components/ui/lang-action/action';
 import { AllPermission } from '@/utils/AllPermission';
+import Pagination from '@/components/ui/pagination';
 
 export type IProps = {
   attributes: Attribute[] | undefined;
+   paginatorInfo: MappedPaginatorInfo | null;
+   onPagination: (key: number) => void;
   onSort: (current: any) => void;
   onOrder: (current: string) => void;
 };
 
-const AttributeList = ({ attributes, onSort, onOrder }: IProps) => {
+const AttributeList = ({ 
+  attributes,
+  paginatorInfo,
+  onPagination,
+  onSort,
+  onOrder }: IProps) => {
   const { t } = useTranslation();
   const router = useRouter();
+  const rowExpandable = (record: any) => record.children?.length;
+  // const { alignLeft, alignRight } = useIsRTL();
 
   const alignLeft =
     router.locale === 'ar' || router.locale === 'he' ? 'right' : 'left';
@@ -33,10 +43,6 @@ const AttributeList = ({ attributes, onSort, onOrder }: IProps) => {
 
   const permissionTypes = AllPermission();
 
-  console.log(
-    'permissionTypes===============================',
-    permissionTypes
-  );
   const canWrite = permissionTypes.includes('sidebar-nav-item-attributes');
 
   const onHeaderClick = (column: string | null) => ({
@@ -132,6 +138,7 @@ const AttributeList = ({ attributes, onSort, onOrder }: IProps) => {
   }
 
   return (
+    <>
     <div className="mb-8 overflow-hidden rounded shadow">
       <Table
         // @ts-ignore
@@ -140,8 +147,23 @@ const AttributeList = ({ attributes, onSort, onOrder }: IProps) => {
         data={attributes}
         rowKey="id"
         scroll={{ x: 380 }}
-      />
+          expandable={{
+            expandedRowRender: () => ' ',
+            rowExpandable: rowExpandable,
+          }}
+      />  
     </div>
+       {!!paginatorInfo?.total && (
+        <div className="flex items-center justify-end">
+          <Pagination
+            total={paginatorInfo.total}
+            current={paginatorInfo.currentPage}
+            pageSize={paginatorInfo.perPage}
+            onChange={onPagination}
+          />
+        </div>
+      )}
+      </>
   );
 };
 

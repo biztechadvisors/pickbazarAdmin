@@ -114,7 +114,7 @@ export default function Dashboard() {
     language: locale,
     shop_id: meData?.managed_shop?.id,
   });
-  console.log('first+++++++++++', popularProductData);
+  
   if (analyticsLoading || orderLoading || popularProductLoading) {
     return <Loader text={t('common:text-loading')} />;
   }
@@ -208,12 +208,12 @@ export default function Dashboard() {
         </div>
       ) : null}
 
-      <div className="mb-6 w-full flex-wrap space-y-6 xl:flex-nowrap xl:space-y-0 xl:space-x-5">
+      {/* <div className="mb-6 w-full flex-wrap space-y-6 xl:flex-nowrap xl:space-y-0 xl:space-x-5">
         <PopularProductList
           products={popularProductData}
           title={t('table:popular-products-table-title')}
         />
-      </div>
+      </div> */}
     </>
   );
 }
