@@ -19,17 +19,19 @@ export function formatEventOptions(data: EventOptions[]) {
     customer: {},
   };
 
-  for (const singleData of data) {
-    const value = singleData?.value;
-    const search = value?.match(/admin|vendor|customer/);
+  if (data){
+    for (const singleData of data) {
+      const value = singleData?.value;
+      const search = value?.match(/admin|vendor|customer/);
 
-    if (search) {
-      const replaceValue = `^${search[0]}-`;
-      const regex = new RegExp(replaceValue, 'g');
-      formattedOptions[search[0] as EventOptionsType] = {
-        ...formattedOptions[search[0] as EventOptionsType],
-        [value.replace(regex, '')]: true,
-      };
+      if (search) {
+        const replaceValue = `^${search[0]}-`;
+        const regex = new RegExp(replaceValue, 'g');
+        formattedOptions[search[0] as EventOptionsType] = {
+          ...formattedOptions[search[0] as EventOptionsType],
+          [value.replace(regex, '')]: true,
+        };
+      }
     }
   }
 

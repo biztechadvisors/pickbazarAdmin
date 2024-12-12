@@ -241,12 +241,12 @@ const CouponList = ({
         />
       </div>
 
-      {!!paginatorInfo?.total && (
+      {!!paginatorInfo?.pagination.totalItems && (
         <div className="flex items-center justify-end">
           <Pagination
-            total={paginatorInfo.total}
-            current={paginatorInfo.currentPage}
-            pageSize={paginatorInfo.perPage}
+            total={paginatorInfo.pagination.totalItems}
+            current={Number(paginatorInfo.pagination.currentPage)}
+            pageSize={Number(paginatorInfo.pagination.pageSize)  || 10}
             onChange={onPagination}
           />
         </div>

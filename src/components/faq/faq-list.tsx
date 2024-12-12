@@ -18,7 +18,7 @@ export type IProps = {
   onPagination: (key: number) => void;
   onSort: (current: any) => void;
   onOrder: (current: string) => void;
-  qnaPaginatorInfo: MappedPaginatorInfo | null;
+  paginatorInfo: (key : number) => void;
 };
 
 const FaqList = ({
@@ -26,7 +26,7 @@ const FaqList = ({
   onPagination,
   onSort,
   onOrder,
-  qnaPaginatorInfo,
+                   paginatorInfo,
 }: IProps) => {
   const { t } = useTranslation();
   const rowExpandable = (record: any) => record.children?.length;
@@ -121,7 +121,6 @@ const FaqList = ({
     },
   ];
 
-  console.log('qnaPaginatorInfo = ', qnaPaginatorInfo);
 
   return (
     <>
@@ -139,13 +138,12 @@ const FaqList = ({
           }}
         />
       </div>
-
-      {!!qnaPaginatorInfo?.total && (
+      {!!paginatorInfo?.total && (
         <div className="flex items-center justify-end">
           <Pagination
-            total={qnaPaginatorInfo?.total}
-            current={qnaPaginatorInfo?.currentPage}
-            pageSize={qnaPaginatorInfo?.page}
+            total={paginatorInfo?.total}
+            current={paginatorInfo?.currentPage}
+            pageSize={paginatorInfo.perPage || 10}
             onChange={onPagination}
           />
         </div>
