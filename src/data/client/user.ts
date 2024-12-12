@@ -67,8 +67,15 @@ export const userClient = {
   logout: () => {
     return HttpClient.post<any>(API_ENDPOINTS.LOGOUT, {});
   },
-  register: (variables: RegisterInput) => {
-    return HttpClient.post<AuthResponse>(API_ENDPOINTS.REGISTER, variables);
+  // register: (variables: RegisterInput) => {
+  //   return HttpClient.post<AuthResponse>(API_ENDPOINTS.REGISTER, variables);
+  // },
+  register:(variables: RegisterInput & { shopSlug: string }) => {
+    const { shopSlug, ...restVariables } = variables;
+    return HttpClient.post<AuthResponse>(
+      `${API_ENDPOINTS.REGISTER}?shopSlug=${shopSlug}`,
+      restVariables
+    );
   },
   update: ({ id, input }: { id: string; input: UpdateUser }) => {
     return HttpClient.put<User>(`${API_ENDPOINTS.USERS}/${id}`, input);

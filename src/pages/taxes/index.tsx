@@ -26,10 +26,11 @@ export default function TaxesPage() {
   const { data: meData } = useMeQuery()
   const shop_id = meData?.shop_id
   const { taxes, loading, error } = useTaxesQuery({
-    name: searchTerm,
+    // name: searchTerm,
     orderBy,
     sortedBy,
-    shop_id
+    shop_id,
+    search:searchTerm,
   });
 
 
@@ -56,7 +57,7 @@ export default function TaxesPage() {
         </div>
 
         <div className="flex w-full flex-col items-center space-y-4 ms-auto md:flex-row md:space-y-0 xl:w-1/2">
-          <Search onSearch={handleSearch} />
+          {/* <Search onSearch={handleSearch} /> */}
           {canWrite ? (
             <LinkButton
               href={`${Routes.tax.create}`}

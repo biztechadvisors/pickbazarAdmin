@@ -57,7 +57,7 @@ export default function SubCategories() {
     search:searchTerm,
   });
 
-  console.log("subcategories",subcategories)
+  console.log("subcategories========",subcategories)
 
   if (loading) return <Loader text={t('common:text-loading')} />;
   if (error) return <ErrorMessage message={error.message} />;

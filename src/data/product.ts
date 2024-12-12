@@ -112,17 +112,17 @@ export const useDeleteProductMutation = () => {
 
 export const useProductQuery = ({
   slug,
-  userId,
+  id,
   language,
   shop_id,
 }: GetParams) => {
   const { data, error, isLoading } = useQuery<Product, Error>(
-    [API_ENDPOINTS.PRODUCTS, { slug, userId, language, shop_id }],
-    () => productClient.get({ slug, userId, language, shop_id })
+    [API_ENDPOINTS.PRODUCTS, { slug, id, language, shop_id }],
+    () => productClient.get({ slug, id, language, shop_id })
   );
-
+   
   return {
-    product: data,
+    product: data ?? [],
     error,
     isLoading,
   };
@@ -141,7 +141,7 @@ export const useProductsQuery = (
       ...options,
     }
   );
-
+ 
   return {
     products: data?.data ?? [],
     paginatorInfo: mapPaginatorData(data),

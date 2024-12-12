@@ -1526,9 +1526,9 @@
 //   const { t } = useTranslation();
 //   const { locale } = useRouter();
 
-//   const { settings: { options } } = useSettingsQuery({
-//     language: locale!,
-//   });
+  // const { settings: { options } } = useSettingsQuery({
+  //   language: locale!,
+  // });
 
 //   const { attributes, loading } = useAttributesQuery({
 //     shop_id: initialValues ? initialValues.shop_id : shopId,

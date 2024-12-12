@@ -3,6 +3,8 @@ import { useMutation, useQuery } from 'react-query';
 import { API_ENDPOINTS } from './client/api-endpoints';
 import { toast } from 'react-toastify';
 import { permissionClient } from './client/permission';
+import { Routes } from '@/config/routes';
+import { useRouter } from 'next/router';
 
 export const usePermissionData = (userId: string) => {
 
@@ -19,8 +21,10 @@ export const usePermissionData = (userId: string) => {
 };
 
 export const useSavePermissionData = () => {
+  const router = useRouter();
   const mutation = useMutation(permissionClient.updatePermission, {
     onSuccess: () => {
+      router.push('/permission'); 
       toast.success('Permission updated successfully');
     },
     onError: () => {
@@ -30,7 +34,9 @@ export const useSavePermissionData = () => {
 
   const mutationPost = useMutation(permissionClient.postPermission, {
     onSuccess: () => {
-      toast.success('Permission saved successfully');
+      router.push('/permission').then(() => {
+        toast.success('Permission saved successfully'); // Show success toast after navigation
+      });
     },
     onError: () => {
       toast.error('Failed to save permission');

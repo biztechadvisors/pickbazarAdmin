@@ -12,7 +12,7 @@ export default function UpdateQnaPage() {
   const { t } = useTranslation();
   const { query } = useRouter();
   const {
-    data,
+    data:qnaData,
     isLoading: loading,
     error,
   } = useQnaSingleDataQuery(query.id as string); // Fetch QnA data
@@ -24,10 +24,13 @@ export default function UpdateQnaPage() {
     <>
       <div className="flex border-b border-dashed border-border-base py-5 sm:py-8">
         <h1 className="text-lg font-semibold text-heading">
-          Update QnA #{data?.id}
+          Update QnA #{qnaData?.id}
         </h1>
       </div>
-      <CreateOrUpdateQnaForm initialValues={data} />{' '}
+      <CreateOrUpdateQnaForm  
+      qnaId={qnaData?.id}
+        faqId={qnaData?.faqId}
+        initialValues={qnaData} />{' '}
       {/* Pass QnA data to form */}
     </>
   );

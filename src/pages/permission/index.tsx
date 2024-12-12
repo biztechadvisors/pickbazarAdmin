@@ -56,7 +56,7 @@ const PermissionComponent: React.FC & PermissionComponentProps = () => {
         </div>
 
         <div className="flex w-full flex-col items-center gap-x-5 ms-auto md:w-1/2 md:flex-row">
-          <Search onSearch={handleSearch} />
+          {/* <Search onSearch={handleSearch} /> */}
           {canWrite ? (
             <LinkButton href="/permission/create">Create Permission</LinkButton>
           ) : (

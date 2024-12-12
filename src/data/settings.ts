@@ -74,3 +74,38 @@ export const useSettingsQuery = ({ language }: { language: string }) => {
 
   };
 };
+
+// export const useSettingsQuery = ({ language }: { language: string }) => {
+//   const [shopSlug, setShopSlug] = useState<string | null>(null);
+
+//   useEffect(() => {
+//     if (typeof window !== 'undefined') {
+//       const slug = localStorage.getItem('shopSlug');
+//       console.log("shopSlug from localStorage:", slug);
+//       setShopSlug(slug);
+//     }
+//   }, []);
+
+//   const { data, error, isLoading } = useQuery<Settings>(
+//     ['settings', { language, shopSlug }],
+//     async () => {
+//       const result = await settingsClient.all({ language, shopSlug });
+//       console.log("API Response:", result);
+//       return result;
+//     },
+//     {
+//       enabled: !!shopSlug,
+//       initialData: undefined,
+//     }
+//   );
+
+//   console.log("useQuery output: ", { data, error, isLoading });
+
+//   return {
+//     settings: data ?? { options: [] }, // Fallback to avoid undefined errors
+//     error,
+//     loading: isLoading,
+//     shopSlug,
+//   };
+// };
+

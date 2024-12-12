@@ -18,9 +18,7 @@ export const qnaClient = {
   createQna: (data: QnaInput) => {
     const faqId = data; // Safe access to faqId
 
-    // Log it to verify
-    console.log('Fetched faqId:', faqId);
-    console.log('Ashishashish', data.faqId);
+    // Log it to verify 
     const endpoint = `${API_ENDPOINTS.FAQ}/${data.faqId}/qna`; // Construct the endpoint with faqId
     console.log('Sending QnA data:', data);
     return HttpClient.post<Qna>(endpoint, data); // Send the POST request

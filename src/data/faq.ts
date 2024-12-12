@@ -50,22 +50,44 @@ export const useFaqQuery = (
     loading: isLoading,
   };
 };
-
 export const useUpdateFaqClassMutation = (shop_id) => {
   console.log('shop_id =', shop_id)
   const { t } = useTranslation();
   const queryClient = useQueryClient();
   const router = useRouter();
-  return useMutation((data) => faqClient.update({ ...data , shop_id }), {
-    onSuccess: () => {
-      router.push(Routes.faq.list);
-      toast.success(t('common:successfully-updated'));
+
+  return useMutation(
+    (data) => {
+      // Combine the shop_id and data to ensure it's correctly passed to the update method
+      console.log('Update data:', { ...data, shop_id }); // Check the data being passed
+      return faqClient.update({ ...data, shop_id }); // Make sure the shop_id is being passed correctly
     },
-    onSettled: () => {
-      queryClient.invalidateQueries(API_ENDPOINTS.FAQ);
-    },
-  });
+    {
+      onSuccess: () => {
+        router.push(Routes.faq.list);
+        toast.success(t('common:successfully-updated'));
+      },
+      onSettled: () => {
+        queryClient.invalidateQueries(API_ENDPOINTS.FAQ);
+      },
+    }
+  );
 };
+// export const useUpdateFaqClassMutation = (shop_id) => {
+//   console.log('shop_id =', shop_id)
+//   const { t } = useTranslation();
+//   const queryClient = useQueryClient();
+//   const router = useRouter();
+//   return useMutation((data) => faqClient.update({ ...data , shop_id }), {
+//     onSuccess: () => {
+//       router.push(Routes.faq.list);
+//       toast.success(t('common:successfully-updated'));
+//     },
+//     onSettled: () => {
+//       queryClient.invalidateQueries(API_ENDPOINTS.FAQ);
+//     },
+//   });
+// };
 
 export const useDeleteFaqClassMutation = () => {
   const queryClient = useQueryClient();

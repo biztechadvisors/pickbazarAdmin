@@ -617,6 +617,32 @@ export function filterAttributes(
 // }
 
 
+// export function getCartesianProduct(values: any) {
+//   console.log('values', values);
+
+//   const formattedValues = values
+//     ?.map((v: any) => {
+//       const { attributes } = v;
+
+//       // Ensure proper mapping of attributes to their names and values
+//       const nameArray = attributes?.map((e: any) => e?.attribute?.name) || [];
+//       const valueArray = attributes?.map((e: any) => e?.attribute?.values?.[0]?.value) || [];
+
+//       // Return formatted object for each attribute
+//       return nameArray.map((name: string, index: number) => ({
+//         name: name || null,
+//         value: [valueArray[index] || null].filter((val) => val !== null), // Ensure array values are non-null
+//       }));
+//     })
+//     .flat()
+//     .filter((i: any) => i?.name); // Filter out any invalid entries
+
+//   console.log('formattedValues', formattedValues);
+
+//   if (isEmpty(formattedValues)) return [];
+//   return formattedValues;
+// }
+
 export function getCartesianProduct(values: any) {
   console.log('values', values);
 
@@ -631,7 +657,7 @@ export function getCartesianProduct(values: any) {
       // Return formatted object for each attribute
       return nameArray.map((name: string, index: number) => ({
         name: name || null,
-        value: [valueArray[index] || null].filter((val) => val !== null), // Ensure array values are non-null
+        value: valueArray[index] || null, // Assign non-array value
       }));
     })
     .flat()
@@ -953,7 +979,7 @@ export function getProductInputValues(
       }),
     }),
 
-    variations: [],
+    variations,
 
     variation_options: {
       upsert: [],
@@ -965,9 +991,12 @@ export function getProductInputValues(
     ...(product_type?.value === ProductType?.Variable && {
       quantity: calculateQuantity(variation_options),
 
-      variations: variations?.flatMap(({ value }: any) =>
-        value?.map(({ id }: any) => ({ attribute_value_id: id }))
+      variations: variations?.flatMap(({ attributes }: any) =>
+        attributes.flatMap(({ value }: any) =>
+          value?.map(({ id }: any) => ({ attribute_value_id: id }))
+        )
       ),
+      
 
       // variation_options: {
       //   // @ts-ignore

@@ -52,15 +52,36 @@ export const useGetInspiredQuery = (
     loading: isLoading,
   };
 };
+// export const useGetInspiredQuery = (
+//   params: Partial<GetInspiredQueryOptions>, 
+//   options: any = {}
+// ) => {
+//   const { data, error, isLoading } = useQuery<GetInspiredPaginator, Error>(
+//     [API_ENDPOINTS.GET_INSPIRED, params],
+//     ({ queryKey }) =>
+//       getInspiredClient.paginated(queryKey[1]), // Pass params to the client
+//     {
+//       keepPreviousData: true,
+//       ...options,
+//     }
+//   );
+//   return {
+//     getInspired: data?.data || [], // Access data correctly
+//     paginatorInfo: mapPaginatorData(data?.paginatorInfo),
+//     error,
+//     loading: isLoading,
+//   };
+// };
 
 // Update GetInspired Entry
 export const useUpdateGetInspiredMutation = (shop_id) => {
   const { t } = useTranslation();
   const queryClient = useQueryClient();
-
+  const router = useRouter();
   return useMutation((data) => getInspiredClient.update({ ...data, shop_id }), {
     // Changed to getInspiredClient
     onSuccess: () => {
+      router.push(Routes.getInspired.list);
       toast.success(t('common:successfully-updated'));
     },
     onSettled: () => {

@@ -45,6 +45,7 @@ export default function Categories() {
     // shop,
     limit: 20,
     type,
+    // shopId,
     // name: searchTerm,
     orderBy,
     sortedBy,
@@ -55,7 +56,7 @@ export default function Categories() {
     search:searchTerm,
   });
 
-console.log("first++++",type)
+  console.log("first++++",type)
   const permissionTypes = AllPermission();
 
   const canWrite = permissionTypes.includes('sidebar-nav-item-categories');

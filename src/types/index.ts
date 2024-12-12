@@ -177,6 +177,8 @@ export interface GetParams {
   language: string;
   categoryId?: number;
   shopId?: number;
+  shop_id?:number;
+  id?:number;
 }
 
 export interface QueryOptions {
@@ -617,7 +619,11 @@ export interface Qna {
   updatedAt: Date;
   faqId: number;
 }
-
+export type QnaFormValues = {
+  question?: string;
+  answer?: string;
+  type?: string; // Adjust according to `QnAType` enum
+}; 
 export interface CouponInput {
   code: string;
   type: CouponType;
@@ -1270,7 +1276,8 @@ export type SeoSettings = {
 export interface Settings {
   id: string;
   language: string;
-  options: SettingsOptions;
+  // options: SettingsOptions;
+  options: any;
 }
 
 export interface SettingsInput {
@@ -1642,6 +1649,7 @@ export interface UserProfileInput {
 export interface CategoryQueryOptions extends QueryOptions {
   type: string;
   name: string;
+  shopId?: number;
   region_name?: string; 
   parent: number | null; 
   shop: string | null;
@@ -1723,6 +1731,7 @@ export interface TypeQueryOptions extends QueryOptions {
 }
 
 export interface ProductQueryOptions extends QueryOptions {
+  id?:number;
   type: string;
   name: string;
   slug: string;
@@ -1807,6 +1816,7 @@ export interface RegionsQueryOptions extends QueryOptions {
   shop_id: string[];
   shopSlug?: string;
   code?: string;
+  search:string;
 }
 
 import { SortOrder } from '@/types'; // Ensure SortOrder is imported from the correct path
