@@ -63,7 +63,7 @@ export default function AttributePage() {
       enabled: Boolean(shopId),
     }
   );
-
+console.log("Attribute",attributes)
   const permissionTypes = AllPermission();
 
   const canWrite = permissionTypes.includes('sidebar-nav-item-attributes');
@@ -90,9 +90,9 @@ export default function AttributePage() {
     setPage(1);
   }
 
-  const filteredAttributes = attributes.filter((attribute) =>
-    attribute.name.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  // const filteredAttributes = attributes.filter((attribute) =>
+  //   attribute.name.toLowerCase().includes(searchTerm.toLowerCase())
+  // );
 
   function handlePagination(current: any) {
     setPage(current);

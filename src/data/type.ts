@@ -7,6 +7,7 @@ import { API_ENDPOINTS } from './client/api-endpoints';
 import { GetParams, Type, TypeQueryOptions } from '@/types';
 import { typeClient } from '@/data/client/type';
 import { Config } from '@/config';
+import { mapPaginatorData } from '@/utils/data-mappers';
 
 export const getShopSlug = () => {
   if (typeof window !== 'undefined') {
@@ -81,8 +82,10 @@ export const useTypesQuery = (options?: Partial<TypeQueryOptions>) => {
   );
  
   return {
-    types: data ?? [],
+    // types: data ?? [],
+    types: data || [],
     loading: isLoading,
+    paginatorInfo: mapPaginatorData(data),
     error,
   };
 };

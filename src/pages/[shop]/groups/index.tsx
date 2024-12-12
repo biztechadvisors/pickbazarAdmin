@@ -36,6 +36,7 @@ export default function TypesPage() {
   const [sortedBy, setColumn] = useState<SortOrder>(SortOrder.Desc);
   const [searchTerm, setSearchTerm] = useState('');
   const { data: meData } = useMeQuery();
+  const [page, setPage] = useState(1);
 
   const {
     query: { shops },
@@ -50,7 +51,7 @@ export default function TypesPage() {
 
   const shop: string | undefined = meData?.managed_shop?.id;
   const shopSlug: string | undefined = meData?.managed_shop?.slug;
-  const { types, loading, error } = useTypesQuery({
+  const { types, paginatorInfo, loading, error } = useTypesQuery({
     // name: searchTerm,
     language: locale,
     orderBy,
@@ -58,7 +59,10 @@ export default function TypesPage() {
     shop,
     slug: shop_Slug,
     search:searchTerm,
+    page,
+    limit:10,
   });
+ 
   const { permissions } = getAuthCredentials();
   const permissionTypes = AllPermission();
 
@@ -69,6 +73,9 @@ export default function TypesPage() {
 
   function handleSearch({ searchText }: { searchText: string }) {
     setSearchTerm(searchText);
+  }
+  function handlePagination(current: any) {
+    setPage(current);
   }
 
   if (
@@ -119,7 +126,12 @@ export default function TypesPage() {
           )}
         </div>
       </Card>
-      <TypeList types={types} onOrder={setOrder} onSort={setColumn} />
+      <TypeList 
+       paginatorInfo={paginatorInfo}
+       onPagination={handlePagination}
+      types={types}  
+      onOrder={setOrder} 
+      onSort={setColumn} />
     </>
   );
 }

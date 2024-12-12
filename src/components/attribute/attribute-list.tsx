@@ -144,7 +144,7 @@ const AttributeList = ({
         // @ts-ignore
         columns={columns}
         emptyText={t('table:empty-table-data')}
-        data={attributes}
+        data={attributes?.items || []}
         rowKey="id"
         scroll={{ x: 380 }}
           expandable={{
@@ -158,7 +158,7 @@ const AttributeList = ({
           <Pagination
             total={paginatorInfo.total}
             current={paginatorInfo.currentPage}
-            pageSize={paginatorInfo.perPage}
+            // pageSize={paginatorInfo.perPage}
             onChange={onPagination}
           />
         </div>

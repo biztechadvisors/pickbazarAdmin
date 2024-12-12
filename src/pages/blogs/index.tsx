@@ -57,9 +57,9 @@ const Blogs = () => {
             </h1>
           </div>
           <div className="flex w-full flex-col items-center space-y-4 ms-auto md:flex-row md:space-y-0 xl:w-3/4">
-            <Search onSearch={handleSearch} />
-
-            <TypeFilter className="md:ms-6" />
+            {/* <Search onSearch={handleSearch} /> */}
+ 
+            {/* <TypeFilter className="md:ms-6" /> */}
 
             <LinkButton
               href={`${Routes.blog.create}`}
