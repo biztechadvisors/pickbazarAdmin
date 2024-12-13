@@ -148,7 +148,7 @@ function SelectRegion({
         control={control}
         getOptionLabel={(option: any) => option.name}
         getOptionValue={(option: any) => option.id}
-        options={regions || []}
+        options={regions?.items || []}
         isLoading={!regions} // Show loading state if regions data is not yet loaded
       />
     <ValidationError message={t(errors.type?.message)} />

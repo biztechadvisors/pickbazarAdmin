@@ -6,6 +6,7 @@ import { API_ENDPOINTS } from './client/api-endpoints';
 import { Router, useRouter } from 'next/router';
 import { Routes } from '@/config/routes';
 import { Config } from '@/config';
+import { mapPaginatorData } from '@/utils/data-mappers';
 
 export const useCreateBlogMutation = () => { 
   const queryClient = useQueryClient();
@@ -67,33 +68,64 @@ export const useBlogQuery = ({ slug, language }: any) => {
     blogClient.get({ slug, language })
   );
 };
-export const useBlogsQuery = (params: { shopSlug: string; search?: string; language?: string; orderBy?: string; sortedBy?: string; page?: number }) => {
-  return useQuery([API_ENDPOINTS.BLOG, params], () =>
-    blogClient.get({
-      slug: params.shopSlug,
-      search: params.search, // Send search term to the API
-      language: params.language,
-      // shop_id: params.shopSlug,
-    })
+export const useBlogsQuery = (
+  params: {
+    shopSlug: string;
+    search?: string;
+    language?: string;
+    orderBy?: string;
+    sortedBy?: string;
+    page?: number;
+  },
+  options: any = {}
+) => {
+  const { data, error, isLoading } = useQuery<any, Error>(
+    [API_ENDPOINTS.BLOG, params],
+    ({ queryKey, pageParam }) => {
+      const { shopSlug, search, language, orderBy, sortedBy, page } = queryKey[1];
+
+      // Log params to verify shopSlug is available
+      console.log('shopSlug being sent:', shopSlug);
+
+      return blogClient.get({
+        slug: shopSlug,   
+        search,
+        language,
+        orderBy,
+        sortedBy,
+        page,
+        ...pageParam,  
+      });
+    },
+    {
+      keepPreviousData: true, // Preserve previous data while fetching new data
+      ...options,
+    }
   );
+
+  return {
+    blogs: data?.data ?? [], // Adjust according to your API response structure
+    paginatorInfo: mapPaginatorData(data), // Map pagination info
+    error,
+    loading: isLoading,
+  };
 };
-// export const useBlogsQuery = (params: any) => {
-//   return useQuery(
-//     [API_ENDPOINTS.BLOG, params],
-//     () => blogClient.getAll(params),
-//     {
-//       onSuccess: (data) => {
-//         // Handle successful data fetching (e.g., log data, set additional state)
-//         console.log('Blogs fetched successfully:', data);
-//       },
-//       onError: (error) => {
-//         // Handle errors (e.g., show an error message)
-//         console.error('Error fetching blogs:', error);
-//       },
-//     }
+
+
+// export const useBlogsQuery = (params: { shopSlug: string; search?: string; language?: string; orderBy?: string; sortedBy?: string; page?: number }) => {
+//   return useQuery([API_ENDPOINTS.BLOG, params], () =>
+//     blogClient.get({
+//       slug: params.shopSlug,
+//       search: params.search, // Send search term to the API
+//       language: params.language,
+//       orderBy: params.orderBy,
+//       sortedBy: params.sortedBy,
+//       page: params.page,
+//       // shop_id: params.shopSlug,
+//     })
 //   );
 // };
-
+ 
 export const useDeleteBlogMutation = (params: any) => {
   const queryClient = useQueryClient();
   const { t } = useTranslation();

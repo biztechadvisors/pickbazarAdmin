@@ -56,7 +56,7 @@ export default function Categories() {
     search:searchTerm,
   });
 
-  console.log("first++++",type)
+ 
   const permissionTypes = AllPermission();
 
   const canWrite = permissionTypes.includes('sidebar-nav-item-categories');

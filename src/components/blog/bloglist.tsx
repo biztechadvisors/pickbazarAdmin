@@ -4,14 +4,14 @@ import { useIsRTL } from '@/utils/locals';
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import Table from 'rc-table';
-import Pagination from 'rc-pagination';
+import Pagination from '@/components/ui/pagination';
 import LanguageSwitcher from '../ui/lang-action/action';
 import { Routes } from '@/config/routes';
 import ActionButtons from '../common/action-buttons';
 import TitleWithSort from '../ui/title-with-sort';
 
 const BlogList = ({
-  Blogs,
+  blogs,
   paginatorInfo,
   onPagination,
   onSort,
@@ -20,7 +20,7 @@ const BlogList = ({
   const { t } = useTranslation();
   const rowExpandable = (record: any) => record.children?.length;
   const { alignLeft, alignRight } = useIsRTL();
-
+console.log("first",paginatorInfo)
   const permissionTypes = AllPermission();
 
   const canWrite = permissionTypes.includes('sidebar-nav-item-categories');
@@ -110,7 +110,7 @@ const BlogList = ({
           //@ts-ignore
           columns={columns}
           emptyText={t('table:empty-table-data')}
-          data={Blogs}
+          data={blogs}
           rowKey="id"
           scroll={{ x: 1000 }}
           expandable={{

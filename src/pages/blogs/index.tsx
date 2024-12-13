@@ -26,19 +26,15 @@ const Blogs = () => {
   const shop: string | undefined = meData?.managed_shop?.id;
   const shopSlug = meData?.managed_shop?.slug;
 
-  const {
-    data: Blogs,
-    isLoading,
-    error,
-  } = useBlogsQuery({
+  const { blogs, paginatorInfo, error, loading } = useBlogsQuery({
     shopSlug,
     orderBy,
     sortedBy,
     language: locale,
     search: searchTerm,
     page,
-  });
-
+    limit:10,
+  }); 
   function handleSearch({ searchText }: { searchText: string }) {
     setSearchTerm(searchText);
     setPage(1);
@@ -73,8 +69,10 @@ const Blogs = () => {
         </div>
       </Card>
       <BlogList
-        Blogs={Blogs?.data}
+        // Blogs={Blogs?.data}
+        blogs={blogs || []} 
         onPagination={handlePagination}
+        paginatorInfo={paginatorInfo} 
         onOrder={setOrder}
         onSort={setColumn}
       />

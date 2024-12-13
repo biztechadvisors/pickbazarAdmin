@@ -79,11 +79,10 @@ export const useTypesQuery = (options?: Partial<TypeQueryOptions>) => {
     {
       keepPreviousData: true,
     }
-  );
- 
+  ); 
   return {
-    // types: data ?? [],
-    types: data || [],
+    types: data ?? [],
+    // types: data || [],
     loading: isLoading,
     paginatorInfo: mapPaginatorData(data),
     error,

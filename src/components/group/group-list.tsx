@@ -32,7 +32,7 @@ const TypeList = ({ types,
   onOrder }: IProps) => {
   const { t } = useTranslation();
   const { alignLeft, alignRight } = useIsRTL();
-  console.log("DAta of types22",types);
+   
   // const [getPermission, _] = useAtom(newPermission);
   // const { permissions } = getAuthCredentials();
   // const canWrite = permissions.includes('super_admin')
