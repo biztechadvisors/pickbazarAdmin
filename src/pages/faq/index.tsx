@@ -2,7 +2,7 @@ import Card from '@/components/common/card';
 import Layout from '@/components/layouts/admin';
 import Search from '@/components/common/search';
 import LinkButton from '@/components/ui/link-button';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import ErrorMessage from '@/components/ui/error-message';
 import Loader from '@/components/ui/loader/loader';
 import { useTranslation } from 'next-i18next';
@@ -27,8 +27,17 @@ export default function Faq() {
   const [page, setPage] = useState(1);
   const { data: me } = useMeQuery();
 
+  const shopSlug = me?.managed_shop?.slug;
+
   const { faq, loading, paginatorInfo, error } = useFaqQuery({
+    shopSlug,
+    orderBy,
+    sortedBy,
+    language:locale,
     code: me?.managed_shop?.slug,
+    search:searchTerm,
+    page,
+    limit: 10,
   });
 
   const faqId = faq?.data?.[0]?.id;
@@ -39,8 +48,21 @@ export default function Faq() {
     error: qnaError,
     paginatorInfo: qnaPaginatorInfo, // Assuming you handle pagination here
   } = useQnaQuery({
+    orderBy,
+    sortedBy,
+    language:locale,
+    search:searchTerm,
+    page,
     faqId,
+    limit: 10,
   });
+
+  const totalPages = Math.ceil((paginatorInfo?.total || 0) / (paginatorInfo?.perPage || 1));
+  useEffect(() => {
+    if (page > totalPages) setPage(1);
+  }, [paginatorInfo?.total, paginatorInfo?.perPage, page]);
+
+  console.log("qnaPage", qna,qnaPaginatorInfo);
 
   const { permissions } = getAuthCredentials();
   const permissionTypes = AllPermission();

@@ -42,7 +42,7 @@ export default function CategoryTypeFilter({
           isLoading={loading}
           getOptionLabel={(option: any) => option.name}
           getOptionValue={(option: any) => option.slug}
-          placeholder={t('common:filter-by-group-placeholder')} 
+          placeholder={t('common:filter-by-group-placeholder')}
           onChange={onTypeFilter}
         />
       </div>

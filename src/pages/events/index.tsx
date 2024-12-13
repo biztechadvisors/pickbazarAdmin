@@ -13,7 +13,7 @@ import { SortOrder } from '@/types';
 import { adminOwnerAndStaffOnly } from '@/utils/auth-utils';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import { useRouter } from 'next/router';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 const Events = () => {
@@ -44,14 +44,20 @@ const Events = () => {
     ...(startDate && { startDate }),
   });
 
- 
+  const totalPages = Math.ceil((paginatorInfo?.total || 0) / (paginatorInfo?.limit || 1));
+  useEffect(() => {
+    if (page > totalPages) setPage(1);
+  }, [paginatorInfo?.total, paginatorInfo?.perPage, page]);
+
+  console.log("events fetched:", events);
+
   function handleRegionFilter(regionName: string) {
     setRegion(regionName);
     setPage(1);
   }
 
   function handleDateFilter(start: string | null) {
-    setStartDate(start);
+    setStartDate(start as string);
     // setEndDate(null);
     setPage(1);
   }

@@ -2,7 +2,7 @@ import Card from '@/components/common/card';
 import Layout from '@/components/layouts/admin';
 import Search from '@/components/common/search';
 import LinkButton from '@/components/ui/link-button';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import ErrorMessage from '@/components/ui/error-message';
 import Loader from '@/components/ui/loader/loader';
 import { useTranslation } from 'next-i18next';
@@ -32,6 +32,11 @@ export default function GetInspired() {
     limit: 10,  
     page: page,
   });
+
+  const totalPages = Math.ceil((paginatorInfo?.total || 0) / (paginatorInfo?.limit || 1));
+  useEffect(() => {
+    if (page > totalPages) setPage(1);
+  }, [paginatorInfo?.total, paginatorInfo?.perPage, page]);
   
   // Handle permission check
   const { permissions } = getAuthCredentials();

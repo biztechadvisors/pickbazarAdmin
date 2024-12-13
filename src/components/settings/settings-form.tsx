@@ -453,10 +453,10 @@ export default function SettingsForm({
     };
 
     try {
-      if (!settings || !settings.language.includes(router.locale!)) {
-        await createSettingsMutation({ shop_id, ...mutationParams });
+      if (!settings) {
+        createSettingsMutation({ shop_id, ...mutationParams });
       } else {
-        await updateSettingsMutation({ shop_id, ...mutationParams });
+        updateSettingsMutation({ shop_id, ...mutationParams });
       }
     } catch (error) {
       const serverErrors = getErrorMessage(error);
