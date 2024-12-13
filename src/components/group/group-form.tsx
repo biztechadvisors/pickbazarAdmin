@@ -135,8 +135,8 @@ function SelectRegion({
    
   const { regions, loading, paginatorInfo, error } = useRegionsQuery({
     code: meData?.managed_shop?.slug,
-  });
- 
+  }); 
+  console.log("REGION###",regions)
   if (error) {
     console.error("Error fetching regions:", error);
   }

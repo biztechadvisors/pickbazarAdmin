@@ -31,9 +31,9 @@ export default function UpdateProductPage() {
 
   // console.log('Product Slug:', productSlug);
   console.log('Product ID:', query);
-  // const shop_id = shopData?.id ? Number(shopData.id) : undefined; 
+  // const shop_id = shopData?.id ? Number(shopData.id) : undefined;
   const shop_id = shopData?.id!;
-   
+
   const {
     product,
     isLoading: loading,
@@ -44,7 +44,7 @@ export default function UpdateProductPage() {
     id: productId,
     language:
       query.action!.toString() === 'edit' ? locale! : Config.defaultLanguage,
-  });  
+  });
 
   if (loading) return <Loader text={t('common:text-loading')} />;
   if (error) return <ErrorMessage message={error.message} />;
@@ -59,7 +59,7 @@ export default function UpdateProductPage() {
 
   return (
     <>
-      <div className="flex py-5 border-b border-dashed border-border-base sm:py-8">
+      <div className="flex border-b border-dashed border-border-base py-5 sm:py-8">
         <h1 className="text-lg font-semibold text-heading">
           {t('form:form-title-edit-product')}
         </h1>

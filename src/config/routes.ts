@@ -110,7 +110,7 @@ export const Routes = {
     ...routesFactory('/permission'),
   },
   product: {
-    ...routesFactory('/products'),
+    ...routesFactory(`/products`),
   },
   shop: {
     ...routesFactory('/shops'),

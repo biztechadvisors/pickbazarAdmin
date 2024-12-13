@@ -47,13 +47,12 @@ const ActionButtons = ({
   const { t } = useTranslation();
   const { openModal } = useModalAction();
 
-  // console.log(id ,' = ActionButtons')
-
   function handleDelete() {
     openModal(deleteModalView, id);
   }
 
   function handleEditModal() {
+    console.log("checking***for***product", id)
     openModal(editModalView, id);
   }
 

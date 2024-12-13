@@ -80,6 +80,8 @@ export const productClient = {
   ...crudFactory<Product, QueryOptions, CreateProduct>(API_ENDPOINTS.PRODUCTS),
 
   get({ slug, id, language, shop_id }: GetParams) {
+
+    console.log("slug___id", slug, id)
     return HttpClient.get<Product>(
       `${API_ENDPOINTS.PRODUCTS}/${slug}/${id}/${shop_id}`,
       {
