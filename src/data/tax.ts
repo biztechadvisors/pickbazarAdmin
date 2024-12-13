@@ -7,6 +7,7 @@ import { toast } from 'react-toastify';
 import { useTranslation } from 'next-i18next';
 import { TaxQueryOptions } from '@/types';
 import { taxClient } from './client/tax';
+import { mapPaginatorData } from '@/utils/data-mappers';
 
 export const useCreateTaxClassMutation = (shop_id) => {
   const queryClient = useQueryClient();
@@ -74,6 +75,7 @@ export const useTaxesQuery = (options: Partial<TaxQueryOptions> = {}) => {
   return {
     taxes: data ?? [],
     error,
+    paginatorInfo: mapPaginatorData(data),
     loading: isLoading,
   };
 };

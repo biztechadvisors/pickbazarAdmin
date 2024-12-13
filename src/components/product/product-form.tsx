@@ -508,7 +508,7 @@ export default function CreateOrUpdateProductForm({
               <div>
                 <Label>{t('form:input-label-hsn_no')}</Label>
                 <SelectInput
-                  options={taxes}
+                  options={taxes?.items || []}
                   placeholder={t('Select')}
                   getOptionLabel={(option: any) =>
                     `${option?.name}-${option?.hsn_no}`

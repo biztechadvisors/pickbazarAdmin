@@ -43,7 +43,7 @@ export default function Categories() {
 
   const { categories, paginatorInfo, loading, error } = useCategoriesQuery({  
     // shop,
-    limit: 20,
+    limit: 10,
     type,
     // shopId,
     // name: searchTerm,

@@ -24,13 +24,16 @@ export default function TaxesPage() {
   const [orderBy, setOrder] = useState('created_at');
   const [sortedBy, setColumn] = useState<SortOrder>(SortOrder.Desc);
   const { data: meData } = useMeQuery()
+  const [page, setPage] = useState(1);
   const shop_id = meData?.shop_id
-  const { taxes, loading, error } = useTaxesQuery({
+  const { taxes,paginatorInfo, loading, error } = useTaxesQuery({
     // name: searchTerm,
     orderBy,
     sortedBy,
     shop_id,
     search:searchTerm,
+    page,
+    limit:10,
   });
 
 
@@ -46,7 +49,9 @@ export default function TaxesPage() {
   function handleSearch({ searchText }: { searchText: string }) {
     setSearch(searchText);
   }
-
+  function handlePagination(current: number) {
+    setPage(current);
+  }
   return (
     <>
       <Card className="mb-8 flex flex-col items-center xl:flex-row">
@@ -69,7 +74,11 @@ export default function TaxesPage() {
         </div>
       </Card>
       {!loading ? (
-        <TaxList taxes={taxes} onOrder={setOrder} onSort={setColumn} />
+        <TaxList
+         taxes={taxes} 
+         paginatorInfo={paginatorInfo}
+        onPagination={handlePagination}
+         onOrder={setOrder} onSort={setColumn} />
       ) : null}
     </>
   );

@@ -98,8 +98,7 @@ console.log("Attribute",attributes)
     setPage(current);
   }
 
-  console.log('attributes------------------------------', attributes);
-
+  
   return (
     <>
       <Card className="mb-8 flex flex-col items-center justify-between md:flex-row">

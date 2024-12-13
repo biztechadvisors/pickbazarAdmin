@@ -53,8 +53,7 @@ export const useRegionsQuery = (
       keepPreviousData: true,
       ...options,
     }
-  );
-  console.log('region data = ',data)
+  ); 
   return {
     regions: data || [],
     paginatorInfo: mapPaginatorData(data),

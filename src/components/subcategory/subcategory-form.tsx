@@ -107,7 +107,7 @@ console.log("REgions===",regions);
         control={control}
         getOptionLabel={(option: any) => option.name}
         getOptionValue={(option: any) => option.id}
-        options={regions || []}
+        options={regions?.items || []}
         isLoading={!regions}  
       />
     <ValidationError message={t(errors.type?.message)} />

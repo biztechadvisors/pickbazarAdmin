@@ -28,8 +28,7 @@ const SubCategoryList = ({
   onPagination,
   onSort,
   onOrder,
-}: IProps) => {
-console.log("subcategories++++", subcategories);
+}: IProps) => { 
   const { t } = useTranslation();
   const rowExpandable = (record: any) => record.children?.length;
   const { alignLeft, alignRight } = useIsRTL();

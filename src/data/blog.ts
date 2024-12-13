@@ -83,8 +83,7 @@ export const useBlogsQuery = (
     [API_ENDPOINTS.BLOG, params],
     ({ queryKey, pageParam }) => {
       const { shopSlug, search, language, orderBy, sortedBy, page } = queryKey[1];
-
-      // Log params to verify shopSlug is available
+ 
       console.log('shopSlug being sent:', shopSlug);
 
       return blogClient.get({
@@ -98,14 +97,14 @@ export const useBlogsQuery = (
       });
     },
     {
-      keepPreviousData: true, // Preserve previous data while fetching new data
+      keepPreviousData: true,  
       ...options,
     }
   );
 
   return {
-    blogs: data?.data ?? [], // Adjust according to your API response structure
-    paginatorInfo: mapPaginatorData(data), // Map pagination info
+    blogs: data?.data ?? [],  
+    paginatorInfo: mapPaginatorData(data),  
     error,
     loading: isLoading,
   };

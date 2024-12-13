@@ -51,7 +51,7 @@ const handleDateChange = (date: Date | null) => {
 <div className="w-full">
   <Label>{t('common:Filter-by-region')}</Label>
   <Select
-    options={regions}
+    options={regions?.items || []}
     getOptionLabel={(option: any) => option.name}
     getOptionValue={(option: any) => option.name}
     placeholder={t('common:filter-by-region')}

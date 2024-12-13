@@ -60,9 +60,7 @@ export default function SubCategories() {
   useEffect(() => {
     if (page > totalPages) setPage(1);
   }, [paginatorInfo?.total, paginatorInfo?.perPage, page]);
-
-  console.log("subcategories========",subcategories)
-
+ 
   if (loading) return <Loader text={t('common:text-loading')} />;
   if (error) return <ErrorMessage message={error.message} />;
 

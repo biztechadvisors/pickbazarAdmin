@@ -20,7 +20,7 @@ const BlogList = ({
   const { t } = useTranslation();
   const rowExpandable = (record: any) => record.children?.length;
   const { alignLeft, alignRight } = useIsRTL();
-console.log("first",paginatorInfo)
+ 
   const permissionTypes = AllPermission();
 
   const canWrite = permissionTypes.includes('sidebar-nav-item-categories');
@@ -121,15 +121,15 @@ console.log("first",paginatorInfo)
       </div>
 
       {!!paginatorInfo?.total && (
-        <div className="flex items-center justify-end">
-          <Pagination
-            total={paginatorInfo.total}
-            current={paginatorInfo.currentPage}
-            pageSize={paginatorInfo.perPage}
-            onChange={onPagination}
-          />
-        </div>
-      )}
+      <div className="flex items-center justify-end">
+        <Pagination
+          total={paginatorInfo.total}
+          current={paginatorInfo.currentPage}
+          // pageSize={paginatorInfo.perPage}
+          onChange={onPagination}
+        />
+      </div>
+    )}
     </>
   );
 };
