@@ -127,9 +127,9 @@ export const useSubCategoriesQuery = (
   );
 
   return {
-    subcategories: data?.data ?? [],
-    paginatorInfo: mapPaginatorData(data),
-    error,
-    loading: isLoading,
+    subcategories: data?.data ?? [], 
+  paginatorInfo: mapPaginatorData(data),
+  error,
+  loading: isLoading,
   };
 };

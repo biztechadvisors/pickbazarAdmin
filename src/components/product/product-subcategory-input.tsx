@@ -29,14 +29,14 @@ const ProductSubCategoryInput = ({ control, setValue }: Props) => {
   }, [type?.slug]);
 
   // Extract the 'data' array from the response
-  const { subcategories: { data: subcategoryData = [] } = {}, loading } = useSubCategoriesQuery({
+  const { subcategories, loading } = useSubCategoriesQuery({
     limit: 999,
     type: type?.slug,
     language: locale,
     categoryId: null,
   });
 
-  console.log("@SUBCATEGORY+++", subcategoryData);
+  console.log("@SUBCATEGORY+++", subcategories);
 
   return (
     <div className="mb-5">
@@ -47,10 +47,10 @@ const ProductSubCategoryInput = ({ control, setValue }: Props) => {
         control={control}
         getOptionLabel={(option: any) => option.name}
         getOptionValue={(option: any) => option.id}
-        options={subcategoryData} // Use the extracted array here
+        options={subcategories}  
         isLoading={loading}
         defaultValue={[]}
-      />
+      /> 
     </div>
   );
 };

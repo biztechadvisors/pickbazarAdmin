@@ -546,7 +546,7 @@ export function filterAttributes(
     ) || [];
 
   // Filter attributes to exclude already selected in the current card
-  const res = attributes?.filter((el: any) => {
+  const res = attributes?.items?.filter((el: any) => {
     return !selectedAttributes.includes(el?.slug);
   });
 
