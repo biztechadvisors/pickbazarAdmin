@@ -11,7 +11,7 @@
   },
   "dependencies": {
     "@floating-ui/react-dom-interactions": "0.13.3",
-    "@headlessui/react": "1.7.13",
+    "@headlessui/react": "2.2.0",
     "@heroicons/react": "v1",
     "@hookform/resolvers": "2.9.11",
     "@reach/portal": "0.16.2",

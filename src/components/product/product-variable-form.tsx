@@ -1853,8 +1853,7 @@ export default function ProductVariableForm({
   }
 
   // Use `settings` from the query instead of the `initialSettings` prop here
-  console.log('settings from query:', settings);
-  console.log('initialSettings from props:', initialSettings);
+  
 
   const { attributes, loading } = useAttributesQuery({
     shop_id: initialValues ? initialValues.shop_id : shopId,
@@ -1867,8 +1866,7 @@ export default function ProductVariableForm({
     setValue,
     getValues,
     formState: { errors },
-  } = useFormContext();
-  console.log('CONTROLLER', control);
+  } = useFormContext(); 
   const { fields, append, remove } = useFieldArray({
     control,
     name: 'variations',
@@ -1876,9 +1874,9 @@ export default function ProductVariableForm({
 
   const variations = watch('variations');
 
-  console.log('variantions', variations);
+ 
   const cartesianProduct = getCartesianProduct(getValues('variations')) || {};
-  console.log('cartesianProduct', cartesianProduct);
+ 
 
   return (
     <>
@@ -1917,7 +1915,7 @@ export default function ProductVariableForm({
                   </div>
                   <div className="mt-5 rounded border border-gray-300 p-5">
                     <div className="grid gap-5">
-                      {attributes.map((attribute, attributeIndex) => (
+                      {attributes?.items?.map((attribute, attributeIndex) => (
                         <div
                           key={attribute.id}
                           className="flex flex-wrap items-center"
@@ -2109,7 +2107,7 @@ export default function ProductVariableForm({
                     e.preventDefault();
                     // Append with empty values to ensure new card has its own state
                     append({
-                      attributes: attributes.map(() => ({
+                      attributes: attributes?.items?.map(() => ({
                         attribute: '',
                         value: [],
                       })),
@@ -2154,8 +2152,7 @@ export const TitleAndOptionsInput = ({
         .join('/') // Join with a slash
         .replace(/,\s*/g, '/') // Replace any commas with slashes
     : cartesianProduct.value;
-
-  console.log('title', title);
+ 
   const options = Array.isArray(cartesianProduct)
     ? cartesianProduct.map((item) => ({
         attribute: item.name,
