@@ -22,8 +22,8 @@ import ProductTagInput from './product-tag-input';
 import { Config } from '@/config';
 import Alert from '@/components/ui/alert';
 import { useMemo, useState } from 'react';
-import ProductAuthorInput from './product-author-input';
-import ProductManufacturerInput from './product-manufacturer-input';
+// import ProductAuthorInput from './product-author-input';
+// import ProductManufacturerInput from './product-manufacturer-input';
 import { EditIcon } from '@/components/icons/edit';
 import {
   getProductDefaultValues,
@@ -43,6 +43,11 @@ import { useModalAction } from '@/components/ui/modal/modal.context';
 import { useCallback } from 'react';
 import OpenAIButton from '@/components/openAI/openAI.button';
 import { ItemProps } from '@/types';
+import ProductSubCategoryInput from './product-subcategory-input';
+import { useTaxesQuery } from '@/data/tax';
+import SelectInput from '../ui/select-input';
+import ValidationError from '../ui/form-validation-error';
+import { useMeQuery } from '@/data/user';
 
 export const chatbotAutoSuggestion = ({ name }: { name: string }) => {
   return [
@@ -98,12 +103,6 @@ export default function CreateOrUpdateProductForm({
 }: ProductFormProps) {
   const router = useRouter();
   const { locale } = router;
-  const {
-    // @ts-ignore
-    settings: { options },
-  } = useSettingsQuery({
-    language: locale!,
-  });
   const [isSlugDisable, setIsSlugDisable] = useState<boolean>(true);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const { t } = useTranslation();
@@ -129,6 +128,14 @@ export default function CreateOrUpdateProductForm({
       enabled: !!router.query.shop,
     }
   );
+
+  const {
+    // @ts-ignore
+    settings: { options },
+  } = useSettingsQuery({
+    language: locale!,
+  });
+
   const shopId = shopData?.id!;
   const isNewTranslation = router?.query?.action === 'translate';
   const isSlugEditable =
@@ -140,6 +147,13 @@ export default function CreateOrUpdateProductForm({
     // @ts-ignore
     defaultValues: getProductDefaultValues(initialValues!, isNewTranslation),
   });
+
+  const { data: meData } = useMeQuery();
+  const shop_id = meData?.shop_id;
+  const { taxes, loading, error } = useTaxesQuery({
+    shop_id,
+  });
+
   const {
     register,
     handleSubmit,
@@ -156,14 +170,16 @@ export default function CreateOrUpdateProductForm({
     useCreateProductMutation();
   const { mutate: updateProduct, isLoading: updating } =
     useUpdateProductMutation();
-
+  // console.log("product form data+++++++++++...............",createProduct, updateProduct, creating, updating);
   const onSubmit = async (values: ProductFormValues) => {
-    console.log('valuesProduct', values);
+    console.log('product create values json', values);
+    console.log("Original form values", values.variations);
+
     const inputValues = {
       language: router.locale,
       ...getProductInputValues(values, initialValues),
     };
-
+    console.log('form values', inputValues);
     try {
       if (
         !initialValues ||
@@ -194,8 +210,6 @@ export default function CreateOrUpdateProductForm({
     }
   };
   const product_type = watch('product_type');
-  const is_digital = watch('is_digital');
-  const is_external = watch('is_external');
   const { fields, append, remove } = useFieldArray({
     control,
     name: 'video',
@@ -326,11 +340,11 @@ export default function CreateOrUpdateProductForm({
 
             <Card className="w-full sm:w-8/12 md:w-2/3">
               <FileInput name="image" control={control} multiple={false} />
-              {/* {errors.image?.message && (
+              {errors.image?.message && (
                 <p className="my-2 text-xs text-red-500">
                   {t(errors?.image?.message!)}
                 </p>
-              )} */}
+              )}
             </Card>
           </div>
 
@@ -414,8 +428,9 @@ export default function CreateOrUpdateProductForm({
                 error={t((errors?.type as any)?.message)}
               />
               <ProductCategoryInput control={control} setValue={setValue} />
-              <ProductAuthorInput control={control} setValue={setValue} />
-              <ProductManufacturerInput control={control} setValue={setValue} />
+              <ProductSubCategoryInput control={control} setValue={setValue} />
+              {/* <ProductAuthorInput control={control} setValue={setValue} /> */}
+              {/* <ProductManufacturerInput control={control} setValue={setValue} /> */}
               <ProductTagInput control={control} setValue={setValue} />
             </Card>
           </div>
@@ -490,7 +505,21 @@ export default function CreateOrUpdateProductForm({
                   className="mb-5"
                 />
               </div>
-
+              <div>
+                <Label>{t('form:input-label-hsn_no')}</Label>
+                <SelectInput
+                  options={taxes?.items || []}
+                  placeholder={t('Select')}
+                  getOptionLabel={(option: any) =>
+                    `${option?.name}-${option?.hsn_no}`
+                  }
+                  getOptionValue={(option: any) => option}
+                  control={control}
+                  name={'taxes'}
+                  defaultValue={[]}
+                />
+                <ValidationError message={errors.address?.state?.message} />
+              </div>
               <div>
                 <Label>{t('form:input-label-status')}</Label>
                 {!isEmpty(statusList)

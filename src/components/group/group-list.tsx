@@ -1,5 +1,5 @@
 import { Table } from '@/components/ui/table';
-import { SortOrder, Type } from '@/types';
+import { MappedPaginatorInfo, SortOrder, Type } from '@/types';
 import { getIcon } from '@/utils/get-icon';
 import * as typeIcons from '@/components/icons/type';
 import { useTranslation } from 'next-i18next';
@@ -14,23 +14,36 @@ import { useAtom } from 'jotai';
 import { newPermission } from '@/contexts/permission/storepermission';
 import { getAuthCredentials } from '@/utils/auth-utils';
 import { siteSettings } from '@/settings/site.settings';
+import { AllPermission } from '@/utils/AllPermission';
+import Pagination from '@/components/ui/pagination';
 
 export type IProps = {
   types: Type[] | undefined;
+  paginatorInfo: MappedPaginatorInfo | null;
+  onPagination: (key: number) => void;
   onSort: (current: any) => void;
   onOrder: (current: string) => void;
 };
 
-const TypeList = ({ types, onSort, onOrder }: IProps) => {
+const TypeList = ({ types, 
+  paginatorInfo,
+  onPagination,
+  onSort,
+  onOrder }: IProps) => {
   const { t } = useTranslation();
   const { alignLeft, alignRight } = useIsRTL();
-  const [getPermission, _] = useAtom(newPermission);
-  const { permissions } = getAuthCredentials();
-  const canWrite = permissions.includes('super_admin')
-    ? siteSettings.sidebarLinks
-    : getPermission?.find(
-        (permission) => permission.type === 'sidebar-nav-item-groups'
-      )?.write;
+   
+  // const [getPermission, _] = useAtom(newPermission);
+  // const { permissions } = getAuthCredentials();
+  // const canWrite = permissions.includes('super_admin')
+  //   ? siteSettings.sidebarLinks
+  //   : getPermission?.find(
+  //       (permission) => permission.type === 'sidebar-nav-item-groups'
+  //     )?.write;
+  const rowExpandable = (record: any) => record.children?.length;
+  const permissionTypes = AllPermission(); 
+
+  const canWrite = permissionTypes.includes('sidebar-nav-item-groups');
 
   const [sortingObj, setSortingObj] = useState<{
     sort: SortOrder;
@@ -119,16 +132,33 @@ const TypeList = ({ types, onSort, onOrder }: IProps) => {
   ];
 
   return (
+    <>
     <div className="mb-8 overflow-hidden rounded shadow">
       <Table
         //@ts-ignore
         columns={columns}
         emptyText={t('table:empty-table-data')}
-        data={types}
+        // data={types}
+        data={types?.items || []} 
         rowKey="id"
         scroll={{ x: 380 }}
+        expandable={{
+          expandedRowRender: () => ' ',
+          rowExpandable: rowExpandable,
+        }}
       />
     </div>
+       {!!paginatorInfo?.total && (
+        <div className="flex items-center justify-end">
+          <Pagination
+            total={paginatorInfo.total}
+            current={paginatorInfo.currentPage}
+            // pageSize={paginatorInfo.perPage}
+            onChange={onPagination}
+          />
+        </div>
+      )}
+      </>
   );
 };
 

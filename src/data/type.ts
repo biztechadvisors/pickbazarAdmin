@@ -7,13 +7,21 @@ import { API_ENDPOINTS } from './client/api-endpoints';
 import { GetParams, Type, TypeQueryOptions } from '@/types';
 import { typeClient } from '@/data/client/type';
 import { Config } from '@/config';
+import { mapPaginatorData } from '@/utils/data-mappers';
+
+export const getShopSlug = () => {
+  if (typeof window !== 'undefined') {
+    return localStorage.getItem('shopSlug') || '';
+  }
+  return '';
+};
 
 export const useCreateTypeMutation = () => {
   const { t } = useTranslation();
   const queryClient = useQueryClient();
   return useMutation(typeClient.create, {
     onSuccess: () => {
-      Router.push(Routes.type.list, undefined, {
+      Router.push(`/${getShopSlug()}/${Routes.type.list}`, undefined, {
         locale: Config.defaultLanguage,
       });
       toast.success(t('common:successfully-created'));
@@ -45,6 +53,9 @@ export const useUpdateTypeMutation = () => {
   const queryClient = useQueryClient();
   return useMutation(typeClient.update, {
     onSuccess: () => {
+      Router.push(`/${getShopSlug()}/${Routes.type.list}`, undefined, {
+        locale: Config.defaultLanguage,
+      });
       toast.success(t('common:successfully-updated'));
     },
     // Always refetch after error or success:
@@ -68,11 +79,12 @@ export const useTypesQuery = (options?: Partial<TypeQueryOptions>) => {
     {
       keepPreviousData: true,
     }
-  );
- 
+  ); 
   return {
     types: data ?? [],
+    // types: data || [],
     loading: isLoading,
+    paginatorInfo: mapPaginatorData(data),
     error,
   };
 };

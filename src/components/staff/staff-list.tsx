@@ -15,19 +15,19 @@ import { useTranslation } from 'next-i18next';
 import { useIsRTL } from '@/utils/locals';
 import { useState } from 'react';
 import TitleWithSort from '@/components/ui/title-with-sort';
-import { useAtom } from 'jotai';
-import { newPermission } from '@/contexts/permission/storepermission';
-import { getAuthCredentials } from '@/utils/auth-utils';
+import { AllPermission } from '@/utils/AllPermission';
 
 type IProps = {
-  customers: User[] | undefined;
+  // customers: User[] | undefined;
+  staffs: User[] | undefined;
   paginatorInfo: MappedPaginatorInfo | null;
   onPagination: (current: number) => void;
   onSort: (current: any) => void;
   onOrder: (current: string) => void;
 };
 const StaffList = ({
-  customers,
+  // customers,
+  staffs,
   paginatorInfo,
   onPagination,
   onSort,
@@ -35,13 +35,10 @@ const StaffList = ({
 }: IProps) => {
   const { t } = useTranslation();
   const { alignLeft } = useIsRTL();
-  const [getPermission,_]=useAtom(newPermission)
-  const { permissions } = getAuthCredentials();
-  const canWrite =  permissions.includes('super_admin')
-  ? siteSettings.sidebarLinks
-  :getPermission?.find(
-    (permission) => permission.type === 'sidebar-nav-item-users'
-  )?.write;
+ 
+  const permissionTypes = AllPermission(); 
+
+  const canWrite = permissionTypes.includes('sidebar-nav-item-users');
 
   const [sortingObj, setSortingObj] = useState<{
     sort: SortOrder;
@@ -134,8 +131,8 @@ const StaffList = ({
       render: (is_active: boolean) => (is_active ? 'Active' : 'Inactive'),
     },
     {
-      ...(canWrite
-      ?{
+      ...(canWrite?
+        {
         title: t('table:table-item-actions'),
         dataIndex: 'id',
         key: 'actions',
@@ -149,7 +146,7 @@ const StaffList = ({
                   id={id}
                   userStatus={true}
                   isUserActive={is_active}
-                  showAddWalletPoints={true}
+                  // showAddWalletPoints={true}
                   showMakeAdminButton={true}
                 />
               )}
@@ -169,7 +166,7 @@ const StaffList = ({
           // @ts-ignore
           columns={columns}
           emptyText={t('table:empty-table-data')}
-          data={customers}
+          data={staffs}
           rowKey="id"
           scroll={{ x: 800 }}
         />

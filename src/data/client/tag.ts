@@ -11,11 +11,18 @@ import { HttpClient } from '@/data/client/http-client';
 
 export const tagClient = {
   ...crudFactory<Tag, QueryOptions, CreateTagInput>(API_ENDPOINTS.TAGS),
-  paginated: ({ type, name, ...params }: Partial<TagQueryOptions>) => {
+  paginated: ({
+    type,
+    name,
+    shopSlug,
+    ...params
+  }: Partial<TagQueryOptions>) => {
+    console.log('params=params', params);
     return HttpClient.get<TagPaginator>(API_ENDPOINTS.TAGS, {
-      searchJoin: 'and',
       ...params,
-      search: HttpClient.formatSearchParams({ type, name }),
+      shopSlug,
+      name,
+      type,
     });
   },
 };

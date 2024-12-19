@@ -7,8 +7,9 @@ import { API_ENDPOINTS } from './client/api-endpoints';
 import { Attribute, AttributeQueryOptions, GetParams } from '@/types';
 import { attributeClient } from '@/data/client/attribute';
 import { Config } from '@/config';
-import { STORE_OWNER, SUPER_ADMIN } from '@/utils/constants';
+import { Company, SUPER_ADMIN } from '@/utils/constants';
 import { getAuthCredentials } from '@/utils/auth-utils';
+import { mapPaginatorData } from '@/utils/data-mappers';
 
 export const useCreateAttributeMutation = () => {
   const router = useRouter();
@@ -33,11 +34,21 @@ export const useCreateAttributeMutation = () => {
 };
 
 export const useUpdateAttributeMutation = () => {
+  const router = useRouter();
   const { t } = useTranslation();
   const queryClient = useQueryClient();
   return useMutation(attributeClient.update, {
     onSuccess: () => {
+      const generateRedirectUrl = router.query.shop
+        ? `/${router.query.shop}${Routes.attribute.list}`
+        : Routes.attribute.list;
+      Router.push(generateRedirectUrl, undefined, {
+        locale: Config.defaultLanguage,
+      });
       toast.success(t('common:successfully-updated'));
+    },
+    onError: (error: any) => {
+      toast.error(t('common:update-failed'));
     },
     // Always refetch after error or success:
     onSettled: () => {
@@ -81,9 +92,10 @@ export const useAttributesQuery = (
       ...options,
     }
   );
-
+  console.log('DATA+++++++', params, data);
   return {
     attributes: data ?? [],
+    paginatorInfo: mapPaginatorData(data),
     error,
     loading: isLoading,
   };

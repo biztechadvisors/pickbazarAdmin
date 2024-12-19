@@ -1,4 +1,4 @@
-import { useConversationsQuery } from '@/data/conversations';
+import { useConversationQuery, useConversationsQuery } from '@/data/conversations';
 import ErrorMessage from '@/components/ui/error-message';
 import Loader from '@/components/ui/loader/loader';
 import React, { useEffect, useRef } from 'react';
@@ -6,10 +6,11 @@ import { useTranslation } from 'next-i18next';
 import isEmpty from 'lodash/isEmpty';
 import ListView from '@/components/message/views/list-view';
 import Scrollbar from '@/components/ui/scrollbar';
-import { LIMIT } from '@/utils/constants';
+import { DEALER, LIMIT } from '@/utils/constants';
 import UserListNotFound from '@/components/message/views/conversation-not-found';
 import { SortOrder } from '@/types';
 import cn from 'classnames';
+import { useMeQuery } from '@/data/user';
 
 interface Props {
   className?: string;
@@ -20,6 +21,7 @@ interface Props {
 const UserList = ({ className, filterText, permission, ...rest }: Props) => {
   const { t } = useTranslation();
   const loadMoreRef = useRef(null);
+  const { data: user } = useMeQuery();
   let {
     conversations,
     loading,
@@ -33,10 +35,12 @@ const UserList = ({ className, filterText, permission, ...rest }: Props) => {
     search:
       filterText?.length >= 3 ? filterText?.trim()?.toLowerCase() ?? '' : null,
     limit: LIMIT,
+    dealer_id: user?.permission.type_name === DEALER ? user?.permission.id : '',
     sortedBy: SortOrder.Desc,
     orderBy: 'updated_at',
   });
   let filterTimeout: any;
+
   useEffect(() => {
     // filter text
     clearTimeout(filterTimeout);

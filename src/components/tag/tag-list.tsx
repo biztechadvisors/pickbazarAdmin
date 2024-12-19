@@ -10,10 +10,8 @@ import { Config } from '@/config';
 import Link from '@/components/ui/link';
 import { Routes } from '@/config/routes';
 import LanguageSwitcher from '@/components/ui/lang-action/action';
-import { newPermission } from '@/contexts/permission/storepermission';
-import { useAtom } from 'jotai';
-import { getAuthCredentials } from '@/utils/auth-utils';
-import { siteSettings } from '@/settings/site.settings';
+import { AllPermission } from '@/utils/AllPermission';
+import { useEffect } from 'react';
 
 export type IProps = {
   tags: any | undefined | null;
@@ -31,15 +29,11 @@ const TagList = ({
   paginatorInfo,
 }: IProps) => {
   const { t } = useTranslation();
-  const rowExpandable = (record: any) => record.children?.length;
-  
-  const [getPermission,_]=useAtom(newPermission)
-  const { permissions } = getAuthCredentials();
-  const canWrite =  permissions.includes('super_admin')
-  ? siteSettings.sidebarLinks
-  :getPermission?.find(
-    (permission) => permission.type === 'sidebar-nav-item-tags'
-  )?.write;
+  const rowExpandable = (record: any) => record.children?.length; 
+console.log("tag data+++++%%%%%%",tags);
+  const permissionTypes = AllPermission(); 
+
+  const canWrite = permissionTypes.includes('sidebar-nav-item-tags');
 
   const { alignLeft, alignRight } = useIsRTL();
 
@@ -49,8 +43,12 @@ const TagList = ({
   }>({
     sort: SortOrder.Desc,
     column: null,
-  });
+  }); 
 
+  useEffect(() => {
+    console.log('Updated tags data:', tags);
+  }, [tags]);
+  
   const onHeaderClick = (column: string | null) => ({
     onClick: () => {
       onSort((currentSortDirection: SortOrder) =>

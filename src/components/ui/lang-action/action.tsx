@@ -20,9 +20,11 @@ export default function LanguageSwitcher({
   className,
 }: LanguageSwitcherProps) {
   const { enableMultiLang } = Config;
-  const {
-    query: { shop },
+
+  let {
+    query: { shop }
   } = useRouter();
+  
   return (
     <>
       {enableMultiLang ? (

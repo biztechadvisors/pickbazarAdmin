@@ -78,15 +78,17 @@ type FormValues = {
   amount: number;
   minimum_cart_amount: number;
   image: AttachmentInput;
-  active_from: string;
-  expire_at: string;
+  active_from: Date;
+  expire_at: Date;
 };
 
-const defaultValues = {
-  image: '',
+const defaultValues: FormValues = {
+  code: '',
   type: CouponType.FIXED,
+  description: '',
   amount: 0,
   minimum_cart_amount: 0,
+  image: { thumbnail: '', original: '', id: '' },
   active_from: new Date(),
   expire_at: new Date(),
 };
@@ -98,21 +100,15 @@ export default function CreateOrUpdateCouponForm({ initialValues }: IProps) {
   const router = useRouter();
   const { locale } = useRouter();
   const { t } = useTranslation();
-  const {
-    register,
-    handleSubmit,
-    control,
-    watch,
-    setError,
-    setValue,
-    formState: { errors },
-  } = useForm<FormValues>({
-    // @ts-ignore
+  const validDate = (date: any) => 
+    isNaN(new Date(date).getTime()) ? new Date() : new Date(date);
+  
+  const { control, handleSubmit, register, watch, setError, setValue, formState: { errors } } = useForm<FormValues>({
     defaultValues: initialValues
       ? {
           ...initialValues,
-          active_from: new Date(initialValues.active_from!),
-          expire_at: new Date(initialValues.expire_at!),
+          active_from: validDate(initialValues.active_from),
+          expire_at: validDate(initialValues.expire_at),
         }
       : defaultValues,
     resolver: yupResolver(couponValidationSchema),
@@ -145,43 +141,50 @@ export default function CreateOrUpdateCouponForm({ initialValues }: IProps) {
         suggestion: autoSuggestionList as ItemProps[],
       });
     }, [generateName]);
+    const [active_from, expire_at] = watch(['active_from', 'expire_at']);
 
-  const [active_from, expire_at] = watch(['active_from', 'expire_at']);
+  
   const couponType = watch('type');
 
   const isTranslateCoupon = router.locale !== Config.defaultLanguage;
 
   const onSubmit = async (values: FormValues) => {
+    const activeFromDate = new Date(values.active_from);
+    const expireAtDate = new Date(values.expire_at);
+  
+    if (isNaN(activeFromDate.getTime()) || isNaN(expireAtDate.getTime())) {
+      console.error('Invalid date values');
+      return;
+    }
+  
     const input = {
       language: router.locale,
       type: values.type,
       description: values.description,
       amount: values.amount,
       minimum_cart_amount: values.minimum_cart_amount,
-      active_from: new Date(values.active_from).toISOString(),
-      expire_at: new Date(values.expire_at).toISOString(),
+      active_from: activeFromDate.toISOString(),
+      expire_at: expireAtDate.toISOString(),
       image: {
         thumbnail: values?.image?.thumbnail,
         original: values?.image?.original,
         id: values?.image?.id,
       },
     };
-
+  
     try {
-      if (
-        !initialValues ||
-        !initialValues.translated_languages.includes(router.locale!)
-      ) {
+      if (initialValues) {
+        // Perform update
+        updateCoupon({
+          ...input,
+          id: initialValues.id!,
+          ...(initialValues.code !== values.code && { code: values.code }),
+        });
+      } else {
+        // Perform create
         createCoupon({
           ...input,
           code: values.code,
-          ...(initialValues?.code && { code: initialValues.code }),
-        });
-      } else {
-        updateCoupon({
-          ...input,
-          ...(initialValues.code !== values.code && { code: values.code }),
-          id: initialValues.id!,
         });
       }
     } catch (error) {
@@ -194,6 +197,7 @@ export default function CreateOrUpdateCouponForm({ initialValues }: IProps) {
       });
     }
   };
+  
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
@@ -295,25 +299,24 @@ export default function CreateOrUpdateCouponForm({ initialValues }: IProps) {
               <Label>{t('form:coupon-active-from')}</Label>
 
               <Controller
-                control={control}
-                name="active_from"
-                render={({ field: { onChange, onBlur, value } }) => (
-                  //@ts-ignore
-                  <DatePicker
-                    dateFormat="dd/MM/yyyy"
-                    onChange={onChange}
-                    onBlur={onBlur}
-                    selected={value}
-                    selectsStart
-                    minDate={new Date()}
-                    maxDate={expire_at}
-                    startDate={active_from}
-                    endDate={expire_at}
-                    className="border border-border-base"
-                    disabled={isTranslateCoupon}
-                  />
-                )}
-              />
+  control={control}
+  name="active_from"
+  render={({ field: { onChange, onBlur, value } }) => (
+    <DatePicker
+      dateFormat="dd/MM/yyyy"
+      onChange={onChange}
+      onBlur={onBlur}
+      selected={validDate(value)}
+      selectsStart
+      minDate={new Date()}
+      maxDate={validDate(expire_at)}
+      startDate={validDate(active_from)}
+      endDate={validDate(expire_at)}
+      className="border border-border-base"
+      disabled={isTranslateCoupon}
+    />
+  )}
+/>
               <ValidationError message={t(errors.active_from?.message!)} />
             </div>
             <div className="w-full p-0 sm:w-1/2 sm:ps-2">

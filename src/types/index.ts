@@ -71,7 +71,6 @@ export interface OtpLoginInputType {
   email?: string;
 }
 
-
 export enum PaymentGateway {
   STRIPE = 'STRIPE',
   COD = 'CASH_ON_DELIVERY',
@@ -130,9 +129,9 @@ export enum AddressType {
 export type QueryOptionsType = {
   page?: number;
   type?: string;
-  name?: string;
   shop_id?: number;
   limit?: number;
+  name?: string;
   orderBy?: string;
   sortedBy?: SortOrder;
 };
@@ -164,7 +163,7 @@ export interface NameAndValueType {
 }
 export enum Permission {
   SuperAdmin = 'super_admin',
-  StoreOwner = 'store_owner',
+  StoreOwner = 'Company',
   Staff = 'staff',
   Customer = 'customer',
   Admin = 'admin',
@@ -172,9 +171,14 @@ export enum Permission {
 }
 
 export interface GetParams {
+  shopSlug?: string;
   slug: string;
-  userId: string;
+  userId?: string;
   language: string;
+  categoryId?: number;
+  shopId?: number;
+  shop_id?:number;
+  id?:number;
 }
 
 export interface QueryOptions {
@@ -183,6 +187,7 @@ export interface QueryOptions {
   page?: number;
   orderBy?: string;
   sortedBy?: SortOrder;
+  region_name?: string[];
 }
 
 export interface ShopSocialInput {
@@ -204,6 +209,7 @@ export interface PaginatorInfo<T> {
   prev_page_url: string | null;
   to: number;
   total: number;
+  slug: string;
 }
 
 export interface LoginInput {
@@ -228,7 +234,6 @@ export interface PermissionItem {
   read: boolean;
   write: boolean;
 }
-
 
 export interface Type {
   id: string;
@@ -263,6 +268,7 @@ export declare type AddDealerInput = {
 };
 
 export interface Category {
+  regions: any;
   id: string;
   name: string;
   slug: string;
@@ -276,6 +282,24 @@ export interface Category {
   products: Product[];
   created_at: string;
   updated_at: string;
+  shop_id: string;
+}
+
+export interface SubCategory {
+  id: string;
+  name: string;
+  slug: string;
+  translated_languages: string[];
+  categorId?: number;
+  children: Category[];
+  details?: string;
+  image?: Attachment;
+  // icon?: string;
+  // type: Type;
+  products: Product[];
+  created_at: string;
+  updated_at: string;
+  shop_id: string;
 }
 
 export interface Attribute {
@@ -287,11 +311,30 @@ export interface Attribute {
   translated_languages: string[];
   language?: string;
 }
-
+export interface Event {
+  regions: any;
+  id: string;
+  title: string;
+  eventName: string;
+  description: string;
+  date: string;
+  time: string;
+  location: string;
+  collaboration: string;
+  shopId: number;
+  imageIds: number[]; 
+  regionName: string;
+}
 export interface AttributeValueInput {
   id?: number;
   value: string;
   meta?: string;
+}
+
+export interface Blogs {
+  id: string;
+  title: string;
+  content: string;
 }
 
 export interface CreateAttributeInput {
@@ -465,6 +508,7 @@ export interface MakeAdminInput {
 }
 
 export interface User {
+  permission: any;
   id: string;
   name: string;
   shops: Shop[];
@@ -477,12 +521,16 @@ export interface User {
   address: Address[];
   orders?: OrderPaginator;
   email_verified: boolean;
+  shop_id: number;
+  dealer?: any;
+  createdBy?: any;
 }
 
 export interface UpdateUser {
   name?: string;
   profile?: UserProfileInput;
   address?: UserAddressUpsertInput[];
+  customerId?: number;
 }
 
 export interface Profile {
@@ -524,6 +572,72 @@ export interface Coupon {
   updated_at: string;
 }
 
+export interface GetInspired {
+  [x: string]: any;
+  id: string;
+  title: string;
+  type: string;
+  shopId: number;
+  imageIds: number[];
+  tagIds: number[];
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface Career {
+  id: string;
+  fullName: string;
+  phone: string;
+  email: string;
+  position: string;
+  location: string;
+  cv_resume?: string;
+  shopSlug: string;
+  locationId: number;
+  vacancyId: number;
+  createdAt: string;
+  updatedAt?: string;
+}
+
+export interface Vacancy {
+  id: string;
+  title: string;
+  description: string;
+  employmentType: string;
+  salaryRange: string;
+  locationId: number;
+  shopId: number;
+  careerId?: number;
+  createdAt: string;
+}
+
+export interface Contact {
+  id: string;
+  fullName: string;
+  phone: string;
+  email: string;
+  location?: string;
+  subject: string;
+  message: string;
+  shopSlug: string;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+export interface Qna {
+  id: string;
+  question: string;
+  answer?: string;
+  type?: string[];
+  createdAt: Date;
+  updatedAt: Date;
+  faqId: number;
+}
+export type QnaFormValues = {
+  question?: string;
+  answer?: string;
+  type?: string; // Adjust according to `QnAType` enum
+}; 
 export interface CouponInput {
   code: string;
   type: CouponType;
@@ -534,6 +648,61 @@ export interface CouponInput {
   active_from: string;
   expire_at: string;
   language?: string;
+}
+
+export interface RegionInput {
+  code: string;
+}
+
+export interface FaqInput {
+  code: string;
+}
+
+export interface ContactInput {
+  fullName: string;
+  phone: string;
+  email: string;
+  location?: string;
+  subject: string;
+  message: string;
+  shopSlug: string;
+}
+
+export interface QnaInput {
+  faqId?: number;
+  question: string;
+  answer?: string;
+}
+
+export interface GetInspiredInput {
+  code: string;
+  title: string;
+  type: string;
+  shopId: number;
+  imageIds?: number[];
+  tagIds?: number[];
+}
+
+export interface CareerInput {
+  fullName: string;
+  phone: string;
+  email: string;
+  position: string;
+  location: string;
+  cv_resume?: string;
+  shopSlug: string;
+  locationId: number;
+  vacancyId: number;
+}
+
+export interface VacancyInput {
+  title: string;
+  description: string;
+  employmentType: string;
+  salaryRange: string;
+  shopId: number;
+  locationId: number;
+  careerId?: number;
 }
 
 export interface StoreNotice {
@@ -570,6 +739,14 @@ export interface StoreNoticeInput {
 
 export interface StoreNoticeUserToNotifyInput {
   type: string;
+}
+
+export interface Region {
+  id: string;
+  name: string;
+  slug: string;
+  shop_id: string[];
+  // Add other properties as needed
 }
 
 export interface Order {
@@ -638,6 +815,7 @@ export interface Product {
   max_price?: number;
   min_price?: number;
   categories: Category[];
+  subcategories: SubCategory[];
   variations?: AttributeValue[];
   variation_options?: Variation[];
   digital_file?: DigitalFile;
@@ -667,7 +845,7 @@ export interface Product {
   created_at: string;
   updated_at: string;
   ratings: number;
-  margin: string
+  margin: string;
 }
 
 export interface CreateProduct {
@@ -748,6 +926,7 @@ export interface Tag {
   products?: Product[];
   created_at?: string;
   updated_at?: string;
+  region_name?: string[];
 }
 
 export interface CreateTagInput {
@@ -756,8 +935,17 @@ export interface CreateTagInput {
   details?: string;
   image?: AttachmentInput;
   icon?: string;
+  region_name?: string[];
 }
 
+export interface Region {
+  shop: number;
+  name: string;
+}
+export interface CreateRegionInput {
+  shop: string;
+  name: string;
+}
 export interface Author {
   bio?: string;
   born?: string;
@@ -797,6 +985,18 @@ export interface CreateCategoryInput {
   details?: string;
   image?: AttachmentInput;
   icon?: string;
+  shop_id?: string;
+}
+
+export interface CreateSubCategoryInput {
+  name: string;
+  // type_id?: string;
+  category_id?: number;
+  details?: string;
+  image?: AttachmentInput;
+  // icon?: string;
+  // language: string;
+  shop_id?: string;
 }
 
 export interface CreateWithdrawInput {
@@ -878,9 +1078,9 @@ export interface CreateOrderStatusInput {
 
 export interface CreateOrderInput {
   tracking_number?: string;
-  customer_id: string,
-  customerId: string,
-  dealerId: string,
+  customer_id: string;
+  customerId: string;
+  dealerId: string;
   order_status?: string;
   products: ConnectProductOrderPivot[];
   amount: number;
@@ -966,6 +1166,9 @@ export interface CreateMessageInput {
   message: string;
   id: string;
   shop_id: string;
+  latest_message: any;
+  user_id: any;
+  conversation: any;
 }
 export interface CreateMessageSeenInput {
   id: string;
@@ -975,6 +1178,10 @@ export interface Tax {
   id?: string;
   name?: string;
   rate?: number;
+}
+
+export interface ShopId {
+  shop_id?: number;
 }
 
 export interface SettingsOptions {
@@ -1036,6 +1243,7 @@ export interface LatestMessage {
 }
 
 export interface Conversations {
+  dealer: any;
   id: string;
   created_at: string;
   updated_at: string;
@@ -1082,24 +1290,27 @@ export type SeoSettings = {
 export interface Settings {
   id: string;
   language: string;
-  options: SettingsOptions;
+  // options: SettingsOptions;
+  options: any;
 }
 
 export interface SettingsInput {
   language?: string;
   options?: SettingsOptionsInput;
+  shop_id?: number;
+  id?: number;
 }
 
 export interface Tax {
   id?: string;
   name?: string;
   rate?: number;
-  hsn_no?:number;
-  cgst?:number;
-  sgst?:number;
-  gst_Name?:string;
-  sac_no?:number;
-  compensation_Cess?:number;
+  hsn_no?: number;
+  cgst?: number;
+  sgst?: number;
+  gst_Name?: string;
+  sac_no?: number;
+  compensation_Cess?: number;
   // is_global?: boolean;
   // country?: string;
   // state?: string;
@@ -1189,9 +1400,9 @@ export interface SettingsOptions {
   facebook?: FacebookSettings;
   useEnableGateway?: boolean;
   currencyOptions?: SettingCurrencyOptions;
-  guestCheckout: boolean
-  smsEvent?: SmsEvent
-  emailEvent?: EmailEvent
+  guestCheckout: boolean;
+  smsEvent?: SmsEvent;
+  emailEvent?: EmailEvent;
   server_info?: ServerInfo;
 }
 
@@ -1317,7 +1528,7 @@ export interface RegisterInput {
   shop_id?: number;
   permission: Permission;
   contact: string;
-  UsrBy: any;
+  createdBy: any;
 }
 
 export interface ChangePasswordInput {
@@ -1393,6 +1604,7 @@ export interface ShopInput {
   address?: UserAddressInput;
   settings?: ShopSettingsInput;
   categories?: Category[];
+  subcategories?: SubCategory[];
   balance?: BalanceInput;
 }
 
@@ -1451,7 +1663,19 @@ export interface UserProfileInput {
 export interface CategoryQueryOptions extends QueryOptions {
   type: string;
   name: string;
-  parent: number | null;
+  shopId?: number;
+  region_name?: string; 
+  parent: number | null; 
+  shop: string | null;
+  search:string;
+  shopSlug:string;
+}
+
+export interface SubCategoryQueryOptions extends QueryOptions {
+  type: string;
+  name: string;
+  categoryId: number | null;
+  shopSlug: string | null;
 }
 
 export interface ConversationQueryOptions extends QueryOptions {
@@ -1462,6 +1686,14 @@ export interface TagQueryOptions extends QueryOptions {
   type: string;
   name: string;
   parent: number | null;
+  shopSlug: string;
+  slug: string;
+  region_name: string[];
+  search: string; 
+}
+export interface RegionQueryOptions extends QueryOptions {
+  shopSlug: string;
+  name: string;
 }
 
 export interface InvoiceTranslatedText {
@@ -1486,6 +1718,7 @@ export interface AttributeQueryOptions extends QueryOptions {
   type: string;
   name: string;
   shop_id: string;
+  search: string;
 }
 
 export interface AttributeValueQueryOptions extends QueryOptions {
@@ -1512,6 +1745,7 @@ export interface TypeQueryOptions extends QueryOptions {
 }
 
 export interface ProductQueryOptions extends QueryOptions {
+  id?:number;
   type: string;
   name: string;
   slug: string;
@@ -1528,11 +1762,17 @@ export interface ProductQueryOptions extends QueryOptions {
   rating: string;
   question: string;
   userId: string;
+  dealerId: string;
+  search: string;
 }
 
 export interface UserQueryOptions extends QueryOptions {
   email: string;
   usrById: string;
+}
+
+export interface ContactQueryOptions extends QueryOptions {
+  shopSlug?: string; // Optional shop slug for filtering contacts
 }
 
 export interface ManufacturerQueryOptions extends QueryOptions {
@@ -1564,13 +1804,52 @@ export interface OrderQueryOptions extends QueryOptions {
   type: string;
   name: string;
   shop_id: string;
+  shop_slug: string;
   tracking_number: string;
   customer_id: number;
+  search: any;
+}
+
+export interface SalesQueryOptions extends QueryOptions {
+  customer_id: number;
+}
+
+export interface VacancyQueryOptions {
+  city?: string;
+  page?: number;
+  limit?: number;
 }
 
 export interface CouponQueryOptions extends QueryOptions {
   code: string;
 }
+
+export interface RegionsQueryOptions extends QueryOptions {
+  id: string;
+  name: string;
+  shop_id: string[];
+  shopSlug?: string;
+  code?: string;
+  search:string;
+}
+
+import { SortOrder } from '@/types'; // Ensure SortOrder is imported from the correct path
+
+// Updated GetInspiredQueryOptions interface
+export interface GetInspiredQueryOptions extends QueryOptions {
+  shopSlug: string; // Required for identifying the shop
+}
+
+export interface CareerQueryOptions {
+  shopSlug: string;
+}
+
+export interface QnaQueryOptions extends QueryOptions {
+  faqId?: number; // Ensure faqId is defined as optional
+  page?: number;
+  limit?: number;
+}
+
 export interface StoreNoticeQueryOptions extends QueryOptions {
   notice: string;
   shop_id: string;
@@ -1630,53 +1909,69 @@ export interface DealerQueryOptions extends Omit<QueryOptions, 'language'> {
   shop_id: string;
 }
 
+export interface ShopPaginator extends PaginatorInfo<Shop> {}
 
-export interface ShopPaginator extends PaginatorInfo<Shop> { }
+export interface ContactPaginator extends PaginatorInfo<Shop> {}
 
-export interface WithdrawPaginator extends PaginatorInfo<Withdraw> { }
+export interface WithdrawPaginator extends PaginatorInfo<Withdraw> {}
 
-export interface UserPaginator extends PaginatorInfo<User> { }
+export interface UserPaginator extends PaginatorInfo<User> {}
 
-export interface QuestionPaginator extends PaginatorInfo<Question> { }
+export interface QuestionPaginator extends PaginatorInfo<Question> {}
 
-export interface StaffPaginator extends PaginatorInfo<User> { }
+export interface StaffPaginator extends PaginatorInfo<User> {}
 
-export interface DealerPaginator extends PaginatorInfo<AddDealerInput> { }
+export interface DealerPaginator extends PaginatorInfo<AddDealerInput> {}
 
-export interface OrderPaginator extends PaginatorInfo<Order> { }
+export interface OrderPaginator extends PaginatorInfo<Order> {}
+export interface NotificationPaginator extends PaginatorInfo<Notification> {}
 
-export interface CouponPaginator extends PaginatorInfo<Coupon> { }
+export interface CouponPaginator extends PaginatorInfo<Coupon> {}
 
-export interface StoreNoticePaginator extends PaginatorInfo<StoreNotice> { }
+export interface RegionPaginator extends PaginatorInfo<Region> {}
 
-export interface ProductPaginator extends PaginatorInfo<Product> { }
+export interface FaqPaginator extends PaginatorInfo<Faq> {}
 
-export interface CategoryPaginator extends PaginatorInfo<Category> { }
+export interface GetInspiredPaginator extends PaginatorInfo<GetInspired> {}
 
-export interface TaxPaginator extends PaginatorInfo<Tax> { }
+export interface CareerPaginator extends PaginatorInfo<Career> {}
 
-export interface ReviewPaginator extends PaginatorInfo<Review> { }
+export interface StoreNoticePaginator extends PaginatorInfo<StoreNotice> {}
 
-export interface TagPaginator extends PaginatorInfo<Tag> { }
+export interface ProductPaginator extends PaginatorInfo<Product> {}
 
-export interface AttributePaginator extends PaginatorInfo<Attribute> { }
+export interface CategoryPaginator extends PaginatorInfo<Category> {}
+
+export interface SubCategoryPaginator extends PaginatorInfo<SubCategory> {}
+
+export interface TaxPaginator extends PaginatorInfo<Tax> {}
+
+export interface ReviewPaginator extends PaginatorInfo<Review> {}
+
+export interface TagPaginator extends PaginatorInfo<Tag> {}
+
+export interface AttributePaginator extends PaginatorInfo<Attribute> {}
 
 export interface AttributeValuePaginator
-  extends PaginatorInfo<AttributeValue> { }
+  extends PaginatorInfo<AttributeValue> {}
 
-export interface ShippingPaginator extends PaginatorInfo<Shipping> { }
+export interface ShippingPaginator extends PaginatorInfo<Shipping> {}
 
-export interface AuthorPaginator extends PaginatorInfo<Author> { }
+export interface AuthorPaginator extends PaginatorInfo<Author> {}
 
-export interface ManufacturerPaginator extends PaginatorInfo<Manufacturer> { }
+export interface ManufacturerPaginator extends PaginatorInfo<Manufacturer> {}
 
-export interface OrderStatusPaginator extends PaginatorInfo<OrderStatus> { }
+export interface QnaPaginator extends PaginatorInfo<Qna> {}
 
-export interface ConversionPaginator extends PaginatorInfo<Conversations> { }
+export interface VacancyPaginator extends PaginatorInfo<Vacancy> {}
 
-export interface MessagePaginator extends PaginatorInfo<Message> { }
+export interface OrderStatusPaginator extends PaginatorInfo<OrderStatus> {}
 
-export interface SettingsQueryOptions extends QueryOptions { }
+export interface ConversionPaginator extends PaginatorInfo<Conversations> {}
+
+export interface MessagePaginator extends PaginatorInfo<Message> {}
+
+export interface SettingsQueryOptions extends QueryOptions {}
 
 // Stocks TypeScript
 

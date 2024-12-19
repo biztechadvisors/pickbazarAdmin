@@ -13,6 +13,14 @@ import {
 import { mapPaginatorData } from '@/utils/data-mappers';
 import { categoryClient } from './client/category';
 import { Config } from '@/config';
+import { shop_slug } from '@/utils/atoms';
+
+export const getShopSlug = () => {
+  if (typeof window !== 'undefined') {
+    return localStorage.getItem('shopSlug') || '';
+  }
+  return '';
+};
 
 export const useCreateCategoryMutation = () => {
   const queryClient = useQueryClient();
@@ -20,7 +28,7 @@ export const useCreateCategoryMutation = () => {
 
   return useMutation(categoryClient.create, {
     onSuccess: () => {
-      Router.push(Routes.category.list, undefined, {
+      Router.push(`/${getShopSlug()}/${Routes.category.list}`, undefined, {
         locale: Config.defaultLanguage,
       });
       toast.success(t('common:successfully-created'));
@@ -52,6 +60,9 @@ export const useUpdateCategoryMutation = () => {
   const queryClient = useQueryClient();
   return useMutation(categoryClient.update, {
     onSuccess: () => {
+      Router.push(`/${getShopSlug()}/${Routes.category.list}`, undefined, {
+        locale: Config.defaultLanguage,
+      }); 
       toast.success(t('common:successfully-updated'));
     },
     // Always refetch after error or success:
@@ -61,10 +72,10 @@ export const useUpdateCategoryMutation = () => {
   });
 };
 
-export const useCategoryQuery = ({ slug, language }: GetParams) => {
+export const useCategoryQuery = ({ slug, language, shopId }: GetParams) => {
   const { data, error, isLoading } = useQuery<Category, Error>(
-    [API_ENDPOINTS.CATEGORIES, { slug, language }],
-    () => categoryClient.get({ slug, language })
+    [API_ENDPOINTS.CATEGORIES, { slug, language, shopId }],
+    () => categoryClient.get({ slug, language, shopId })
   );
 
   return {
@@ -75,6 +86,7 @@ export const useCategoryQuery = ({ slug, language }: GetParams) => {
 };
 
 export const useCategoriesQuery = (options: Partial<CategoryQueryOptions>) => {
+  console.log("Request options:", options); 
   const { data, error, isLoading } = useQuery<CategoryPaginator, Error>(
     [API_ENDPOINTS.CATEGORIES, options],
     ({ queryKey, pageParam }) =>
@@ -83,7 +95,6 @@ export const useCategoriesQuery = (options: Partial<CategoryQueryOptions>) => {
       keepPreviousData: true,
     }
   );
-
   return {
     categories: data?.data ?? [],
     paginatorInfo: mapPaginatorData(data),

@@ -3,7 +3,7 @@ import Layout from '@/components/layouts/admin';
 import Search from '@/components/common/search';
 import CouponList from '@/components/coupon/coupon-list';
 import LinkButton from '@/components/ui/link-button';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import ErrorMessage from '@/components/ui/error-message';
 import Loader from '@/components/ui/loader/loader';
 import { useTranslation } from 'next-i18next';
@@ -13,9 +13,7 @@ import { adminOnly, getAuthCredentials } from '@/utils/auth-utils';
 import { useCouponsQuery } from '@/data/coupon';
 import { useRouter } from 'next/router';
 import { Config } from '@/config';
-import { newPermission } from '@/contexts/permission/storepermission';
-import { useAtom } from 'jotai';
-import { siteSettings } from '@/settings/site.settings';
+import { AllPermission } from '@/utils/AllPermission';
 
 export default function Coupons() {
   const { t } = useTranslation();
@@ -33,13 +31,16 @@ export default function Coupons() {
     sortedBy,
   });
 
-  const [getPermission,_]=useAtom(newPermission)
+  const totalPages = Math.ceil((paginatorInfo?.pagination.totalItems || 0) / (paginatorInfo?.pagination.pageSize || 1));
+  useEffect(() => {
+    if (page > totalPages) setPage(1);
+  }, [paginatorInfo?.pagination.totalItems, paginatorInfo?.pagination.pageSize, page]);
+
   const { permissions } = getAuthCredentials();
-  const canWrite =  permissions.includes('super_admin')
-  ? siteSettings.sidebarLinks
-  :getPermission?.find(
-    (permission) => permission.type === 'sidebar-nav-item-coupons'
-  )?.write;
+  
+  const permissionTypes = AllPermission(); 
+
+  const canWrite = permissionTypes.includes('sidebar-nav-item-coupons');
 
   if (loading) return <Loader text={t('common:text-loading')} />;
   if (error) return <ErrorMessage message={error.message} />;

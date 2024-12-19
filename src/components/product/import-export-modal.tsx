@@ -16,9 +16,11 @@ const ExportImportView = () => {
         </h1>
       </div>
 
-      <div className="grid grid-cols-2 gap-5 md:grid-cols-4">
-        <ImportProducts />
-        <ImportVariationOptions />
+      {/* <div className="grid grid-cols-2 gap-5 md:grid-cols-4"> */}
+      <div style={{height:'230px',width:'300px'}}>
+       
+        {/* <ImportProducts /> */}
+        {/* <ImportVariationOptions /> */}
 
         <a
           href={`${process?.env?.NEXT_PUBLIC_REST_API_ENDPOINT}/export-products/${shopId}`}
@@ -31,9 +33,9 @@ const ExportImportView = () => {
           <span className="mt-4 text-center text-sm font-semibold text-accent">
             {t('common:text-export-products')}
           </span>
-        </a>
-
-        <a
+        </a>                                  
+                                
+        {/* <a
           href={`${process?.env?.NEXT_PUBLIC_REST_API_ENDPOINT}/export-variation-options/${shopId}`}
           target="_blank"
           className="flex h-36 cursor-pointer flex-col items-center justify-center rounded border-2 border-dashed border-border-base p-5 focus:border-accent-400 focus:outline-none"
@@ -43,7 +45,7 @@ const ExportImportView = () => {
           <span className="mt-4 text-center text-sm font-semibold text-accent">
             {t('common:text-export-product-variations')}
           </span>
-        </a>
+        </a> */}                                
       </div>
     </Card>
   );

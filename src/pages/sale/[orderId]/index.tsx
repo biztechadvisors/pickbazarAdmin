@@ -17,7 +17,11 @@ import {
   useOrderQuery,
   useUpdateOrderMutation,
 } from '@/data/order';
-import { useOrderSalesQuery } from '@/data/stocks';
+import {
+  useFetchStockOrderData,
+  useGetStockByOrder,
+  useOrderSalesQuery,
+} from '@/data/stocks';
 import { siteSettings } from '@/settings/site.settings';
 import { Attachment, OrderStatus, PaymentStatus } from '@/types';
 import { formatAddress } from '@/utils/format-address';
@@ -30,8 +34,11 @@ import { useTranslation } from 'next-i18next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import Image from 'next/image';
 import { useRouter } from 'next/router';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
+import DispatchModal from '@/components/ui/modal-component/dispatch-modal';
+import { useMeQuery } from '@/data/user';
+import { Company } from '@/utils/constants';
 // import { jsPDF } from 'jspdf';
 // import 'jspdf-autotable';
 
@@ -44,6 +51,15 @@ export default function OrderDetailsPage() {
   const { alignLeft, alignRight, isRTL } = useIsRTL();
   const { resetStock } = useStock();
   const [, resetCheckout] = useAtom(clearCheckoutAtom);
+  const [isDispatchModalOpen, setDispatchModalOpen] = useState(false);
+
+  console.log("isDispatchModalOpen",isDispatchModalOpen)
+
+
+
+  const handleDispatchUpdate = (data: any) => {
+    // Logic to update the dispatch product
+  };
 
   useEffect(() => {
     resetStock();
@@ -121,13 +137,28 @@ export default function OrderDetailsPage() {
     0
   );
 
+
+  const { orderId } = query;
+  const { data: meData } = useMeQuery();
+
+
+  const dealerId = order?.customer_id
+
+  console.log("dealerId",dealerId,"orderId",orderId)
+
+  const { data, isLoading, isError } = useFetchStockOrderData({
+    dealerId,
+    orderId,
+  });
+
+  console.log("first-data",data)
+
+
   if (loading) return <Loader text={t('common:text-loading')} />;
   if (error) return <ErrorMessage message={error.message} />;
 
   async function handleDownloadInvoice() {
     const { data } = await refetch();
-
-    console.log('Data****Invoice', data);
 
     if (data) {
       const a = document.createElement('a');
@@ -164,7 +195,7 @@ export default function OrderDetailsPage() {
           <span>{name}</span>
           <span className="mx-2">x</span>
           <span className="font-semibold text-heading">
-            {item.pivot.order_quantity}
+            {item?.pivot?.order_quantity}
           </span>
         </div>
       ),
@@ -176,12 +207,16 @@ export default function OrderDetailsPage() {
       align: alignRight,
       render: function Render(_: any, item: any) {
         const { price } = usePrice({
-          amount: parseFloat(item.pivot.subtotal),
+          amount: parseFloat(item?.pivot?.subtotal),
         });
         return <span>{price}</span>;
       },
     },
   ];
+
+
+
+  const DispatchButton = meData?.permission.type_name === Company;
 
   return (
     <>
@@ -219,19 +254,50 @@ export default function OrderDetailsPage() {
                     options={ORDER_STATUS.slice(0, 6)}
                     placeholder={t('form:input-placeholder-order-status')}
                   />
-
                   <ValidationError message={t(errors?.order_status?.message)} />
                 </div>
-                <Button loading={updating}>
-                  <span className="hidden sm:block">
-                    {t('form:button-label-change-status')}
-                  </span>
-                  <span className="block sm:hidden">
-                    {t('form:form:button-label-change')}
-                  </span>
-                </Button>
+                <div className="flex w-full gap-x-1 max-sm:flex-col-reverse max-sm:gap-y-1">
+                  <Button loading={updating}>
+                    <span className="hidden sm:block">
+                      {t('form:button-label-change-status')}
+                    </span>
+                    <span className="block sm:hidden">
+                      {t('form:button-label-change-status')}
+                    </span>
+                  </Button>
+                </div>
               </form>
             )}
+          {DispatchButton ? (
+            <Button onClick={() => setDispatchModalOpen(true)}>
+              <span className="hidden sm:block">
+                {t('form:button-label-change-dispatch')}
+              </span>
+              <span className="block sm:hidden">
+                {t('form:button-label-change-dispatch')}
+              </span>
+            </Button>
+          ) : (
+            <Button onClick={() => setDispatchModalOpen(true)}>
+              <span className="hidden sm:block">
+                {t('Received')}
+              </span>
+              <span className="block sm:hidden">
+                {t('Received')}
+              </span>
+            </Button>
+          )}
+          {/* {DispatchButton && (
+          <Button onClick={() => setDispatchModalOpen(true)}>
+            <span className="hidden sm:block">
+              {t('form:button-label-change-dispatch')}
+            </span>
+            <span className="block sm:hidden">
+              {t('form:button-label-change-dispatch')}
+            </span>
+          </Button>
+        )} */}
+
         </div>
 
         <div className="my-5 flex items-center justify-center lg:my-10">
@@ -349,6 +415,13 @@ export default function OrderDetailsPage() {
           </div>
         </div>
       </Card>
+      <DispatchModal
+        isOpen={isDispatchModalOpen}
+        onClose={() => setDispatchModalOpen(false)}
+        order={data}
+        dealerId={dealerId}
+        updateDispatch={handleDispatchUpdate}
+      />
     </>
   );
 }

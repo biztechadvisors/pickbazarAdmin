@@ -1,4 +1,3 @@
-import ShopLayout from '@/components/layouts/shop';
 import LinkButton from '@/components/ui/link-button';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import Image from 'next/image';
@@ -12,7 +11,6 @@ import { CloseFillIcon } from '@/components/icons/close-fill';
 import { EditIcon } from '@/components/icons/edit';
 import { formatAddress } from '@/utils/format-address';
 import {
-  adminAndOwnerOnly,
   adminOwnerAndStaffOnly,
   adminOnly,
   getAuthCredentials,
@@ -23,7 +21,7 @@ import usePrice from '@/utils/use-price';
 import { useTranslation } from 'next-i18next';
 import isEmpty from 'lodash/isEmpty';
 import { useShopQuery } from '@/data/shop';
-import { GetStaticPaths } from 'next';
+import { GetStaticPaths, GetStaticProps } from 'next';
 import { CubeIcon } from '@/components/icons/shops/cube';
 import { OrdersIcon } from '@/components/icons/sidebar';
 import { PriceWalletIcon } from '@/components/icons/shops/price-wallet';
@@ -32,32 +30,27 @@ import { DollarIcon } from '@/components/icons/shops/dollar';
 import ReadMore from '@/components/ui/truncate';
 import { useMeQuery } from '@/data/user';
 import { Routes } from '@/config/routes';
-import AccessDeniedPage from '@/components/common/access-denied';
-import React, { useState } from 'react';
-import { useAtom } from 'jotai';
-import { newPermission } from '@/contexts/permission/storepermission';
-import { siteSettings } from '@/settings/site.settings';
-
-
+import React from 'react';
+import { AllPermission } from '@/utils/AllPermission';
+import AdminLayout from '@/components/layouts/admin';
+import { OWNER } from '@/utils/constants';
+import OwnerLayout from '@/components/layouts/owner';
 
 export default function ShopPage() {
   const router = useRouter();
   const { t } = useTranslation();
-  const { permissions } = getAuthCredentials();
   const { data: me } = useMeQuery();
-  const {query: { shop },locale,} = useRouter();
-  const {data,isLoading: loading,error,} = useShopQuery({slug: shop!.toString(),});
+  const { query: { shop }, locale } = useRouter();
+  const { data, isLoading: loading, error } = useShopQuery({ slug: shop!.toString() });
 
-  const { price: totalEarnings } = usePrice(data && {amount: data?.balance?.total_earnings!,});
-  const { price: currentBalance } = usePrice(data && {amount: data?.balance?.current_balance!,});
-
-  const [getPermission, _] = useAtom(newPermission)
-  const canWrite = permissions.includes('super_admin')
-    ? siteSettings.sidebarLinks
-    : getPermission?.find(
-      (permission) => permission.type === 'sidebar-nav-item-my-shops'
-      // (permission) => permission.type === 'sidebar-nav-item-dashboard'
-    )?.write;
+  const { price: totalEarnings } = usePrice(data && { amount: data?.balance?.total_earnings! });
+  const { price: currentBalance } = usePrice(data && { amount: data?.balance?.current_balance! });
+ 
+  const { permissions } = getAuthCredentials();
+  const permissionTypes = AllPermission();
+  const canWrite =
+    permissionTypes.includes('sidebar-nav-item-my-shops') ||
+    permissions?.[0] === OWNER;
 
   if (loading) return <Loader text={t('common:text-loading')} />;
   if (error) return <ErrorMessage message={error.message} />;
@@ -77,17 +70,15 @@ export default function ShopPage() {
     id: shop_id,
   } = data ?? {};
 
-  if (
-    !hasAccess(adminOnly, permissions) &&
-    !me?.shops?.map((shop) => shop.id).includes(shop_id) &&
-    me?.managed_shop?.id != shop_id
-  ) {
-    router.replace(Routes.dashboard);
-  }
+  // if (
+  //   !hasAccess(adminOnly, permissions) &&
+  //   !me?.shops?.map((shop) => shop.id).includes(shop_id) &&
+  //   me?.managed_shop?.id != shop_id
+  // ) {
+  //   router.replace(Routes.dashboard);
+  // }
 
-  console.log("data******", data)
-  console.log("me***********", me)
-  console.log("shop*********", shop)
+  
 
   return (
     <div className="grid grid-cols-12 gap-6">
@@ -102,7 +93,7 @@ export default function ShopPage() {
           <div className="relative mb-5 h-36 w-36 rounded-full">
             <div className="relative flex h-full w-full items-center justify-center overflow-hidden rounded-full border border-gray-100">
               <Image
-                src={`https://localhost:5000/api/${logo?.thumbnail ?? '/avatar-placeholder.svg'}`}
+                src={`${logo?.thumbnail ?? '/avatar-placeholder.svg'}`}
                 fill
                 sizes="(max-width: 768px) 100vw"
                 alt={String(name)}
@@ -151,7 +142,8 @@ export default function ShopPage() {
 
           <div className="mt-7 grid w-full grid-cols-1">
             <a
-              href={`${process.env.NEXT_PUBLIC_SHOP_URL}/${locale}/shops/${slug}`}
+              // href={`${process.env.NEXT_PUBLIC_SHOP_URL}/${locale}/shops/${slug}`}
+              href={`${process.env.NEXT_PUBLIC_SHOP_URL} `}
               target="_blank"
               className="inline-flex h-12 flex-shrink-0 items-center justify-center rounded !bg-gray-100 px-5 py-0 !font-normal leading-none !text-heading outline-none transition duration-300 ease-in-out hover:!bg-accent hover:!text-light focus:shadow focus:outline-none focus:ring-1 focus:ring-accent-700"
               rel="noreferrer"
@@ -165,8 +157,7 @@ export default function ShopPage() {
       {/* Cover Photo */}
       <div className="relative order-1 col-span-12 h-full min-h-[400px] overflow-hidden rounded bg-light xl:order-2 xl:col-span-8 3xl:col-span-9">
         <Image
-          // src={`https://localhost:5000/api/${cover_image?.original ?? '/product-placeholder-borderless.svg'}`}
-          src={`${process?.env?.NEXT_PUBLIC_REST_API_ENDPOINT}/${cover_image?.original ?? '/product-placeholder-borderless.svg'}`}
+          src={`${cover_image?.original ?? '/product-placeholder-borderless.svg'}`}
           fill
           sizes="(max-width: 768px) 100vw"
           alt={Object(name)}
@@ -265,7 +256,7 @@ export default function ShopPage() {
             </div>
           </div>
 
-          <div className="space-y-3">
+          {/* <div className="space-y-3">
             <h2 className="text-lg font-semibold text-heading">
               {t('common:text-others')}
             </h2>
@@ -286,7 +277,7 @@ export default function ShopPage() {
                 </div>
               </div>
             </div>
-          </div>
+          </div> */}
         </div>
       </div>
 
@@ -345,16 +336,24 @@ export default function ShopPage() {
     </div>
   );
 }
-ShopPage.Layout = ShopLayout;
+
+const { permissions } = getAuthCredentials();
+const resLayout = () => {
+  return permissions?.[0] === OWNER ? OwnerLayout : AdminLayout;
+};
+
+ShopPage.Layout = resLayout()
+
 ShopPage.authenticate = {
   permissions: adminOwnerAndStaffOnly,
 };
 
-export const getStaticProps = async ({ locale }: any) => ({
+export const getStaticProps: GetStaticProps = async ({ locale }) => ({
   props: {
     ...(await serverSideTranslations(locale, ['form', 'common', 'table'])),
   },
 });
+
 export const getStaticPaths: GetStaticPaths = async () => {
   return { paths: [], fallback: 'blocking' };
 };

@@ -6,8 +6,8 @@ import Loader from '@/components/ui/loader/loader';
 import { useState } from 'react';
 import { useTranslation } from 'next-i18next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
-import ShopLayout from '@/components/layouts/shop';
-import router, { useRouter } from 'next/router';
+
+import { useRouter } from 'next/router';
 import LinkButton from '@/components/ui/link-button';
 import {
   adminOnly,
@@ -28,9 +28,8 @@ import Button from '@/components/ui/button';
 import { Config } from '@/config';
 import { Routes } from '@/config/routes';
 import { useMeQuery } from '@/data/user';
-import { useAtom } from 'jotai';
-import { newPermission } from '@/contexts/permission/storepermission';
-import { siteSettings } from '@/settings/site.settings';
+import { AllPermission } from '@/utils/AllPermission';
+import AdminLayout from '@/components/layouts/admin';
 
 export default function ProductsPage() {
   const router = useRouter();
@@ -42,8 +41,8 @@ export default function ProductsPage() {
   const { data: shopData, isLoading: fetchingShop } = useShopQuery({
     slug: shop as string,
   });
-
   
+  // const shopSlug = shopData?.slug
   const shopId = shopData?.id!;
   const { t } = useTranslation();
   const [searchTerm, setSearchTerm] = useState('');
@@ -55,29 +54,32 @@ export default function ProductsPage() {
   const [visible, setVisible] = useState(false);
   const { openModal } = useModalAction();
   const { locale } = useRouter();
+  const { data } = useMeQuery();
 
-  const [getPermission,_]=useAtom(newPermission)
-  const canWrite =  permissions.includes('super_admin')
-  ? siteSettings.sidebarLinks
-  :getPermission?.find(
-    (permission) => permission.type === 'sidebar-nav-item-products'
-  )?.write;
+  const permissionTypes = AllPermission();
+
+  const canWrite = permissionTypes.includes('sidebar-nav-item-products');
 
   const toggleVisible = () => {
     setVisible((v) => !v);
   };
+
+  const dealerId = me?.dealer?.id;
 
   const { products, paginatorInfo, loading, error } = useProductsQuery(
     {
       language: locale,
       name: searchTerm,
       limit: 20,
+      dealerId,
       shop_id: shopId,
       type,
       categories: category,
+      // tags: tags,
       orderBy,
       sortedBy,
       page,
+      search:searchTerm,
     },
     {
       enabled: Boolean(shopId),
@@ -87,6 +89,13 @@ export default function ProductsPage() {
   function handleImportModal() {
     openModal('EXPORT_IMPORT_PRODUCT', shopId);
   }
+  function handleOpenModal(){
+    openModal('MODEL_IMPORT',shopId);
+  }
+
+  // function handleOpenModel(){
+  //   openModal('MODEL_IMPORT',shopSlug);
+  // }
 
   if (loading || fetchingShop)
     return <Loader text={t('common:text-loading')} />;
@@ -107,13 +116,6 @@ export default function ProductsPage() {
   ) {
     router.replace(Routes.dashboard);
   }
-
-
-  console.log("shopDatashopData", shopData)
-
-
-
-
 
   return (
     <>
@@ -146,7 +148,7 @@ export default function ProductsPage() {
 
             <Button
               onClick={handleImportModal}
-              className="mt-5 w-full md:hidden"
+              className="h-12 ms-4 md:ms-6 "
             >
               {t('common:text-export-import')}
             </Button>
@@ -162,15 +164,13 @@ export default function ProductsPage() {
                 <ArrowDown className="ms-2" />
               )}
             </button>
-
+{/* 
             <button
               onClick={handleImportModal}
               className="hidden h-8 w-8 flex-shrink-0 items-center justify-center rounded-full bg-gray-50 transition duration-300 ms-5 hover:bg-gray-100 md:flex"
             >
-               {canWrite && (
-              <MoreIcon className="w-3.5 text-body" />
-              )}
-            </button>
+              {canWrite && <MoreIcon className="w-3.5 text-body" />}
+            </button> */}
           </div>
         </div>
 
@@ -206,7 +206,7 @@ export default function ProductsPage() {
 ProductsPage.authenticate = {
   permissions: adminOwnerAndStaffOnly,
 };
-ProductsPage.Layout = ShopLayout;
+ProductsPage.Layout = AdminLayout;
 
 export const getServerSideProps = async ({ locale }: any) => ({
   props: {

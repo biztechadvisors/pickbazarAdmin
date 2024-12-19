@@ -1,26 +1,32 @@
 import { useState } from 'react';
 import { Table } from '@/components/ui/table';
-import { Attribute, Shop, SortOrder } from '@/types';
+import { Attribute, MappedPaginatorInfo, Shop, SortOrder } from '@/types';
 import { useRouter } from 'next/router';
 import { useTranslation } from 'next-i18next';
 import TitleWithSort from '@/components/ui/title-with-sort';
-import { Config } from '@/config';
-import Link from '@/components/ui/link';
 import { Routes } from '@/config/routes';
 import LanguageSwitcher from '@/components/ui/lang-action/action';
-import { useAtom } from 'jotai';
-import { newPermission } from '@/contexts/permission/storepermission';
-import { getAuthCredentials } from '@/utils/auth-utils';
-import { siteSettings } from '@/settings/site.settings';
+import { AllPermission } from '@/utils/AllPermission';
+import Pagination from '@/components/ui/pagination';
 
 export type IProps = {
   attributes: Attribute[] | undefined;
+   paginatorInfo: MappedPaginatorInfo | null;
+   onPagination: (key: number) => void;
   onSort: (current: any) => void;
   onOrder: (current: string) => void;
 };
-const AttributeList = ({ attributes, onSort, onOrder }: IProps) => {
+
+const AttributeList = ({ 
+  attributes,
+  paginatorInfo,
+  onPagination,
+  onSort,
+  onOrder }: IProps) => {
   const { t } = useTranslation();
   const router = useRouter();
+  const rowExpandable = (record: any) => record.children?.length;
+  // const { alignLeft, alignRight } = useIsRTL();
 
   const alignLeft =
     router.locale === 'ar' || router.locale === 'he' ? 'right' : 'left';
@@ -35,15 +41,9 @@ const AttributeList = ({ attributes, onSort, onOrder }: IProps) => {
     column: null,
   });
 
-  const [getPermission, _] = useAtom(newPermission)
+  const permissionTypes = AllPermission();
 
-  const { permissions } = getAuthCredentials();
-
-  const canWrite = permissions.includes('super_admin')
-    ? siteSettings.sidebarLinks
-    : getPermission?.find(
-      (permission) => permission.type === 'sidebar-nav-item-attributes'
-    )?.write;
+  const canWrite = permissionTypes.includes('sidebar-nav-item-attributes');
 
   const onHeaderClick = (column: string | null) => ({
     onClick: () => {
@@ -69,7 +69,6 @@ const AttributeList = ({ attributes, onSort, onOrder }: IProps) => {
       width: 60,
     },
     {
-      // title: t("table:table-item-title"),
       title: (
         <TitleWithSort
           title={t('table:table-item-title')}
@@ -105,10 +104,10 @@ const AttributeList = ({ attributes, onSort, onOrder }: IProps) => {
       render: (values: any) => {
         return (
           <span className="whitespace-nowrap">
-            {values?.map((singleValues: any, index: number) => {
+            {values?.map((singleValue: any, index: number) => {
               return index > 0
-                ? `, ${singleValues.value}`
-                : `${singleValues.value}`;
+                ? `, ${singleValue.value}`
+                : `${singleValue.value}`;
             })}
           </span>
         );
@@ -117,39 +116,54 @@ const AttributeList = ({ attributes, onSort, onOrder }: IProps) => {
     {
       ...(canWrite
         ? {
-          title: t('table:table-item-actions'),
-          dataIndex: 'slug',
-          key: 'actions',
-          align: alignRight,
-          render: (slug: string, record: Attribute) => (
-            <LanguageSwitcher
-              slug={slug}
-              record={record}
-              deleteModalView="DELETE_ATTRIBUTE"
-              routes={Routes?.attribute}
-            />
-          ),
-        }
-
-        : null),
+            title: t('table:table-item-actions'),
+            dataIndex: 'slug',
+            key: 'actions',
+            align: alignRight,
+            render: (slug: string, record: Attribute) => (
+              <LanguageSwitcher
+                slug={slug}
+                record={record}
+                deleteModalView="DELETE_ATTRIBUTE"
+                routes={Routes?.attribute}
+              />
+            ),
+          }
+        : {}),
     },
-
   ];
 
   if (router?.query?.shop) {
     columns = columns?.filter((column) => column?.key !== 'shop');
   }
+
   return (
+    <>
     <div className="mb-8 overflow-hidden rounded shadow">
       <Table
         // @ts-ignore
         columns={columns}
         emptyText={t('table:empty-table-data')}
-        data={attributes}
+        data={attributes?.items || []}
         rowKey="id"
         scroll={{ x: 380 }}
-      />
+          expandable={{
+            expandedRowRender: () => ' ',
+            rowExpandable: rowExpandable,
+          }}
+      />  
     </div>
+       {!!paginatorInfo?.total && (
+        <div className="flex items-center justify-end">
+          <Pagination
+            total={paginatorInfo.total}
+            current={paginatorInfo.currentPage}
+            // pageSize={paginatorInfo.perPage}
+            onChange={onPagination}
+          />
+        </div>
+      )}
+      </>
   );
 };
 

@@ -18,9 +18,8 @@ import { Config } from '@/config';
 import { Routes } from '@/config/routes';
 import { useRouter } from 'next/router';
 import LanguageSwitcher from '@/components/ui/lang-action/action';
-import { newPermission } from '@/contexts/permission/storepermission';
-import { useAtom } from 'jotai';
-import { getAuthCredentials } from '@/utils/auth-utils';
+
+import { AllPermission } from '@/utils/AllPermission';
 
 dayjs.extend(relativeTime);
 dayjs.extend(utc);
@@ -51,13 +50,10 @@ const CouponList = ({
     column: null,
   });
 
-  const [getPermission,_]=useAtom(newPermission)
-  const { permissions } = getAuthCredentials();
-  const canWrite =  permissions.includes('super_admin')
-  ? siteSettings.sidebarLinks
-  :getPermission?.find(
-    (permission) => permission.type === 'sidebar-nav-item-coupons'
-  )?.write;
+
+  const permissionTypes = AllPermission(); 
+
+  const canWrite = permissionTypes.includes('sidebar-nav-item-coupons');
 
   const onHeaderClick = (column: string | null) => ({
     onClick: () => {
@@ -245,12 +241,12 @@ const CouponList = ({
         />
       </div>
 
-      {!!paginatorInfo?.total && (
+      {!!paginatorInfo?.pagination.totalItems && (
         <div className="flex items-center justify-end">
           <Pagination
-            total={paginatorInfo.total}
-            current={paginatorInfo.currentPage}
-            pageSize={paginatorInfo.perPage}
+            total={paginatorInfo.pagination.totalItems}
+            current={Number(paginatorInfo.pagination.currentPage)}
+            pageSize={Number(paginatorInfo.pagination.pageSize)  || 10}
             onChange={onPagination}
           />
         </div>

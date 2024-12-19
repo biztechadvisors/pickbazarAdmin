@@ -9,27 +9,33 @@ import TitleWithSort from '@/components/ui/title-with-sort';
 import { Routes } from '@/config/routes';
 import LanguageSwitcher from '@/components/ui/lang-action/action';
 import Button from '../ui/button';
-import { useAtom } from 'jotai';
-import { newPermission } from '@/contexts/permission/storepermission';
 import { getAuthCredentials } from '@/utils/auth-utils';
-import { siteSettings } from '@/settings/site.settings';
+import { AllPermission } from '@/utils/AllPermission';
+import Pagination from '@/components/ui/pagination';
+
 
 export type IProps = {
   users: any[] | undefined;
+  paginatorInfo: MappedPaginatorInfo | null;
+  onPagination: (key: number) => void;
+  // allDealer : any[] | undefined;
   onSort: (current: any) => void;
   onOrder: (current: string) => void;
 };
 
-const DealerList = ({ users, onSort, onOrder }: IProps) => {
+const DealerList = ({ 
+  users, 
+  paginatorInfo,
+  onPagination,
+  onSort, 
+  onOrder }: IProps) => {
+
   const { t } = useTranslation();
   const { alignLeft, alignRight } = useIsRTL();
-  const [getPermission, _] = useAtom(newPermission);
   const { permissions } = getAuthCredentials();
-  const canWrite = permissions?.includes('super_admin')
-    ? siteSettings.sidebarLinks
-    : getPermission?.find(
-      (permission) => permission.type === 'sidebar-nav-item-dealerlist'
-    )?.write;
+const permissionTypes = AllPermission(); 
+
+  const canWrite = permissionTypes.includes('sidebar-nav-item-dealerlist');
 
   const [sortingObj, setSortingObj] = useState<{
     sort: SortOrder;
@@ -54,6 +60,7 @@ const DealerList = ({ users, onSort, onOrder }: IProps) => {
     },
   });
 
+
   const columns = [
     {
       title: t('table:table-item-id'),
@@ -62,24 +69,26 @@ const DealerList = ({ users, onSort, onOrder }: IProps) => {
       align: 'center',
       width: 60,
     },
-    {
-      title: t('table:table-item-icon'),
-      dataIndex: 'icon',
-      key: 'profile',
-      align: 'center',
-      render: (icon: string) => {
-        if (!icon) return null;
-        return (
-          <span className="flex items-center justify-center">
-            {getIcon({
-              iconList: typeIcons,
-              iconName: icon,
-              className: 'w-5 h-5 max-h-full max-w-full',
-            })}
-          </span>
-        );
-      },
-    },
+
+    // {
+    //   title: t('table:table-item-icon'),
+    //   dataIndex: 'icon',
+    //   key: 'profile',
+    //   align: 'center',
+    //   render: (icon: string) => {
+    //     if (!icon) return null;
+    //     return (
+    //       <span className="flex items-center justify-center">
+    //         {getIcon({
+    //           iconList: typeIcons,
+    //           iconName: icon,
+    //           className: 'w-5 h-5 max-h-full max-w-full',
+    //         })}
+    //       </span>
+    //     );
+    //   },
+    // },
+
     {
       title: (
         <TitleWithSort
@@ -87,7 +96,7 @@ const DealerList = ({ users, onSort, onOrder }: IProps) => {
           ascending={
             sortingObj.sort === SortOrder.Asc && sortingObj.column === 'name'
           }
-          isActive={sortingObj.column === 'name'}
+          isActive={sortingObj.column === 'id'}
         />
       ),
       className: 'cursor-pointer',
@@ -97,6 +106,7 @@ const DealerList = ({ users, onSort, onOrder }: IProps) => {
       onHeaderCell: () => onHeaderClick('name'),
       render: (name: any) => <span className="whitespace-nowrap">{name}</span>,
     },
+
     {
       title: (
         <TitleWithSort
@@ -114,14 +124,12 @@ const DealerList = ({ users, onSort, onOrder }: IProps) => {
       onHeaderCell: () => onHeaderClick('email'),
       render: (email: any) => <span className="whitespace-nowrap">{email}</span>,
     },
+
     {
       title: (
         <TitleWithSort
           title={t('table:table-item-walletbalance')}
-          ascending={
-            sortingObj.sort === SortOrder.Asc &&
-            sortingObj.column === 'walletPoints'
-          }
+          ascending={sortingObj.sort === SortOrder.Asc && sortingObj.column === 'walletPoints'}
           isActive={sortingObj.column === 'walletPoints'}
         />
       ),
@@ -130,31 +138,27 @@ const DealerList = ({ users, onSort, onOrder }: IProps) => {
       key: 'dealer',
       align: alignLeft,
       onHeaderCell: () => onHeaderClick('walletPoints'),
-      render: (dealer: any) => (
-        <span className="whitespace-nowrap">
-          {dealer ? dealer.walletBalance : 0}
-        </span>
-      ),
-    },
+      render: (dealer: any) => <span className="whitespace-nowrap">{dealer ? dealer.walletBalance : 0}</span>,
+    }, 
+    
     {
       title: t('table:table-item-permissions'),
-      dataIndex: 'permissions',
-      key: 'permissions',
+      dataIndex: 'type',
+      key: 'type',
       align: 'center',
-      render: (permissions: any, record: any) => {
-        return (
-          <div>
-            {permissions?.map(({ name }: { name: string }) => name).join(', ')}
-          </div>
-        );
+      render: (type: any, record: any) => {
+        return <div>{type?.type_name}</div>;
       },
+     
     },
+
     {
       title: (
         <TitleWithSort
           title={t('table:table-item-status')}
           ascending={
-            sortingObj.sort === SortOrder.Asc && sortingObj.column === 'is_active'
+            sortingObj.sort === SortOrder.Asc &&
+            sortingObj.column === 'is_active'
           }
           isActive={sortingObj.column === 'is_active'}
         />
@@ -166,10 +170,8 @@ const DealerList = ({ users, onSort, onOrder }: IProps) => {
       onHeaderCell: () => onHeaderClick('is_active'),
       render: (is_active: boolean) => (is_active ? 'Active' : 'Inactive'),
     },
-  ];
-
-  if (canWrite) {
-    columns.push({
+    
+    {
       title: t('table:table-item-actions'),
       dataIndex: 'slug',
       key: 'actions',
@@ -182,10 +184,11 @@ const DealerList = ({ users, onSort, onOrder }: IProps) => {
           routes={Routes?.dealerlist}
         />
       ),
-    });
-  }
+    },
+  ];
 
   return (
+    <>
     <div className="mb-8 overflow-hidden rounded shadow">
       <Table
         //@ts-ignore
@@ -196,6 +199,17 @@ const DealerList = ({ users, onSort, onOrder }: IProps) => {
         scroll={{ x: 380 }}
       />
     </div>
+     {!!paginatorInfo?.total && (
+      <div className="flex items-center justify-end">
+        <Pagination
+          total={paginatorInfo.total}
+          current={paginatorInfo.currentPage}
+          // pageSize={paginatorInfo.perPage}
+          onChange={onPagination}
+        />
+      </div>
+    )}
+    </>
   );
 };
 

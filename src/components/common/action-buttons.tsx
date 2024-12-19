@@ -9,6 +9,7 @@ import { CheckMarkCircle } from '@/components/icons/checkmark-circle';
 import { useModalAction } from '@/components/ui/modal/modal.context';
 import { CloseFillIcon } from '@/components/icons/close-fill';
 import { AdminIcon } from '@/components/icons/admin-icon';
+import { useRouter } from 'next/router';
 
 type Props = {
   id: string;
@@ -51,6 +52,7 @@ const ActionButtons = ({
   }
 
   function handleEditModal() {
+    console.log("checking***for***product", id)
     openModal(editModalView, id);
   }
 

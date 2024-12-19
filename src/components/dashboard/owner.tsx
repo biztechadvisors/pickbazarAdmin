@@ -1,104 +1,67 @@
+import { CartIconBig } from '@/components/icons/cart-icon-bag';
+import StickerCard from '@/components/widgets/sticker-card';
 import { useTranslation } from 'next-i18next';
-import { Fragment } from 'react';
-import { Tab } from '@headlessui/react';
-import cn from 'classnames';
-import dynamic from 'next/dynamic';
+import { DollarIcon } from '@/components/icons/shops/dollar';
 import { useRouter } from 'next/router';
-import { isEmpty } from 'lodash';
-const ShopList = dynamic(() => import('@/components/dashboard/shops/shops'));
-const Message = dynamic(() => import('@/components/dashboard/shops/message'));
-const StoreNotices = dynamic(
-  () => import('@/components/dashboard/shops/store-notices')
-);
-import { adminOnly, getAuthCredentials, hasAccess } from '@/utils/auth-utils';
+import { useMeQuery, useUsersQuery } from '@/data/user';
+import { useShopsQuery } from '@/data/shop';
+import { useState } from 'react';
+import { SortOrder } from '@/types';
+import { CustomerIcon } from '../icons/sidebar/customer';
+import { MyShopIcon } from '../icons/sidebar';
 
-const tabList = [
-  {
-    title: 'common:sidebar-nav-item-my-shops',
-    children: 'ShopList',
-  },
-  {
-    title: 'common:sidebar-nav-item-message',
-    children: 'Message',
-  },
-  {
-    title: 'common:sidebar-nav-item-store-notice',
-    children: 'StoreNotices',
-  },
-];
-
-const MAP_PAGE_LIST: Record<string, any> = {
-  ShopList: ShopList,
-  Message: Message,
-  StoreNotices: StoreNotices,
-};
-
-const OwnerShopLayout = () => {
+export default function OwnerDashboard(user: any) {
   const { t } = useTranslation();
-  const router = useRouter();
-  const { query } = router;
+  const { locale } = useRouter();
+  const [searchTerm, setSearchTerm] = useState('');
+  const [page, setPage] = useState(1);
+  const [orderBy, setOrder] = useState('created_at');
+  const [sortedBy, setColumn] = useState<SortOrder>(SortOrder.Desc);
 
-  const classNames = {
-    basic:
-      'lg:text-[1.375rem] font-semibold border-b-2 border-solid border-transparent lg:pb-5 pb-3 -mb-0.5',
-    selected: 'text-accent hover:text-accent-hover border-current',
-    normal: 'hover:text-black/80',
-  };
+  const { data: useMe } = useMeQuery();
+
+  const { shops } = useShopsQuery({
+    name: searchTerm,
+    limit: 10,
+    page,
+    orderBy,
+    sortedBy,
+  });
+
+  const { users } = useUsersQuery({
+    limit: 20,
+    usrById: useMe?.id,
+    email: searchTerm,
+    page,
+    name: searchTerm,
+    orderBy,
+    sortedBy,
+  });
+
+  const total_shops = shops?.length;
+  const total_users = users?.length;
 
   return (
     <>
-      <Tab.Group
-        defaultIndex={
-          !isEmpty(query?.tab) && query?.tab ? Number(query?.tab) : 0
-        }
-        onChange={(index: any) => {
-          router.push({
-            query: { tab: index },
-          });
-        }}
-      >
-        <Tab.List className="flex flex-wrap gap-x-9 border-b-2 border-solid border-b-[#E4E1E7]">
-          {tabList?.map((tab, key) => {
-            let { title } = tab;
-            return (
-              <Tab as={Fragment} key={key}>
-                {({ selected }) => (
-                  <button
-                    className={cn(
-                      selected ? classNames?.selected : classNames?.normal,
-                      classNames?.basic
-                    )}
-                  >
-                    {t(title)}
-                  </button>
-                )}
-              </Tab>
-            );
-          })}
-        </Tab.List>
-        <Tab.Panels
-          className="mt-4 lg:mt-8"
-          style={{ height: 'calc(100% - 94px)' }}
-        >
-          {tabList?.map((tab, key) => {
-            let { children } = tab;
-            const Component = MAP_PAGE_LIST[children];
-            return (
-              <Tab.Panel key={key} className="h-full">
-                <Component />
-              </Tab.Panel>
-            );
-          })}
-        </Tab.Panels>
-      </Tab.Group>
+      <div className="mb-6 grid w-full grid-cols-1 gap-5 sm:grid-cols-2 xl:grid-cols-4">
+        <div className="w-full ">
+          <StickerCard
+            titleTransKey="sticker-card-title-company"
+            // subtitleTransKey="sticker-card-subtitle-company"
+            icon={<MyShopIcon className="h-7 w-7" color="#1D4ED8" />}
+            iconBgStyle={{ backgroundColor: '#93C5FD' }}
+            price={total_shops}
+          />
+        </div>
+        <div className="w-full ">
+          <StickerCard
+            titleTransKey="sticker-card-title-users"
+            icon={ <CustomerIcon className="w-8 h-8" color="#1D4ED8" />}
+            iconBgStyle={{ backgroundColor: '#93C5FD' }}
+            price={total_users}
+          />
+        </div>
+      </div>
     </>
   );
-};
-
-const OwnerDashboard = () => {
-  const { permissions } = getAuthCredentials();
-  let permission = hasAccess(adminOnly, permissions);
-  return permission ? <ShopList /> : <OwnerShopLayout />;
-};
-
-export default OwnerDashboard;
+}

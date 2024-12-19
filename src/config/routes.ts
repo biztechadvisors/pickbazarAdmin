@@ -6,6 +6,7 @@ export const Routes = {
   forgotPassword: '/forgot-password',
   resetPassword: '/reset-password',
   adminMyShops: getAdminMyShopsRoute(),
+  OwnerMyShops: '/shops', //For Owner Dashboard
   profile: '/profile',
   verifyCoupons: '/coupons/verify',
   settings: '/settings',
@@ -17,7 +18,13 @@ export const Routes = {
   verifyEmail: '/verify-email',
   sales: '/sales',
   createSales: '/sales/create',
-  groups: '/groups',
+  regions: '/regions',
+  Faq: '/faq',
+  GetInspired: '/get-inspired',
+  contacts: '/contacts',
+  vacancies: '/vacancies',
+  careers: '/careers',
+  // groups: `/${getAdminMyShopsRoute()}/groups`,
   shops: (slug: string) => `/shops/${encodeURIComponent(slug)}`,
   // orders: '/orders',
   orders: (tracking_number: string) =>
@@ -40,10 +47,13 @@ export const Routes = {
     ...routesFactory('/users'),
   },
   type: {
-    ...routesFactory('/groups'),
+    ...routesFactory(`/groups`),
   },
   category: {
     ...routesFactory('/categories'),
+  },
+  subcategory: {
+    ...routesFactory('/subCategories'),
   },
   attribute: {
     ...routesFactory('/attributes'),
@@ -53,6 +63,12 @@ export const Routes = {
   },
   tag: {
     ...routesFactory('/tags'),
+  },
+  blog: {
+    ...routesFactory('/blogs'),
+  },
+  event: {
+    ...routesFactory('/events'),
   },
   dealerlist: {
     ...routesFactory('/dealerlist'),
@@ -94,7 +110,7 @@ export const Routes = {
     ...routesFactory('/permission'),
   },
   product: {
-    ...routesFactory('/products'),
+    ...routesFactory(`/products`),
   },
   shop: {
     ...routesFactory('/shops'),
@@ -105,23 +121,41 @@ export const Routes = {
   shipping: {
     ...routesFactory('/shippings'),
   },
+  regions: {
+    ...routesFactory('/regions'),
+  },
+  faq: {
+    ...routesFactory('/faq'),
+  },
   withdraw: {
     ...routesFactory('/withdraws'),
   },
   staff: {
-    ...routesFactory('/staffs'),
+    ...routesFactory('/staff'),
   },
   stock: {
     ...routesFactory('/stocks'),
   },
   refund: {
-    ...routesFactory('/refunds'),
+    ...routesFactory(`${getAdminMyShopsRoute()}/refunds`),
   },
   question: {
     ...routesFactory('/questions'),
   },
   message: {
     ...routesFactory('/message'),
+  },
+  getInspired: {
+    ...routesFactory('/get-inspired'),
+  },
+  contacts: {
+    ...routesFactory('/contacts'),
+  },
+  vacancies: {
+    ...routesFactory('/vacancies'),
+  },
+  careers: {
+    ...routesFactory('/careers'),
   },
   shopMessage: {
     ...routesFactory('/shop-message'),

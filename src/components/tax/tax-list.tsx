@@ -1,32 +1,33 @@
 
 import { AlignType, Table } from '@/components/ui/table';
 import ActionButtons from '@/components/common/action-buttons';
-import { SortOrder, Tax } from '@/types';
+import { MappedPaginatorInfo, SortOrder, Tax } from '@/types';
 import { Routes } from '@/config/routes';
 import { useTranslation } from 'next-i18next';
 import { useIsRTL } from '@/utils/locals';
 import { useState } from 'react';
 import TitleWithSort from '@/components/ui/title-with-sort';
-import { useAtom } from 'jotai';
-import { newPermission } from '@/contexts/permission/storepermission';
-import { getAuthCredentials } from '@/utils/auth-utils';
-import { siteSettings } from '@/settings/site.settings';
+import { AllPermission } from '@/utils/AllPermission';
+import Pagination from '@/components/ui/pagination';
 
 export type IProps = {
   taxes: Tax[] | undefined;
+  paginatorInfo: MappedPaginatorInfo | null;
+   onPagination: (key: number) => void;
   onSort: (current: any) => void;
   onOrder: (current: string) => void;
 };
-const TaxList = ({ taxes, onSort, onOrder }: IProps) => {
+const TaxList = ({ taxes, 
+  paginatorInfo,
+  onPagination,
+   onSort, 
+   onOrder }: IProps) => {
   const { t } = useTranslation();
   const { alignLeft } = useIsRTL();
-  const [getPermission,_]=useAtom(newPermission)
-  const { permissions } = getAuthCredentials();
-  const canWrite =  permissions.includes('super_admin')
-  ? siteSettings.sidebarLinks
-  :getPermission?.find(
-    (permission) => permission.type === 'sidebar-nav-item-taxes'
-  )?.write;
+ 
+  const permissionTypes = AllPermission(); 
+
+  const canWrite = permissionTypes.includes('sidebar-nav-item-taxes');
 
   const [sortingObj, setSortingObj] = useState<{
     sort: SortOrder;
@@ -190,16 +191,28 @@ const TaxList = ({ taxes, onSort, onOrder }: IProps) => {
     },
   ];
   return (
+    <>
     <div className="mb-8 overflow-hidden rounded shadow">
       {/* @ts-ignore */}
       <Table
         columns={columns}
         emptyText={t('table:empty-table-data')}
-        data={taxes}
+        data={taxes?.items || []}
         rowKey="id"
         scroll={{ x: 900 }}
       />
     </div>
+     {!!paginatorInfo?.total && (
+      <div className="flex items-center justify-end">
+        <Pagination
+          total={paginatorInfo.total}
+          current={paginatorInfo.currentPage}
+          // pageSize={paginatorInfo.perPage}
+          onChange={onPagination}
+        />
+      </div>
+    )}
+    </>
   );
 };
 

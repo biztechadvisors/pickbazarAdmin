@@ -7,10 +7,7 @@ import { useTranslation } from 'next-i18next';
 import { PlusIcon } from '@/components/icons/plus-icon';
 import { Product, ProductType } from '@/types';
 import React, { useState } from 'react';
-import { useAtom } from 'jotai';
-import { newPermission } from '@/contexts/permission/storepermission';
-import { getAuthCredentials } from '@/utils/auth-utils';
-import { siteSettings } from '@/settings/site.settings';
+import { AllPermission } from '@/utils/AllPermission';
 
 interface Props {
   item: Product;
@@ -51,16 +48,14 @@ const ProductCard = ({ item, isChecked, id, email, phone }: Props) => {
 
   const { openModal } = useModalAction();
 
-  const [getPermission, _] = useAtom(newPermission);
-  const { permissions } = getAuthCredentials();
-  const canWrite = permissions.includes('super_admin')
-    ? siteSettings.sidebarLinks
-    : getPermission?.find(
-        (permission) => permission.type === 'sidebar-nav-item-create-order'
-      )?.write;
+  const { shop_id } = item;
+
+  const permissionTypes = AllPermission();
+
+  const canWrite = permissionTypes.includes('sidebar-nav-item-create-order');
 
   function handleVariableProduct() {
-    return openModal('SELECT_PRODUCT_VARIATION', slug);
+    return openModal('SELECT_PRODUCT_VARIATION', { slug, shop_id });
   }
 
   return (
@@ -70,10 +65,7 @@ const ProductCard = ({ item, isChecked, id, email, phone }: Props) => {
       <div className="relative flex h-48 w-auto items-center justify-center sm:h-64">
         <span className="sr-only">{t('text-product-image')}</span>
         <Image
-          // src={image?.original ?? productPlaceholder}
-          src={`${process?.env?.NEXT_PUBLIC_REST_API_ENDPOINT}/${
-            image?.original ?? 'productPlaceholder'
-          }`}
+          src={image?.original ?? productPlaceholder}
           alt={name}
           fill
           sizes="(max-width: 768px) 100vw"
