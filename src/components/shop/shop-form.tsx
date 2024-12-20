@@ -158,7 +158,7 @@ type SelectUserProps = {
 function SelectUser({ control, errors }: SelectUserProps) {
   const { t } = useTranslation();
   const { data } = useMeQuery();
-  const usrById = data?.shop_id;  
+  const usrById = data?.shop_id;
   const { permissions } = getAuthCredentials();
   const isOwner = permissions?.[0].includes(OWNER);
   const { data: users, isLoading } = useVendorQuery(data?.id);
@@ -240,28 +240,28 @@ const ShopForm = ({ initialValues }: { initialValues?: any }) => {
     shouldUnregister: true,
     ...(initialValues
       ? {
-          defaultValues: {
-            ...initialValues,
-            logo: getFormattedImage(initialValues.logo),
-            cover_image: getFormattedImage(initialValues.cover_image),
-            settings: {
-              ...initialValues?.settings,
-              socials: initialValues?.settings?.socials
-                ? initialValues?.settings?.socials.map((social: any) => ({
-                    icon: updatedIcons?.find(
-                      (icon) => icon?.value === social?.icon
-                    ),
-                    url: social?.url,
-                  }))
-                : [],
-            },
+        defaultValues: {
+          ...initialValues,
+          logo: getFormattedImage(initialValues.logo),
+          cover_image: getFormattedImage(initialValues.cover_image),
+          settings: {
+            ...initialValues?.settings,
+            socials: initialValues?.settings?.socials
+              ? initialValues?.settings?.socials.map((social: any) => ({
+                icon: updatedIcons?.find(
+                  (icon) => icon?.value === social?.icon
+                ),
+                url: social?.url,
+              }))
+              : [],
           },
-        }
+        },
+      }
       : {}),
     resolver: yupResolver(shopValidationSchema),
   });
   const router = useRouter();
-  console.log("control",control)
+  console.log("control", control)
   // const { openModal } = useModalAction();
   const { locale } = router;
   const { data, isLoading: loading, isError } = useMeQuery();
@@ -285,27 +285,27 @@ const ShopForm = ({ initialValues }: { initialValues?: any }) => {
     data: permissionData,
   } = usePermissionData(userId);
 
-  console.log("permissionData",permissionData)
+  console.log('Fetched Permission Data:', permissionData);
 
   const filterdEcomm = permissionData?.filter((e: any) => {
     return (
-      (e && // Ensure the object exists
-        e.type_name === Company &&
-        e.permission_name === E_COMMERCE) ||
-      (e.type_name === Company && e.permission_name === NON_E_COMMERCE )
+      e &&
+      e.type_name === Company &&
+      (e.permission_name === E_COMMERCE || e.permission_name === NON_E_COMMERCE)
     );
   });
+
+  console.log('Permission Filtered Ecomm:', filterdEcomm);
 
   const option = filterdEcomm?.map((e: any) => ({
     name: e?.permission_name,
     email: e?.type_name,
     e,
   }));
-  console.log('Fetched Permission Data:', permissionData);
-  console.log('Permission Filtered Ecomm:', filterdEcomm);
-  console.log('Permission Options:', option);
-  const permissionProps = permissionSelectedOption?.e;
 
+  console.log('Permission Options:', option);
+
+  const permissionProps = permissionSelectedOption?.e;
 
   const handleGenerateDescription = useCallback(() => {
     openModal('GENERATE_DESCRIPTION', {
@@ -323,103 +323,12 @@ const ShopForm = ({ initialValues }: { initialValues?: any }) => {
     name: 'settings.socials',
   });
 
-  console.log("fields",fields)
- 
+  console.log("fields", fields)
+
 
   const handleSelectChange = (selectedOption: any) => {
     setPermissionSelectedOption(selectedOption);
   };
-
-  // async function onSubmit(values: FormValues) {
-  //   const settings = {
-  //     ...values?.settings,
-  //     location: { ...omit(values?.settings?.location, '__typename') },
-  //     socials: values?.settings?.socials
-  //       ? values?.settings?.socials?.map((social: any) => ({
-  //           icon: social?.icon?.value,
-  //           url: social?.url,
-  //         }))
-  //       : [],
-  //   };
-
-  //   const { companyType, ...filteredValues } = values;
-
-  //   console.log('settings**********', settings);
-  //   try {
-  //     if (initialValues) {
-  //       const { ...restAddress } = values.address;
-  //       await updateShop({
-  //         id: initialValues.id,
-  //         ...values,
-  //         address: restAddress,
-  //         settings,
-  //         balance: {
-  //           id: initialValues.balance?.id,
-  //           ...values.balance,
-  //         },
-  //       });
-  //     } else {
-  //       await createShop({
-  //         ...values,
-  //         settings,
-  //         balance: {
-  //           ...values.balance,
-  //         },
-  //         additionalPermissions: {},
-  //         permission: permissionProps,
-  //       });
-  //     }
-  //     router.push('/shops'); // Navigate to the shops list or appropriate page
-  //   } catch (error) {
-  //     console.error('Error while saving the shop:', error);
-  //   }
-  // }
-
-  // async function onSubmit(values: FormValues) {
-  //   const settings = {
-  //     ...values?.settings,
-  //     location: { ...omit(values?.settings?.location, '__typename') },
-  //     socials: values?.settings?.socials
-  //       ? values?.settings?.socials?.map((social: any) => ({
-  //           icon: social?.icon?.value,
-  //           url: social?.url,
-  //         }))
-  //       : [],
-  //   };
-
-  //   // Remove companyType from values
-  //   const { companyType, ...filteredValues } = values;
-
-  //   console.log('settings**********', settings);
-  //   try {
-  //     if (initialValues) {
-  //       const { ...restAddress } = filteredValues.address;
-  //       await updateShop({
-  //         id: initialValues.id,
-  //         ...filteredValues,
-  //         address: restAddress,
-  //         settings,
-  //         balance: {
-  //           id: initialValues.balance?.id,
-  //           ...filteredValues.balance,
-  //         },
-  //       });
-  //     } else {
-  //       await createShop({
-  //         ...filteredValues,
-  //         settings,
-  //         balance: {
-  //           ...filteredValues.balance,
-  //         },
-  //         additionalPermissions: additionalPerm, // Ensure this is set as needed
-  //         permission: permissionProps?.permission_name,
-  //       });
-  //     }
-  //     router.push('/shops'); // Navigate to the shops list or appropriate page
-  //   } catch (error) {
-  //     console.error('Error while saving the shop:', error);
-  //   }
-  // }
 
   async function onSubmit(values: FormValues) {
     const settings = {
@@ -427,9 +336,9 @@ const ShopForm = ({ initialValues }: { initialValues?: any }) => {
       location: { ...omit(values?.settings?.location, '__typename') },
       socials: values?.settings?.socials
         ? values?.settings?.socials?.map((social: any) => ({
-            icon: social?.icon?.value,
-            url: social?.url,
-          }))
+          icon: social?.icon?.value,
+          url: social?.url,
+        }))
         : [],
     };
 

@@ -23,7 +23,7 @@ import { useMeQuery, useUsersQuery } from '@/data/user';
 import { AllPermission } from '@/utils/AllPermission';
 import AdminLayout from '@/components/layouts/admin';
 import OwnerLayout from '@/components/layouts/owner';
-import { STAFF } from '@/utils/constants';
+import { OWNER, STAFF } from '@/utils/constants';
 import Search from '@/components/common/search';
 
 export default function StaffsPage() {
@@ -55,7 +55,7 @@ export default function StaffsPage() {
     // limit: 20,
     usrById: data?.id,
     email: searchTerm,
-    limit: 10,  
+    limit: 10,
     page: page,
     name: searchTerm,
     // orderBy,
@@ -106,7 +106,7 @@ export default function StaffsPage() {
   const filteredUsers = users?.filter(
     (user) => user.permission?.type_name === STAFF
   );
-console.log("filteredUsers",filteredUsers)
+  console.log("filteredUsers", filteredUsers)
 
   function handleSearch({ searchText }: { searchText: string }) {
     setSearchTerm(searchText);
@@ -147,7 +147,9 @@ console.log("filteredUsers",filteredUsers)
 StaffsPage.authenticate = {
   permissions: adminOwnerAndStaffOnly,
 };
-StaffsPage.Layout = AdminLayout ;
+StaffsPage.Layout = getAuthCredentials().permissions?.[0] === OWNER
+  ? OwnerLayout
+  : AdminLayout;;
 
 export const getServerSideProps = async ({ locale }: any) => ({
   props: {
