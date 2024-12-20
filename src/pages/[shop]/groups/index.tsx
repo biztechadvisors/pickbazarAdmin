@@ -6,7 +6,7 @@ import ErrorMessage from '@/components/ui/error-message';
 import LinkButton from '@/components/ui/link-button';
 import Loader from '@/components/ui/loader/loader';
 import { SortOrder } from '@/types';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useTranslation } from 'next-i18next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import { GetStaticProps } from 'next';
@@ -62,7 +62,10 @@ export default function TypesPage() {
     page,
     limit:10,
   });
- 
+  const totalPages = Math.ceil((paginatorInfo?.total || 0) / (paginatorInfo?.perPage || 1));
+  useEffect(() => {
+    if (page > totalPages) setPage(1);
+  },[paginatorInfo?.total, paginatorInfo?.perPage, page]);
   const { permissions } = getAuthCredentials();
   const permissionTypes = AllPermission();
 

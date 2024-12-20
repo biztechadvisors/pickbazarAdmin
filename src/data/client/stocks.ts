@@ -43,7 +43,7 @@ export const stockClient = {
 
   updateStockData: async (user_id: any, updatedData: any) => {
     return await HttpClient.put(
-      `${API_ENDPOINTS.STOCK}/${user_id}`,
+      `${API_ENDPOINTS.STOCK}/update/admin/${user_id}`,
       updatedData
     );
   },
