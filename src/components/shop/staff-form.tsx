@@ -55,23 +55,20 @@ const AddStaffForm = () => {
   const { mutate: addStaff, isLoading: loading } = useAddStaffMutation();
   const { t } = useTranslation();
   const { permissions } = getAuthCredentials();
-  console.log("permissionData-staff", permissionData)
 
   const {
     query: { shop },
   } = router;
   const shopSlug =
-  typeof window !== 'undefined' ? localStorage.getItem('shopSlug') : null;
+    typeof window !== 'undefined' ? localStorage.getItem('shopSlug') : null;
 
-const { data: shopData, isLoading: fetchingShopId } = useShopQuery({
-  slug: shopSlug as string,
-});
-console.log("DA^^^^",meData);
+  const { data: shopData, isLoading: fetchingShopId } = useShopQuery({
+    slug: shopSlug as string,
+  });
+
   // const shopId = shopData?.id!;
   const userId = shopData?.owner_id;
-    
-  console.log("shopSlug&&",shopSlug)
-  console.log("shopId^^^^",userId)
+
   const {
     register,
     handleSubmit,
@@ -82,7 +79,7 @@ console.log("DA^^^^",meData);
     defaultValues,
     resolver: yupResolver(staffFormSchema),
   });
- 
+
 
   const permissionOptions =
     permissionData?.map((permission: { id: any; permission_name: string }) => ({
@@ -91,10 +88,7 @@ console.log("DA^^^^",meData);
       id: permission.id,
     })) ?? [];
 
-
-    console.log("permissionOptions- staff",permissionOptions)
-
-  function onSubmit({ name, email, password ,contact,type,numberOfDealers}: FormValues) {
+  function onSubmit({ name, email, password, contact, type, numberOfDealers }: FormValues) {
     addStaff(
       {
         name,
@@ -105,8 +99,8 @@ console.log("DA^^^^",meData);
         numberOfDealers,
         managed_shop: shopData,
         // slug: "hilltop-marble",
-        shopSlug, 
-        createdBy:userId,
+        shopSlug,
+        createdBy: userId,
       },
       {
         onError: (error: any) => {

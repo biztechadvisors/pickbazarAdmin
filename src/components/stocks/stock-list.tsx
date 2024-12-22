@@ -120,9 +120,9 @@ const StockList = ({ me, onSort, onOrder }: IProps) => {
     useUpdateStockQuantity();
 
   const { data: stocks, isLoading: loading, error } = useGetStock(me?.id);
- 
 
-  const permissionTypes = AllPermission(); 
+
+  const permissionTypes = AllPermission();
 
   const canWrite = permissionTypes.includes('sidebar-nav-item-products');
 
@@ -130,9 +130,6 @@ const StockList = ({ me, onSort, onOrder }: IProps) => {
     sort: 'desc',
     column: null,
   });
-
-  console.log('sortingObj',sortingObj)
-  console.log("Product",Product)
 
   const onHeaderClick = (column: string | null) => ({
     onClick: () => {
@@ -198,10 +195,10 @@ const StockList = ({ me, onSort, onOrder }: IProps) => {
       title: (
         <TitleWithSort
           title={t('Product Type')}
-          // ascending={
-          //   sortingObj.sort === SortOrder.Asc && sortingObj.column === 'product_type'
-          // }
-          // isActive={sortingObj.column === 'product_type'}
+        // ascending={
+        //   sortingObj.sort === SortOrder.Asc && sortingObj.column === 'product_type'
+        // }
+        // isActive={sortingObj.column === 'product_type'}
         />
       ),
       className: 'cursor-pointer',
@@ -226,7 +223,7 @@ const StockList = ({ me, onSort, onOrder }: IProps) => {
     //     />
     //   ),
     // },
-    
+
 
     {
       title: t('Stock Available'),

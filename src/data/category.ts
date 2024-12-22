@@ -62,7 +62,7 @@ export const useUpdateCategoryMutation = () => {
     onSuccess: () => {
       Router.push(`/${getShopSlug()}/${Routes.category.list}`, undefined, {
         locale: Config.defaultLanguage,
-      }); 
+      });
       toast.success(t('common:successfully-updated'));
     },
     // Always refetch after error or success:
@@ -86,7 +86,7 @@ export const useCategoryQuery = ({ slug, language, shopId }: GetParams) => {
 };
 
 export const useCategoriesQuery = (options: Partial<CategoryQueryOptions>) => {
-  console.log("Request options:", options); 
+
   const { data, error, isLoading } = useQuery<CategoryPaginator, Error>(
     [API_ENDPOINTS.CATEGORIES, options],
     ({ queryKey, pageParam }) =>

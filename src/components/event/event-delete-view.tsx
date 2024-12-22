@@ -20,11 +20,6 @@ const EventDeleteView = () => {
     closeModal();
   }
 
-  console.log(
-    'data++++++++++++++++++++++++++++++++++++++++++++++++++++++++',
-    data
-  );
-
   return (
     <ConfirmationCard
       onCancel={closeModal}

@@ -170,8 +170,6 @@ function SelectUser({ control, errors }: SelectUserProps) {
   const openModal = () => setModalOpen(true);
   const closeModal = () => setModalOpen(false);
 
-  console.log('users&&&&', users);
-
   return (
     <div className="mb-5 flex w-full justify-between gap-2">
       <div className="w-4/5">
@@ -261,7 +259,7 @@ const ShopForm = ({ initialValues }: { initialValues?: any }) => {
     resolver: yupResolver(shopValidationSchema),
   });
   const router = useRouter();
-  console.log("control", control)
+
   // const { openModal } = useModalAction();
   const { locale } = router;
   const { data, isLoading: loading, isError } = useMeQuery();
@@ -285,25 +283,20 @@ const ShopForm = ({ initialValues }: { initialValues?: any }) => {
     data: permissionData,
   } = usePermissionData(userId);
 
-  console.log('Fetched Permission Data:', permissionData);
-
   const filterdEcomm = permissionData?.filter((e: any) => {
     return (
       e &&
-      e.type_name === Company &&
-      (e.permission_name === E_COMMERCE || e.permission_name === NON_E_COMMERCE)
+      e.type_name === Company
+      // &&
+      // (e.permission_name === E_COMMERCE || e.permission_name === NON_E_COMMERCE)
     );
   });
-
-  console.log('Permission Filtered Ecomm:', filterdEcomm);
 
   const option = filterdEcomm?.map((e: any) => ({
     name: e?.permission_name,
     email: e?.type_name,
     e,
   }));
-
-  console.log('Permission Options:', option);
 
   const permissionProps = permissionSelectedOption?.e;
 
@@ -322,9 +315,6 @@ const ShopForm = ({ initialValues }: { initialValues?: any }) => {
     control,
     name: 'settings.socials',
   });
-
-  console.log("fields", fields)
-
 
   const handleSelectChange = (selectedOption: any) => {
     setPermissionSelectedOption(selectedOption);
@@ -345,12 +335,10 @@ const ShopForm = ({ initialValues }: { initialValues?: any }) => {
     // Remove companyType from values
     const { companyType, ...filteredValues } = values;
 
-    console.log('settings**********', settings);
     try {
       if (initialValues) {
         const { ...restAddress } = filteredValues.address;
 
-        console.log("restAddress", restAddress)
         await updateShop({
           id: initialValues.id,
           ...filteredValues,
@@ -368,7 +356,7 @@ const ShopForm = ({ initialValues }: { initialValues?: any }) => {
         });
       } else {
         const { ...restAddress } = filteredValues.address;
-        console.log("restAddress-create", restAddress)
+
         await createShop({
           ...filteredValues,
           address: restAddress,
@@ -407,8 +395,6 @@ const ShopForm = ({ initialValues }: { initialValues?: any }) => {
   if (error) {
     return <div>Error: {error.message}</div>;
   }
-
-  console.log(' initialValues_____________________', initialValues);
 
   return (
     <>

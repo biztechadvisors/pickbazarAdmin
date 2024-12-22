@@ -47,12 +47,10 @@ export const checkoutAtom = atomWithStorage(CHECKOUT, defaultCheckout);
 export const clearCheckoutAtom = atom(null, (_get, set, _data) => {
   return set(checkoutAtom, defaultCheckout);
 });
-export const billingAddressAtom = atom((get) => get(checkoutAtom).billing_address,(get, set, data: Address) => {
-    const prev = get(checkoutAtom);
-    console.log("prev_____________________________________", prev)
-    console.log("billing_addess________________________________", data)
-    return set(checkoutAtom, { ...prev, billing_address: data, customer:data });
-  }
+export const billingAddressAtom = atom((get) => get(checkoutAtom).billing_address, (get, set, data: Address) => {
+  const prev = get(checkoutAtom);
+  return set(checkoutAtom, { ...prev, billing_address: data, customer: data });
+}
 );
 export const shippingAddressAtom = atom(
   (get) => get(checkoutAtom).shipping_address,

@@ -112,7 +112,7 @@ type FormValues = {
   promotional_sliders: AttachmentInput[];
   banners: BannerInput[];
   settings: TypeSettingsInput;
-  regions: any; 
+  regions: any;
 };
 
 type IProps = {
@@ -126,17 +126,17 @@ function SelectRegion({
   errors: FieldErrors;
 }) {
   const { locale } = useRouter();
-  const { t } = useTranslation(); 
+  const { t } = useTranslation();
 
   const { data: meData } = useMeQuery();
 
   const ShopSlugName = 'hilltop-marble';
   // const { data: me } = useMeQuery()
-   
+
   const { regions, loading, paginatorInfo, error } = useRegionsQuery({
     code: meData?.managed_shop?.slug,
-  }); 
-  console.log("REGION###",regions)
+  });
+
   if (error) {
     console.error("Error fetching regions:", error);
   }
@@ -151,7 +151,7 @@ function SelectRegion({
         options={regions?.items || []}
         isLoading={!regions} // Show loading state if regions data is not yet loaded
       />
-    <ValidationError message={t(errors.type?.message)} />
+      <ValidationError message={t(errors.type?.message)} />
     </div>
   );
 }
@@ -185,7 +185,7 @@ export default function CreateOrUpdateTypeForm({ initialValues }: IProps) {
           (singleIcon) => singleIcon.value === initialValues?.icon
         )
         : '',
-        // region: initialValues?.region || [],
+      // region: initialValues?.region || [],
     },
   });
   const { fields, append, remove } = useFieldArray({
@@ -199,14 +199,13 @@ export default function CreateOrUpdateTypeForm({ initialValues }: IProps) {
   const { mutate: createType, isLoading: creating } = useCreateTypeMutation();
   const { mutate: updateType, isLoading: updating } = useUpdateTypeMutation();
   const onSubmit = (values: FormValues) => {
-    console.log("Submitted Form Values:", values);
 
     const transformedRegions = values.regions?.name ? [values.regions.name] : [];
     const input = {
       language: router.locale,
       name: values.name!,
       icon: values.icon?.value,
-      region_name: transformedRegions ,
+      region_name: transformedRegions,
       settings: {
         isHome: values?.settings?.isHome,
         productCard: values?.settings?.productCard,
@@ -253,8 +252,8 @@ export default function CreateOrUpdateTypeForm({ initialValues }: IProps) {
         <Description
           title={t('form:item-description')}
           details={`${initialValues
-              ? t('form:item-description-update')
-              : t('form:item-description-add')
+            ? t('form:item-description-update')
+            : t('form:item-description-add')
             } ${t('form:type-description-help-text')}`}
           className="w-full px-0 pb-5 sm:w-4/12 sm:py-8 sm:pe-4 md:w-1/3 md:pe-5"
         />

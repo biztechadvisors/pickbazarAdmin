@@ -17,7 +17,6 @@ export const useCreateGetInspiredMutation = (shop_id) => {
   const queryClient = useQueryClient();
   const router = useRouter();
   const { t } = useTranslation();
-  console.log('ashasfahvsgf', shop_id);
 
   return useMutation((data) => getInspiredClient.create({ ...data, shop_id }), {
     // Changed to getInspiredClient

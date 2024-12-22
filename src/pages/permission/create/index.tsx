@@ -30,6 +30,10 @@ const CreatePermission = () => {
 
   const { permissions } = getAuthCredentials();
 
+  console.log("first", permissions)
+  console.log("second", typeName)
+  console.log("third", menusData)
+
   const [matched, _] = useAtom(newPermission);
 
   const permissionId = router.query.id;

@@ -17,6 +17,7 @@ import { ADMIN, DEALER, OWNER, STAFF, Company } from '@/utils/constants';
 import { addPermission } from '@/utils/atoms';
 
 const CreatePerm = ({ PermissionDatas }) => {
+  console.log("PermissionDatas******20", PermissionDatas)
   const router = useRouter();
   const { t } = useTranslation();
   const [typeName, setTypeName] = useState(PermissionDatas?.type_name);
@@ -38,11 +39,13 @@ const CreatePerm = ({ PermissionDatas }) => {
 
   const { id } = meData || {};
 
+  console.log("permissionId ***42", permissionId)
   const { data: singlePermissionData, isLoading } = useQuery(
     ['permissionById', permissionId],
     () => permissionClient.getPermissionById(permissionId),
     { enabled: !!permissionId }
   );
+  console.log("singlePermissionData ***48", singlePermissionData)
 
   const { mutateUpdate, mutatePost } = useSavePermissionData();
 
@@ -204,7 +207,7 @@ const CreatePerm = ({ PermissionDatas }) => {
 
   console.log('typeName', typeName);
   console.log('selectedType', selectedType);
-  console.log('PermissionDatas', PermissionDatas);
+  console.log('PermissionDatas***208', PermissionDatas);
 
   return (
     <div style={{ backgroundColor: 'white' }} className="modal">
@@ -226,9 +229,8 @@ const CreatePerm = ({ PermissionDatas }) => {
             <select
               id="typename"
               name="typename"
-              className={`mt-1 block w-full rounded-md border bg-gray-100 p-2 ${
-                typeError && 'border-red-500'
-              }`}
+              className={`mt-1 block w-full rounded-md border bg-gray-100 p-2 ${typeError && 'border-red-500'
+                }`}
               onChange={handleChange}
               value={selectedType}
             >
@@ -250,9 +252,8 @@ const CreatePerm = ({ PermissionDatas }) => {
               type="text"
               id="permission"
               name="permission"
-              className={`mt-1 block w-full rounded-md border bg-gray-100 p-2 ${
-                permissionError && 'border-red-500'
-              }`}
+              className={`mt-1 block w-full rounded-md border bg-gray-100 p-2 ${permissionError && 'border-red-500'
+                }`}
               placeholder={t('Enter permissions')}
               value={permissionName}
               onChange={handlePermissionNameChange}

@@ -37,7 +37,7 @@ const StockCard = ({ item, isChecked, inStock }: Props) => {
     sale_price,
     margin,
   } = item ?? {};
-  console.log("item",item)
+
   const {
     price: currentPrice,
     basePrice,
@@ -63,7 +63,7 @@ const StockCard = ({ item, isChecked, inStock }: Props) => {
   //       (permission) => permission.type === 'sidebar-nav-item-create-order'
   //     )?.write;
 
-  const permissionTypes = AllPermission(); 
+  const permissionTypes = AllPermission();
 
   const canWrite = permissionTypes.includes('sidebar-nav-item-create-order');
 

@@ -40,7 +40,6 @@ const NotificationMenu: React.FC<MenuType> = ({ data }) => {
     });
 
     socket.on('notification', (notification: ItemType) => {
-      console.log('New notification:', notification.message);
       setNotifications((prev) => [notification, ...prev]);
 
       // Display toast notification

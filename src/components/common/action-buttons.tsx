@@ -52,7 +52,6 @@ const ActionButtons = ({
   }
 
   function handleEditModal() {
-    console.log("checking***for***product", id)
     openModal(editModalView, id);
   }
 
