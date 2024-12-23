@@ -26,7 +26,7 @@ const PermissionComponent: React.FC & PermissionComponentProps = () => {
   // const { data: meData } = useMeQuery();
   // const id = meData?.id ?? '';
   const permissionTypes = AllPermission();
-
+console.log("permission####",permissions)
   const canWrite =
     permissionTypes.includes('sidebar-nav-item-permissions') ||
     permissions?.[0] === OWNER;
@@ -36,6 +36,7 @@ const PermissionComponent: React.FC & PermissionComponentProps = () => {
   //   error,
   //   data: permissionData,
   // } = usePermissionData(id);
+  console.log("CHeck")
   const { isLoading, error, data: permissionData } = usePermissionData();
 
   console.log("permissionData",permissionData)
@@ -143,8 +144,8 @@ const PermissionComponent: React.FC & PermissionComponentProps = () => {
 };
 
 // Assign Layout to the PermissionComponent
-// PermissionComponent.Layout = OwnerLayout;
-PermissionComponent.Layout = AdminLayout;
+PermissionComponent.Layout = OwnerLayout;
+// PermissionComponent.Layout = AdminLayout;
 
 export const getStaticProps = async ({ locale }: any) => ({
   props: {

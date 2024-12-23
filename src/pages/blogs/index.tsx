@@ -2,6 +2,7 @@ import BlogList from '@/components/blog/bloglist';
 import TypeFilter from '@/components/category/type-filter';
 import Card from '@/components/common/card';
 import Search from '@/components/common/search';
+import DateRegionFilter from '@/components/event/event-filter';
 import AdminLayout from '@/components/layouts/admin';
 import LinkButton from '@/components/ui/link-button';
 import { Routes } from '@/config/routes';
@@ -22,7 +23,9 @@ const Blogs = () => {
   const [page, setPage] = useState(1);
   const [orderBy, setOrder] = useState('updated_at');
   const [sortedBy, setColumn] = useState<SortOrder>(SortOrder.Desc);
-
+  const [region, setRegion] = useState('');
+  const [startDate, setStartDate] = useState('');
+  
   const shop: string | undefined = meData?.managed_shop?.id;
   const shopSlug = meData?.managed_shop?.slug;
 
@@ -34,6 +37,8 @@ const Blogs = () => {
     search: searchTerm,
     page,
     limit:10,
+    regionName: region,
+    ...(startDate && { startDate }),
   }); 
   function handleSearch({ searchText }: { searchText: string }) {
     setSearchTerm(searchText);
@@ -42,6 +47,16 @@ const Blogs = () => {
 
   function handlePagination(current: any) {
     setPage(current);
+  }
+  function handleRegionFilter(regionName: string) {
+    setRegion(regionName);
+    setPage(1);
+  }
+
+  function handleDateFilter(start: string | null) {
+    setStartDate(start as string);
+    // setEndDate(null);
+    setPage(1);
   }
   return (
     <>
@@ -56,7 +71,11 @@ const Blogs = () => {
             {/* <Search onSearch={handleSearch} /> */}
  
             {/* <TypeFilter className="md:ms-6" /> */}
-
+            <DateRegionFilter
+              onRegionFilter={handleRegionFilter}
+              onDateFilter={handleDateFilter}
+              className="w-full"
+            />
             <LinkButton
               href={`${Routes.blog.create}`}
               className="h-12 w-full md:w-auto md:ms-6"
