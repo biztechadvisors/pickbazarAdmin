@@ -17,7 +17,7 @@ import {
 } from '@/types';
 import { API_ENDPOINTS } from './api-endpoints';
 import { HttpClient } from './http-client';
-import { Company, DEALER, STAFF } from '@/utils/constants';
+import { Company, DEALER, OWNER, STAFF } from '@/utils/constants';
 import { CUSTOMER } from '@/lib/constants';
 
 export const userClient = {
@@ -26,7 +26,7 @@ export const userClient = {
       `${API_ENDPOINTS.ME}?username=${params.username}&sub=${params.sub}`
     )
       .then((response) => {
-        if (response.permission.type_name === Company) {
+        if (response.permission.type_name === Company || OWNER) {
           localStorage.setItem('userId', response.id);
         } else if (
           (response.permission.type_name === DEALER ||
@@ -70,7 +70,7 @@ export const userClient = {
   // register: (variables: RegisterInput) => {
   //   return HttpClient.post<AuthResponse>(API_ENDPOINTS.REGISTER, variables);
   // },
-  register:(variables: RegisterInput & { shopSlug: string }) => {
+  register: (variables: RegisterInput & { shopSlug: string }) => {
     const { shopSlug, ...restVariables } = variables;
     return HttpClient.post<AuthResponse>(
       `${API_ENDPOINTS.REGISTER}?shopSlug=${shopSlug}`,

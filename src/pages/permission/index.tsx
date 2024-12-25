@@ -23,23 +23,15 @@ const PermissionComponent: React.FC & PermissionComponentProps = () => {
   const { t } = useTranslation();
   const { permissions } = getAuthCredentials();
 
-  // const { data: meData } = useMeQuery();
-  // const id = meData?.id ?? '';
   const permissionTypes = AllPermission();
 console.log("permission####",permissions)
   const canWrite =
     permissionTypes.includes('sidebar-nav-item-permissions') ||
     permissions?.[0] === OWNER;
 
-  // const {
-  //   isLoading,
-  //   error,
-  //   data: permissionData,
-  // } = usePermissionData(id);
-  console.log("CHeck")
   const { isLoading, error, data: permissionData } = usePermissionData();
 
-  console.log("permissionData",permissionData)
+  console.log('permissionData', permissionData);
 
   function handleSearch({ searchText }: { searchText: string }) {
     // Implement search functionality here
@@ -59,7 +51,6 @@ console.log("permission####",permissions)
         </div>
 
         <div className="flex w-full flex-col items-center gap-x-5 ms-auto md:w-1/2 md:flex-row">
-          {/* <Search onSearch={handleSearch} /> */}
           {canWrite ? (
             <LinkButton href="/permission/create">Create Permission</LinkButton>
           ) : (
@@ -88,20 +79,27 @@ console.log("permission####",permissions)
                   <td className="border p-2">{e.permission_name}</td>
                   <td className="border p-2">
                     {e.permissions.length > 0
-                      ? e.permissions.slice(0, 3).map((permission: { type: string; }, i: React.Key | null | undefined) => (
-                        <React.Fragment key={i}>
-                          <li>
-                            {permission.type
-                              .replace('sidebar-nav-item-', '')
-                              .charAt(0)
-                              .toUpperCase() +
-                              permission.type
-                                .replace('sidebar-nav-item-', '')
-                                .slice(1)}
-                          </li>
-                          {i !== e.permissions.length - 1 && ' '}
-                        </React.Fragment>
-                      ))
+                      ? e.permissions
+                        .slice(0, 3)
+                        .map(
+                          (
+                            permission: { type: string },
+                            i: React.Key | null | undefined
+                          ) => (
+                            <React.Fragment key={i}>
+                              <li>
+                                {permission.type
+                                  .replace('sidebar-nav-item-', '')
+                                  .charAt(0)
+                                  .toUpperCase() +
+                                  permission.type
+                                    .replace('sidebar-nav-item-', '')
+                                    .slice(1)}
+                              </li>
+                              {i !== e.permissions.length - 1 && ' '}
+                            </React.Fragment>
+                          )
+                        )
                       : ''}
                   </td>
                   {canWrite ? (
@@ -143,9 +141,11 @@ console.log("permission####",permissions)
   );
 };
 
-// Assign Layout to the PermissionComponent
-PermissionComponent.Layout = OwnerLayout;
-// PermissionComponent.Layout = AdminLayout;
+// Determine layout conditionally based on permissions
+PermissionComponent.Layout =
+  getAuthCredentials().permissions?.[0] === OWNER
+    ? OwnerLayout
+    : AdminLayout;
 
 export const getStaticProps = async ({ locale }: any) => ({
   props: {

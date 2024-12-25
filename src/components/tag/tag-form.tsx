@@ -16,7 +16,7 @@ import FileInput from '@/components/ui/file-input';
 import SelectInput from '@/components/ui/select-input';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { tagValidationSchema } from './tag-validation-schema';
-import { useCreateTagMutation,  useUpdateTagMutation } from '@/data/tag';
+import { useCreateTagMutation, useUpdateTagMutation } from '@/data/tag';
 import { useTypesQuery } from '@/data/type';
 import OpenAIButton from '../openAI/openAI.button';
 import { useSettingsQuery } from '@/data/settings';
@@ -79,18 +79,18 @@ function SelectRegion({
   errors: FieldErrors;
 }) {
   const { locale } = useRouter();
-  const { t } = useTranslation(); 
+  const { t } = useTranslation();
 
   const { data: meData } = useMeQuery();
 
   const ShopSlugName = 'hilltop-marble';
   // const { data: me } = useMeQuery()
-  
- 
+
+
   const { regions, loading, paginatorInfo, error } = useRegionsQuery({
     code: meData?.managed_shop?.slug,
   });
- 
+
   if (error) {
     console.error("Error fetching regions:", error);
   }
@@ -105,7 +105,7 @@ function SelectRegion({
         options={regions?.items || []}
         isLoading={!regions} // Show loading state if regions data is not yet loaded
       />
-    <ValidationError message={t(errors.type?.message)} />
+      <ValidationError message={t(errors.type?.message)} />
     </div>
   );
 }
@@ -119,10 +119,15 @@ function SelectTypes({
 }) {
   const { locale } = useRouter();
   const { t } = useTranslation();
-   const { types, loading } = useTypesQuery({
-    limit: 999,
-    // type: type?.slug,
+
+
+  const { data: meData } = useMeQuery();
+
+  const shop_id: string | undefined = meData?.managed_shop?.id;
+
+  const { types, loading } = useTypesQuery({
     language: locale,
+    shop_id,
   });
   // console.log("types",types)
   return (
@@ -164,7 +169,7 @@ type FormValues = {
   details: string;
   image: any;
   icon: any;
-  region_name:string;
+  region_name: string;
 };
 
 const defaultValues = {
@@ -173,7 +178,7 @@ const defaultValues = {
   details: '',
   icon: '',
   type: '',
-  region_name:'',
+  region_name: '',
 };
 
 type IProps = {
@@ -187,7 +192,7 @@ export default function CreateOrUpdateTagForm({ initialValues }: IProps) {
   const [page, setPage] = useState(1);
   const [orderBy, setOrder] = useState('created_at');
   const [sortedBy, setColumn] = useState<SortOrder>(SortOrder.Desc);
- console.log("first+++++",initialValues)
+  console.log("first+++++", initialValues)
   const { data: meData } = useMeQuery();
 
   const shopSlug = meData?.managed_shop.slug;
@@ -244,10 +249,11 @@ export default function CreateOrUpdateTagForm({ initialValues }: IProps) {
 
   const { mutate: createTag, isLoading: creating } = useCreateTagMutation();
   const { mutate: updateTag, isLoading: updating } = useUpdateTagMutation();
-  
+
   const onSubmit = async (values: FormValues) => {
- 
+
     const transformedRegions = values.regions?.name ? [values.regions.name] : [];
+    console.log("shopSlug--256", shopSlug)
     const input = {
       language: router.locale,
       name: values.name,
@@ -259,17 +265,17 @@ export default function CreateOrUpdateTagForm({ initialValues }: IProps) {
       },
       icon: values.icon?.value ?? '',
       type_id: values.type?.id,
-      shop: shopSlug,
+      shopSlug: shopSlug,
       region_name: transformedRegions,
     };
-  
-    try { 
-      if (initialValues?.id) { 
+
+    try {
+      if (initialValues?.id) {
         updateTag({
           ...input,
-          id: initialValues.id,  
+          id: initialValues.id,
         });
-      } else { 
+      } else {
         createTag({
           ...input,
           ...(initialValues?.slug && { slug: initialValues.slug }),
@@ -279,7 +285,7 @@ export default function CreateOrUpdateTagForm({ initialValues }: IProps) {
       getErrorMessage(err);
     }
   };
-  
+
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
       <div className="my-5 flex flex-wrap border-b border-dashed border-gray-300 pb-8 sm:my-8">

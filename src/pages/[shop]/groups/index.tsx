@@ -56,13 +56,13 @@ export default function TypesPage() {
     language: locale,
     orderBy,
     sortedBy,
-    shop,
+    shop_id: shop || shopId,
     slug: shop_Slug,
-    search:searchTerm,
+    search: searchTerm,
     page,
-    limit:10,
+    limit: 10,
   });
- 
+
   const { permissions } = getAuthCredentials();
   const permissionTypes = AllPermission();
 
@@ -126,12 +126,12 @@ export default function TypesPage() {
           )}
         </div>
       </Card>
-      <TypeList 
-       paginatorInfo={paginatorInfo}
-       onPagination={handlePagination}
-      types={types}  
-      onOrder={setOrder} 
-      onSort={setColumn} />
+      <TypeList
+        paginatorInfo={paginatorInfo}
+        onPagination={handlePagination}
+        types={types}
+        onOrder={setOrder}
+        onSort={setColumn} />
     </>
   );
 }

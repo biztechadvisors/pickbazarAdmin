@@ -40,14 +40,16 @@ export const useDisApproveShopMutation = () => {
 export const useCreateShopMutation = () => {
   const queryClient = useQueryClient();
   const router = useRouter();
-
+  const { t } = useTranslation();
   return useMutation(shopClient.create, {
     onSuccess: () => {
       const { permissions } = getAuthCredentials();
       if (hasAccess(adminOnly, permissions)) {
-        return router.push(Routes.adminMyShops);
+        toast.success(t('common:successfully-created'));
+        return router.push(Routes.shop-list);
       }
-      router.push(Routes.dashboard);
+      // router.push(Routes.dashboard);
+      router.push(Routes.shop-list);
     },
     // Always refetch after error or success:
     onSettled: () => {
