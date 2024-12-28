@@ -55,7 +55,7 @@ export default function Categories() {
     language: locale,
     search:searchTerm,
   });
-  const totalPages = Math.ceil((paginatorInfo?.total || 0) / (paginatorInfo?.perPage || 1));
+  const totalPages = Math.ceil((paginatorInfo?.total || 0) / (paginatorInfo?.perPage || 10));
   useEffect(() => {
     if (page > totalPages) setPage(1);
   }, [paginatorInfo?.total, paginatorInfo?.perPage, page]);

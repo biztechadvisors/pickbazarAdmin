@@ -16,14 +16,14 @@ import OwnerLayout from '@/components/layouts/owner';
 import { ADMIN, DEALER, OWNER, STAFF, Company } from '@/utils/constants';
 import { addPermission } from '@/utils/atoms';
 
-const CreatePerm = ({ PermissionDatas }) => {
+const CreatePerm = ({ onPermissionCreate,PermissionDatas,selectedPermissions,setSelectedPermissions,onSaveSuccess}) => {
   const router = useRouter();
   const { t } = useTranslation();
   const [typeName, setTypeName] = useState(PermissionDatas?.type_name);
   const [selectedType, setSelectedType] = useState('');
   const [menusData, setMenusData] = useState(PermissionJson.Advance_Permission);
   const [permissionName, setPermissionName] = useState('');
-  const [selectedPermissions, setSelectedPermissions] = useState([]);
+  // const [selectedPermissions, setSelectedPermissions] = useState([]);
   const [typeError, setTypeError] = useState('');
   const [permissionError, setPermissionError] = useState('');
   const [matchedAdd, setMatchedAdd] = useAtom(addPermission);
@@ -64,7 +64,7 @@ const CreatePerm = ({ PermissionDatas }) => {
 
   const handleChange = (e) => {
     setSelectedType(e.target.value);
-    setTypeError('');
+    setTypeError(''); 
   };
 
   const handlePermissionNameChange = (e) => {
@@ -117,18 +117,19 @@ const CreatePerm = ({ PermissionDatas }) => {
       typeToSend = firstType;
       setSelectedType(firstType);
     }
-
     const dataToSend = {
       type_name: typeToSend,
       user: id,
-      permissionName: permissionName,
+      permission_name: permissionName,
       permissions: selectedPermissions,
+      additionalPermission: true, 
     };
     const dataToSend2 = {
       type_name: typeToSend,
       user: id,
       permission_name: permissionName,
       permissions: selectedPermissions,
+          additionalPermission: true, 
     };
 
     try {
@@ -136,9 +137,16 @@ const CreatePerm = ({ PermissionDatas }) => {
         const permissionId = router.query.id;
         await mutateUpdate({ permissionId, dataToSend });
       } else {
-        await mutatePost(dataToSend2);
-
-        setMatchedAdd((prev) => [...prev, dataToSend2.permission_name]);
+        await mutatePost(dataToSend);
+        setMatchedAdd((prev) => [...prev, dataToSend.permission_name]);
+  
+        // Trigger the callback to pass the new permission
+        if (onPermissionCreate) {
+          onPermissionCreate(dataToSend); // Pass the new permission back to parent
+        }
+      }
+      if (onSaveSuccess) {
+        onSaveSuccess(); // Close modal
       }
     } catch (error) {
       console.error('Error saving/updating permission:', error);
@@ -201,10 +209,6 @@ const CreatePerm = ({ PermissionDatas }) => {
       setTypeName(updatedTypeName);
     }
   }, []);
-
-  console.log('typeName', typeName);
-  console.log('selectedType', selectedType);
-  console.log('PermissionDatas', PermissionDatas);
 
   return (
     <div style={{ backgroundColor: 'white' }} className="modal">

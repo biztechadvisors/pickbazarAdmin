@@ -268,7 +268,7 @@ const defaultValues = {
   numberOfDealers: 0, // Added default value for new field
 };
 
-const CustForm = () => {
+const CustForm = ({onSaveSuccess}) => {
   const { t } = useTranslation();
   const router = useRouter();
   const { data: meData, isLoading: meLoading } = useMeQuery();
@@ -345,6 +345,11 @@ const CustForm = () => {
               message: error?.response?.data[field][0],
             });
           });
+        },
+        onSuccess: () => {
+          if (onSaveSuccess) {
+            onSaveSuccess(); // Close the modal here
+          }
         },
       }
     );

@@ -6,7 +6,7 @@ import ErrorMessage from '@/components/ui/error-message';
 import LinkButton from '@/components/ui/link-button';
 import Loader from '@/components/ui/loader/loader';
 import { useTaxesQuery } from '@/data/tax';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useTranslation } from 'next-i18next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import { Routes } from '@/config/routes';
@@ -35,7 +35,12 @@ export default function TaxesPage() {
     page,
     limit:10,
   });
+  console.log("paginatorInfo",paginatorInfo);
 
+  const totalPages = Math.ceil((paginatorInfo?.total || 0) / (paginatorInfo?.perPage || 10));
+  useEffect(() => {
+    if (page > totalPages) setPage(1);
+  }, [paginatorInfo?.total, paginatorInfo?.perPage, page]);
 
   const { permissions } = getAuthCredentials();
 

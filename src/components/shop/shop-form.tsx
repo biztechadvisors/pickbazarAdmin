@@ -36,7 +36,7 @@ import { getAuthCredentials } from '@/utils/auth-utils';
 import { SUPER_ADMIN, Company, OWNER, E_COMMERCE, NON_E_COMMERCE } from '@/utils/constants';
 import { useModalAction } from '../ui/modal/modal.context';
 import OpenAIButton from '../openAI/openAI.button';
-import { useCallback, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useSettingsQuery } from '@/data/settings';
 import {
   useMeQuery,
@@ -158,7 +158,7 @@ type SelectUserProps = {
 function SelectUser({ control, errors }: SelectUserProps) {
   const { t } = useTranslation();
   const { data } = useMeQuery();
-  const usrById = data?.shop_id;  
+  const usrById = data?.shop_id;
   const { permissions } = getAuthCredentials();
   const isOwner = permissions?.[0].includes(OWNER);
   const { data: users, isLoading } = useVendorQuery(data?.id);
@@ -202,7 +202,7 @@ function SelectUser({ control, errors }: SelectUserProps) {
       <ValidationError message={t(errors.user?.message)} />
       <Modal open={isModalOpen} onClose={closeModal}>
         {/* <CustomerCreateForm /> */}
-        <CustForm />
+        <CustForm onSaveSuccess={closeModal}/>
       </Modal>
     </div>
   );
@@ -214,20 +214,57 @@ const ShopForm = ({ initialValues }: { initialValues?: any }) => {
   const [modalIsOpen, setIsOpen] = useState(false);
   const [permissionSelectedOption, setPermissionSelectedOption] =
     useAtom(selectedOption);
-  const [additionalPerm] = useAtom(addPermission);
+    const [additionalPerm, setAdditionalPerm] = useAtom(addPermission);
   const { permissions } = getAuthCredentials();
+  const [selectedPermissions, setSelectedPermissions] = useState([]); 
+  const [isChecked, setIsChecked] = useState(false);
+  console.log("selectesPermission+++",selectedPermissions)
 
 
+  const handleCheckboxChange = () => {
+    setIsChecked(!isChecked);
+  };
+  // const [permissionsss, setPermissionsss] = useState({}); 
+  // useEffect(() => {
+  //   fetch('/static/permission.json')
+  //     .then((res) => res.json())
+  //     .then((data) => setPermissionsss(data.Advance_Permission));
+  // }, []);
+  // const handlePermissionUpdate = (newPermission: string) => {
+  //   if (newPermission) {
+  //     setAdditionalPerm((prev) => [...prev, newPermission]);
+  //   }
+  //   closeModal();
+  // };
+  const handlePermissionUpdate = (newPermission: any) => {
+    // Ensure newPermission is formatted correctly for the options
+    console.log("first---", newPermission);
+    const permissionWithLabel = {
+      id: newPermission.id, 
+      type_name: newPermission.type_name,
+      permission_name: newPermission.permission_name,
+    };
+  const currentPermissions = getValues('additionalPermissions') || []; // Get current field value
+  const updatedPermissions = [...currentPermissions, newPermission];
+
+  setAdditionalPerm(updatedPermissions); // Update local state (optional)
+
+  // Set value for the additionalPermissions field
+  setValue('additionalPermissions', updatedPermissions);
+
+  // Update the permission field (autofill)
+  // setValue('permission', permissionWithLabel); // Update the default value with correctly formatted object
+  };
   function openModal() {
     setIsOpen(true);
   }
-
+ 
   function closeModal() {
     setIsOpen(false);
   }
-
+ 
   const permissionId = permissionSelectedOption?.e?.id;
-
+ 
   const {
     register,
     handleSubmit,
@@ -240,28 +277,28 @@ const ShopForm = ({ initialValues }: { initialValues?: any }) => {
     shouldUnregister: true,
     ...(initialValues
       ? {
-          defaultValues: {
-            ...initialValues,
-            logo: getFormattedImage(initialValues.logo),
-            cover_image: getFormattedImage(initialValues.cover_image),
-            settings: {
-              ...initialValues?.settings,
-              socials: initialValues?.settings?.socials
-                ? initialValues?.settings?.socials.map((social: any) => ({
-                    icon: updatedIcons?.find(
-                      (icon) => icon?.value === social?.icon
-                    ),
-                    url: social?.url,
-                  }))
-                : [],
-            },
+        defaultValues: {
+          ...initialValues,
+          logo: getFormattedImage(initialValues.logo),
+          cover_image: getFormattedImage(initialValues.cover_image),
+          settings: {
+            ...initialValues?.settings,
+            socials: initialValues?.settings?.socials
+              ? initialValues?.settings?.socials.map((social: any) => ({
+                icon: updatedIcons?.find(
+                  (icon) => icon?.value === social?.icon
+                ),
+                url: social?.url,
+              }))
+              : [],
           },
-        }
+        },
+      }
       : {}),
     resolver: yupResolver(shopValidationSchema),
   });
   const router = useRouter();
-  console.log("control",control)
+ 
   // const { openModal } = useModalAction();
   const { locale } = router;
   const { data, isLoading: loading, isError } = useMeQuery();
@@ -271,42 +308,48 @@ const ShopForm = ({ initialValues }: { initialValues?: any }) => {
   } = useSettingsQuery({
     language: locale!,
   });
-
+ 
   const generateName = watch('name');
   const autoSuggestionList = useMemo(() => {
     return chatbotAutoSuggestion({ name: generateName ?? '' });
   }, [generateName]);
-
+ 
   const userId = data?.id;
-
+ 
   const {
     isLoading: permissionLoading,
     error,
     data: permissionData,
   } = usePermissionData(userId);
-
-  console.log("permissionData",permissionData)
-
+ 
   const filterdEcomm = permissionData?.filter((e: any) => {
-    return (
-      (e && // Ensure the object exists
-        e.type_name === Company &&
-        e.permission_name === E_COMMERCE) ||
-      (e.type_name === Company && e.permission_name === NON_E_COMMERCE )
-    );
+    return e && e.type_name === Company;
   });
-
-  const option = filterdEcomm?.map((e: any) => ({
-    name: e?.permission_name,
-    email: e?.type_name,
+ 
+  // Separate permissions based on additionalPermission
+  const additionalPermissionTrue = filterdEcomm?.filter((e: any) => {
+    return e?.additionalPermission === false;
+  });
+ 
+  const additionalPermissionFalse = filterdEcomm?.filter((e: any) => {
+    return e?.additionalPermission === true;
+  });
+ 
+  // Map options for each category
+  const additionalPermissionOptions = additionalPermissionTrue?.map((e: any) => ({
+    permission_name: e?.permission_name,
+    type_name: e?.type_name,
     e,
   }));
-  console.log('Fetched Permission Data:', permissionData);
-  console.log('Permission Filtered Ecomm:', filterdEcomm);
-  console.log('Permission Options:', option);
+ console.log("additionalPermissionOptions+++",additionalPermissionOptions)
+  const permissionOptions = additionalPermissionFalse?.map((e: any) => ({
+    permission_name: e?.permission_name,
+    type_name: e?.type_name,
+    e,
+  }));
+ 
   const permissionProps = permissionSelectedOption?.e;
-
-
+ 
   const handleGenerateDescription = useCallback(() => {
     openModal('GENERATE_DESCRIPTION', {
       control,
@@ -316,137 +359,43 @@ const ShopForm = ({ initialValues }: { initialValues?: any }) => {
       suggestion: autoSuggestionList as ItemProps[],
     });
   }, [generateName]);
-
+ 
   const { t } = useTranslation();
   const { fields, append, remove } = useFieldArray({
     control,
     name: 'settings.socials',
   });
-
-  console.log("fields",fields)
  
-
   const handleSelectChange = (selectedOption: any) => {
     setPermissionSelectedOption(selectedOption);
   };
-
-  // async function onSubmit(values: FormValues) {
-  //   const settings = {
-  //     ...values?.settings,
-  //     location: { ...omit(values?.settings?.location, '__typename') },
-  //     socials: values?.settings?.socials
-  //       ? values?.settings?.socials?.map((social: any) => ({
-  //           icon: social?.icon?.value,
-  //           url: social?.url,
-  //         }))
-  //       : [],
-  //   };
-
-  //   const { companyType, ...filteredValues } = values;
-
-  //   console.log('settings**********', settings);
-  //   try {
-  //     if (initialValues) {
-  //       const { ...restAddress } = values.address;
-  //       await updateShop({
-  //         id: initialValues.id,
-  //         ...values,
-  //         address: restAddress,
-  //         settings,
-  //         balance: {
-  //           id: initialValues.balance?.id,
-  //           ...values.balance,
-  //         },
-  //       });
-  //     } else {
-  //       await createShop({
-  //         ...values,
-  //         settings,
-  //         balance: {
-  //           ...values.balance,
-  //         },
-  //         additionalPermissions: {},
-  //         permission: permissionProps,
-  //       });
-  //     }
-  //     router.push('/shops'); // Navigate to the shops list or appropriate page
-  //   } catch (error) {
-  //     console.error('Error while saving the shop:', error);
-  //   }
-  // }
-
-  // async function onSubmit(values: FormValues) {
-  //   const settings = {
-  //     ...values?.settings,
-  //     location: { ...omit(values?.settings?.location, '__typename') },
-  //     socials: values?.settings?.socials
-  //       ? values?.settings?.socials?.map((social: any) => ({
-  //           icon: social?.icon?.value,
-  //           url: social?.url,
-  //         }))
-  //       : [],
-  //   };
-
-  //   // Remove companyType from values
-  //   const { companyType, ...filteredValues } = values;
-
-  //   console.log('settings**********', settings);
-  //   try {
-  //     if (initialValues) {
-  //       const { ...restAddress } = filteredValues.address;
-  //       await updateShop({
-  //         id: initialValues.id,
-  //         ...filteredValues,
-  //         address: restAddress,
-  //         settings,
-  //         balance: {
-  //           id: initialValues.balance?.id,
-  //           ...filteredValues.balance,
-  //         },
-  //       });
-  //     } else {
-  //       await createShop({
-  //         ...filteredValues,
-  //         settings,
-  //         balance: {
-  //           ...filteredValues.balance,
-  //         },
-  //         additionalPermissions: additionalPerm, // Ensure this is set as needed
-  //         permission: permissionProps?.permission_name,
-  //       });
-  //     }
-  //     router.push('/shops'); // Navigate to the shops list or appropriate page
-  //   } catch (error) {
-  //     console.error('Error while saving the shop:', error);
-  //   }
-  // }
-
+ 
   async function onSubmit(values: FormValues) {
+    console.log("Valuess",values)
     const settings = {
       ...values?.settings,
       location: { ...omit(values?.settings?.location, '__typename') },
       socials: values?.settings?.socials
         ? values?.settings?.socials?.map((social: any) => ({
-            icon: social?.icon?.value,
-            url: social?.url,
-          }))
+          icon: social?.icon?.value,
+          url: social?.url,
+        }))
         : [],
     };
-
+ 
     // Remove companyType from values
     const { companyType, ...filteredValues } = values;
-
-    console.log('settings**********', settings);
+ console.log("filteredValues",filteredValues)
     try {
       if (initialValues) {
         const { ...restAddress } = filteredValues.address;
-
-        console.log("restAddress", restAddress)
+ 
         await updateShop({
           id: initialValues.id,
           ...filteredValues,
           address: restAddress,
           settings,
+          additionalPermissions: additionalPerm,
           balance: {
             id: initialValues.balance?.id,
             ...filteredValues.balance,
@@ -459,7 +408,7 @@ const ShopForm = ({ initialValues }: { initialValues?: any }) => {
         });
       } else {
         const { ...restAddress } = filteredValues.address;
-        console.log("restAddress-create", restAddress)
+ 
         await createShop({
           ...filteredValues,
           address: restAddress,
@@ -481,7 +430,7 @@ const ShopForm = ({ initialValues }: { initialValues?: any }) => {
       console.error('Error while saving the shop:', error);
     }
   }
-
+ 
   const coverImageInformation = (
     <span>
       {t('form:shop-cover-image-help-text')} <br />
@@ -489,6 +438,7 @@ const ShopForm = ({ initialValues }: { initialValues?: any }) => {
       <span className="font-bold">1170 x 435{t('common:text-px')}</span>
     </span>
   );
+ 
 
   // Fixed the loading and error handling.
   if (permissionLoading || creating || updating) {
@@ -510,42 +460,70 @@ const ShopForm = ({ initialValues }: { initialValues?: any }) => {
             details={t('form:shop-company-help-text')}
             className="w-full px-0 pb-5 sm:w-4/12 sm:py-8 sm:pe-4 md:w-1/3 md:pe-5"
           />
-          <Card className="w-full sm:w-8/12 md:w-2/3">
+       <Card className="w-full sm:w-8/12 md:w-2/3">
             <div className="relative mb-5">
               <Label>{t('form:input-label-select-company')}</Label>
               <SelectInput
-                name="companyType"
-                placeholder="Choose company type"
+                name="permission"
+                placeholder="Select permissions"
                 control={control}
-                getOptionLabel={(option: any) =>
-                  `${option.name} - ${option.email}`
-                }
-                getOptionValue={(option: any) => option}
-                options={option}
+                getOptionLabel={(option: any) => `${option.type_name} - ${option.permission_name}`}
+                getOptionValue={(option: any) => option.id}
+                options={additionalPermissionOptions}
                 isSearchable={true}
-                filterOption={(option: any, inputValue: any) => {
-                  const searchValue = inputValue.toLowerCase();
-                  return (
-                    option.name.toLowerCase().includes(searchValue) ||
-                    option.email.toLowerCase().includes(searchValue)
-                  );
-                }}
                 onChange={handleSelectChange}
-                defaultValue={control._defaultValues.owner}
+                defaultValue={control._defaultValues?.additionalPermission}
               />
             </div>
-            <div className="relative">
-              <Label>{t('form:input-label-extra-permission')}</Label>
-              <Button onClick={openModal}>
-                {t('form:button-label-more-permission')}
-              </Button>
-              <Modal open={modalIsOpen} onClose={closeModal}>
-                <CreatePerm
-                  PermissionDatas={permissionProps}
-                  permissionId={permissionId}
-                />
-              </Modal>
+ 
+            <div className="relative mb-5">
+              <Label>{t('form:button-label-more-permission')}</Label>
+              <SelectInput
+                name="additionalPermissions"
+                placeholder="Select additional permissions"
+                control={control}
+                getOptionLabel={(option: any) => `${option.type_name} - ${option.permission_name}`}
+                getOptionValue={(option: any) => option.id}
+                options={permissionOptions}
+                isSearchable={true}
+                onChange={handleSelectChange}
+                defaultValue={control._defaultValues?.permission || watch('permission')}
+                // defaultValue={watch('permission')} 
+                // onAddPermission={handlePermissionUpdate}
+              />
             </div>
+             <div className="relative">
+            
+      <div className="flex items-center space-x-2">
+        <input
+          type="checkbox"
+          id="extraPermission"
+          checked={isChecked}
+          onChange={handleCheckboxChange}
+          className="form-checkbox h-4 w-4 text-blue-600 mb-5"
+        />
+        <Label>{t('form:input-label-extra-permission')}</Label>
+      </div>
+
+      {/* Conditionally Render Button */}
+      {isChecked && (
+        <Button onClick={openModal}>
+          {t('form:button-label-more-permission')}
+        </Button>
+      )}
+
+      {/* Modal */}
+      <Modal open={modalIsOpen} onClose={closeModal}>
+        <CreatePerm
+          PermissionDatas={permissionProps}
+          selectedPermissions={selectedPermissions}
+          setSelectedPermissions={setSelectedPermissions}
+          permissionId={permissionId}
+          onSaveSuccess={closeModal}
+          onPermissionCreate={handlePermissionUpdate}
+        />
+      </Modal>
+    </div>
           </Card>
         </div>
         <div className="my-5 flex flex-wrap border-b border-dashed border-border-base pb-8 sm:my-8">

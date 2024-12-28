@@ -110,7 +110,7 @@ function SelectRegion({
   const { data: meData } = useMeQuery();
   const ShopSlugName = 'hilltop-marble';
   // const { data: me } = useMeQuery()
-  
+
 
   const { regions, loading, paginatorInfo, error } = useRegionsQuery({
     code: meData?.managed_shop?.slug,
@@ -143,7 +143,17 @@ function SelectTypes({
 }) {
   const { locale } = useRouter();
   const { t } = useTranslation();
-  const { types, loading } = useTypesQuery({ language: locale });
+
+  const { data: meData } = useMeQuery();
+
+  const shop_id: string | undefined = meData?.managed_shop?.id;
+
+  const { types, paginatorInfo, loading, error } = useTypesQuery({
+    // name: searchTerm,
+    language: locale,
+    shop_id,
+  });
+
   return (
     <div className="mb-5">
       <Label>{t('form:input-label-types')}</Label>
@@ -182,11 +192,20 @@ function SelectCategories({
       setValue('parent', []);
     }
   }, [type?.slug]);
+
+  const { data: meData } = useMeQuery();
+
+  const shop: string | undefined = meData?.managed_shop?.id;
+  const shopSlug = meData?.managed_shop?.slug;
+
   const { categories, loading } = useCategoriesQuery({
+    // shop,
     limit: 10,
-    type: type?.slug,
+    type,
+    shopId: shop,
+    shopSlug,
+    parent: null,
     language: locale,
-    // shopId,
   });
   return (
     <div>
@@ -206,7 +225,7 @@ function SelectCategories({
 }
 
 type FormValues = {
-  regions: any; 
+  regions: any;
   name: string;
   details: string;
   parent: any;
@@ -248,21 +267,21 @@ export default function CreateOrUpdateCategoriesForm({
     //@ts-ignore
     defaultValues: initialValues
       ? {
-          ...initialValues,
-          icon: initialValues?.icon
-            ? categoryIcons.find(
-                (singleIcon) => singleIcon.value === initialValues?.icon!
-              )
-            : '',
-            // region: initialValues.regions?.length > 0 ? initialValues.regions[0]?.name : '', 
-          ...(isNewTranslation && {
-            type: null,
-          }),
-        }
+        ...initialValues,
+        icon: initialValues?.icon
+          ? categoryIcons.find(
+            (singleIcon) => singleIcon.value === initialValues?.icon!
+          )
+          : '',
+        // region: initialValues.regions?.length > 0 ? initialValues.regions[0]?.name : '', 
+        ...(isNewTranslation && {
+          type: null,
+        }),
+      }
       : defaultValues,
     resolver: yupResolver(categoryValidationSchema),
   });
- 
+
   const { openModal } = useModalAction();
   const { locale } = router;
   const {
@@ -294,7 +313,7 @@ export default function CreateOrUpdateCategoriesForm({
 
   const onSubmit = async (values: FormValues) => {
     const shopIdFromLocalStorage = localStorage.getItem("shopId");
-console.log("shopIdFromLocalStorage",shopIdFromLocalStorage)
+    console.log("shopIdFromLocalStorage", shopIdFromLocalStorage)
     if (!shopIdFromLocalStorage) {
       console.error("Shop ID not found in localStorage");
       return;
@@ -355,11 +374,10 @@ console.log("shopIdFromLocalStorage",shopIdFromLocalStorage)
       <div className="my-5 flex flex-wrap sm:my-8">
         <Description
           title={t('form:input-label-description')}
-          details={`${
-            initialValues
-              ? t('form:item-description-edit')
-              : t('form:item-description-add')
-          } ${t('form:category-description-helper-text')}`}
+          details={`${initialValues
+            ? t('form:item-description-edit')
+            : t('form:item-description-add')
+            } ${t('form:category-description-helper-text')}`}
           className="w-full px-0 pb-5 sm:w-4/12 sm:py-8 sm:pe-4 md:w-1/3 md:pe-5 "
         />
 

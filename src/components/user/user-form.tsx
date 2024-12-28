@@ -53,9 +53,9 @@ const CustomerCreateForm = () => {
 
   console.log("permissionData",permissionData)
 
-  const shopSlug =
-    typeof window !== 'undefined' ? localStorage.getItem('shopSlug') : null;
-
+  const shopSlug ="hilltop-marble"
+//     typeof window !== 'undefined' ? localStorage.getItem('shopSlug') : null;
+console.log("shopSlug",shopSlug)
   const { data: shopData, isLoading: fetchingShopId } = useShopQuery({
     slug: shopSlug as string,
   });

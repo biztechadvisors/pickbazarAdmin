@@ -102,7 +102,9 @@ export default function CreateOrUpdateCouponForm({ initialValues }: IProps) {
   const { t } = useTranslation();
   const validDate = (date: any) => 
     isNaN(new Date(date).getTime()) ? new Date() : new Date(date);
-  
+  console.log("initialValues",initialValues);
+
+
   const { control, handleSubmit, register, watch, setError, setValue, formState: { errors } } = useForm<FormValues>({
     defaultValues: initialValues
       ? {
@@ -151,7 +153,8 @@ export default function CreateOrUpdateCouponForm({ initialValues }: IProps) {
   const onSubmit = async (values: FormValues) => {
     const activeFromDate = new Date(values.active_from);
     const expireAtDate = new Date(values.expire_at);
-  
+    console.log("values",initialValues);
+
     if (isNaN(activeFromDate.getTime()) || isNaN(expireAtDate.getTime())) {
       console.error('Invalid date values');
       return;
@@ -171,9 +174,10 @@ export default function CreateOrUpdateCouponForm({ initialValues }: IProps) {
         id: values?.image?.id,
       },
     };
-  
+
     try {
       if (initialValues) {
+    console.log("input",input);
         // Perform update
         updateCoupon({
           ...input,
