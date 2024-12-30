@@ -57,10 +57,11 @@ export default function StaffsPage() {
     email: searchTerm,
     limit: 10,
     page: page,
-    name: searchTerm,
+    // name: searchTerm,
     // orderBy,
     // sortedBy,
     role: 'user',
+    search:searchTerm,
   });
 
   console.log('data?.id', data?.id);
