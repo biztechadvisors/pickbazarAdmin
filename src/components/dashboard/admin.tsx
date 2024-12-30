@@ -28,7 +28,7 @@ export default function Dashboard() {
   const DealerShow = meData?.permission.type_name === DEALER;
   const ShopShow = meData?.permission.type_name === Company;
 
-  const shopId = meData?.id;
+  const shopId = meData?.managed_shop?.id;
 
   const analyticsQuery = {
     customerId: parseInt(customerId),

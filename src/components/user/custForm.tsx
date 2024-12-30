@@ -17,7 +17,7 @@ import { useMeQuery, useRegisterMutation } from '@/data/user';
 import { usePermissionData } from '@/data/permission';
 import { useShopQuery } from '@/data/shop';
 import { useAtom } from 'jotai';
-import { selectedOption } from '@/utils/atoms';
+import { selectedOption, setUsrEmailState } from '@/utils/atoms';
 import { customerValidationSchema } from './user-validation-schema';
 import { getAuthCredentials } from '@/utils/auth-utils';
 import { Company, DEALER } from '@/utils/constants';
@@ -41,15 +41,15 @@ const defaultValues: FormValues = {
   numberOfDealers: 0,
 };
 
-const CustForm = () => {
+const CustForm = ({ onClose, onUserCreated }: { onClose: () => void; onUserCreated: (newUser: any) => void }) => {
   const { t } = useTranslation();
   const router = useRouter();
   const { data: meData, isLoading: meLoading } = useMeQuery();
-  const { mutate: registerUser, isLoading: loading } = useRegisterMutation();
+  const { mutateAsync: registerUser, isLoading: loading, data: response } = useRegisterMutation();
   const { id } = meData || {};
   const { data: permissionData } = usePermissionData(id);
   const { permissions } = getAuthCredentials();
-  const [selectedPermissionType] = useAtom(selectedOption);
+  const [selectedPermissionType] = useState<any>(null); // Assuming selected permission type is already handled
 
   const shopSlug =
     typeof window !== 'undefined' ? localStorage.getItem('shopSlug') : null;
@@ -93,28 +93,36 @@ const CustForm = () => {
     password,
     contact,
   }: FormValues) {
-    registerUser(
-      {
+    try {
+      const response = await registerUser({
         name,
         email,
         password,
         contact,
         createdBy: id,
         permission: selectedPermissionType?.e,
-      },
-      {
-        onError: (error: any) => {
-          Object.keys(error?.response?.data).forEach((field: string) => {
-            setError(field as keyof FormValues, {
-              type: 'manual',
-              message: error?.response?.data[field][0],
-            });
-          });
-        },
+        shopSlug: '',
+      });
+
+      if (response?.user) {
+        // Notify the parent component about the new user
+        onUserCreated(response.user);
+        onClose(); // Close modal after successful user registration
+      } else {
+        console.warn('User or email not found in response:', response);
       }
-    );
+    } catch (error: any) {
+      console.error('Error in onSubmit:', error);
+      if (error?.response?.data) {
+        Object.keys(error.response.data).forEach((field: string) => {
+          setError(field as keyof FormValues, {
+            type: 'manual',
+            message: error.response.data[field][0],
+          });
+        });
+      }
+    }
   }
-  const typeName = selectedPermissionType?.e?.permission_name;
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} noValidate>
@@ -165,7 +173,7 @@ const CustForm = () => {
         />
         <Label className="mt-4">{t('form:input-label-type')}</Label>
         <Select
-          defaultValue={typeName ? { value: typeName, label: typeName } : null}
+          defaultValue={null}
           getOptionLabel={(option: { label: string }) => option.label}
           getOptionValue={(option: { value: string }) => option.value}
           options={permissionOptions}
@@ -173,23 +181,10 @@ const CustForm = () => {
           isLoading={loading}
           className="mb-4"
         />
-        {permissions[0] === Company ? (
-          <Input
-            label={t('form:input-label-dealers')}
-            {...register('numberOfDealers')}
-            type="number"
-            variant="outline"
-            className="mb-4"
-            error={t(errors.numberOfDealers?.message!)}
-          />
-        ) : null}
         <div className="mt-4 flex justify-end space-x-4">
           <Button
             variant="outline"
-            onClick={() => {
-              // Reset the form or handle other actions to keep the user on the same page
-              console.log('Back button clicked. Staying on the current page.');
-            }}
+            onClick={onClose} // Close modal
             className="me-4"
             type="button"
           >

@@ -14,10 +14,9 @@ import { newPermission } from '@/contexts/permission/storepermission';
 import { useAtom } from 'jotai';
 import OwnerLayout from '@/components/layouts/owner';
 import { ADMIN, DEALER, OWNER, STAFF, Company } from '@/utils/constants';
-import { addPermission } from '@/utils/atoms';
+// import { addPermission } from '@/utils/atoms';
 
 const CreatePerm = ({ PermissionDatas }) => {
-  console.log("PermissionDatas******20", PermissionDatas)
   const router = useRouter();
   const { t } = useTranslation();
   const [typeName, setTypeName] = useState(PermissionDatas?.type_name);
@@ -27,25 +26,26 @@ const CreatePerm = ({ PermissionDatas }) => {
   const [selectedPermissions, setSelectedPermissions] = useState([]);
   const [typeError, setTypeError] = useState('');
   const [permissionError, setPermissionError] = useState('');
-  const [matchedAdd, setMatchedAdd] = useAtom(addPermission);
+  // const [matchedAdd, setMatchedAdd] = useAtom(addPermission);
 
   const { permissions } = getAuthCredentials();
 
   const [matched, _] = useAtom(newPermission);
 
   const permissionId = router.query.id;
+  console.log("permissionId **36", permissionId)
 
   const { data: meData } = useMeQuery();
 
   const { id } = meData || {};
 
-  console.log("permissionId ***42", permissionId)
   const { data: singlePermissionData, isLoading } = useQuery(
     ['permissionById', permissionId],
     () => permissionClient.getPermissionById(permissionId),
     { enabled: !!permissionId }
   );
-  console.log("singlePermissionData ***48", singlePermissionData)
+
+  console.log("singlePermissionData 48", singlePermissionData)
 
   const { mutateUpdate, mutatePost } = useSavePermissionData();
 
@@ -109,11 +109,12 @@ const CreatePerm = ({ PermissionDatas }) => {
   };
 
   const handleSavePermission = async () => {
+    console.log('first')
     if (!permissionName) {
       setPermissionError('Please enter a permission name.');
       return;
     }
-
+    console.log("second")
     let typeToSend = selectedType;
     if (!selectedType) {
       const firstType = typeName;
@@ -141,7 +142,7 @@ const CreatePerm = ({ PermissionDatas }) => {
       } else {
         await mutatePost(dataToSend2);
 
-        setMatchedAdd((prev) => [...prev, dataToSend2.permission_name]);
+        // setMatchedAdd((prev) => [...prev, dataToSend2.permission_name]);
       }
     } catch (error) {
       console.error('Error saving/updating permission:', error);
@@ -173,6 +174,7 @@ const CreatePerm = ({ PermissionDatas }) => {
   };
 
   useEffect(() => {
+    console.log("third 177")
     if (permissions.includes(OWNER)) {
       setTypeName(PermissionDatas?.type_name);
     } else {
@@ -204,10 +206,6 @@ const CreatePerm = ({ PermissionDatas }) => {
       setTypeName(updatedTypeName);
     }
   }, []);
-
-  console.log('typeName', typeName);
-  console.log('selectedType', selectedType);
-  console.log('PermissionDatas***208', PermissionDatas);
 
   return (
     <div style={{ backgroundColor: 'white' }} className="modal">

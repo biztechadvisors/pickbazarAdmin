@@ -6,6 +6,7 @@ import {
   FieldErrors,
   useFieldArray,
   useForm,
+  useWatch,
 } from 'react-hook-form';
 import { useTranslation } from 'next-i18next';
 import { yupResolver } from '@hookform/resolvers/yup';
@@ -33,10 +34,10 @@ import * as socialIcons from '@/components/icons/social';
 import omit from 'lodash/omit';
 import SwitchInput from '@/components/ui/switch-input';
 import { getAuthCredentials } from '@/utils/auth-utils';
-import { SUPER_ADMIN, Company, OWNER, E_COMMERCE, NON_E_COMMERCE } from '@/utils/constants';
+import { SUPER_ADMIN, Company, OWNER } from '@/utils/constants';
 import { useModalAction } from '../ui/modal/modal.context';
 import OpenAIButton from '../openAI/openAI.button';
-import { useCallback, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useSettingsQuery } from '@/data/settings';
 import {
   useMeQuery,
@@ -57,7 +58,7 @@ import CreateCustomerPage from '@/pages/users/create';
 import CreatePermission from '@/pages/permission/create';
 import CreatePerm from '../createPerm';
 import { useAtom } from 'jotai';
-import { addPermission, selectedOption } from '@/utils/atoms';
+import { addPermission, selectedOption, setUsrEmailState } from '@/utils/atoms';
 
 export const chatbotAutoSuggestion = ({ name }: { name: string }) => {
   return [
@@ -155,20 +156,59 @@ type SelectUserProps = {
   errors: FieldErrors;
 };
 
-function SelectUser({ control, errors }: SelectUserProps) {
+const SelectUser = ({ control, errors }: SelectUserProps) => {
   const { t } = useTranslation();
-  const { data } = useMeQuery();
-  const usrById = data?.shop_id;
+  const { data: meData } = useMeQuery();
   const { permissions } = getAuthCredentials();
-  const isOwner = permissions?.[0].includes(OWNER);
-  const { data: users, isLoading } = useVendorQuery(data?.id);
-  const options: any = users || [];
+  const isOwner = permissions?.[0]?.includes(OWNER);
   const shouldDisable = control._defaultValues.owner != null || !isOwner;
 
   const [isModalOpen, setModalOpen] = useState(false);
+  const [options, setOptions] = useState<any[]>([]);
+  const [defaultUser, setDefaultUser] = useState<any>(null);
+  const { data: users, isLoading } = useVendorQuery(meData?.id, {
+    enabled: !!meData?.id,
+  });
 
-  const openModal = () => setModalOpen(true);
-  const closeModal = () => setModalOpen(false);
+  const { setValue } = useForm();
+  const selectedUser = useWatch({ control, name: 'user' });
+
+  useEffect(() => {
+    if (users?.data) {
+      setOptions(users.data);
+    }
+  }, [users]);
+
+  const handleUserCreated = (newUser) => {
+    const formattedUser = {
+      id: newUser.id,
+      name: newUser.name,
+      email: newUser.email,
+      contact: newUser.contact,
+    };
+
+    setOptions((prevOptions) => {
+      const userExists = prevOptions.some((option) => option.id === formattedUser.id);
+      if (!userExists) {
+        return [...prevOptions, formattedUser];
+      }
+      return prevOptions;
+    });
+
+    setValue('user', formattedUser); // Set the selected user
+    setDefaultUser(formattedUser); // Update default user for fallback
+    console.log('user 200', user);
+    console.log('defaultUser 201', defaultUser);
+    closeModal(); // Close the modal
+  };
+
+  const closeModal = () => {
+    setModalOpen(false);
+  };
+
+  const openModal = () => {
+    setModalOpen(true);
+  };
 
   return (
     <div className="mb-5 flex w-full justify-between gap-2">
@@ -177,8 +217,8 @@ function SelectUser({ control, errors }: SelectUserProps) {
           name="user"
           control={control}
           getOptionLabel={(option) => `${option.name} - ${option.email}`}
-          getOptionValue={(option) => option}
-          options={options.data}
+          getOptionValue={(option) => option.id}
+          options={options}
           isLoading={isLoading}
           isSearchable={true}
           filterOption={(option, inputValue) => {
@@ -188,7 +228,7 @@ function SelectUser({ control, errors }: SelectUserProps) {
               option.email.toLowerCase().includes(searchValue)
             );
           }}
-          defaultValue={control._defaultValues.owner}
+          value={selectedUser || defaultUser}
           disabled={shouldDisable}
         />
       </div>
@@ -199,24 +239,32 @@ function SelectUser({ control, errors }: SelectUserProps) {
       </div>
       <ValidationError message={t(errors.user?.message)} />
       <Modal open={isModalOpen} onClose={closeModal}>
-        {/* <CustomerCreateForm /> */}
-        <CustForm />
+        <CustForm onClose={closeModal} onUserCreated={handleUserCreated} />
       </Modal>
     </div>
   );
-}
+};
+
 
 const ShopForm = ({ initialValues }: { initialValues?: any }) => {
   const { mutate: createShop, isLoading: creating } = useCreateShopMutation();
   const { mutate: updateShop, isLoading: updating } = useUpdateShopMutation();
   const [modalIsOpen, setIsOpen] = useState(false);
+
   const [permissionSelectedOption, setPermissionSelectedOption] =
     useAtom(selectedOption);
-  const [additionalPerm] = useAtom(addPermission);
+
+  const [additionalPerm, setAdditionalPerm] = useAtom(addPermission);
   const { permissions } = getAuthCredentials();
 
+  const handlePermissionUpdate = (newPermission: string) => {
+    if (newPermission) {
+      setAdditionalPerm((prev) => [...prev, newPermission]);
+    }
+    closeModal();
+  };
 
-  function openModal() {
+  function openModal(p0: string, p1: unknown) {
     setIsOpen(true);
   }
 
@@ -284,17 +332,28 @@ const ShopForm = ({ initialValues }: { initialValues?: any }) => {
   } = usePermissionData(userId);
 
   const filterdEcomm = permissionData?.filter((e: any) => {
-    return (
-      e &&
-      e.type_name === Company
-      // &&
-      // (e.permission_name === E_COMMERCE || e.permission_name === NON_E_COMMERCE)
-    );
+    return e && e.type_name === Company;
   });
 
-  const option = filterdEcomm?.map((e: any) => ({
-    name: e?.permission_name,
-    email: e?.type_name,
+  // Separate permissions based on additionalPermission
+  const additionalPermissionTrue = filterdEcomm?.filter((e: any) => {
+    return e?.additionalPermission === false;
+  });
+
+  const additionalPermissionFalse = filterdEcomm?.filter((e: any) => {
+    return e?.additionalPermission === true;
+  });
+
+  // Map options for each category
+  const additionalPermissionOptions = additionalPermissionTrue?.map((e: any) => ({
+    permission_name: e?.permission_name,
+    type_name: e?.type_name,
+    e,
+  }));
+
+  const permissionOptions = additionalPermissionFalse?.map((e: any) => ({
+    permission_name: e?.permission_name,
+    type_name: e?.type_name,
     e,
   }));
 
@@ -344,10 +403,10 @@ const ShopForm = ({ initialValues }: { initialValues?: any }) => {
           ...filteredValues,
           address: restAddress,
           settings,
+          additionalPermissions: additionalPerm,
           balance: {
             id: initialValues.balance?.id,
             ...filteredValues.balance,
-            // Ensure admin_commission_rate, current_balance, total_earnings, withdrawn_amount are updated when updating a shop
             admin_commission_rate: 0, // Example value
             current_balance: 0, // Example value
             total_earnings: 0, // Example value
@@ -409,26 +468,33 @@ const ShopForm = ({ initialValues }: { initialValues?: any }) => {
             <div className="relative mb-5">
               <Label>{t('form:input-label-select-company')}</Label>
               <SelectInput
-                name="companyType"
-                placeholder="Choose company type"
+                name="additionalPermission"
+                placeholder="Select permissions"
                 control={control}
-                getOptionLabel={(option: any) =>
-                  `${option.name} - ${option.email}`
-                }
-                getOptionValue={(option: any) => option}
-                options={option}
+                getOptionLabel={(option: any) => `${option.type_name} - ${option.permission_name}`}
+                getOptionValue={(option: any) => option.id}
+                options={additionalPermissionOptions}
                 isSearchable={true}
-                filterOption={(option: any, inputValue: any) => {
-                  const searchValue = inputValue.toLowerCase();
-                  return (
-                    option.name.toLowerCase().includes(searchValue) ||
-                    option.email.toLowerCase().includes(searchValue)
-                  );
-                }}
                 onChange={handleSelectChange}
-                defaultValue={control._defaultValues.owner}
+                defaultValue={control._defaultValues?.additionalPermission}
               />
             </div>
+
+            <div className="relative mb-5">
+              <Label>{t('form:button-label-more-permission')}</Label>
+              <SelectInput
+                name="permission"
+                placeholder="Select additional permissions"
+                control={control}
+                getOptionLabel={(option: any) => `${option.type_name} - ${option.permission_name}`}
+                getOptionValue={(option: any) => option.id}
+                options={permissionOptions}
+                isSearchable={true}
+                onChange={handleSelectChange}
+                defaultValue={control._defaultValues?.permission}
+              />
+            </div>
+
             <div className="relative">
               <Label>{t('form:input-label-extra-permission')}</Label>
               <Button onClick={openModal}>
@@ -437,12 +503,14 @@ const ShopForm = ({ initialValues }: { initialValues?: any }) => {
               <Modal open={modalIsOpen} onClose={closeModal}>
                 <CreatePerm
                   PermissionDatas={permissionProps}
-                  permissionId={permissionId}
+                  permissionId={permissionProps?.id}
+                  onPermissionCreate={handlePermissionUpdate}
                 />
               </Modal>
             </div>
           </Card>
         </div>
+
         <div className="my-5 flex flex-wrap border-b border-dashed border-border-base pb-8 sm:my-8">
           <Description
             title={t('form:input-label-logo')}

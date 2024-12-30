@@ -47,7 +47,7 @@ export const useCreateShopMutation = () => {
       if (hasAccess(adminOnly, permissions)) {
         return router.push(Routes.adminMyShops);
       }
-      router.push(Routes.dashboard);
+      // router.push(Routes.dashboard);
     },
     // Always refetch after error or success:
     onSettled: () => {

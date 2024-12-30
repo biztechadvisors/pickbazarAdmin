@@ -41,7 +41,7 @@ export const usePermissionData = () => {
     },
     {
       // enabled: !!localStorage.getItem('userId'),  
-      enabled:!!getUserId(),
+      enabled: !!getUserId(),
       retry: false, // Optional: prevent retry on missing userId
     }
   );
@@ -52,7 +52,7 @@ export const useSavePermissionData = () => {
   const router = useRouter();
   const mutation = useMutation(permissionClient.updatePermission, {
     onSuccess: () => {
-      router.push('/permission'); 
+      // router.push('/permission'); 
       toast.success('Permission updated successfully');
     },
     onError: () => {
@@ -62,9 +62,9 @@ export const useSavePermissionData = () => {
 
   const mutationPost = useMutation(permissionClient.postPermission, {
     onSuccess: () => {
-      router.push('/permission').then(() => {
-        toast.success('Permission saved successfully'); // Show success toast after navigation
-      });
+      // router.push('/permission').then(() => {
+      toast.success('Permission saved successfully'); // Show success toast after navigation
+      // });
     },
     onError: () => {
       toast.error('Failed to save permission');
