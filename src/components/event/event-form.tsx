@@ -32,11 +32,11 @@ function SelectRegion({
 
   const ShopSlugName = 'hilltop-marble';
   // const { data: me } = useMeQuery()
-   
+
   const { regions, error } = useRegionsQuery({
     code: meData?.managed_shop?.slug,
   });
-  
+
   if (error) {
     console.error('Error fetching regions:', error);
   }
@@ -55,7 +55,7 @@ function SelectRegion({
     </div>
   );
 }
- 
+
 export type FormValues = {
   title: string;
   eventName: string;
@@ -67,7 +67,7 @@ export type FormValues = {
   shopId: string | number;
   imageIds: number[];
   regionName: string;
-  regions:any;
+  regions: any;
 };
 
 const defaultValues: FormValues = {
@@ -90,44 +90,16 @@ const EventCreateOrUpdate = ({ initialValues }: IProps) => {
   const router = useRouter();
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const { data: meData } = useMeQuery();
-  const {   query: { shop }, } = router;
+  const { query: { shop }, } = router;
   const { t } = useTranslation();
   const { data: shopData } = useShopQuery(
     { slug: shop as string, },
     { enabled: !!shop }
   );
   const shopId = initialValues?.shopId || meData?.shop_id || shopData?.id || 0;
-  // const shopId = me?.shop_id ;
-  // const shopId = shopData?.id || initialValues?.shopId;
-console.log("shopId====",shopId)
 
-  // const {
-  //   register,
-  //   handleSubmit,
-  //   control,
-  //   formState: { errors },
-  // } = useForm<FormValues>({
-  //   defaultValues: initialValues
-  //     ? initialValues
-  //     : {
-  //         title: '',
-  //         eventName: '',
-  //         description: '',
-  //         date: '',
-  //         time: '',
-  //         location: '',
-  //         collaboration: '',
-  //         shopId: shopId || 0,
-  //         imageIds: [],
-  //         regionName: '', // Add regionName default value
-  //       },
-  // });
   const { register, handleSubmit, control, formState: { errors } } = useForm<FormValues>({
-    // defaultValues:{
-    //   ...initialValues,
-    //   shopId: shopId
-    // },
-    // defaultValues: initialValues ?? { ...defaultValues, shopId },
+
     defaultValues: {
       ...defaultValues,
       ...initialValues,
@@ -137,61 +109,17 @@ console.log("shopId====",shopId)
   const { mutate: createEvent, isLoading: creating } = useCreateEventMutation();
   const { mutate: updateEvent, isLoading: updating } = useUpdateeventMutation();
 
-  // const onSubmit = (values: FormValues) => {
-  //   // if (!shopId) {
-  //   //   setErrorMessage('Shop ID is required');
-  //   //   return;
-  //   // }
-  //   // const transformedRegions = values.region?.name ? [values.region.name] : [];
-  //   const transformedRegions = values.region?.name || ''; 
-  //   if (!initialValues) {
-  //     createEvent(
-  //       {
-          // title: values.title,
-          // eventName: values.eventName,
-          // description: values.description,
-          // date: values.date,
-          // time: values.time,
-          // location: values.location,
-          // collaboration: values.collaboration,
-          // shopId,
-          // imageIds: values.imageIds,
-          // regionName: transformedRegions,
-  //       },
-  //       {
-  //         onError: (error: any) => {
-  //           setErrorMessage(error?.response?.data?.message);
-  //           animateScroll.scrollToTop();
-  //         },
-  //       }
-  //     );
-  //   } else {
-  //     updateEvent({
-  //       id: initialValues.id!,
-  //       title: values.title,
-  //       eventName: values.eventName,
-  //       description: values.description,
-  //       date: values.date,
-  //       time: values.time,
-  //       location: values.location,
-  //       collaboration: values.collaboration,
-  //       shopId: Number(initialValues.shopId),
-  //       imageIds: values.imageIds,
-  //       regionName:transformedRegions,
-  //     });
-  //   }
-  // };
   const onSubmit = (values: FormValues) => {
-    // const transformedRegions = values.regions?.name ? [values.regions.name] : [];
-    const transformedRegions = values.regions?.name || ''; 
+
+    const transformedRegions = values.regions?.name || '';
     const input = {
-      language:router.locale, 
+      language: router.locale,
       ...values,
       regionName: transformedRegions,
       shopId,
     };
 
-    if (  !initialValues )  {
+    if (!initialValues) {
       createEvent({
         ...input,
         ...(initialValues?.slug && { slug: initialValues.slug }),
@@ -199,9 +127,9 @@ console.log("shopId====",shopId)
       });
     } else {
       updateEvent(
-        { ...input ,id: initialValues.id!, },
+        { ...input, id: initialValues.id!, },
         {
-          onSuccess:() => router.push('/events'),
+          onSuccess: () => router.push('/events'),
           onError: (error: any) => {
             setErrorMessage(error?.response?.data?.message);
             animateScroll.scrollToTop();
@@ -244,7 +172,7 @@ console.log("shopId====",shopId)
             <Input
               label={t('form:input-label-title')}
               {...register('title', { required: 'Title is required' })}
-              {...register }
+              {...register}
               error={t(errors.title?.message!)}
               defaultValue={initialValues?.title}
               variant="outline"
@@ -264,7 +192,7 @@ console.log("shopId====",shopId)
             <Input
               label={t('form:input-label-event-name')}
               {...register('eventName', { required: 'Event name is required' })}
-              {...register }
+              {...register}
               error={t(errors.eventName?.message!)}
               defaultValue={initialValues?.eventName || ''}
               variant="outline"
@@ -284,7 +212,7 @@ console.log("shopId====",shopId)
             <TextArea
               label={t('form:input-label-description')}
               {...register('description', { required: 'Description is required' })}
-              {...register }
+              {...register}
               error={t(errors.description?.message!)}
               defaultValue={initialValues?.description || ''}
               variant="outline"
@@ -305,7 +233,7 @@ console.log("shopId====",shopId)
               type="date"
               label={t('form:input-label-date')}
               {...register('date', { required: 'Date is required' })}
-              {...register }
+              {...register}
               error={t(errors.date?.message!)}
               defaultValue={initialValues?.date || ''}
               variant="outline"
@@ -326,7 +254,7 @@ console.log("shopId====",shopId)
               type="time"
               label={t('form:input-label-time')}
               {...register('time', { required: 'Time is required' })}
-              {...register }
+              {...register}
               error={t(errors.time?.message!)}
               defaultValue={initialValues?.time || ''}
               variant="outline"
@@ -346,7 +274,7 @@ console.log("shopId====",shopId)
             <Input
               label={t('form:input-label-location')}
               {...register('location', { required: 'Location is required' })}
-              {...register }
+              {...register}
               error={t(errors.location?.message!)}
               defaultValue={initialValues?.location || ''}
               variant="outline"
@@ -366,7 +294,7 @@ console.log("shopId====",shopId)
             <Input
               label={t('form:input-label-collaboration')}
               {...register('collaboration', { required: 'Collaboration is required' })}
-              {...register }
+              {...register}
               error={t(errors.collaboration?.message!)}
               defaultValue={initialValues?.collaboration || ''}
               variant="outline"

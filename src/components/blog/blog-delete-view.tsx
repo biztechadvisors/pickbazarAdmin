@@ -7,7 +7,7 @@ import { useDeleteBlogMutation } from '@/data/blog';
 
 const BlogDeleteView = () => {
   const { mutate: deleteBlogByID, isLoading: loading } =
-  useDeleteBlogMutation();
+    useDeleteBlogMutation();
 
   const { data } = useModalState();
   const { closeModal } = useModalAction();
@@ -18,9 +18,6 @@ const BlogDeleteView = () => {
     });
     closeModal();
   }
-
-
-  console.log("data++++++++++++++++++++++++++++++++++++++++++++++++++++++++", data)
 
   return (
     <ConfirmationCard

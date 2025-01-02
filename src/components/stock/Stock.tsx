@@ -40,8 +40,6 @@ const Stock = () => {
     amount: total,
   });
 
-  console.log("totalPrice",totalPrice)
-
   const { data: meData } = useMeQuery();
 
   const { id, email, contact } = meData || {};

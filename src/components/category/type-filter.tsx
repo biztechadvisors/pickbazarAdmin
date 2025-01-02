@@ -27,21 +27,21 @@ export default function TypeFilter({ onTypeFilter, className }: Props) {
 
   const shopId = shopData?.id!;
   const shop_Slug = shopData?.slug
-console.log("shop_Slug",shop_Slug)
-const shop: string | undefined = meData?.managed_shop?.id;
-const shopSlug: string | undefined = meData?.managed_shop?.slug;
- 
-  const { types, loading } = useTypesQuery({ 
+
+  const shop: string | undefined = meData?.managed_shop?.id;
+  const shopSlug: string | undefined = meData?.managed_shop?.slug;
+
+  const { types, loading } = useTypesQuery({
     language: locale,
-    shop_id:shop,
+    shop_id: shop,
     shopSlug: shopSlug,
-   });
-console.log("types%%%",types)
+  });
+
   return (
     <div className={cn('flex w-full', className)}>
       <div className="w-full">
         <Select
-          options={types?.items || []} 
+          options={types?.items || []}
           isLoading={loading}
           getOptionLabel={(option: any) => option.name}
           getOptionValue={(option: any) => option.slug}

@@ -16,9 +16,9 @@ import { useCreateFaqClassMutation, useUpdateFaqClassMutation } from '@/data/faq
 const defaultValues = {
   title: '',
   description: '',
- 
+
 };
-console.log(defaultValues)
+
 type IProps = {
   initialValues?: Faq | null;
 };
@@ -39,15 +39,14 @@ export default function CreateOrUpdateFaqForm({ initialValues }: IProps) {
     defaultValues: initialValues ?? defaultValues,
   });
 
-  const shop_id = me?.shop_id ;
+  const shop_id = me?.shop_id;
 
   const { mutate: createFaqClass, isLoading: creating } =
-  useCreateFaqClassMutation(shop_id);
+    useCreateFaqClassMutation(shop_id);
   const { mutate: updateFaqClass, isLoading: updating } =
     useUpdateFaqClassMutation(shop_id);
 
   const onSubmit = async (values: Faq) => {
-    console.log('values = ',values)
     if (initialValues) {
       updateFaqClass({
         id: initialValues.id!,
@@ -71,18 +70,18 @@ export default function CreateOrUpdateFaqForm({ initialValues }: IProps) {
       <div className="my-5 flex flex-wrap sm:my-8">
         <Description
           title={t('form:form-title-faq')}
-        //   details={`${initialValues
-        //     ? t('form:item-description-update')
-        //     : t('form:item-description-add')
-        //     } ${t('form:tax-form-info-help-text')}`}
+          //   details={`${initialValues
+          //     ? t('form:item-description-update')
+          //     : t('form:item-description-add')
+          //     } ${t('form:tax-form-info-help-text')}`}
           className="w-full px-0 pb-5 sm:w-4/12 sm:py-8 sm:pe-4 md:w-1/3 md:pe-5 "
         />
 
 
         <Card className="w-full sm:w-8/12 md:w-2/3">
-         
 
-        <Input
+
+          <Input
             label={t('form:input-label-title')}
             {...register('title')}
             error={t(errors.title?.message!)}
@@ -97,7 +96,7 @@ export default function CreateOrUpdateFaqForm({ initialValues }: IProps) {
             className="mb-5"
           />
 
-        {/* <div className="mb-5">
+          {/* <div className="mb-5">
           <label className="block text-sm font-medium text-gray-700">
             {t('form:input-label-name')}
           </label>

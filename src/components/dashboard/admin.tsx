@@ -28,7 +28,7 @@ export default function Dashboard() {
   const DealerShow = meData?.permission.type_name === DEALER;
   const ShopShow = meData?.permission.type_name === Company;
 
-  const shopId = meData?.id;
+  const shopId = meData?.managed_shop?.id;
 
   const analyticsQuery = {
     customerId: parseInt(customerId),
@@ -41,22 +41,6 @@ export default function Dashboard() {
     isLoading: analyticsLoading,
     error: analyticsError,
   } = useAnalyticsQuery(analyticsQuery);
-
-  console.log('analyticsData', analyticsData);
-
-  // console.log("meData",meData)
-
-  // const {
-  //   orders: orderData,
-  //   paginatorInfo,
-  //   error: orderError,
-  //   loading: orderLoading,
-  // } = useOrdersQuery({
-  //   shop_slug: meData?.managed_shop?.slug,
-  //   language: locale,
-  //   limit: 10,
-  //   page: 1,
-  // });
 
   let queryConfig = {
     language: locale,
@@ -88,7 +72,6 @@ export default function Dashboard() {
     loading: orderLoading,
   } = useOrdersQuery(queryConfig);
 
-  console.log('orderData', orderData);
   const customer_id = meData?.id;
   const shop_id = meData?.managed_shop?.id;
 
@@ -114,7 +97,7 @@ export default function Dashboard() {
     language: locale,
     shop_id: meData?.managed_shop?.id,
   });
-  
+
   if (analyticsLoading || orderLoading || popularProductLoading) {
     return <Loader text={t('common:text-loading')} />;
   }

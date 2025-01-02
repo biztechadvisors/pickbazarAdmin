@@ -29,9 +29,9 @@ const TagList = ({
   paginatorInfo,
 }: IProps) => {
   const { t } = useTranslation();
-  const rowExpandable = (record: any) => record.children?.length; 
-console.log("tag data+++++%%%%%%",tags);
-  const permissionTypes = AllPermission(); 
+  const rowExpandable = (record: any) => record.children?.length;
+
+  const permissionTypes = AllPermission();
 
   const canWrite = permissionTypes.includes('sidebar-nav-item-tags');
 
@@ -43,12 +43,12 @@ console.log("tag data+++++%%%%%%",tags);
   }>({
     sort: SortOrder.Desc,
     column: null,
-  }); 
+  });
 
   useEffect(() => {
-    console.log('Updated tags data:', tags);
+    console.log('Updated tags data:');
   }, [tags]);
-  
+
   const onHeaderClick = (column: string | null) => ({
     onClick: () => {
       onSort((currentSortDirection: SortOrder) =>
@@ -111,24 +111,24 @@ console.log("tag data+++++%%%%%%",tags);
     },
     {
       ...(canWrite
-      ? {
-        title: t('table:table-item-actions'),
-        dataIndex: 'slug',
-        key: 'actions',
-        align: alignRight,
-        render: (slug: string, record: Tag) => (
-          <LanguageSwitcher
-            slug={slug}
-            record={record}
-            deleteModalView="DELETE_TAG"
-            routes={Routes?.tag}
-          />
+        ? {
+          title: t('table:table-item-actions'),
+          dataIndex: 'slug',
+          key: 'actions',
+          align: alignRight,
+          render: (slug: string, record: Tag) => (
+            <LanguageSwitcher
+              slug={slug}
+              record={record}
+              deleteModalView="DELETE_TAG"
+              routes={Routes?.tag}
+            />
           ),
-      }      
-      : null),
-      },
-    
-    
+        }
+        : null),
+    },
+
+
   ];
 
   return (

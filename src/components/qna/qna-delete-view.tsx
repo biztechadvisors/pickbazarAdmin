@@ -10,10 +10,8 @@ const QnaDeleteView = () => {
   const { closeModal } = useModalAction();
 
   const { mutate: deleteQna, isLoading: loading } = useDeleteQnaMutation();
-  console.log('useModalState = ', data);
 
   function handleDelete() {
-    console.log('handle Delete = ', data);
     deleteQna(data); // Assuming data contains the ID of the QnA to delete
     closeModal();
   }

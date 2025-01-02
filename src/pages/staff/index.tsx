@@ -60,34 +60,9 @@ export default function StaffsPage() {
     // name: searchTerm,
     // orderBy,
     // sortedBy,
-    role: 'user',
-    search:searchTerm,
+    type: 'Staff',
   });
 
-  console.log('data?.id', data?.id);
-  console.log('users', users);
-
-  // const {
-  //   staffs,
-  //   paginatorInfo,
-  //   loading: loading,
-  //   error,
-  // } = useStaffsQuery(
-  //   {
-  //     limit: 20,
-  //     usrById: me?.id,
-  //     email: searchTerm,
-  //     page,
-  //     name: searchTerm,
-  //     shop_id: shopId,
-  //     page,
-  //     orderBy,
-  //     sortedBy,
-  //   },
-  //   {
-  //     enabled: Boolean(shopId),
-  //   }
-  // ); 
   if (fetchingShopId || loading)
     return <Loader text={t('common:text-loading')} />;
   if (error) return <ErrorMessage message={error?.message} />;
@@ -107,7 +82,6 @@ export default function StaffsPage() {
   const filteredUsers = users?.filter(
     (user) => user.permission?.type_name === STAFF
   );
-  console.log("filteredUsers", filteredUsers)
 
   function handleSearch({ searchText }: { searchText: string }) {
     setSearchTerm(searchText);

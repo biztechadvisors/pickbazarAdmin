@@ -21,6 +21,7 @@ const CreatePermission = () => {
   const router = useRouter();
   const { t } = useTranslation();
   const [typeName, setTypeName] = useState(PermissionJson.type_name);
+
   const [selectedType, setSelectedType] = useState('');
   const [menusData, setMenusData] = useState(PermissionJson.Menus);
   const [permissionName, setPermissionName] = useState('');
@@ -163,7 +164,7 @@ const CreatePermission = () => {
           Object.entries(menusData).filter(([key, value]) => value === item)
         );
       });
-      console.log("LAST***", last)
+
       return last;
     }
   };
@@ -200,11 +201,6 @@ const CreatePermission = () => {
       setTypeName(updatedTypeName);
     }
   }, []);
-
-
-  console.log("typename", typeName)
-  console.log("singlePermissionData", singlePermissionData)
-  console.log("singlePermissionData.type_name", singlePermissionData?.type_name)
 
   return (
     <>

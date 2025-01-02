@@ -12,10 +12,7 @@ const GetInspiredDeleteView = () => {
   const { data } = useModalState(); // Get the data passed to the modal, usually the ID of the item
   const { closeModal } = useModalAction(); // Use modal actions to close the modal
 
-  console.log('useModalState = ', data);
-
   function handleDelete() {
-    console.log('handle Delete = ', data);
     deleteGetInspired({ id: data }); // Call the delete mutation with the ID
     closeModal(); // Close the modal after deletion
   }

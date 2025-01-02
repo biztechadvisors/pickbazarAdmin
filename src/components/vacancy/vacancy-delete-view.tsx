@@ -11,10 +11,7 @@ const VacancyDeleteView = () => {
 
   const { mutate: deleteVacancy, isLoading: loading } =
     useDeleteVacancyMutation(); // Use the delete mutation hook
-  console.log('useModalState = ', data);
-
   function handleDelete() {
-    console.log('handle Delete = ', data);
     deleteVacancy({ id: data });
     closeModal(); // Close the modal after deletion
   }
