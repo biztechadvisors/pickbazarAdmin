@@ -7,13 +7,7 @@ import {
   hasAccess,
   isAuthenticated,
 } from '@/utils/auth-utils';
-import {
-  ADMIN,
-  DEALER,
-  STAFF,
-  Company,
-  SUPER_ADMIN,
-} from '@/utils/constants';
+import { ADMIN, DEALER, STAFF, Company, SUPER_ADMIN } from '@/utils/constants';
 import AppLayout from '@/components/layouts/app';
 import { Routes } from '@/config/routes';
 import { Config } from '@/config';
@@ -22,8 +16,8 @@ const AdminDashboard = dynamic(() => import('@/components/dashboard/admin'));
 const OwnerDashboard = dynamic(() => import('@/components/dashboard/owner'));
 
 export default function Dashboard({
-  userPermissions,
-}: {
+                                    userPermissions,
+                                  }: {
   userPermissions: string[];
 }) {
   if (
