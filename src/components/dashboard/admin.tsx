@@ -44,20 +44,6 @@ export default function Dashboard() {
 
   console.log('analyticsData', analyticsData);
 
-  // console.log("meData",meData)
-
-  // const {
-  //   orders: orderData,
-  //   paginatorInfo,
-  //   error: orderError,
-  //   loading: orderLoading,
-  // } = useOrdersQuery({
-  //   shop_slug: meData?.managed_shop?.slug,
-  //   language: locale,
-  //   limit: 10,
-  //   page: 1,
-  // });
-
   let queryConfig = {
     language: locale,
     limit: 10,
@@ -95,7 +81,6 @@ export default function Dashboard() {
   const { data: response } = useGetStockSeals(customer_id, shop_id);
 
   const DealerSalesList = response?.data;
-  // const DealerShow = meData?.permission.type_name === DEALER;
 
   if (orderError) {
     console.error('Error fetching orders:', orderError);
@@ -207,13 +192,6 @@ export default function Dashboard() {
           <RecentOrders orders={DealerSalesList} title={t('Recent Sales')} />
         </div>
       ) : null}
-
-      {/* <div className="mb-6 w-full flex-wrap space-y-6 xl:flex-nowrap xl:space-y-0 xl:space-x-5">
-        <PopularProductList
-          products={popularProductData}
-          title={t('table:popular-products-table-title')}
-        />
-      </div> */}
     </>
   );
 }

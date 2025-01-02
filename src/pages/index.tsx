@@ -7,13 +7,7 @@ import {
   hasAccess,
   isAuthenticated,
 } from '@/utils/auth-utils';
-import {
-  ADMIN,
-  DEALER,
-  STAFF,
-  Company,
-  SUPER_ADMIN,
-} from '@/utils/constants';
+import { ADMIN, DEALER, STAFF, Company, SUPER_ADMIN } from '@/utils/constants';
 import AppLayout from '@/components/layouts/app';
 import { Routes } from '@/config/routes';
 import { Config } from '@/config';
