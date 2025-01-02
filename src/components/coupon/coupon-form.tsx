@@ -100,10 +100,18 @@ export default function CreateOrUpdateCouponForm({ initialValues }: IProps) {
   const router = useRouter();
   const { locale } = useRouter();
   const { t } = useTranslation();
-  const validDate = (date: any) => 
+  const validDate = (date: any) =>
     isNaN(new Date(date).getTime()) ? new Date() : new Date(date);
-  
-  const { control, handleSubmit, register, watch, setError, setValue, formState: { errors } } = useForm<FormValues>({
+
+  const {
+    control,
+    handleSubmit,
+    register,
+    watch,
+    setError,
+    setValue,
+    formState: { errors },
+  } = useForm<FormValues>({
     defaultValues: initialValues
       ? {
           ...initialValues,
@@ -119,31 +127,30 @@ export default function CreateOrUpdateCouponForm({ initialValues }: IProps) {
   const { mutate: updateCoupon, isLoading: updating } =
     useUpdateCouponMutation();
 
-    const { openModal } = useModalAction();
-    const {
-      // @ts-ignore
-      settings: { options },
-    } = useSettingsQuery({
-      language: locale!,
-    });
-  
-    const generateName = watch('code');
-    const autoSuggestionList = useMemo(() => {
-      return chatbotAutoSuggestion({ name: generateName ?? '' });
-    }, [generateName]);
-  
-    const handleGenerateDescription = useCallback(() => {
-      openModal('GENERATE_DESCRIPTION', {
-        control,
-        name: generateName,
-        set_value: setValue,
-        key: 'description',
-        suggestion: autoSuggestionList as ItemProps[],
-      });
-    }, [generateName]);
-    const [active_from, expire_at] = watch(['active_from', 'expire_at']);
+  const { openModal } = useModalAction();
+  const {
+    // @ts-ignore
+    settings: { options },
+  } = useSettingsQuery({
+    language: locale!,
+  });
 
-  
+  const generateName = watch('code');
+  const autoSuggestionList = useMemo(() => {
+    return chatbotAutoSuggestion({ name: generateName ?? '' });
+  }, [generateName]);
+
+  const handleGenerateDescription = useCallback(() => {
+    openModal('GENERATE_DESCRIPTION', {
+      control,
+      name: generateName,
+      set_value: setValue,
+      key: 'description',
+      suggestion: autoSuggestionList as ItemProps[],
+    });
+  }, [generateName]);
+  const [active_from, expire_at] = watch(['active_from', 'expire_at']);
+
   const couponType = watch('type');
 
   const isTranslateCoupon = router.locale !== Config.defaultLanguage;
@@ -151,12 +158,12 @@ export default function CreateOrUpdateCouponForm({ initialValues }: IProps) {
   const onSubmit = async (values: FormValues) => {
     const activeFromDate = new Date(values.active_from);
     const expireAtDate = new Date(values.expire_at);
-  
+
     if (isNaN(activeFromDate.getTime()) || isNaN(expireAtDate.getTime())) {
       console.error('Invalid date values');
       return;
     }
-  
+
     const input = {
       language: router.locale,
       type: values.type,
@@ -171,7 +178,7 @@ export default function CreateOrUpdateCouponForm({ initialValues }: IProps) {
         id: values?.image?.id,
       },
     };
-  
+
     try {
       if (initialValues) {
         // Perform update
@@ -197,7 +204,6 @@ export default function CreateOrUpdateCouponForm({ initialValues }: IProps) {
       });
     }
   };
-  
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
@@ -299,24 +305,24 @@ export default function CreateOrUpdateCouponForm({ initialValues }: IProps) {
               <Label>{t('form:coupon-active-from')}</Label>
 
               <Controller
-  control={control}
-  name="active_from"
-  render={({ field: { onChange, onBlur, value } }) => (
-    <DatePicker
-      dateFormat="dd/MM/yyyy"
-      onChange={onChange}
-      onBlur={onBlur}
-      selected={validDate(value)}
-      selectsStart
-      minDate={new Date()}
-      maxDate={validDate(expire_at)}
-      startDate={validDate(active_from)}
-      endDate={validDate(expire_at)}
-      className="border border-border-base"
-      disabled={isTranslateCoupon}
-    />
-  )}
-/>
+                control={control}
+                name="active_from"
+                render={({ field: { onChange, onBlur, value } }) => (
+                  <DatePicker
+                    dateFormat="dd/MM/yyyy"
+                    onChange={onChange}
+                    onBlur={onBlur}
+                    selected={validDate(value)}
+                    selectsStart
+                    minDate={new Date()}
+                    maxDate={validDate(expire_at)}
+                    startDate={validDate(active_from)}
+                    endDate={validDate(expire_at)}
+                    className="border border-border-base"
+                    disabled={isTranslateCoupon}
+                  />
+                )}
+              />
               <ValidationError message={t(errors.active_from?.message!)} />
             </div>
             <div className="w-full p-0 sm:w-1/2 sm:ps-2">
@@ -348,14 +354,14 @@ export default function CreateOrUpdateCouponForm({ initialValues }: IProps) {
       </div>
       <div className="mb-4 text-end">
         {/* {initialValues && ( */}
-          <Button
-            variant="outline"
-            onClick={router.back}
-            className="me-4"
-            type="button"
-          >
-            {t('form:button-label-back')}
-          </Button>
+        <Button
+          variant="outline"
+          onClick={router.back}
+          className="me-4"
+          type="button"
+        >
+          {t('form:button-label-back')}
+        </Button>
         {/* )} */}
 
         <Button loading={updating || creating}>

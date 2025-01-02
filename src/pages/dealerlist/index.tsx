@@ -11,13 +11,18 @@ import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import { GetStaticProps } from 'next';
 import { Routes } from '@/config/routes';
 import { useRouter } from 'next/router';
-import { adminOnly, getAuthCredentials } from '@/utils/auth-utils';
+import {
+  adminOnly,
+  adminOwnerAndStaffOnly,
+  getAuthCredentials,
+} from '@/utils/auth-utils';
 import { Config } from '@/config';
 import DealerTypeList from '@/components/dealerlist/dealer-list';
 import { useMeQuery, useUsersQuery } from '@/data/user';
 import { useDealerQuery, useDealerQueryGet } from '@/data/dealer';
 import { AllPermission } from '@/utils/AllPermission';
-import { DEALER } from '@/utils/constants';
+import { DEALER, OWNER } from '@/utils/constants';
+import AdminLayout from '@/components/layouts/admin';
 
 export default function DealerPage() {
   const { locale } = useRouter();
@@ -27,19 +32,21 @@ export default function DealerPage() {
   const [searchTerm, setSearchTerm] = useState('');
   const { data } = useMeQuery();
   const [page, setPage] = useState(1);
-  const { users,paginatorInfo, loading, error } = useUsersQuery({
+  const { users, paginatorInfo, loading, error } = useUsersQuery({
     type: DEALER,
     usrById: data?.id,
     name: searchTerm,
     // language: locale,
     orderBy,
     sortedBy,
-    limit:10,
+    limit: 10,
     page,
   });
 
-  const userdealer = users.filter((user) => user?.permission?.type_name === DEALER)
-console.log("userDealer",userdealer);
+  const userdealer = users.filter(
+    (user) => user?.permission?.type_name === DEALER
+  );
+  console.log('userDealer', userdealer);
   const permissionTypes = AllPermission();
 
   const canWrite = permissionTypes.includes('sidebar-nav-item-dealerlist');
@@ -86,20 +93,26 @@ console.log("userDealer",userdealer);
         </div>
       </Card>
       <DealerTypeList
-            paginatorInfo={paginatorInfo}
-            onPagination={handlePagination}
-      users={userdealer} 
-      onOrder={setOrder} 
-      onSort={setColumn} />
+        paginatorInfo={paginatorInfo}
+        onPagination={handlePagination}
+        users={userdealer}
+        onOrder={setOrder}
+        onSort={setColumn}
+      />
     </>
   );
 }
 
-DealerPage.authenticate = {
-  permissions: adminOnly,
+const { permissions } = getAuthCredentials();
+const resLayout = () => {
+  return permissions?.[0] === OWNER ? OwnerLayout : AdminLayout;
 };
 
-DealerPage.Layout = Layout;
+DealerPage.Layout = resLayout();
+
+DealerPage.authenticate = {
+  permissions: adminOwnerAndStaffOnly,
+};
 
 export const getStaticProps: GetStaticProps = async ({ locale }) => ({
   props: {

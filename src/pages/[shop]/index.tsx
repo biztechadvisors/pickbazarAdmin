@@ -10,12 +10,7 @@ import { CheckMarkFill } from '@/components/icons/checkmark-circle-fill';
 import { CloseFillIcon } from '@/components/icons/close-fill';
 import { EditIcon } from '@/components/icons/edit';
 import { formatAddress } from '@/utils/format-address';
-import {
-  adminOwnerAndStaffOnly,
-  adminOnly,
-  getAuthCredentials,
-  hasAccess,
-} from '@/utils/auth-utils';
+import { adminOwnerAndStaffOnly, getAuthCredentials } from '@/utils/auth-utils';
 import ErrorMessage from '@/components/ui/error-message';
 import usePrice from '@/utils/use-price';
 import { useTranslation } from 'next-i18next';
@@ -25,11 +20,9 @@ import { GetStaticPaths, GetStaticProps } from 'next';
 import { CubeIcon } from '@/components/icons/shops/cube';
 import { OrdersIcon } from '@/components/icons/sidebar';
 import { PriceWalletIcon } from '@/components/icons/shops/price-wallet';
-import { PercentageIcon } from '@/components/icons/shops/percentage';
 import { DollarIcon } from '@/components/icons/shops/dollar';
 import ReadMore from '@/components/ui/truncate';
 import { useMeQuery } from '@/data/user';
-import { Routes } from '@/config/routes';
 import React from 'react';
 import { AllPermission } from '@/utils/AllPermission';
 const AdminLayout = dynamic(() => import('@/components/layouts/admin'), {
