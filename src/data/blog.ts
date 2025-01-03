@@ -8,11 +8,11 @@ import { Routes } from '@/config/routes';
 import { Config } from '@/config';
 import { mapPaginatorData } from '@/utils/data-mappers';
 
-export const useCreateBlogMutation = () => { 
+export const useCreateBlogMutation = () => {
   const queryClient = useQueryClient();
   const router = useRouter();
   const { t } = useTranslation();
-  
+
   return useMutation(blogClient.create, {
     onSuccess: () => {
       // Generate the redirect URL based on whether there's a shop query
@@ -43,13 +43,13 @@ export const useUpdateBlogMutation = () => {
   return useMutation(blogClient.update, {
     onSuccess: () => {
       const generateRedirectUrl = router.query.shop
-      ? `/${router.query.shop}${Routes.blog.list}`
-      : Routes.blog.list;
+        ? `/${router.query.shop}${Routes.blog.list}`
+        : Routes.blog.list;
 
-    // Correct usage of router.push
-    router.push(generateRedirectUrl, undefined, {
-      locale: Config.defaultLanguage,
-    });
+      // Correct usage of router.push
+      router.push(generateRedirectUrl, undefined, {
+        locale: Config.defaultLanguage,
+      });
 
       toast.success(t('common:successfully-updated'));
     },
@@ -83,28 +83,26 @@ export const useBlogsQuery = (
     [API_ENDPOINTS.BLOG, params],
     ({ queryKey, pageParam }) => {
       const { shopSlug, search, language, orderBy, sortedBy, page } = queryKey[1];
- 
-      console.log('shopSlug being sent:', shopSlug);
 
       return blogClient.get({
-        slug: shopSlug,   
+        slug: shopSlug,
         search,
         language,
         orderBy,
         sortedBy,
         page,
-        ...pageParam,  
+        ...pageParam,
       });
     },
     {
-      keepPreviousData: true,  
+      keepPreviousData: true,
       ...options,
     }
   );
 
   return {
-    blogs: data?.data ?? [],  
-    paginatorInfo: mapPaginatorData(data),  
+    blogs: data?.data ?? [],
+    paginatorInfo: mapPaginatorData(data),
     error,
     loading: isLoading,
   };
@@ -124,7 +122,7 @@ export const useBlogsQuery = (
 //     })
 //   );
 // };
- 
+
 export const useDeleteBlogMutation = (params: any) => {
   const queryClient = useQueryClient();
   const { t } = useTranslation();
@@ -142,7 +140,7 @@ export const useDeleteBlogMutation = (params: any) => {
 };
 
 export const useBlogSingleData = (id: string) => {
-  return useQuery([API_ENDPOINTS.BLOG, id], () => blogClient.singleData({id}), {
+  return useQuery([API_ENDPOINTS.BLOG, id], () => blogClient.singleData({ id }), {
     enabled: !!id, // Fetch only if id exists
   });
 };

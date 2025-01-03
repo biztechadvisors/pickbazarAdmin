@@ -129,7 +129,7 @@ function SelectTypes({
     language: locale,
     shop_id,
   });
-  // console.log("types",types)
+
   return (
     <div className="mb-5">
       <Label>{t('form:input-label-types')}</Label>
@@ -192,7 +192,7 @@ export default function CreateOrUpdateTagForm({ initialValues }: IProps) {
   const [page, setPage] = useState(1);
   const [orderBy, setOrder] = useState('created_at');
   const [sortedBy, setColumn] = useState<SortOrder>(SortOrder.Desc);
-  console.log("first+++++", initialValues)
+
   const { data: meData } = useMeQuery();
 
   const shopSlug = meData?.managed_shop.slug;
@@ -253,7 +253,7 @@ export default function CreateOrUpdateTagForm({ initialValues }: IProps) {
   const onSubmit = async (values: FormValues) => {
 
     const transformedRegions = values.regions?.name ? [values.regions.name] : [];
-    console.log("shopSlug--256", shopSlug)
+
     const input = {
       language: router.locale,
       name: values.name,

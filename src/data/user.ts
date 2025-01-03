@@ -137,18 +137,18 @@ export function useLogin() {
 
 export const useLogoutMutation = () => {
   const router = useRouter();
-const { t } = useTranslation();
+  const { t } = useTranslation();
 
   const logoutMutation = useMutation(userClient.logout, {
     onSuccess: () => {
-      if (typeof window !== 'undefined') { 
+      if (typeof window !== 'undefined') {
         Cookies.remove(AUTH_CRED);
-        localStorage.clear(); 
+        localStorage.clear();
         router.replace(Routes.login);
       }
     },
     onError: (error) => {
-      if (typeof window !== 'undefined') { 
+      if (typeof window !== 'undefined') {
         toast.error(t('common:logout-failed', { error: error.message }));
         console.error('Logout Error:', error);
       }
@@ -157,26 +157,30 @@ const { t } = useTranslation();
 
   return logoutMutation;
 };
+
 export const useRegisterMutation = () => {
-  const router = useRouter();
   const queryClient = useQueryClient();
   const { t } = useTranslation();
-  return useMutation(userClient.register, {
-    onSuccess: () => {
-      const queryParams = new URLSearchParams(window.location.search);
-      const fromCheckout = queryParams.get('from') === 'checkout';
 
-      toast.success(t('common:successfully-register'));
-      // if (fromCheckout) {
-      //   router.push('orders/checkout');
-      // }
+  return useMutation(userClient.register, {
+    onSuccess: (response) => {
+      if (response?.user) {
+        toast.success(t('common:successfully-register'));
+        console.log("Registration successful, response:", response);
+      } else {
+        console.warn("Registration response does not include user:", response);
+      }
     },
-    // Always refetch after error or success:
+    onError: (error: any) => {
+      console.error("Registration failed:", error);
+      toast.error(t('common:registration-failed'));
+    },
     onSettled: () => {
       queryClient.invalidateQueries(API_ENDPOINTS.REGISTER);
     },
   });
 };
+
 
 export const useUpdateUserMutation = () => {
   const { t } = useTranslation();
@@ -337,7 +341,7 @@ export const useUsersQuery = (params: Partial<QueryOptionsType>) => {
       keepPreviousData: true,
     }
   );
-  console.log('API Response:', data); 
+  console.log('API Response:', data);
   return {
     users: data?.data ?? [],
     paginatorInfo: mapPaginatorData(data as any),

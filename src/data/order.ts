@@ -15,7 +15,7 @@ import { orderClient, orderStocks } from './client/order';
 import { useRouter } from 'next/router';
 import { Routes } from '@/config/routes';
 import { HttpClient } from './client/http-client';
-import {backendApi} from "@/utils/constants";
+import { backendApi } from "@/utils/constants";
 
 export const useOrdersQuery = (
   params: Partial<OrderQueryOptions>,
@@ -147,8 +147,6 @@ export const useUpdateOrderMutation = () => {
 
   return useMutation(
     async ({ id, name, color, serial, language }: { id: string; name: string; color: string; serial: number; language: string }) => {
-      // console.log('ID:', id);
-      // console.log('Data-status:', { name, color, serial, language });
 
       // Check if name (order status) is valid
       if (!name) {
@@ -184,8 +182,6 @@ export const useDealerStatusChange = () => {
 
   return useMutation(
     async ({ id, order_status }: { id: string; order_status: string }) => {
-      console.log('ID:', id);
-      console.log('Status:', order_status);
 
       if (!order_status) {
         throw new Error('Status is undefined');

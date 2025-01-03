@@ -25,7 +25,6 @@ type IProps = {
 };
 export default function CreateOrUpdateAttributeForm({ initialValues }: IProps) {
 
-  console.log("0000000000000000000000000", initialValues)
   const router = useRouter();
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
@@ -103,8 +102,6 @@ export default function CreateOrUpdateAttributeForm({ initialValues }: IProps) {
     }
   };
 
-
-  console.log("initialValues________________AttributesValue", initialValues)
   return (
     <>
       {errorMessage ? (
@@ -120,11 +117,10 @@ export default function CreateOrUpdateAttributeForm({ initialValues }: IProps) {
         <div className="my-5 flex flex-wrap border-b border-dashed border-border-base pb-8 sm:my-8">
           <Description
             title={t('common:attribute')}
-            details={`${
-              initialValues
-                ? t('form:item-description-update')
-                : t('form:item-description-add')
-            } ${t('form:form-description-attribute-name')}`}
+            details={`${initialValues
+              ? t('form:item-description-update')
+              : t('form:item-description-add')
+              } ${t('form:form-description-attribute-name')}`}
             className="w-full px-0 pb-5 sm:w-4/12 sm:py-8 sm:pe-4 md:w-1/3 md:pe-5"
           />
 
@@ -142,11 +138,10 @@ export default function CreateOrUpdateAttributeForm({ initialValues }: IProps) {
         <div className="my-5 flex flex-wrap sm:my-8">
           <Description
             title={t('common:attribute-values')}
-            details={`${
-              initialValues
-                ? t('form:item-description-update')
-                : t('form:item-description-add')
-            } ${t('form:form-description-attribute-value')}`}
+            details={`${initialValues
+              ? t('form:item-description-update')
+              : t('form:item-description-add')
+              } ${t('form:form-description-attribute-value')}`}
             className="w-full px-0 pb-5 sm:w-4/12 sm:py-8 sm:pe-4 md:w-1/3 md:pe-5"
           />
 

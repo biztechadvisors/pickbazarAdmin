@@ -460,7 +460,7 @@ const AdminLayout: React.FC<{ children?: React.ReactNode }> = ({
         ].includes(link.href)
     );
   }
-  console.log("matchedLinks", matchedLinks)
+
   const SidebarItemMap = () => (
     <Fragment>
       {matchedLinks.map(({ href, label, icon }) => (

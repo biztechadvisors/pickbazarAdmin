@@ -115,7 +115,7 @@ function SelectRegion({
   const { regions, loading, paginatorInfo, error } = useRegionsQuery({
     code: meData?.managed_shop?.slug,
   });
-  console.log('REgions===', regions);
+
   if (error) {
     console.error('Error fetching regions:', error);
   }
@@ -313,7 +313,6 @@ export default function CreateOrUpdateCategoriesForm({
 
   const onSubmit = async (values: FormValues) => {
     const shopIdFromLocalStorage = localStorage.getItem("shopId");
-    console.log("shopIdFromLocalStorage", shopIdFromLocalStorage)
     if (!shopIdFromLocalStorage) {
       console.error("Shop ID not found in localStorage");
       return;
@@ -356,7 +355,6 @@ export default function CreateOrUpdateCategoriesForm({
     }
   };
 
-  console.log('categoery-----------------initialvalue', initialValues);
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
       <div className="my-5 flex flex-wrap border-b border-dashed border-border-base pb-8 sm:my-8">
