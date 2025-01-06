@@ -50,7 +50,7 @@ const CustForm = ({ onClose, onUserCreated }: { onClose: () => void; onUserCreat
   const { data: permissionData } = usePermissionData(id);
   const { permissions } = getAuthCredentials();
   const [selectedPermissionType] = useState<any>(null); // Assuming selected permission type is already handled
-
+  const [selectedType, setSelectedType] = useState<{ value: string; label: string } | null>(null);
   const shopSlug =
     typeof window !== 'undefined' ? localStorage.getItem('shopSlug') : null;
 
@@ -92,6 +92,7 @@ const CustForm = ({ onClose, onUserCreated }: { onClose: () => void; onUserCreat
     email,
     password,
     contact,
+    permission,
   }: FormValues) {
     try {
       const response = await registerUser({
@@ -100,7 +101,8 @@ const CustForm = ({ onClose, onUserCreated }: { onClose: () => void; onUserCreat
         password,
         contact,
         createdBy: id,
-        permission: selectedPermissionType?.e,
+        // permission: selectedPermissionType?.e,
+        permission:selectedType?.value || '',
         shopSlug: '',
       });
 
@@ -180,6 +182,7 @@ const CustForm = ({ onClose, onUserCreated }: { onClose: () => void; onUserCreat
           isClearable={true}
           isLoading={loading}
           className="mb-4"
+          onChange={(value) => setSelectedType(value)}
         />
         <div className="mt-4 flex justify-end space-x-4">
           <Button
