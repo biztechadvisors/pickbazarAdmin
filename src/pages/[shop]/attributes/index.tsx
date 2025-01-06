@@ -16,6 +16,8 @@ import {
 import { useShopQuery } from '@/data/shop';
 import { useEffect, useState } from 'react';
 import { SortOrder } from '@/types';
+import { MoreIcon } from '@/components/icons/more-icon';
+import Button from '@/components/ui/button';
 import { useAttributesQuery } from '@/data/attributes';
 import { Routes } from '@/config/routes';
 import Search from '@/components/common/search';
@@ -42,7 +44,7 @@ export default function AttributePage() {
   const shopId = shopData?.id;
   const shopSlug = shopData?.slug;
 
-  const {  attributes, paginatorInfo, loading, error } = useAttributesQuery(
+  const { attributes, paginatorInfo, loading, error } = useAttributesQuery(
     {
       limit: 10,
       page,
@@ -78,29 +80,28 @@ export default function AttributePage() {
 
   return (
     <>
-    <Card className="mb-8 flex flex-col md:flex-row">
-      <div className="mb-4 md:w-1/4">
-        <h1 className="text-xl font-semibold">{t('common:attributes')}</h1>
-      </div>
-      <div className="flex w-full md:w-3/4">
-        <Search onSearch={handleSearch} />
-        <LinkButton
-          href={`/${shopSlug}/attributes/create`}
-          className="ms-6 h-12"
-        >
-          {t('form:button-label-add')}
-        </LinkButton>
-      </div>
-   
-    </Card>
-       <AttributeList
-       attributes={attributes}
-       paginatorInfo={paginatorInfo}
-       onPagination={handlePagination}
-       onOrder={setOrder}
+      <Card className="mb-8 flex flex-col md:flex-row">
+        <div className="mb-4 md:w-1/4">
+          <h1 className="text-xl font-semibold">{t('common:attributes')}</h1>
+        </div>
+        <div className="flex w-full md:w-3/4">
+          <Search onSearch={handleSearch} />
+          <LinkButton
+            href={`/${shopSlug}/attributes/create`}
+            className="h-12 ms-6"
+          >
+            {t('form:button-label-add')}
+          </LinkButton>
+        </div>
+      </Card>
+      <AttributeList
+        attributes={attributes}
+        paginatorInfo={paginatorInfo}
+        onPagination={handlePagination}
+        onOrder={setOrder}
         onSort={setColumn}
-     />
-     </>
+      />
+    </>
   );
 }
 
@@ -111,4 +112,3 @@ export const getServerSideProps = async ({ locale }) => ({
     ...(await serverSideTranslations(locale, ['common', 'form'])),
   },
 });
-

@@ -31,14 +31,21 @@ export default function Coupons() {
     sortedBy,
   });
 
-  const totalPages = Math.ceil((paginatorInfo?.pagination.totalItems || 0) / (paginatorInfo?.pagination.pageSize || 1));
+  const totalPages = Math.ceil(
+    (paginatorInfo?.pagination.totalItems || 0) /
+      (paginatorInfo?.pagination.pageSize || 1)
+  );
   useEffect(() => {
     if (page > totalPages) setPage(1);
-  }, [paginatorInfo?.pagination.totalItems, paginatorInfo?.pagination.pageSize, page]);
+  }, [
+    paginatorInfo?.pagination.totalItems,
+    paginatorInfo?.pagination.pageSize,
+    page,
+  ]);
 
   const { permissions } = getAuthCredentials();
-  
-  const permissionTypes = AllPermission(); 
+
+  const permissionTypes = AllPermission();
 
   const canWrite = permissionTypes.includes('sidebar-nav-item-coupons');
 
