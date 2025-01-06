@@ -150,6 +150,7 @@ const CreatePerm = ({ onPermissionCreate,PermissionDatas,selectedPermissions,set
         }
       }
       if (onSaveSuccess) {
+        console.log("onSaveSuccess is being called");
         onSaveSuccess(); // Close modal
       }
     } catch (error) {
