@@ -170,8 +170,6 @@ function SelectUser({ control, errors }: SelectUserProps) {
   const openModal = () => setModalOpen(true);
   const closeModal = () => setModalOpen(false);
 
-  console.log('users&&&&', users);
-
   return (
     <div className="mb-5 flex w-full justify-between gap-2">
       <div className="w-4/5">
@@ -218,7 +216,6 @@ const ShopForm = ({ initialValues }: { initialValues?: any }) => {
   const { permissions } = getAuthCredentials();
   const [selectedPermissions, setSelectedPermissions] = useState([]); 
   const [isChecked, setIsChecked] = useState(false);
-  console.log("selectesPermission+++",selectedPermissions)
 
 
   const handleCheckboxChange = () => {
@@ -238,7 +235,6 @@ const ShopForm = ({ initialValues }: { initialValues?: any }) => {
   // };
   const handlePermissionUpdate = (newPermission: any) => {
     // Ensure newPermission is formatted correctly for the options
-    console.log("first---", newPermission);
     const permissionWithLabel = {
       id: newPermission.id, 
       type_name: newPermission.type_name,
@@ -341,7 +337,6 @@ const ShopForm = ({ initialValues }: { initialValues?: any }) => {
     type_name: e?.type_name,
     e,
   }));
- console.log("additionalPermissionOptions+++",additionalPermissionOptions)
   const permissionOptions = additionalPermissionFalse?.map((e: any) => ({
     permission_name: e?.permission_name,
     type_name: e?.type_name,
@@ -371,7 +366,6 @@ const ShopForm = ({ initialValues }: { initialValues?: any }) => {
   };
  
   async function onSubmit(values: FormValues) {
-    console.log("Valuess",values)
     const settings = {
       ...values?.settings,
       location: { ...omit(values?.settings?.location, '__typename') },
@@ -385,7 +379,6 @@ const ShopForm = ({ initialValues }: { initialValues?: any }) => {
  
     // Remove companyType from values
     const { companyType, ...filteredValues } = values;
- console.log("filteredValues",filteredValues)
     try {
       if (initialValues) {
         const { ...restAddress } = filteredValues.address;
@@ -448,8 +441,6 @@ const ShopForm = ({ initialValues }: { initialValues?: any }) => {
   if (error) {
     return <div>Error: {error.message}</div>;
   }
-
-  console.log(' initialValues_____________________', initialValues);
 
   return (
     <>

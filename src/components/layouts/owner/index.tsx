@@ -98,11 +98,9 @@ const OwnerLayout: React.FC<{ children?: React.ReactNode }> = ({
       </div>
     ); // Replace with your loading indicator
   }
-console.log("Permission%%%",permissions)
   const matchedLinks = permissions?.includes(OWNER)
     ? siteSettings.sidebarLinks.owner
     : siteSettings.sidebarLinks.admin;
-    console.log("matchedLinks+++++",matchedLinks)
 
   const SidebarItemMap = () => (
     <Fragment>

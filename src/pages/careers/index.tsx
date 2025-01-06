@@ -2,7 +2,7 @@ import Card from '@/components/common/card';
 import Layout from '@/components/layouts/admin';
 import Search from '@/components/common/search';
 import LinkButton from '@/components/ui/link-button';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import ErrorMessage from '@/components/ui/error-message';
 import Loader from '@/components/ui/loader/loader';
 import { useTranslation } from 'next-i18next';
@@ -25,13 +25,18 @@ export default function Careers() {
   const [page, setPage] = useState(1);
   const { data: me } = useMeQuery();
 
-  const shopSlug = me?.managed_shop?.slug; // Extract shopSlug
+  const [shopSlug, setShopSlug] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const storedSlug = localStorage.getItem('shopSlug');
+      setShopSlug(storedSlug);
+    }
+  }, []);
 
   const { careers, loading, paginatorInfo, error } = useCareersQuery({
     shopSlug, // Use shopSlug instead of code
   });
-
-  console.log('Career in index', careers);
   const { permissions } = getAuthCredentials();
   const permissionTypes = AllPermission();
   const canWrite = permissionTypes.includes('sidebar-nav-item-careers'); // Adjust permissions accordingly

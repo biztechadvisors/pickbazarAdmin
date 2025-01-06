@@ -46,7 +46,6 @@ const TagList = ({
   });
 
   useEffect(() => {
-    console.log('Updated tags data:');
   }, [tags]);
 
   const onHeaderClick = (column: string | null) => ({

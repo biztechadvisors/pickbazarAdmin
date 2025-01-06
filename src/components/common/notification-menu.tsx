@@ -44,7 +44,7 @@ const NotificationMenu: React.FC<MenuType> = ({ data }) => {
 
       // Display toast notification
       toast.info(`${notification.title}: ${notification.message}`, {
-        position: "top-right",
+        position: 'top-right',
         autoClose: 5000,
         hideProgressBar: false,
         closeOnClick: true,
@@ -85,8 +85,8 @@ const NotificationMenu: React.FC<MenuType> = ({ data }) => {
         onClick={() => setOpen(!isOpen)}
       >
         <Bell className="h-5 w-5" />
-        {notifications.some(n => !n.read) && (
-          <div className="absolute -top-1 end-0 flex text-green-500">
+        {notifications.some((n) => !n.read) && (
+          <div className="absolute -top-1 flex text-green-500 end-0">
             <Dot />
           </div>
         )}

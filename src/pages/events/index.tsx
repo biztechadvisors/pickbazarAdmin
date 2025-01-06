@@ -30,7 +30,14 @@ const Events = () => {
 
 
   const shop: string | undefined = meData?.managed_shop?.id;
-  const shopSlug = meData?.managed_shop?.slug;
+  const [shopSlug, setShopSlug] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const storedSlug = localStorage.getItem('shopSlug');
+      setShopSlug(storedSlug);
+    }
+  }, []);
 
   const { events, paginatorInfo, error } = useEventQuery({
     shopSlug,
@@ -48,8 +55,6 @@ const Events = () => {
   useEffect(() => {
     if (page > totalPages) setPage(1);
   }, [paginatorInfo?.total, paginatorInfo?.perPage, page]);
-
-  console.log("events fetched:", events);
 
   function handleRegionFilter(regionName: string) {
     setRegion(regionName);

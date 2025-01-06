@@ -101,7 +101,6 @@
 
 // export default appWithTranslation(CustomApp);
 
-
 import type { AppProps } from 'next/app';
 import 'react-toastify/dist/ReactToastify.css';
 import '@/assets/css/main.css';

@@ -113,8 +113,6 @@ export default function Orders() {
     router.replace(Routes.dashboard);
   }
 
-  console.log("orders-shop",orders)
-
   return (
     <>
       <Card className="mb-8 flex flex-col items-center justify-between md:flex-row">

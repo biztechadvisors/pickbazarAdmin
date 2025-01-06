@@ -41,9 +41,7 @@ export default function ShopPage() {
   const { t } = useTranslation();
   const { data: me } = useMeQuery();
   const { query: { shop }, locale } = useRouter();
-  console.log("shopSlug", shop)
   const { data, isLoading: loading, error } = useShopQuery({ slug: shop!.toString() });
-  console.log('data', data)
   const { price: totalEarnings } = usePrice(data && { amount: data?.balance?.total_earnings! });
   const { price: currentBalance } = usePrice(data && { amount: data?.balance?.current_balance! });
 

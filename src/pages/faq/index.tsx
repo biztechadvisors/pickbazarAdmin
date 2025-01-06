@@ -27,7 +27,14 @@ export default function Faq() {
   const [page, setPage] = useState(1);
   const { data: me } = useMeQuery();
 
-  const shopSlug = me?.managed_shop?.slug;
+  const [shopSlug, setShopSlug] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const storedSlug = localStorage.getItem('shopSlug');
+      setShopSlug(storedSlug);
+    }
+  }, []);
 
   const { faq, loading, paginatorInfo, error } = useFaqQuery({
     shopSlug,
@@ -61,8 +68,6 @@ export default function Faq() {
   useEffect(() => {
     if (page > totalPages) setPage(1);
   }, [paginatorInfo?.total, paginatorInfo?.perPage, page]);
-
-  console.log("qnaPage", qna,qnaPaginatorInfo);
 
   const { permissions } = getAuthCredentials();
   const permissionTypes = AllPermission();

@@ -26,9 +26,18 @@ export default function GetInspired() {
   const [page, setPage] = useState(1);
   const { data: me } = useMeQuery();
 
+  const [shopSlug, setShopSlug] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const storedSlug = localStorage.getItem('shopSlug');
+      setShopSlug(storedSlug);
+    }
+  }, []);
+
   // Fetch the inspirations data
   const { getInspired, loading, paginatorInfo, error } = useGetInspiredQuery({
-    shopSlug: me?.managed_shop?.slug,
+    shopSlug,
     limit: 10,  
     page: page,
   });
@@ -58,8 +67,6 @@ export default function GetInspired() {
   const handlePagination = (newPage: number) => {
     setPage(newPage);
   };
-
-  console.log(canWrite);
 
   return (
     <>

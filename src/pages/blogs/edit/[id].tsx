@@ -23,12 +23,7 @@ import { useBlogQuery, useBlogSingleData, useBlogSingleingleData } from '@/data/
 export default function UpdateBlogPage() {
   const { t } = useTranslation();
   const { query } = useRouter();
-
-  console.log("queryfor Blog", query)
   const { data, isLoading: loading, error } = useBlogSingleData(query.id as string);
-
-
-  console.log("dataForSingleBlogID_____________________________", data)
 
   if (loading) return <Loader text={t('common:text-loading')} />;
   if (error) return <ErrorMessage message={error.message} />;

@@ -14,14 +14,12 @@ export const contactsClient = {
   ),
 
   get({ id, language }: { id: string; language: string }) {
-    console.log(id, ' = Contact ID');
     return HttpClient.get<Contact>(`${API_ENDPOINTS.CONTACTS}/${id}`, {
       language,
     });
   },
 
   paginated: ({ ...params }: { params: Partial<ContactQueryOptions> }) => {
-    console.log('params', params);
     if (params.shopSlug) {
       // Update to use query params for the shop slug
       return HttpClient.get<ContactPaginator>(

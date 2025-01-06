@@ -20,7 +20,7 @@ import { useCreateTagMutation, useUpdateTagMutation } from '@/data/tag';
 import { useTypesQuery } from '@/data/type';
 import OpenAIButton from '../openAI/openAI.button';
 import { useSettingsQuery } from '@/data/settings';
-import { useCallback, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { ItemProps, SortOrder } from '@/types';
 import { useModalAction } from '../ui/modal/modal.context';
 import { useShopsQuery } from '@/data/shop';
@@ -194,8 +194,14 @@ export default function CreateOrUpdateTagForm({ initialValues }: IProps) {
   const [sortedBy, setColumn] = useState<SortOrder>(SortOrder.Desc);
 
   const { data: meData } = useMeQuery();
+  const [shopSlug, setShopSlug] = useState<string | null>(null);
 
-  const shopSlug = meData?.managed_shop.slug;
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const storedSlug = localStorage.getItem('shopSlug');
+      setShopSlug(storedSlug);
+    }
+  }, []);
 
   const {
     register,

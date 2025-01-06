@@ -33,7 +33,6 @@ const CreatePerm = ({ onPermissionCreate,PermissionDatas,selectedPermissions,set
   const [matched, _] = useAtom(newPermission);
 
   const permissionId = router.query.id;
-  console.log("permissionId **36", permissionId)
 
   const { data: meData } = useMeQuery();
 
@@ -44,8 +43,6 @@ const CreatePerm = ({ onPermissionCreate,PermissionDatas,selectedPermissions,set
     () => permissionClient.getPermissionById(permissionId),
     { enabled: !!permissionId }
   );
-
-  console.log("singlePermissionData 48", singlePermissionData)
 
   const { mutateUpdate, mutatePost } = useSavePermissionData();
 
@@ -109,12 +106,10 @@ const CreatePerm = ({ onPermissionCreate,PermissionDatas,selectedPermissions,set
   };
 
   const handleSavePermission = async () => {
-    console.log('first')
     if (!permissionName) {
       setPermissionError('Please enter a permission name.');
       return;
     }
-    console.log("second")
     let typeToSend = selectedType;
     if (!selectedType) {
       const firstType = typeName;
@@ -182,7 +177,6 @@ const CreatePerm = ({ onPermissionCreate,PermissionDatas,selectedPermissions,set
   };
 
   useEffect(() => {
-    console.log("third 177")
     if (permissions.includes(OWNER)) {
       setTypeName(PermissionDatas?.type_name);
     } else {

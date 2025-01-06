@@ -11,22 +11,22 @@ import Pagination from '@/components/ui/pagination';
 
 export type IProps = {
   attributes: Attribute[] | undefined;
-   paginatorInfo: MappedPaginatorInfo | null;
-   onPagination: (key: number) => void;
+  paginatorInfo: MappedPaginatorInfo | null;
+  onPagination: (key: number) => void;
   onSort: (current: any) => void;
   onOrder: (current: string) => void;
 };
 
-const AttributeList = ({ 
+const AttributeList = ({
   attributes,
   paginatorInfo,
   onPagination,
   onSort,
-  onOrder }: IProps) => {
+  onOrder,
+}: IProps) => {
   const { t } = useTranslation();
   const router = useRouter();
   const rowExpandable = (record: any) => record.children?.length;
-  // const { alignLeft, alignRight } = useIsRTL();
 
   const alignLeft =
     router.locale === 'ar' || router.locale === 'he' ? 'right' : 'left';
@@ -139,31 +139,29 @@ const AttributeList = ({
 
   return (
     <>
-    <div className="mb-8 overflow-hidden rounded shadow">
-      <Table
-        // @ts-ignore
-        columns={columns}
-        emptyText={t('table:empty-table-data')}
-        data={attributes?.items || []}
-        rowKey="id"
-        scroll={{ x: 380 }}
+      <div className="mb-8 overflow-hidden rounded shadow">
+        <Table
+          columns={columns}
+          emptyText={t('table:empty-table-data')}
+          data={attributes?.items || []}
+          rowKey="id"
+          scroll={{ x: 380 }}
           expandable={{
             expandedRowRender: () => ' ',
             rowExpandable: rowExpandable,
           }}
-      />  
-    </div>
-       {!!paginatorInfo?.total && (
+        />
+      </div>
+      {!!paginatorInfo?.total && (
         <div className="flex items-center justify-end">
           <Pagination
             total={paginatorInfo.total}
             current={paginatorInfo.currentPage}
-            // pageSize={paginatorInfo.perPage}
             onChange={onPagination}
           />
         </div>
       )}
-      </>
+    </>
   );
 };
 

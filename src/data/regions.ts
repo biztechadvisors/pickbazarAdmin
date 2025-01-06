@@ -63,7 +63,6 @@ export const useRegionsQuery = (
 };
  
 export const useUpdateRegionClassMutation = (shop_id) => {
-  // console.log('shop_id =', shop_id)
   const { t } = useTranslation();
   const queryClient = useQueryClient();
   const router = useRouter();

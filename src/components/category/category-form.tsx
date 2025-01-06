@@ -15,7 +15,7 @@ import * as categoriesIcon from '@/components/icons/category';
 import { getIcon } from '@/utils/get-icon';
 import { useRouter } from 'next/router';
 import ValidationError from '@/components/ui/form-validation-error';
-import { useCallback, useEffect, useMemo } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { Category, ItemProps } from '@/types';
 import { categoryIcons } from './category-icons';
 import { useTranslation } from 'next-i18next';
@@ -196,7 +196,14 @@ function SelectCategories({
   const { data: meData } = useMeQuery();
 
   const shop: string | undefined = meData?.managed_shop?.id;
-  const shopSlug = meData?.managed_shop?.slug;
+  const [shopSlug, setShopSlug] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const storedSlug = localStorage.getItem('shopSlug');
+      setShopSlug(storedSlug);
+    }
+  }, []);
 
   const { categories, loading } = useCategoriesQuery({
     // shop,

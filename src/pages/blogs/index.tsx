@@ -12,7 +12,7 @@ import { SortOrder } from '@/types';
 import { adminOwnerAndStaffOnly } from '@/utils/auth-utils';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import { useRouter } from 'next/router';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 const Blogs = () => {
@@ -27,7 +27,14 @@ const Blogs = () => {
   const [startDate, setStartDate] = useState('');
   
   const shop: string | undefined = meData?.managed_shop?.id;
-  const shopSlug = meData?.managed_shop?.slug;
+  const [shopSlug, setShopSlug] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const storedSlug = localStorage.getItem('shopSlug');
+      setShopSlug(storedSlug);
+    }
+  }, []);
 
   const { blogs, paginatorInfo, error, loading } = useBlogsQuery({
     shopSlug,

@@ -158,8 +158,6 @@ export const useUpdateOrderMutation = () => {
 
       // Data object to send in the PUT request
       const data = { name, color, serial, language };
-
-      console.log('Sending data to server:', data); // Log the data object
       return await HttpClient.put(url, data); // PUT request with the data
     },
     {

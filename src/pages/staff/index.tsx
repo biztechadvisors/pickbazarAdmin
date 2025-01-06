@@ -122,9 +122,8 @@ export default function StaffsPage() {
 StaffsPage.authenticate = {
   permissions: adminOwnerAndStaffOnly,
 };
-StaffsPage.Layout = getAuthCredentials().permissions?.[0] === OWNER
-  ? OwnerLayout
-  : AdminLayout;;
+StaffsPage.Layout =
+  getAuthCredentials().permissions?.[0] === OWNER ? OwnerLayout : AdminLayout;
 
 export const getServerSideProps = async ({ locale }: any) => ({
   props: {
