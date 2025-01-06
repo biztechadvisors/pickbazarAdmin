@@ -32,6 +32,7 @@ import { Config } from '@/config';
 import { EditIcon } from '../icons/edit';
 import ValidationError from '@/components/ui/form-validation-error';
 import { useRegionsQuery } from '@/data/regions';
+import { useShopQuery } from '@/data/shop';
 
 export const chatbotAutoSuggestion = ({ name }: { name: string }) => {
   return [
@@ -128,6 +129,21 @@ function SelectCategories({
     control,
     name: 'type',
   });
+  const router = useRouter();  
+  const { data: meData } = useMeQuery(); 
+
+  const {
+    query: { shops },
+  } = useRouter();
+
+  const { data: shopData, isLoading: fetchingShop } = useShopQuery({
+    slug: shops as string,
+  });
+
+  const shopId = shopData?.id!; 
+
+  const shop: string | undefined = meData?.managed_shop?.id;
+
   const { dirtyFields } = useFormState({
     control,
   });
@@ -141,6 +157,7 @@ function SelectCategories({
     limit: 999,
     type: type?.slug,
     language: locale,
+    shopId: shop || shopId,
   });
   return (
     <div>
