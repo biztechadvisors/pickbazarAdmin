@@ -36,14 +36,11 @@ export default function Customers() {
     usrById: data?.id,
     email: searchTerm,
     page,
-    name: searchTerm,
+    search: searchTerm,
     orderBy,
     sortedBy,
     role: 'user',
   });
-
-  console.log('data?.id', data?.id);
-  console.log('users', users);
 
   if (loading) return <Loader text={t('common:text-loading')} />;
   if (error) return <ErrorMessage message={error.message} />;

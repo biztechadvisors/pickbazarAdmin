@@ -11,7 +11,6 @@ import { useTranslation } from 'next-i18next';
 export default function UpdateGetInspiredPage() {
   const { t } = useTranslation();
   const { query } = useRouter();
-  console.log('query =', query);
 
   // Fetch data for the specific Get Inspired item
   const {
@@ -19,7 +18,6 @@ export default function UpdateGetInspiredPage() {
     isLoading: loading,
     error,
   } = useGetInspiredSingleDataQuery(query.id as string);
-  console.log('data ====', data);
 
   // Check if loading or error occurs
   if (loading) return <Loader text={t('common:text-loading')} />;

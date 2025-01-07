@@ -44,9 +44,6 @@ const StockList = ({
 }: IProps) => {
   // const { data } = orders! ?? {};
 
-  console.log("orders=orders",orders)
-
-
   const router = useRouter();
   const { t } = useTranslation();
   const rowExpandable = (record: any) => record.children?.length;
@@ -63,7 +60,7 @@ const StockList = ({
     column: null,
   });
 
- 
+
 
   const permissionTypes = AllPermission();
 

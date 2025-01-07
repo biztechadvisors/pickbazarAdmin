@@ -28,9 +28,6 @@ export default function UpdateProductPage() {
     slug: query?.shop as string,
   });
   const { productSlug, productId } = router.query;
-
-  // console.log('Product Slug:', productSlug);
-  console.log('Product ID:', query);
   // const shop_id = shopData?.id ? Number(shopData.id) : undefined;
   const shop_id = shopData?.id!;
 

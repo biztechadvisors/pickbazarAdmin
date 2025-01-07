@@ -43,25 +43,6 @@ export const useUpdateeventMutation = () => {
   });
 };
 
-// export const useEventQuery = (params: any) => {
-//   return useQuery(
-//     [API_ENDPOINTS.EVENTS, params],
-//     () => eventClient.getAll(params),
-//     {
-//       onSuccess: (data) => {
-//         // Handle successful data fetching (e.g., log data, set additional state)
-//         console.log('Blogs fetched successfully:', data);
-//       },
-//       onError: (error) => {
-//         // Handle errors (e.g., show an error message)
-//         console.error('Error fetching blogs:', error);
-//       },
-//     }
-//   );
-// };
-
-// 
-
 export const useEventQuery = (params: any, options: any = {}) => {
   const { data, error, isLoading } = useQuery(
     [API_ENDPOINTS.EVENTS, params],
@@ -71,7 +52,7 @@ export const useEventQuery = (params: any, options: any = {}) => {
       ...options,
     }
   );
-console.log("@@@@@@",data) 
+
   return {
     events: data?.data || [], // Fallback to an empty array if no data is available
     paginatorInfo: data ? mapPaginatorData(data) : {}, // Assuming mapPaginatorData handles pagination info

@@ -92,7 +92,6 @@ export const useAttributesQuery = (
       ...options,
     }
   );
-  console.log('DATA+++++++', params, data);
   return {
     attributes: data ?? [],
     paginatorInfo: mapPaginatorData(data),

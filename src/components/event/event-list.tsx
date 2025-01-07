@@ -21,7 +21,7 @@ export type IProps = {
   onSort: (current: any) => void;
   onOrder: (current: string) => void;
 };
-const EventLists = ({ 
+const EventLists = ({
   events,
   paginatorInfo,
   onPagination,
@@ -29,7 +29,6 @@ const EventLists = ({
   onOrder,
 }: IProps) => {
 
-  console.log("eventseventsevents", events)
   const { t } = useTranslation();
   const rowExpandable = (record: any) => record.children?.length;
   const { alignLeft, alignRight } = useIsRTL();
@@ -136,19 +135,19 @@ const EventLists = ({
     {
       ...(canWrite
         ? {
-            title: t('table:table-item-actions'),
-            dataIndex: 'id',
-            key: 'actions',
-            align: 'right',
-            render: (id: string) => (
-              <ActionButtons
-                id={id}
-                // editUrl={`${Routes.event.list}/edit/${id}`}
-                editUrl={`${Routes.event.list}/edit/${id}`}
-                deleteModalView="DELETE_EVENT"
-              />
-            ),
-          }
+          title: t('table:table-item-actions'),
+          dataIndex: 'id',
+          key: 'actions',
+          align: 'right',
+          render: (id: string) => (
+            <ActionButtons
+              id={id}
+              // editUrl={`${Routes.event.list}/edit/${id}`}
+              editUrl={`${Routes.event.list}/edit/${id}`}
+              deleteModalView="DELETE_EVENT"
+            />
+          ),
+        }
         : null),
     },
   ];

@@ -44,10 +44,6 @@ export const AddressGrid: React.FC<AddressesProps> = ({
     }
   }, [addresses, selectedAddress, setAddress]);
 
-  if (process.env.NODE_ENV !== 'production') {
-    console.log('selectedAddress', selectedAddress);
-    console.log('userId', userId, 'type', type);
-  }
 
   function onAdd() {
     openModal('ADD_OR_UPDATE_ADDRESS', { customerId: userId, type });

@@ -39,7 +39,14 @@ export default function SubCategories() {
   const { data: meData } = useMeQuery();
 
   const shop: string | undefined = meData?.managed_shop?.id;
-  const shopSlug = meData?.managed_shop?.slug;
+  const [shopSlug, setShopSlug] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const storedSlug = localStorage.getItem('shopSlug');
+      setShopSlug(storedSlug);
+    }
+  }, []);
 
   const permissionTypes = AllPermission();
 

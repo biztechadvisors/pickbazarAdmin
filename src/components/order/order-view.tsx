@@ -24,8 +24,6 @@ function OrderView({ order, language, loadingStatus }: any) {
   const { resetCart } = useCart();
   const [, resetCheckout] = useAtom(clearCheckoutAtom);
 
-  console.log("order",order)
-
   useEffect(() => {
     resetCart();
     //@ts-ignore

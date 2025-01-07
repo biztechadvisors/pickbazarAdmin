@@ -14,9 +14,7 @@ export const eventClient = {
   },
 
   getAll: (params: any) => {
-   console.log("PARAMssss",params)
    const { shopSlug, page = 1, limit = 10, search = '', regionName = '', filter = '', startDate = '', endDate = '', location = '' } = params;
-    console.log("shopSlug###",shopSlug)
     const query = new URLSearchParams({
       page: String(page),
       limit: String(limit),

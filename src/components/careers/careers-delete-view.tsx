@@ -11,10 +11,8 @@ const CareerDeleteView = () => {
 
   const { data } = useModalState(); // This retrieves the id or data related to the career being deleted
   const { closeModal } = useModalAction();
-  console.log('useModalState = ', data);
 
   function handleDelete() {
-    console.log('handle Delete = ', data);
     deleteCareer({ id: data }); // Pass the id of the career to be deleted
     closeModal();
   }

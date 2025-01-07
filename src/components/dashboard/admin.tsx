@@ -17,6 +17,7 @@ import { CustomerIcon } from '../icons/sidebar/customer';
 import { AllPermission } from '@/utils/AllPermission';
 import { useGetStockSeals } from '@/data/stock';
 import { Company, DEALER } from '@/utils/constants';
+import { useEffect, useState } from 'react';
 
 export default function Dashboard() {
   const { t } = useTranslation();
@@ -27,8 +28,18 @@ export default function Dashboard() {
   const customerId = meData?.id;
   const DealerShow = meData?.permission.type_name === DEALER;
   const ShopShow = meData?.permission.type_name === Company;
+  const [shopSlug, setShopSlug] = useState<string | null>(null);
 
-  const shopId = meData?.id;
+  const shopId = meData?.managed_shop?.id;
+
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const storedSlug = localStorage.getItem('shopSlug');
+      setShopSlug(storedSlug);
+    }
+  }, []);
+
+  
 
   const analyticsQuery = {
     customerId: parseInt(customerId),
@@ -54,7 +65,7 @@ export default function Dashboard() {
   if (DealerShow) {
     queryConfig = {
       ...queryConfig, // Spread the previous properties
-      shopSlug: meData?.managed_shop?.slug,
+      shopSlug,
       customer_id: meData?.id,
     };
   }
@@ -62,7 +73,7 @@ export default function Dashboard() {
   else if (ShopShow) {
     queryConfig = {
       ...queryConfig,
-      shopSlug: meData?.managed_shop?.slug,
+      shopSlug,
     };
   }
 
@@ -74,7 +85,6 @@ export default function Dashboard() {
     loading: orderLoading,
   } = useOrdersQuery(queryConfig);
 
-  console.log('orderData', orderData);
   const customer_id = meData?.id;
   const shop_id = meData?.managed_shop?.id;
 
@@ -99,7 +109,7 @@ export default function Dashboard() {
     language: locale,
     shop_id: meData?.managed_shop?.id,
   });
-  
+
   if (analyticsLoading || orderLoading || popularProductLoading) {
     return <Loader text={t('common:text-loading')} />;
   }

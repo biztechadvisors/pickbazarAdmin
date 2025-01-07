@@ -47,25 +47,33 @@ export default function TypesPage() {
   });
 
   const shopId = shopData?.id!;
-  const shop_Slug = shopData?.slug
+  const shop_Slug = shopData?.slug;
 
   const shop: string | undefined = meData?.managed_shop?.id;
-  const shopSlug: string | undefined = meData?.managed_shop?.slug;
+  const [shopSlug, setShopSlug] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const storedSlug = localStorage.getItem('shopSlug');
+      setShopSlug(storedSlug);
+    }
+  }, []);
+
   const { types, paginatorInfo, loading, error } = useTypesQuery({
     // name: searchTerm,
     language: locale,
     orderBy,
     sortedBy,
-    shop,
+    shop_id: shop || shopId,
     slug: shop_Slug,
-    search:searchTerm,
+    search: searchTerm,
     page,
-    limit:10,
+    limit: 10,
   });
   const totalPages = Math.ceil((paginatorInfo?.total || 0) / (paginatorInfo?.perPage || 10));
   useEffect(() => {
     if (page > totalPages) setPage(1);
-  },[paginatorInfo?.total, paginatorInfo?.perPage, page]);
+  }, [paginatorInfo?.total, paginatorInfo?.perPage, page]);
   const { permissions } = getAuthCredentials();
   const permissionTypes = AllPermission();
 
@@ -129,12 +137,13 @@ export default function TypesPage() {
           )}
         </div>
       </Card>
-      <TypeList 
-       paginatorInfo={paginatorInfo}
-       onPagination={handlePagination}
-      types={types}  
-      onOrder={setOrder} 
-      onSort={setColumn} />
+      <TypeList
+        paginatorInfo={paginatorInfo}
+        onPagination={handlePagination}
+        types={types}
+        onOrder={setOrder}
+        onSort={setColumn}
+      />
     </>
   );
 }

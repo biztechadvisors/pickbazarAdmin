@@ -14,7 +14,7 @@ import { newPermission } from '@/contexts/permission/storepermission';
 import { useAtom } from 'jotai';
 import OwnerLayout from '@/components/layouts/owner';
 import { ADMIN, DEALER, OWNER, STAFF, Company } from '@/utils/constants';
-import { addPermission } from '@/utils/atoms';
+// import { addPermission } from '@/utils/atoms';
 
 const CreatePerm = ({ onPermissionCreate,PermissionDatas,selectedPermissions,setSelectedPermissions,onSaveSuccess}) => {
   const router = useRouter();
@@ -26,7 +26,7 @@ const CreatePerm = ({ onPermissionCreate,PermissionDatas,selectedPermissions,set
   // const [selectedPermissions, setSelectedPermissions] = useState([]);
   const [typeError, setTypeError] = useState('');
   const [permissionError, setPermissionError] = useState('');
-  const [matchedAdd, setMatchedAdd] = useAtom(addPermission);
+  // const [matchedAdd, setMatchedAdd] = useAtom(addPermission);
 
   const { permissions } = getAuthCredentials();
 
@@ -110,7 +110,6 @@ const CreatePerm = ({ onPermissionCreate,PermissionDatas,selectedPermissions,set
       setPermissionError('Please enter a permission name.');
       return;
     }
-
     let typeToSend = selectedType;
     if (!selectedType) {
       const firstType = typeName;
@@ -146,11 +145,12 @@ const CreatePerm = ({ onPermissionCreate,PermissionDatas,selectedPermissions,set
         }
       }
       if (onSaveSuccess) {
+        console.log("onSaveSuccess is being called");
         onSaveSuccess(); // Close modal
       }
     } catch (error) {
       console.error('Error saving/updating permission:', error);
-      toast.error('Error');
+      // toast.error('Error');
     }
   };
 
@@ -230,9 +230,8 @@ const CreatePerm = ({ onPermissionCreate,PermissionDatas,selectedPermissions,set
             <select
               id="typename"
               name="typename"
-              className={`mt-1 block w-full rounded-md border bg-gray-100 p-2 ${
-                typeError && 'border-red-500'
-              }`}
+              className={`mt-1 block w-full rounded-md border bg-gray-100 p-2 ${typeError && 'border-red-500'
+                }`}
               onChange={handleChange}
               value={selectedType}
             >
@@ -254,9 +253,8 @@ const CreatePerm = ({ onPermissionCreate,PermissionDatas,selectedPermissions,set
               type="text"
               id="permission"
               name="permission"
-              className={`mt-1 block w-full rounded-md border bg-gray-100 p-2 ${
-                permissionError && 'border-red-500'
-              }`}
+              className={`mt-1 block w-full rounded-md border bg-gray-100 p-2 ${permissionError && 'border-red-500'
+                }`}
               placeholder={t('Enter permissions')}
               value={permissionName}
               onChange={handlePermissionNameChange}

@@ -1,5 +1,5 @@
 import Select from '@/components/ui/select/select';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'next-i18next';
 import cn from 'classnames';
 import { useTypesQuery } from '@/data/type';
@@ -17,6 +17,7 @@ export default function TypeFilter({ onTypeFilter, className }: Props) {
   const { t } = useTranslation();
   const { locale } = useRouter();
   const { data: meData } = useMeQuery();
+  const [shopSlug, setShopSlug] = useState<string | null>(null);
   const {
     query: { shops },
   } = useRouter();
@@ -27,21 +28,28 @@ export default function TypeFilter({ onTypeFilter, className }: Props) {
 
   const shopId = shopData?.id!;
   const shop_Slug = shopData?.slug
-console.log("shop_Slug",shop_Slug)
-const shop: string | undefined = meData?.managed_shop?.id;
-const shopSlug: string | undefined = meData?.managed_shop?.slug;
- 
-  const { types, loading } = useTypesQuery({ 
+
+  const shop: string | undefined = meData?.managed_shop?.id;
+  
+
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const storedSlug = localStorage.getItem('shopSlug');
+      setShopSlug(storedSlug);
+    }
+  }, []);
+
+  const { types, loading } = useTypesQuery({
     language: locale,
-    shop_id:shop,
-    shopSlug: shopSlug,
-   });
-console.log("types%%%",types)
+    shop_id: shop,
+    shopSlug,
+  });
+
   return (
     <div className={cn('flex w-full', className)}>
       <div className="w-full">
         <Select
-          options={types?.items || []} 
+          options={types?.items || []}
           isLoading={loading}
           getOptionLabel={(option: any) => option.name}
           getOptionValue={(option: any) => option.slug}

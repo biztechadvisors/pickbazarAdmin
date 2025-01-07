@@ -36,8 +36,6 @@ const ProductSubCategoryInput = ({ control, setValue }: Props) => {
     categoryId: null,
   });
 
-  console.log("@SUBCATEGORY+++", subcategories);
-
   return (
     <div className="mb-5">
       <Label>{t('form:input-label-subcategories')}</Label>
@@ -47,10 +45,10 @@ const ProductSubCategoryInput = ({ control, setValue }: Props) => {
         control={control}
         getOptionLabel={(option: any) => option.name}
         getOptionValue={(option: any) => option.id}
-        options={subcategories}  
+        options={subcategories}
         isLoading={loading}
         defaultValue={[]}
-      /> 
+      />
     </div>
   );
 };

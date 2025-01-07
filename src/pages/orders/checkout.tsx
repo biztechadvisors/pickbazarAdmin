@@ -43,8 +43,6 @@ export default function CheckoutPage() {
   const [customer] = useAtom(customerAtom);
 
   const { data: meData } = useMeQuery();
-  console.log('Ashish', meData);
-  console.log('customerData', customer);
 
   const { t } = useTranslation();
 
@@ -61,22 +59,6 @@ export default function CheckoutPage() {
     }
   }, [customer?.id]);
 
-  // const {
-  //   data: user,
-  //   isLoading: loading,
-  //   error,
-  //   refetch,
-  // } = useUserQuery({ id: meData?.id });
-
-  // useEffect(() => {
-  //   if (meData?.id) {
-  //     refetch(meData?.id);
-  //   }
-  // }, [meData?.id]);
-
-  console.log('billingAddressAtom', billingAddressAtom);
-
-  console.log('userAshish', user);
 
   if (loading) {
     <div>

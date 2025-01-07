@@ -14,4 +14,6 @@ export const dealerAddress = atom<string | null>(null);
 
 export const selectedOption = atom<string | null>(null);
 
+export const setUsrEmailState = atom<any | null>(null);
+
 export const addPermission = atom([]);

@@ -20,7 +20,7 @@ import { useCreateTagMutation, useUpdateTagMutation } from '@/data/tag';
 import { useTypesQuery } from '@/data/type';
 import OpenAIButton from '../openAI/openAI.button';
 import { useSettingsQuery } from '@/data/settings';
-import { useCallback, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { ItemProps, SortOrder } from '@/types';
 import { useModalAction } from '../ui/modal/modal.context';
 import { useShopsQuery } from '@/data/shop';
@@ -129,7 +129,7 @@ function SelectTypes({
     language: locale,
     shop_id,
   });
-  // console.log("types",types)
+
   return (
     <div className="mb-5">
       <Label>{t('form:input-label-types')}</Label>
@@ -192,10 +192,16 @@ export default function CreateOrUpdateTagForm({ initialValues }: IProps) {
   const [page, setPage] = useState(1);
   const [orderBy, setOrder] = useState('created_at');
   const [sortedBy, setColumn] = useState<SortOrder>(SortOrder.Desc);
-  console.log("first+++++", initialValues)
-  const { data: meData } = useMeQuery();
 
-  const shopSlug = meData?.managed_shop.slug;
+  const { data: meData } = useMeQuery();
+  const [shopSlug, setShopSlug] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const storedSlug = localStorage.getItem('shopSlug');
+      setShopSlug(storedSlug);
+    }
+  }, []);
 
   const {
     register,
@@ -253,7 +259,7 @@ export default function CreateOrUpdateTagForm({ initialValues }: IProps) {
   const onSubmit = async (values: FormValues) => {
 
     const transformedRegions = values.regions?.name ? [values.regions.name] : [];
-    console.log("shopSlug--256", shopSlug)
+
     const input = {
       language: router.locale,
       name: values.name,

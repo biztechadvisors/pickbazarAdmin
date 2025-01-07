@@ -53,8 +53,6 @@ export default function SalesPage() {
   const [isChecked] = useAtom(toggleAtom);
 
   const { data: stockData, isLoading, error } = useGetStock(meData?.id);
-
-  console.log("stockData",stockData)
  
 
   const permissionTypes = AllPermission(); 

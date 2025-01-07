@@ -27,7 +27,6 @@ export function crudFactory<Type, QueryParams extends LanguageParam, InputType>(
       return HttpClient.put<Type>(`${endpoint}/${id}`, input);
     },
     delete({ id }: { id: string }) {
-      console.log('id in curd-factory = ', id);
       return HttpClient.delete<boolean>(`${endpoint}/${id}`);
     },
   };

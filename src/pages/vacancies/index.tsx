@@ -29,9 +29,6 @@ export default function Vacancies() {
     code: me?.managed_shop?.slug,
   });
 
-  console.log('Datame', me);
-  console.log('Vacancies in index', vacancies);
-
   const { permissions } = getAuthCredentials();
   const permissionTypes = AllPermission();
   const canWrite = permissionTypes.includes('sidebar-nav-item-vacancies');

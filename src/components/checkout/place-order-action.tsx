@@ -46,20 +46,14 @@ export const PlaceOrderAction: React.FC<{
       note,
       token,
       payable_amount
-      
+
     },
   ] = useAtom(checkoutAtom);
 
-  console.log("billing_address____________________________________________", billing_address)
-  console.log("customer_name-------------------------", customer_name)
   const [discount] = useAtom(discountAtom);
   const [use_wallet_points] = useAtom(walletAtom);
 
   const { data: meData } = useMeQuery();
-  console.log("first-meData",meData)
-  console.log("first-billing_address",billing_address?.address)
-  console.log("customer",customer)
-  console.log("customer_name",customer_name)
   const dealerId = meData?.id;
   const shop_id = meData?.shop_id;
 
@@ -98,7 +92,7 @@ export const PlaceOrderAction: React.FC<{
     Number(discount)
   );
 
- 
+
 
   const handlePlaceOrder = () => {
     if (!customer_contact) {
@@ -140,11 +134,11 @@ export const PlaceOrderAction: React.FC<{
       shop_id,
       status: "order-pending",
       payment_status: "payment-pending",
-      payment_id: "payment12345",  
+      payment_id: "payment12345",
       payment_method: gateWay,
       statusId: 1,
       order_date: billing_address?.customer?.created_at,
-      currency: billing_address?.address?.country,      
+      currency: billing_address?.address?.country,
       shipping_method: "standard",
       billing_address: {
         ...(billing_address?.address && billing_address.address),
@@ -246,7 +240,7 @@ export const PlaceOrderAction: React.FC<{
       {!isAllRequiredFieldSelected && (
         <div className="mt-3">
           {/* <ValidationError message={t('text-place-order-helper-text')} /> */}
-          
+
         </div>
       )}
     </>

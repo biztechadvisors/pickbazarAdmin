@@ -16,14 +16,10 @@ import {
 import { useShopQuery } from '@/data/shop';
 import { useEffect, useState } from 'react';
 import { SortOrder } from '@/types';
-// import { useModalAction } from '@/components/ui/modal/modal.context';
 import { MoreIcon } from '@/components/icons/more-icon';
 import Button from '@/components/ui/button';
 import { useAttributesQuery } from '@/data/attributes';
-import { Config } from '@/config';
-import { useMeQuery } from '@/data/user';
 import { Routes } from '@/config/routes';
-import { AllPermission } from '@/utils/AllPermission';
 import Search from '@/components/common/search';
 import AdminLayout from '@/components/layouts/admin';
 export default function AttributePage() {
@@ -33,6 +29,8 @@ export default function AttributePage() {
   const [searchTerm, setSearchTerm] = useState('');
   const [page, setPage] = useState(1);
   const [isClient, setIsClient] = useState(false);
+  const [orderBy, setOrder] = useState('updated_at');
+  const [sortedBy, setColumn] = useState<SortOrder>(SortOrder.Desc);
 
   useEffect(() => {
     setIsClient(true);
@@ -46,7 +44,7 @@ export default function AttributePage() {
   const shopId = shopData?.id;
   const shopSlug = shopData?.slug;
 
-  const {  attributes, paginatorInfo, loading, error } = useAttributesQuery(
+  const { attributes, paginatorInfo, loading, error } = useAttributesQuery(
     {
       limit: 10,
       page,
@@ -54,6 +52,8 @@ export default function AttributePage() {
       slug: shopSlug,
       language: locale,
       search: searchTerm,
+      orderBy,
+      sortedBy,
     },
     { enabled: Boolean(shopId) }
   );
@@ -61,7 +61,6 @@ export default function AttributePage() {
   useEffect(() => {
     if (page > totalPages) setPage(1);
   }, [paginatorInfo?.total, paginatorInfo?.perPage, page]);
-
   if (!isClient || loading || fetchingShop) {
     return <Loader text={t('common:text-loading')} />;
   }
@@ -92,17 +91,18 @@ export default function AttributePage() {
           <Search onSearch={handleSearch} />
           <LinkButton
             href={`/${shopSlug}/attributes/create`}
-            className="ms-6 h-12"
+            className="h-12 ms-6"
           >
             {t('form:button-label-add')}
           </LinkButton>
         </div>
-
       </Card>
       <AttributeList
         attributes={attributes}
         paginatorInfo={paginatorInfo}
         onPagination={handlePagination}
+        onOrder={setOrder}
+        onSort={setColumn}
       />
     </>
   );

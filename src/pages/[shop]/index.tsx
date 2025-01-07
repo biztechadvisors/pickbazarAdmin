@@ -10,12 +10,7 @@ import { CheckMarkFill } from '@/components/icons/checkmark-circle-fill';
 import { CloseFillIcon } from '@/components/icons/close-fill';
 import { EditIcon } from '@/components/icons/edit';
 import { formatAddress } from '@/utils/format-address';
-import {
-  adminOwnerAndStaffOnly,
-  adminOnly,
-  getAuthCredentials,
-  hasAccess,
-} from '@/utils/auth-utils';
+import { adminOwnerAndStaffOnly, getAuthCredentials } from '@/utils/auth-utils';
 import ErrorMessage from '@/components/ui/error-message';
 import usePrice from '@/utils/use-price';
 import { useTranslation } from 'next-i18next';
@@ -25,11 +20,9 @@ import { GetStaticPaths, GetStaticProps } from 'next';
 import { CubeIcon } from '@/components/icons/shops/cube';
 import { OrdersIcon } from '@/components/icons/sidebar';
 import { PriceWalletIcon } from '@/components/icons/shops/price-wallet';
-import { PercentageIcon } from '@/components/icons/shops/percentage';
 import { DollarIcon } from '@/components/icons/shops/dollar';
 import ReadMore from '@/components/ui/truncate';
 import { useMeQuery } from '@/data/user';
-import { Routes } from '@/config/routes';
 import React from 'react';
 import { AllPermission } from '@/utils/AllPermission';
 const AdminLayout = dynamic(() => import('@/components/layouts/admin'), {
@@ -148,7 +141,7 @@ export default function ShopPage() {
           <div className="mt-7 grid w-full grid-cols-1">
             <a
               // href={`${process.env.NEXT_PUBLIC_SHOP_URL}/${locale}/shops/${slug}`}
-              href={`${process.env.NEXT_PUBLIC_SHOP_URL} `}
+              href={`${process.env.NEXT_PUBLIC_SHOP_URL}`}
               target="_blank"
               className="inline-flex h-12 flex-shrink-0 items-center justify-center rounded !bg-gray-100 px-5 py-0 !font-normal leading-none !text-heading outline-none transition duration-300 ease-in-out hover:!bg-accent hover:!text-light focus:shadow focus:outline-none focus:ring-1 focus:ring-accent-700"
               rel="noreferrer"
