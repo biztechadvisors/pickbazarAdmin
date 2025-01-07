@@ -17,6 +17,8 @@ import { newPermission } from '@/contexts/permission/storepermission';
 import { siteSettings } from '@/settings/site.settings';
 import { AllPermission } from '@/utils/AllPermission';
 import { useMeQuery } from '@/data/user';
+import { useShopQuery } from '@/data/shop';
+import router from 'next/router';
 
 export default function TaxesPage() {
   const { t } = useTranslation();
@@ -25,7 +27,23 @@ export default function TaxesPage() {
   const [sortedBy, setColumn] = useState<SortOrder>(SortOrder.Desc);
   const { data: meData } = useMeQuery()
   const [page, setPage] = useState(1);
-  const shop_id = meData?.shop_id
+  const {
+    query: { shops },
+  } = router;
+
+  const { data: shopData, isLoading: fetchingShop } = useShopQuery({
+    slug: shops as string,
+  });
+
+  // Retrieve shop ID from either `shopData` or localStorage
+  const shop_id = shopData?.id
+  ? Number(shopData.id)
+  : typeof window !== 'undefined'
+  ? Number(localStorage.getItem('shopId'))
+  : null;
+ 
+  // const shop_id = meData?.shop_id
+ 
   const { taxes,paginatorInfo, loading, error } = useTaxesQuery({
     // name: searchTerm,
     orderBy,

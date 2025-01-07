@@ -11,12 +11,30 @@ import FileInput from '@/components/ui/file-input';
 import Description from '@/components/ui/description';
 import Card from '@/components/common/card';
 import { useEffect, useState } from 'react';
+import router, { useRouter } from 'next/router';
+import { useShopQuery } from '@/data/shop';
 
 export default function CreateOrUpdateGetInspiredForm({ initialValues }) {
   const { t } = useTranslation();
   const { data: me } = useMeQuery();
-  const shop_id = me?.shop_id;
+  const router = useRouter(); 
+  // const shop_id = me?.shop_id;
+  const {
+    query: { shops },
+  } = router;
 
+  const { data: shopData, isLoading: fetchingShop } = useShopQuery({
+    slug: shops as string,
+  });
+
+  // Retrieve shop ID from either `shopData` or localStorage
+  const shop_id = shopData?.id
+  ? Number(shopData.id)
+  : typeof window !== 'undefined'
+  ? Number(localStorage.getItem('shopId'))
+  : null;
+
+console.log('Shop ID:', shop_id);
   const [attachmentIds, setAttachmentIds] = useState([]); // State to hold attachment IDs
 
   const {
@@ -36,9 +54,9 @@ export default function CreateOrUpdateGetInspiredForm({ initialValues }) {
   });
 
   const { mutate: createGetInspired, isLoading: creating } =
-    useCreateGetInspiredMutation();
+    useCreateGetInspiredMutation(shop_id);
   const { mutate: updateGetInspired, isLoading: updating } =
-    useUpdateGetInspiredMutation();
+    useUpdateGetInspiredMutation(shop_id);
 
   useEffect(() => {
     if (initialValues?.tagIds) {

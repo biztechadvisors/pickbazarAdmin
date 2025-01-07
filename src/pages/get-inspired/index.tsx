@@ -40,6 +40,7 @@ export default function GetInspired() {
     shopSlug,
     limit: 10,  
     page: page,
+    search:searchTerm,
   });
 
   const totalPages = Math.ceil((paginatorInfo?.total || 0) / (paginatorInfo?.limit || 1));
