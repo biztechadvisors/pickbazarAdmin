@@ -308,8 +308,7 @@ export default function CreateOrUpdateRegionsForm({ initialValues }: IProps) {
   : typeof window !== 'undefined'
   ? Number(localStorage.getItem('shopId'))
   : null;
-
-console.log('Shop ID:', shop_id);
+ 
 
   // const shop_id = me?.shop_id;
 
