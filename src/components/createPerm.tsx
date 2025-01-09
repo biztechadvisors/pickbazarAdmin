@@ -14,7 +14,7 @@ import { newPermission } from '@/contexts/permission/storepermission';
 import { useAtom } from 'jotai';
 import OwnerLayout from '@/components/layouts/owner';
 import { ADMIN, DEALER, OWNER, STAFF, Company } from '@/utils/constants';
-// import { addPermission } from '@/utils/atoms';
+import { addPermission } from '@/utils/atoms';
 
 const CreatePerm = ({ onPermissionCreate,PermissionDatas,selectedPermissions,setSelectedPermissions,onSaveSuccess}) => {
   const router = useRouter();
@@ -26,7 +26,7 @@ const CreatePerm = ({ onPermissionCreate,PermissionDatas,selectedPermissions,set
   // const [selectedPermissions, setSelectedPermissions] = useState([]);
   const [typeError, setTypeError] = useState('');
   const [permissionError, setPermissionError] = useState('');
-  // const [matchedAdd, setMatchedAdd] = useAtom(addPermission);
+  const [matchedAdd, setMatchedAdd] = useAtom(addPermission);
 
   const { permissions } = getAuthCredentials();
 
