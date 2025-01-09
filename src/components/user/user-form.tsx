@@ -104,9 +104,9 @@ const CustomerCreateForm = () => {
         contact,
         createdBy: id,
         permission: type?.value,
-        numberOfDealers,
-        managed_shop: shopData,
-        shopSlug,
+        // numberOfDealers,
+        // managed_shop: shopData,
+        // shopSlug,
       },
       {
         onError: (error: any) => {

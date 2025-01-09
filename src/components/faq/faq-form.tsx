@@ -12,6 +12,7 @@ import { useState } from 'react';
 // import { RegionsValidationSchema } from './region-validation-schema';
 import { useCreateRegionsClassMutation, useUpdateRegionClassMutation } from '@/data/regions';
 import { useCreateFaqClassMutation, useUpdateFaqClassMutation } from '@/data/faq';
+import { useShopQuery } from '@/data/shop';
 
 const defaultValues = {
   title: '',
@@ -38,9 +39,26 @@ export default function CreateOrUpdateFaqForm({ initialValues }: IProps) {
     // resolver: yupResolver(RegionsValidationSchema),
     defaultValues: initialValues ?? defaultValues,
   });
+ 
 
-  const shop_id = me?.shop_id;
+  const {
+    query: { shops },
+  } = router;
 
+  const { data: shopData, isLoading: fetchingShop } = useShopQuery({
+    slug: shops as string,
+  });
+
+  // Retrieve shop ID from either `shopData` or localStorage
+  const shop_id = shopData?.id
+  ? Number(shopData.id)
+  : typeof window !== 'undefined'
+  ? Number(localStorage.getItem('shopId'))
+  : null;
+
+console.log('Shop ID:', shop_id);
+//   const shop_id = me?.shop_id;
+//  console.log("ShopID:::",shop_id)
   const { mutate: createFaqClass, isLoading: creating } =
     useCreateFaqClassMutation(shop_id);
   const { mutate: updateFaqClass, isLoading: updating } =

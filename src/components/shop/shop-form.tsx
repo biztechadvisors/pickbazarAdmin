@@ -480,7 +480,7 @@ const ShopForm = ({ initialValues }: { initialValues?: any }) => {
                 onChange={handleSelectChange}
                 defaultValue={control._defaultValues?.permission || watch('permission')}
                 // defaultValue={watch('permission')} 
-                // onAddPermission={handlePermissionUpdate}
+                onAddPermission={handlePermissionUpdate}
               />
             </div>
              <div className="relative">
