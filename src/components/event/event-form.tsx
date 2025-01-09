@@ -21,9 +21,11 @@ import { Event } from '@/types';
 function SelectRegion({
   control,
   errors,
+                        initialValue,
 }: {
   control: Control<FormValues>;
   errors: FieldErrors;
+  initialValue:string;
 }) {
   const { locale } = useRouter();
   const { t } = useTranslation();
@@ -50,6 +52,7 @@ function SelectRegion({
         getOptionValue={(option: any) => option.id}
         options={regions?.items || []}
         isLoading={!regions} // Show loading state if regions data is not yet loaded
+        placeholder={initialValue}
       />
       {/* <ValidationError message={t(errors.type?.message)} /> */}
     </div>
@@ -103,7 +106,7 @@ const EventCreateOrUpdate = ({ initialValues }: IProps) => {
     defaultValues: {
       ...defaultValues,
       ...initialValues,
-      regions: initialValues?.regions || [],
+      regions: initialValues?.region.name || [],
     },
   });
   const { mutate: createEvent, isLoading: creating } = useCreateEventMutation();
@@ -318,7 +321,7 @@ const EventCreateOrUpdate = ({ initialValues }: IProps) => {
               variant="outline"
               className="mb-5"
             /> */}
-            <SelectRegion control={control} errors={errors} />
+            <SelectRegion control={control} errors={errors} initialValue={initialValues?.region.name}/>
           </Card>
         </div>
 
