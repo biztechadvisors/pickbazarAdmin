@@ -41,22 +41,22 @@ const defaultValues: FormValues = {
   numberOfDealers: 0,
 };
 
-const CustForm = ({ onClose, onUserCreated }: { onClose: () => void; onUserCreated: (newUser: any) => void }) => {
+const CustForm = ({
+  onClose,
+  onUserCreated,
+}: {
+  onClose: () => void;
+  onUserCreated: (newUser: any) => void;
+}) => {
   const { t } = useTranslation();
-  const router = useRouter();
   const { data: meData, isLoading: meLoading } = useMeQuery();
-  const { mutateAsync: registerUser, isLoading: loading, data: response } = useRegisterMutation();
+  const { mutateAsync: registerUser, isLoading: loading } = useRegisterMutation();
   const { id } = meData || {};
   const { data: permissionData } = usePermissionData(id);
-  const { permissions } = getAuthCredentials();
-  const [selectedPermissionType] = useState<any>(null); // Assuming selected permission type is already handled
+  const [selectedPermissionType, setSelectedPermissionType] = useState<any>(null);
 
   const shopSlug =
     typeof window !== 'undefined' ? localStorage.getItem('shopSlug') : null;
-
-  const { data: shopData, isLoading: fetchingShopId } = useShopQuery({
-    slug: shopSlug as string,
-  });
 
   const {
     register,
@@ -80,19 +80,7 @@ const CustForm = ({ onClose, onUserCreated }: { onClose: () => void; onUserCreat
       id: permission.id,
     })) ?? [];
 
-  if (permissions[0] === DEALER) {
-    permissionOptions.push(
-      { value: 'customer', label: 'customer', id: 'customer_id' },
-      { value: 'staff', label: 'staff', id: 'staff_id' }
-    );
-  }
-
-  async function onSubmit({
-    name,
-    email,
-    password,
-    contact,
-  }: FormValues) {
+  const onSubmit = async ({ name, email, password, contact }: FormValues) => {
     try {
       const response = await registerUser({
         name,
@@ -100,21 +88,20 @@ const CustForm = ({ onClose, onUserCreated }: { onClose: () => void; onUserCreat
         password,
         contact,
         createdBy: id,
-        permission: selectedPermissionType?.e,
-        shopSlug: '',
+        permission: selectedPermissionType?.value,
+        shopSlug: shopSlug || '',
       });
 
       if (response?.user) {
-        // Notify the parent component about the new user
         onUserCreated(response.user);
-        onClose(); // Close modal after successful user registration
+        onClose();
       } else {
-        console.warn('User or email not found in response:', response);
+        console.warn('Error: User data not found in response', response);
       }
     } catch (error: any) {
-      console.error('Error in onSubmit:', error);
+      console.error('Error during user creation:', error);
       if (error?.response?.data) {
-        Object.keys(error.response.data).forEach((field: string) => {
+        Object.keys(error.response.data).forEach((field) => {
           setError(field as keyof FormValues, {
             type: 'manual',
             message: error.response.data[field][0],
@@ -122,7 +109,7 @@ const CustForm = ({ onClose, onUserCreated }: { onClose: () => void; onUserCreat
         });
       }
     }
-  }
+  };
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} noValidate>
@@ -173,10 +160,9 @@ const CustForm = ({ onClose, onUserCreated }: { onClose: () => void; onUserCreat
         />
         <Label className="mt-4">{t('form:input-label-type')}</Label>
         <Select
-          defaultValue={null}
-          getOptionLabel={(option: { label: string }) => option.label}
-          getOptionValue={(option: { value: string }) => option.value}
           options={permissionOptions}
+          value={selectedPermissionType}
+          onChange={setSelectedPermissionType}
           isClearable={true}
           isLoading={loading}
           className="mb-4"
@@ -184,8 +170,7 @@ const CustForm = ({ onClose, onUserCreated }: { onClose: () => void; onUserCreat
         <div className="mt-4 flex justify-end space-x-4">
           <Button
             variant="outline"
-            onClick={onClose} // Close modal
-            className="me-4"
+            onClick={onClose}
             type="button"
           >
             {t('form:button-label-back')}
@@ -198,5 +183,6 @@ const CustForm = ({ onClose, onUserCreated }: { onClose: () => void; onUserCreat
     </form>
   );
 };
+
 
 export default CustForm;

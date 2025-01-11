@@ -160,55 +160,64 @@ const SelectUser = ({ control, errors }: SelectUserProps) => {
   const { t } = useTranslation();
   const { data: meData } = useMeQuery();
   const { permissions } = getAuthCredentials();
-  const isOwner = permissions?.[0]?.includes(OWNER);
-  const shouldDisable = control._defaultValues.owner != null || !isOwner;
+  const isOwner = permissions?.includes(OWNER);
+  const shouldDisable = !isOwner || control?._defaultValues?.owner;
 
   const [isModalOpen, setModalOpen] = useState(false);
   const [options, setOptions] = useState<any[]>([]);
-  const [defaultUser, setDefaultUser] = useState<any>(null);
-  const { data: users, isLoading } = useVendorQuery(meData?.id, {
+  const [selectedUser, setSelectedUser] = useState<any>(null);
+
+  const { data: users, isLoading, error } = useVendorQuery(meData?.id, {
     enabled: !!meData?.id,
   });
 
-  const { setValue } = useForm();
-  const selectedUser = useWatch({ control, name: 'user' });
+  const { setValue, watch } = control || {};
+  const currentSelectedUser = watch ? watch('user') : null;
 
+  // Set initial options from fetched data
   useEffect(() => {
     if (users?.data) {
       setOptions(users.data);
     }
   }, [users]);
 
-  const handleUserCreated = (newUser) => {
-    const formattedUser = {
-      id: newUser.id,
-      name: newUser.name,
-      email: newUser.email,
-      contact: newUser.contact,
-    };
+  // Sync selected user with the current value
+  useEffect(() => {
+    if (currentSelectedUser) {
+      setSelectedUser(currentSelectedUser);
+    }
+  }, [currentSelectedUser]);
 
-    setOptions((prevOptions) => {
-      const userExists = prevOptions.some((option) => option.id === formattedUser.id);
-      if (!userExists) {
-        return [...prevOptions, formattedUser];
-      }
-      return prevOptions;
-    });
+  const handleUserCreated = (newUser: any) => {
+    if (!newUser || !newUser.id) return; // Defensive check
 
-    setValue('user', formattedUser); // Set the selected user
-    setDefaultUser(formattedUser); // Update default user for fallback
-    console.log('user 200', user);
-    console.log('defaultUser 201', defaultUser);
-    closeModal(); // Close the modal
+    // Add new user to options if it doesn't already exist
+    if (!options.some((option) => option.id === newUser.id)) {
+      setOptions((prevOptions) => [...prevOptions, newUser]);
+    }
+
+    // Automatically select the newly created user
+    if (setValue) {
+      setValue('user', newUser, { shouldValidate: true });
+      setSelectedUser(newUser);
+    }
+    closeModal();
   };
 
-  const closeModal = () => {
-    setModalOpen(false);
+  const closeModal = () => setModalOpen(false);
+
+  const openModal = () => setModalOpen(true);
+
+  const handleUserChange = (selectedOption: any) => {
+    if (setValue) {
+      setValue('user', selectedOption, { shouldValidate: true });
+      setSelectedUser(selectedOption);
+    }
   };
 
-  const openModal = () => {
-    setModalOpen(true);
-  };
+  if (error) {
+    return <div>{t('error:failed-to-fetch-users')}</div>; // Handle query errors
+  }
 
   return (
     <div className="mb-5 flex w-full justify-between gap-2">
@@ -216,35 +225,24 @@ const SelectUser = ({ control, errors }: SelectUserProps) => {
         <SelectInput
           name="user"
           control={control}
-          getOptionLabel={(option) => `${option.name} - ${option.email}`}
-          getOptionValue={(option) => option.id}
+          getOptionLabel={(option) => `${option?.name || ''} - ${option?.email || ''}`}
+          getOptionValue={(option) => option?.id}
           options={options}
           isLoading={isLoading}
-          isSearchable={true}
-          filterOption={(option, inputValue) => {
-            const searchValue = inputValue.toLowerCase();
-            return (
-              option.name.toLowerCase().includes(searchValue) ||
-              option.email.toLowerCase().includes(searchValue)
-            );
-          }}
-          value={selectedUser || defaultUser}
+          isSearchable
+          value={selectedUser}
           disabled={shouldDisable}
+          onChange={handleUserChange}
         />
       </div>
-      <div>
-        <Button className="mb-5" onClick={openModal}>
-          {t('form:form-title-create-user')}
-        </Button>
-      </div>
-      <ValidationError message={t(errors.user?.message)} />
+      <Button onClick={openModal}>{t('form:form-title-create-user')}</Button>
+      <ValidationError message={errors?.user?.message && t(errors.user.message)} />
       <Modal open={isModalOpen} onClose={closeModal}>
         <CustForm onClose={closeModal} onUserCreated={handleUserCreated} />
       </Modal>
     </div>
   );
 };
-
 
 const ShopForm = ({ initialValues }: { initialValues?: any }) => {
   const { mutate: createShop, isLoading: creating } = useCreateShopMutation();
