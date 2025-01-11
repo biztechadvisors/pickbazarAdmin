@@ -145,6 +145,7 @@ type FormValues = {
   description: string;
   cover_image: any;
   logo: any;
+  dealerCount:Number;
   balance: BalanceInput;
   address: UserAddressInput;
   settings: ShopSettings;
@@ -398,6 +399,7 @@ const ShopForm = ({ initialValues }: { initialValues?: any }) => {
             total_earnings: 0, // Example value
             withdrawn_amount: 0, // Example value
           },
+          dealerCount: values.dealerCount ?? 0, 
         });
       } else {
         const { ...restAddress } = filteredValues.address;
@@ -406,6 +408,7 @@ const ShopForm = ({ initialValues }: { initialValues?: any }) => {
           ...filteredValues,
           address: restAddress,
           settings,
+          dealerCount: values.dealerCount ?? 0, 
           balance: {
             ...filteredValues.balance,
             // Pass these fields inside the balance object when creating a shop
@@ -570,6 +573,14 @@ const ShopForm = ({ initialValues }: { initialValues?: any }) => {
                 error={t(errors.description?.message!)}
               />
             </div>
+            <Input
+            type="number"
+            label={t('Dealer count')}
+            {...register('dealerCount')}
+            variant="outline"
+            className="mb-5"
+            error={t(errors.balance?.payment_info?.name?.message!)}
+          />
           </Card>
         </div>
         <div className="my-5 flex flex-wrap border-b border-dashed border-gray-300 pb-8 sm:my-8">

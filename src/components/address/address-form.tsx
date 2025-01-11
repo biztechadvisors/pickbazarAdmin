@@ -205,7 +205,7 @@ const AddressForm: React.FC<any> = ({ onSubmit }) => {
                 options={optionRegion}
                 placeholder={t('Select')}
                 getOptionLabel={(option: any) => `${option?.label}`}
-                getOptionValue={(option: any) => option}
+                getOptionValue={(option: any) => option.value}
                 control={control}
                 name={'address.state'}
                 defaultValue={[]} />
