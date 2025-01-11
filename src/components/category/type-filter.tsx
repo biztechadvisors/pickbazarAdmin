@@ -1,5 +1,5 @@
 import Select from '@/components/ui/select/select';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'next-i18next';
 import cn from 'classnames';
 import { useTypesQuery } from '@/data/type';
@@ -17,6 +17,7 @@ export default function TypeFilter({ onTypeFilter, className }: Props) {
   const { t } = useTranslation();
   const { locale } = useRouter();
   const { data: meData } = useMeQuery();
+  const [shopSlug, setShopSlug] = useState<string | null>(null);
   const {
     query: { shops },
   } = useRouter();
@@ -29,12 +30,19 @@ export default function TypeFilter({ onTypeFilter, className }: Props) {
   const shop_Slug = shopData?.slug
 
   const shop: string | undefined = meData?.managed_shop?.id;
-  const shopSlug: string | undefined = meData?.managed_shop?.slug;
+  
+
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const storedSlug = localStorage.getItem('shopSlug');
+      setShopSlug(storedSlug);
+    }
+  }, []);
 
   const { types, loading } = useTypesQuery({
     language: locale,
     shop_id: shop,
-    shopSlug: shopSlug,
+    shopSlug,
   });
 
   return (

@@ -95,9 +95,17 @@ const EventCreateOrUpdate = ({ initialValues }: IProps) => {
   const { data: shopData } = useShopQuery(
     { slug: shop as string, },
     { enabled: !!shop }
-  );
-  const shopId = initialValues?.shopId || meData?.shop_id || shopData?.id || 0;
+  ); 
+  // Retrieve shop ID from either `shopData` or localStorage
+  const shopId = shopData?.id
+  ? Number(shopData.id)
+  : typeof window !== 'undefined'
+  ? Number(localStorage.getItem('shopId'))
+  : null;
 
+console.log('Shop ID:', shopId);
+  // const shopId = initialValues?.shopId || meData?.shop_id || shopData?.id || 0;
+console.log("shopIDID::",shopId)
   const { register, handleSubmit, control, formState: { errors } } = useForm<FormValues>({
 
     defaultValues: {
@@ -106,8 +114,8 @@ const EventCreateOrUpdate = ({ initialValues }: IProps) => {
       regions: initialValues?.regions || [],
     },
   });
-  const { mutate: createEvent, isLoading: creating } = useCreateEventMutation();
-  const { mutate: updateEvent, isLoading: updating } = useUpdateeventMutation();
+  const { mutate: createEvent, isLoading: creating } = useCreateEventMutation(shopId);
+  const { mutate: updateEvent, isLoading: updating } = useUpdateeventMutation(shopId);
 
   const onSubmit = (values: FormValues) => {
 

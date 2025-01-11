@@ -45,7 +45,6 @@ export const usePermissionData = () => {
       retry: false, // Optional: prevent retry on missing userId
     }
   );
-
   return { data, isLoading, error, refetch };
 };
 export const useSavePermissionData = () => {

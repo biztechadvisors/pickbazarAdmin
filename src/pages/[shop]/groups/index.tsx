@@ -6,7 +6,7 @@ import ErrorMessage from '@/components/ui/error-message';
 import LinkButton from '@/components/ui/link-button';
 import Loader from '@/components/ui/loader/loader';
 import { SortOrder } from '@/types';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useTranslation } from 'next-i18next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import { GetStaticProps } from 'next';
@@ -47,10 +47,17 @@ export default function TypesPage() {
   });
 
   const shopId = shopData?.id!;
-  const shop_Slug = shopData?.slug
+  const shop_Slug = shopData?.slug;
 
   const shop: string | undefined = meData?.managed_shop?.id;
-  const shopSlug: string | undefined = meData?.managed_shop?.slug;
+  const [shopSlug, setShopSlug] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const storedSlug = localStorage.getItem('shopSlug');
+      setShopSlug(storedSlug);
+    }
+  }, []);
   const { types, paginatorInfo, loading, error } = useTypesQuery({
     // name: searchTerm,
     language: locale,
@@ -131,7 +138,8 @@ export default function TypesPage() {
         onPagination={handlePagination}
         types={types}
         onOrder={setOrder}
-        onSort={setColumn} />
+        onSort={setColumn}
+      />
     </>
   );
 }

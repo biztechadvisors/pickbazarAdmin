@@ -5,13 +5,21 @@ import { serverSideTranslations } from 'next-i18next/serverSideTranslations'; //
 import { useTagQuery, useTagsQuery } from '@/data/tag'; // Import the tag query hook
 import { useRouter } from 'next/router';
 import { useMeQuery } from '@/data/user';
+import { useEffect, useState } from 'react';
 
 export default function CreateGetInspiredPage() {
   const { t } = useTranslation(); // Initialize translation
 
   const { locale } = useRouter();
   const { data: meData } = useMeQuery();
-  const shopSlug = meData?.managed_shop?.slug;
+  const [shopSlug, setShopSlug] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const storedSlug = localStorage.getItem('shopSlug');
+      setShopSlug(storedSlug);
+    }
+  }, []);
   const {
     tags,
     loading: loading,
@@ -27,8 +35,6 @@ export default function CreateGetInspiredPage() {
     shopSlug,
     // search:searchTerm,
   });
-
-  console.log('Get Inspired Tag', tags, 'slug', shopSlug);
 
   return (
     <>

@@ -128,7 +128,6 @@ export const userClient = {
     });
   },
   fetchUser: ({ id }: { id: string }) => {
-    console.log('hello');
     return HttpClient.get<User>(`${API_ENDPOINTS.USERS}/${id}`);
   },
   resendVerificationEmail: () => {

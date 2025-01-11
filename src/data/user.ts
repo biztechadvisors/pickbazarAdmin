@@ -166,7 +166,6 @@ export const useRegisterMutation = () => {
     onSuccess: (response) => {
       if (response?.user) {
         toast.success(t('common:successfully-register'));
-        console.log("Registration successful, response:", response);
       } else {
         console.warn("Registration response does not include user:", response);
       }

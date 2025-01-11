@@ -10,12 +10,7 @@ import { CheckMarkFill } from '@/components/icons/checkmark-circle-fill';
 import { CloseFillIcon } from '@/components/icons/close-fill';
 import { EditIcon } from '@/components/icons/edit';
 import { formatAddress } from '@/utils/format-address';
-import {
-  adminOwnerAndStaffOnly,
-  adminOnly,
-  getAuthCredentials,
-  hasAccess,
-} from '@/utils/auth-utils';
+import { adminOwnerAndStaffOnly, getAuthCredentials } from '@/utils/auth-utils';
 import ErrorMessage from '@/components/ui/error-message';
 import usePrice from '@/utils/use-price';
 import { useTranslation } from 'next-i18next';
@@ -25,27 +20,38 @@ import { GetStaticPaths, GetStaticProps } from 'next';
 import { CubeIcon } from '@/components/icons/shops/cube';
 import { OrdersIcon } from '@/components/icons/sidebar';
 import { PriceWalletIcon } from '@/components/icons/shops/price-wallet';
-import { PercentageIcon } from '@/components/icons/shops/percentage';
 import { DollarIcon } from '@/components/icons/shops/dollar';
 import ReadMore from '@/components/ui/truncate';
 import { useMeQuery } from '@/data/user';
-import { Routes } from '@/config/routes';
 import React from 'react';
 import { AllPermission } from '@/utils/AllPermission';
-import AdminLayout from '@/components/layouts/admin';
+const AdminLayout = dynamic(() => import('@/components/layouts/admin'), {
+  ssr: false,
+});
 import { OWNER } from '@/utils/constants';
 import OwnerLayout from '@/components/layouts/owner';
+import dynamic from 'next/dynamic';
 
 export default function ShopPage() {
   const router = useRouter();
   const { t } = useTranslation();
   const { data: me } = useMeQuery();
-  const { query: { shop }, locale } = useRouter();
-  console.log("shopSlug", shop)
-  const { data, isLoading: loading, error } = useShopQuery({ slug: shop!.toString() });
-  console.log('data', data)
-  const { price: totalEarnings } = usePrice(data && { amount: data?.balance?.total_earnings! });
-  const { price: currentBalance } = usePrice(data && { amount: data?.balance?.current_balance! });
+  const {
+    query: { shop },
+    locale,
+  } = useRouter();
+  const {
+    data,
+    isLoading: loading,
+    error,
+  } = useShopQuery({ slug: shop!.toString() });
+
+  const { price: totalEarnings } = usePrice(
+    data && { amount: data?.balance?.total_earnings! }
+  );
+  const { price: currentBalance } = usePrice(
+    data && { amount: data?.balance?.current_balance! }
+  );
 
   const { permissions } = getAuthCredentials();
   const permissionTypes = AllPermission();
@@ -53,8 +59,6 @@ export default function ShopPage() {
     permissionTypes.includes('sidebar-nav-item-my-shops') ||
     permissions?.[0] === OWNER;
 
-  if (loading) return <Loader text={t('common:text-loading')} />;
-  if (error) return <ErrorMessage message={error.message} />;
   const {
     name,
     is_active,
@@ -71,19 +75,12 @@ export default function ShopPage() {
     id: shop_id,
   } = data ?? {};
 
-  // if (
-  //   !hasAccess(adminOnly, permissions) &&
-  //   !me?.shops?.map((shop) => shop.id).includes(shop_id) &&
-  //   me?.managed_shop?.id != shop_id
-  // ) {
-  //   router.replace(Routes.dashboard);
-  // }
-
-
+  if (loading) return <Loader text={t('common:text-loading')} />;
+  if (error) return <ErrorMessage message={error.message} />;
 
   return (
     <div className="grid grid-cols-12 gap-6">
-      {!is_active && (
+      {is_active && (
         <div className="col-span-12 rounded-lg bg-red-500 px-5 py-4 text-sm text-light">
           {t('common:text-permission-message')}
         </div>
@@ -144,7 +141,7 @@ export default function ShopPage() {
           <div className="mt-7 grid w-full grid-cols-1">
             <a
               // href={`${process.env.NEXT_PUBLIC_SHOP_URL}/${locale}/shops/${slug}`}
-              href={`${process.env.NEXT_PUBLIC_SHOP_URL} `}
+              href={`${process.env.NEXT_PUBLIC_SHOP_URL}`}
               target="_blank"
               className="inline-flex h-12 flex-shrink-0 items-center justify-center rounded !bg-gray-100 px-5 py-0 !font-normal leading-none !text-heading outline-none transition duration-300 ease-in-out hover:!bg-accent hover:!text-light focus:shadow focus:outline-none focus:ring-1 focus:ring-accent-700"
               rel="noreferrer"
@@ -158,7 +155,9 @@ export default function ShopPage() {
       {/* Cover Photo */}
       <div className="relative order-1 col-span-12 h-full min-h-[400px] overflow-hidden rounded bg-light xl:order-2 xl:col-span-8 3xl:col-span-9">
         <Image
-          src={`${cover_image?.original ?? '/product-placeholder-borderless.svg'}`}
+          src={`${
+            cover_image?.original ?? '/product-placeholder-borderless.svg'
+          }`}
           fill
           sizes="(max-width: 768px) 100vw"
           alt={Object(name)}
@@ -256,29 +255,6 @@ export default function ShopPage() {
               </div>
             </div>
           </div>
-
-          {/* <div className="space-y-3">
-            <h2 className="text-lg font-semibold text-heading">
-              {t('common:text-others')}
-            </h2>
-
-            <div className="border border-gray-100">
-              <div className="flex items-center border-b border-gray-100 px-4 py-3">
-                <div className="flex h-11 w-11 items-center justify-center rounded-full bg-[#D59066] p-3 text-light">
-                  <PercentageIcon width={16} />
-                </div>
-
-                <div className="ms-3">
-                  <p className="mb-0.5 text-lg font-semibold text-sub-heading">
-                    {`${balance?.admin_commission_rate ?? 0} %` ?? 'Not Set'}
-                  </p>
-                  <p className="mt-0 text-sm text-muted">
-                    {t('common:text-commission-rate')}
-                  </p>
-                </div>
-              </div>
-            </div>
-          </div> */}
         </div>
       </div>
 
@@ -343,7 +319,7 @@ const resLayout = () => {
   return permissions?.[0] === OWNER ? OwnerLayout : AdminLayout;
 };
 
-ShopPage.Layout = resLayout()
+ShopPage.Layout = resLayout();
 
 ShopPage.authenticate = {
   permissions: adminOwnerAndStaffOnly,

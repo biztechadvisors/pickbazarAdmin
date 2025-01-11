@@ -166,6 +166,7 @@ const CustForm = ({
           isClearable={true}
           isLoading={loading}
           className="mb-4"
+          onChange={(value) => setSelectedType(value)}
         />
         <div className="mt-4 flex justify-end space-x-4">
           <Button

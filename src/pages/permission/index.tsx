@@ -24,14 +24,11 @@ const PermissionComponent: React.FC & PermissionComponentProps = () => {
   const { permissions } = getAuthCredentials();
 
   const permissionTypes = AllPermission();
-
   const canWrite =
     permissionTypes.includes('sidebar-nav-item-permissions') ||
     permissions?.[0] === OWNER;
 
   const { isLoading, error, data: permissionData } = usePermissionData();
-
-  console.log('permissionData', permissionData);
 
   function handleSearch({ searchText }: { searchText: string }) {
     // Implement search functionality here

@@ -53,8 +53,6 @@ export default function OrderDetailsPage() {
   const [, resetCheckout] = useAtom(clearCheckoutAtom);
   const [isDispatchModalOpen, setDispatchModalOpen] = useState(false);
 
-  console.log("isDispatchModalOpen",isDispatchModalOpen)
-
 
 
   const handleDispatchUpdate = (data: any) => {
@@ -144,14 +142,10 @@ export default function OrderDetailsPage() {
 
   const dealerId = order?.customer_id
 
-  console.log("dealerId",dealerId,"orderId",orderId)
-
   const { data, isLoading, isError } = useFetchStockOrderData({
     dealerId,
     orderId,
   });
-
-  console.log("first-data",data)
 
 
   if (loading) return <Loader text={t('common:text-loading')} />;

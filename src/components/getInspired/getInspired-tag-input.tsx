@@ -1,7 +1,7 @@
 import SelectInput from '@/components/ui/select-input';
 import Label from '@/components/ui/label';
 import { Control, useFormState, useWatch } from 'react-hook-form';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useTagsQuery } from '@/data/tag'; // Assuming the same query logic applies
 import { useRouter } from 'next/router';
 import { useTranslation } from 'next-i18next';
@@ -16,6 +16,13 @@ const GetInspiredTagInput = ({ control, setValue }: Props) => {
   const { t } = useTranslation();
   const router = useRouter();
   const { locale } = router;
+  const [shopSlug, setShopSlug] = useState<string | null>(null);
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const storedSlug = localStorage.getItem('shopSlug');
+      setShopSlug(storedSlug);
+    }
+  }, []);
 
   const type = useWatch({
     control,

@@ -15,6 +15,7 @@ import { useMeQuery } from '@/data/user';
 import { useState } from 'react';
 import { RegionsValidationSchema } from './region-validation-schema';
 import { useCreateRegionsClassMutation, useUpdateRegionClassMutation } from '@/data/regions';
+import { useShopQuery } from '@/data/shop';
 
 const defaultValues = {
   name: '',
@@ -278,7 +279,7 @@ export const countryData = [
 export default function CreateOrUpdateRegionsForm({ initialValues }: IProps) {
   const router = useRouter();
   const { t } = useTranslation();
-  const { data: me } = useMeQuery();
+  // const { data: me } = useMeQuery();
   const {
     register,
     handleSubmit,
@@ -291,7 +292,25 @@ export default function CreateOrUpdateRegionsForm({ initialValues }: IProps) {
     defaultValues: initialValues ?? defaultValues,
   });
 
-  const shop_id = me?.shop_id;
+  const { data: meData } = useMeQuery();
+
+  const {
+    query: { shops },
+  } = router;
+
+  const { data: shopData, isLoading: fetchingShop } = useShopQuery({
+    slug: shops as string,
+  });
+
+  // Retrieve shop ID from either `shopData` or localStorage
+  const shop_id = shopData?.id
+  ? Number(shopData.id)
+  : typeof window !== 'undefined'
+  ? Number(localStorage.getItem('shopId'))
+  : null;
+ 
+
+  // const shop_id = me?.shop_id;
 
 
   const { mutate: createTaxClass, isLoading: creating } =

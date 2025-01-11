@@ -104,8 +104,8 @@ const CustomerCreateForm = () => {
         contact,
         createdBy: id,
         permission: type?.value,
-        numberOfDealers,
-        managed_shop: shopData,
+        // numberOfDealers,
+        // managed_shop: shopData,
         shopSlug,
       },
       {

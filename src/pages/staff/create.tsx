@@ -5,6 +5,7 @@ import AddStaffForm from '@/components/shop/staff-form';
 import {
   adminAndOwnerOnly,
   adminOnly,
+  adminOwnerAndStaffOnly,
   getAuthCredentials,
   hasAccess,
 } from '@/utils/auth-utils';
@@ -14,6 +15,7 @@ import { useMeQuery } from '@/data/user';
 import { useRouter } from 'next/router';
 import AdminLayout from '@/components/layouts/admin';
 import OwnerLayout from '@/components/layouts/owner';
+import { OWNER } from '@/utils/constants';
 
 export default function AddStaffPage() {
   const { t } = useTranslation();
@@ -45,10 +47,16 @@ export default function AddStaffPage() {
     </>
   );
 }
-AddStaffPage.authenticate = {
-  permissions: adminAndOwnerOnly,
+const { permissions } = getAuthCredentials();
+const resLayout = () => {
+  return permissions?.[0] === OWNER ? OwnerLayout : AdminLayout;
 };
-AddStaffPage.Layout = OwnerLayout;
+
+AddStaffPage.Layout = resLayout();
+
+AddStaffPage.authenticate = {
+  permissions: adminOwnerAndStaffOnly,
+};
 
 export const getServerSideProps = async ({ locale }: any) => ({
   props: {

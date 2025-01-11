@@ -26,7 +26,14 @@ export default function Tags() {
   const [orderBy, setOrder] = useState('created_at');
   const [sortedBy, setColumn] = useState<SortOrder>(SortOrder.Desc);
   const { data: meData } = useMeQuery();
-  const shopSlug = meData?.managed_shop?.slug;
+  const [shopSlug, setShopSlug] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const storedSlug = localStorage.getItem('shopSlug');
+      setShopSlug(storedSlug);
+    }
+  }, []);
   const {
     tags,
     loading: loading,
@@ -40,9 +47,11 @@ export default function Tags() {
     page,
     language: locale,
     shopSlug,
-    search:searchTerm,
+    search: searchTerm,
   });
-  const totalPages = Math.ceil((paginatorInfo?.total || 0) / (paginatorInfo?.perPage || 1));
+  const totalPages = Math.ceil(
+    (paginatorInfo?.total || 0) / (paginatorInfo?.perPage || 1)
+  );
   useEffect(() => {
     if (page > totalPages) setPage(1);
   }, [paginatorInfo?.total, paginatorInfo?.perPage, page]);
@@ -112,12 +121,6 @@ Tags.authenticate = {
   permissions: adminOwnerAndStaffOnly,
 };
 Tags.Layout = AdminLayout;
-
-// export const getStaticProps = async ({ locale }: any) => ({
-//   props: {
-//     ...(await serverSideTranslations(locale, ['form', 'common', 'table'])),
-//   },
-// });
 
 export const getServerSideProps = async ({ locale }: any) => ({
   props: {

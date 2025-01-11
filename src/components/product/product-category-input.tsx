@@ -5,6 +5,8 @@ import { useEffect } from 'react';
 import { useTranslation } from 'next-i18next';
 import { useCategoriesQuery } from '@/data/category';
 import { useRouter } from 'next/router';
+import { useShopQuery } from '@/data/shop';
+import { useMeQuery } from '@/data/user';
 
 interface Props {
   control: Control<any>;
@@ -14,6 +16,21 @@ interface Props {
 const ProductCategoryInput = ({ control, setValue }: Props) => {
   const { locale } = useRouter();
   const { t } = useTranslation('common');
+  const router = useRouter();  
+  const { data: meData } = useMeQuery(); 
+
+  const {
+    query: { shops },
+  } = useRouter();
+
+  const { data: shopData, isLoading: fetchingShop } = useShopQuery({
+    slug: shops as string,
+  });
+
+  const shopId = shopData?.id!; 
+
+  const shop: string | undefined = meData?.managed_shop?.id;
+
   const type = useWatch({
     control,
     name: 'type',
@@ -31,6 +48,7 @@ const ProductCategoryInput = ({ control, setValue }: Props) => {
     limit: 999,
     type: type?.slug,
     language: locale,
+    shopId: shop || shopId,
   });
 
   return (

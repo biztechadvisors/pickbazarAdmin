@@ -17,6 +17,7 @@ import { CustomerIcon } from '../icons/sidebar/customer';
 import { AllPermission } from '@/utils/AllPermission';
 import { useGetStockSeals } from '@/data/stock';
 import { Company, DEALER } from '@/utils/constants';
+import { useEffect, useState } from 'react';
 
 export default function Dashboard() {
   const { t } = useTranslation();
@@ -27,8 +28,18 @@ export default function Dashboard() {
   const customerId = meData?.id;
   const DealerShow = meData?.permission.type_name === DEALER;
   const ShopShow = meData?.permission.type_name === Company;
+  const [shopSlug, setShopSlug] = useState<string | null>(null);
 
   const shopId = meData?.managed_shop?.id;
+
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const storedSlug = localStorage.getItem('shopSlug');
+      setShopSlug(storedSlug);
+    }
+  }, []);
+
+  
 
   const analyticsQuery = {
     customerId: parseInt(customerId),
@@ -42,6 +53,8 @@ export default function Dashboard() {
     error: analyticsError,
   } = useAnalyticsQuery(analyticsQuery);
 
+  console.log('analyticsData', analyticsData);
+
   let queryConfig = {
     language: locale,
     limit: 10,
@@ -52,7 +65,7 @@ export default function Dashboard() {
   if (DealerShow) {
     queryConfig = {
       ...queryConfig, // Spread the previous properties
-      shopSlug: meData?.managed_shop?.slug,
+      shopSlug,
       customer_id: meData?.id,
     };
   }
@@ -60,7 +73,7 @@ export default function Dashboard() {
   else if (ShopShow) {
     queryConfig = {
       ...queryConfig,
-      shopSlug: meData?.managed_shop?.slug,
+      shopSlug,
     };
   }
 
@@ -78,7 +91,6 @@ export default function Dashboard() {
   const { data: response } = useGetStockSeals(customer_id, shop_id);
 
   const DealerSalesList = response?.data;
-  // const DealerShow = meData?.permission.type_name === DEALER;
 
   if (orderError) {
     console.error('Error fetching orders:', orderError);
@@ -190,13 +202,6 @@ export default function Dashboard() {
           <RecentOrders orders={DealerSalesList} title={t('Recent Sales')} />
         </div>
       ) : null}
-
-      {/* <div className="mb-6 w-full flex-wrap space-y-6 xl:flex-nowrap xl:space-y-0 xl:space-x-5">
-        <PopularProductList
-          products={popularProductData}
-          title={t('table:popular-products-table-title')}
-        />
-      </div> */}
     </>
   );
 }

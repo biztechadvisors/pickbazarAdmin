@@ -3,7 +3,6 @@ import { HttpClient } from './http-client';
 
 export const blogClient = {
   create: (input: any) => {
-    console.log('blog+++++++++++++++input', input);
     return HttpClient.post<any>(API_ENDPOINTS.BLOG, input);
   },
 

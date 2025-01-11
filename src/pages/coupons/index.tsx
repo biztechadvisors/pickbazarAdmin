@@ -14,14 +14,25 @@ import { useCouponsQuery } from '@/data/coupon';
 import { useRouter } from 'next/router';
 import { Config } from '@/config';
 import { AllPermission } from '@/utils/AllPermission';
+import { useMeQuery } from '@/data/user';
 
 export default function Coupons() {
   const { t } = useTranslation();
+  const { data: meData } = useMeQuery();
   const { locale } = useRouter();
   const [orderBy, setOrder] = useState('created_at');
   const [sortedBy, setColumn] = useState<SortOrder>(SortOrder.Desc);
   const [searchTerm, setSearchTerm] = useState('');
   const [page, setPage] = useState(1);
+  const shop: string | undefined = meData?.managed_shop?.id;
+  const [shopSlug, setShopSlug] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const storedSlug = localStorage.getItem('shopSlug');
+      setShopSlug(storedSlug);
+    }
+  }, []);
   const { coupons, loading, paginatorInfo, error } = useCouponsQuery({
     language: locale,
     limit: 20,
@@ -29,16 +40,24 @@ export default function Coupons() {
     code: searchTerm,
     orderBy,
     sortedBy,
+    shopSlug,
   });
 
-  const totalPages = Math.ceil((paginatorInfo?.pagination.totalItems || 0) / (paginatorInfo?.pagination.pageSize || 1));
+  const totalPages = Math.ceil(
+    (paginatorInfo?.pagination.totalItems || 0) /
+      (paginatorInfo?.pagination.pageSize || 1)
+  );
   useEffect(() => {
     if (page > totalPages) setPage(1);
-  }, [paginatorInfo?.pagination.totalItems, paginatorInfo?.pagination.pageSize, page]);
+  }, [
+    paginatorInfo?.pagination.totalItems,
+    paginatorInfo?.pagination.pageSize,
+    page,
+  ]);
 
   const { permissions } = getAuthCredentials();
-  
-  const permissionTypes = AllPermission(); 
+
+  const permissionTypes = AllPermission();
 
   const canWrite = permissionTypes.includes('sidebar-nav-item-coupons');
 

@@ -36,6 +36,15 @@ export default function Sales() {
   const [orderBy, setOrder] = useState('created_at');
   const [sortedBy, setColumn] = useState<SortOrder>(SortOrder.Desc);
 
+  const [shopSlug, setShopSlug] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const storedSlug = localStorage.getItem('shopSlug');
+      setShopSlug(storedSlug);
+    }
+  }, []);
+
   function handleSearch({ searchText }: { searchText: string }) {
     setSearchTerm(searchText);
     setPage(1);
@@ -72,22 +81,10 @@ if (DealerShow) {
 
 
 const { orders, loading, paginatorInfo, error } = useOrdersQuery(queryConfig);
-  // console.log("paginatorInfo",paginatorInfo);
-  //
-  // const totalPages = Math.ceil((paginatorInfo?.total || 0) / (paginatorInfo?.perPage || 1));
-  // useEffect(() => {
-  //   if (page > totalPages) setPage(1);
-  // }, [paginatorInfo?.total, paginatorInfo?.perPage, page]);
-
-console.log("++++++++++sales++orders",orders)
-
-
 
   const customer_id = me?.id
   const shop_id =  me?.createdBy?.shop_id
- 
 
-  console.log("shop_id",me?.createdBy?.shop_id)
 
   const { data: response } = useGetStockSeals(customer_id);
   // http://localhost:5000/api/stocks/orders?customer_id=3
@@ -230,15 +227,11 @@ console.log("++++++++++sales++orders",orders)
 
   const DealerSalesList = response?.data
 
-  console.log("DealerSalesList",DealerSalesList)
-
  
 
   var ordersData = orders.filter(
     (order) => order?.customer_id == order?.dealer?.id
   );
-
-  console.log("ordersData",ordersData)
 
   // const ShopShow = me?.permission.type_name === Company;
 

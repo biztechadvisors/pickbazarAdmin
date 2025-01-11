@@ -3,7 +3,7 @@ import Card from '@/components/common/card';
 import Layout from '@/components/layouts/admin';
 import Search from '@/components/common/search';
 import LinkButton from '@/components/ui/link-button';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import ErrorMessage from '@/components/ui/error-message';
 import Loader from '@/components/ui/loader/loader';
 import { SortOrder } from '@/types';
@@ -39,7 +39,14 @@ export default function Categories() {
   const { data: meData } = useMeQuery();
 
   const shop: string | undefined = meData?.managed_shop?.id;
-  const shopSlug = meData?.managed_shop?.slug;
+  const [shopSlug, setShopSlug] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const storedSlug = localStorage.getItem('shopSlug');
+      setShopSlug(storedSlug);
+    }
+  }, []);
 
   const { categories, paginatorInfo, loading, error } = useCategoriesQuery({  
     // shop,
