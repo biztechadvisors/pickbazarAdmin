@@ -57,7 +57,7 @@ import CreateCustomerPage from '@/pages/users/create';
 import CreatePermission from '@/pages/permission/create';
 import CreatePerm from '../createPerm';
 import { useAtom } from 'jotai';
-import { addPermission, selectedOption } from '@/utils/atoms';
+import { addPermission, selectedOption, setUsrEmailState } from '@/utils/atoms';
 
 export const chatbotAutoSuggestion = ({ name }: { name: string }) => {
   return [
@@ -156,96 +156,6 @@ type SelectUserProps = {
   errors: FieldErrors;
 };
 
-function SelectUser({ control, errors }: SelectUserProps) {
-  const { t } = useTranslation();
-  const { data } = useMeQuery();
-  const usrById = data?.shop_id;
-  const { permissions } = getAuthCredentials();
-  const isOwner = permissions?.includes(OWNER);
-  const shouldDisable = !isOwner || control?._defaultValues?.owner;
-
-  const [isModalOpen, setModalOpen] = useState(false);
-  const [options, setOptions] = useState<any[]>([]);
-  const [selectedUser, setSelectedUser] = useState<any>(null);
-
-  const { data: users, isLoading, error } = useVendorQuery(meData?.id, {
-    enabled: !!meData?.id,
-  });
-
-  const { setValue, watch } = control || {};
-  const currentSelectedUser = watch ? watch('user') : null;
-
-  // Set initial options from fetched data
-  useEffect(() => {
-    if (users?.data) {
-      setOptions(users.data);
-    }
-  }, [users]);
-
-  // Sync selected user with the current value
-  useEffect(() => {
-    if (currentSelectedUser) {
-      setSelectedUser(currentSelectedUser);
-    }
-  }, [currentSelectedUser]);
-
-  const handleUserCreated = (newUser: any) => {
-    if (!newUser || !newUser.id) return; // Defensive check
-
-    // Add new user to options if it doesn't already exist
-    if (!options.some((option) => option.id === newUser.id)) {
-      setOptions((prevOptions) => [...prevOptions, newUser]);
-    }
-
-    // Automatically select the newly created user
-    if (setValue) {
-      setValue('user', newUser, { shouldValidate: true });
-      setSelectedUser(newUser);
-    }
-    closeModal();
-  };
-
-  const closeModal = () => setModalOpen(false);
-
-  const openModal = () => setModalOpen(true);
-
-  const handleUserChange = (selectedOption: any) => {
-    if (setValue) {
-      setValue('user', selectedOption, { shouldValidate: true });
-      setSelectedUser(selectedOption);
-    }
-  };
-
-  if (error) {
-    return <div>{t('error:failed-to-fetch-users')}</div>; // Handle query errors
-  }
-
-  return (
-    <div className="mb-5 flex w-full justify-between gap-2">
-      <div className="w-4/5">
-        <SelectInput
-          name="user"
-          control={control}
-          getOptionLabel={(option) => `${option?.name || ''} - ${option?.email || ''}`}
-          getOptionValue={(option) => option?.id}
-          options={options}
-          isLoading={isLoading}
-          isSearchable
-          value={selectedUser}
-          disabled={shouldDisable}
-          onChange={handleUserChange}
-        />
-      </div>
-      <Button onClick={openModal}>{t('form:form-title-create-user')}</Button>
-      <ValidationError message={errors?.user?.message && t(errors.user.message)} />
-      <Modal open={isModalOpen} onClose={closeModal}>
-        {/* <CustomerCreateForm /> */}
-        <CustForm onSaveSuccess={closeModal} />
-      </Modal>
-    </div>
-  );
-}
-
 const ShopForm = ({ initialValues }: { initialValues?: any }) => {
   const { mutate: createShop, isLoading: creating } = useCreateShopMutation();
   const { mutate: updateShop, isLoading: updating } = useUpdateShopMutation();
@@ -256,23 +166,12 @@ const ShopForm = ({ initialValues }: { initialValues?: any }) => {
   const { permissions } = getAuthCredentials();
   const [selectedPermissions, setSelectedPermissions] = useState([]);
   const [isChecked, setIsChecked] = useState(false);
-
+  const [createdUser, setCreatedUser] = useState<any>(null); // State to store the created user
 
   const handleCheckboxChange = () => {
     setIsChecked(!isChecked);
   };
-  // const [permissionsss, setPermissionsss] = useState({}); 
-  // useEffect(() => {
-  //   fetch('/static/permission.json')
-  //     .then((res) => res.json())
-  //     .then((data) => setPermissionsss(data.Advance_Permission));
-  // }, []);
-  // const handlePermissionUpdate = (newPermission: string) => {
-  //   if (newPermission) {
-  //     setAdditionalPerm((prev) => [...prev, newPermission]);
-  //   }
-  //   closeModal();
-  // };
+
   const handlePermissionUpdate = (newPermission: any) => {
     // Ensure newPermission is formatted correctly for the options
     const permissionWithLabel = {
@@ -288,9 +187,8 @@ const ShopForm = ({ initialValues }: { initialValues?: any }) => {
     // Set value for the additionalPermissions field
     setValue('additionalPermissions', updatedPermissions);
 
-    // Update the permission field (autofill)
-    // setValue('permission', permissionWithLabel); // Update the default value with correctly formatted object
   };
+
   function openModal() {
     setIsOpen(true);
   }
@@ -333,6 +231,7 @@ const ShopForm = ({ initialValues }: { initialValues?: any }) => {
       : {}),
     resolver: yupResolver(shopValidationSchema),
   });
+
   const router = useRouter();
 
   // const { openModal } = useModalAction();
@@ -404,6 +303,85 @@ const ShopForm = ({ initialValues }: { initialValues?: any }) => {
   const handleSelectChange = (selectedOption: any) => {
     setPermissionSelectedOption(selectedOption);
   };
+
+  // Created User SelectInput ------------
+
+  // const { t } = useTranslation();
+  const { data: meData } = useMeQuery();
+  // const { permissions } = getAuthCredentials();
+  const isOwner = permissions?.includes(OWNER);
+  const shouldDisable = !isOwner || control?._defaultValues?.owner;
+
+  const [isUserModalOpen, setUserModalOpen] = useState(false);
+  const [optionsUser, setUserOptions] = useState<any[]>([]);
+  const [selectedUser, setSelectedUser] = useState<any>(null);
+
+  // Fetching users
+  const { data: users, isLoading } = useVendorQuery(meData?.id, {
+    enabled: !!meData?.id,
+  });
+
+  // Initial value of the watch field
+  const currentSelectedUser = watch ? watch('user') : selectedUser;
+
+  // Set initial options from fetched data
+  useEffect(() => {
+    if (users?.data) {
+      setUserOptions(users.data);
+    }
+  }, [users]);
+
+  // If there's a created user, add it to the options and select it
+  useEffect(() => {
+    if (createdUser && !optionsUser.some((option) => option.id === createdUser.id)) {
+      setUserOptions((prevOptions) => [...prevOptions, createdUser]);
+      setSelectedUser(createdUser);
+      setValue && setValue('user', createdUser, { shouldValidate: true });
+    }
+  }, [createdUser, optionsUser, setValue]);
+
+  // Sync selected user to `watch` when it changes
+  useEffect(() => {
+    if (currentSelectedUser && setValue) {
+      setSelectedUser(currentSelectedUser); // Update local state to reflect form value
+    }
+  }, [currentSelectedUser, setValue]);
+
+  // Handle the newly created user
+  const handleUserCreated = (newUser: any) => {
+    if (!newUser || !newUser.id) return; // Defensive check
+
+    // Add new user to options if it doesn't already exist
+    if (!optionsUser.some((option) => option.id === newUser.id)) {
+      setUserOptions((prevOptions) => [...prevOptions, newUser]);
+    }
+
+    // Automatically select the newly created user and set form value
+    if (setValue) {
+      setValue('user', newUser, { shouldValidate: true }); // Update form control value
+    }
+
+    setSelectedUser(newUser); // Update local selectedUser state
+    setCreatedUser(newUser); // Ensure createdUser state is updated
+    closeUserModal();
+  };
+
+  const closeUserModal = () => setUserModalOpen(false);
+
+  const openUserModal = () => setUserModalOpen(true);
+
+  const handleUserChange = (selectedOption: any) => {
+    if (setValue) {
+      setValue('user', selectedOption, { shouldValidate: true });
+      setSelectedUser(selectedOption);
+    }
+  };
+
+  if (error) {
+    return <div>{t('error:failed-to-fetch-users')}</div>; // Handle query errors
+  }
+
+  // Create-User-End ---------------------------------
 
   async function onSubmit(values: FormValues) {
     const settings = {
@@ -521,7 +499,6 @@ const ShopForm = ({ initialValues }: { initialValues?: any }) => {
                 isSearchable={true}
                 onChange={handleSelectChange}
                 defaultValue={control._defaultValues?.permission || watch('permission')}
-                // defaultValue={watch('permission')} 
                 onAddPermission={handlePermissionUpdate}
               />
             </div>
@@ -596,8 +573,28 @@ const ShopForm = ({ initialValues }: { initialValues?: any }) => {
               className="mb-5"
               error={t(errors.name?.message!)}
             />
-            {<SelectUser control={control} errors={errors} />}
-
+            <div className="mb-5 flex w-full justify-between gap-2">
+              <div className="w-4/5">
+                <SelectInput
+                  name="user"
+                  control={control}
+                  getOptionLabel={(option) => `${option?.name || ''} - ${option?.email || ''}`}
+                  getOptionValue={(option) => option?.id}
+                  options={optionsUser}
+                  isLoading={isLoading}
+                  isSearchable
+                  value={selectedUser || currentSelectedUser || {}} // Reflect selectedUser or fallback to empty object
+                  disabled={shouldDisable}
+                  onChange={handleUserChange}
+                  defaultValue={selectedUser || currentSelectedUser}
+                />
+              </div>
+              <Button onClick={openUserModal}>{t('form:form-title-create-user')}</Button>
+              <ValidationError message={errors?.user?.message && t(errors.user.message)} />
+              <Modal open={isUserModalOpen} onClose={closeUserModal}>
+                <CustForm onClose={closeUserModal} onUserCreated={handleUserCreated} />
+              </Modal>
+            </div>
             <div className="relative">
               {options?.useAi && (
                 <OpenAIButton

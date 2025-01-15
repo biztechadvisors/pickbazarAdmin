@@ -1,5 +1,4 @@
-import { useState, useMemo } from 'react';
-import { useRouter } from 'next/router';
+import { useState } from 'react';
 import { useForm, Controller } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import PhoneInput from 'react-phone-input-2';
@@ -16,12 +15,9 @@ import Loader from '../ui/loader/loader';
 import { useMeQuery, useRegisterMutation } from '@/data/user';
 import { usePermissionData } from '@/data/permission';
 import { useShopQuery } from '@/data/shop';
-import { useAtom } from 'jotai';
-import { selectedOption, setUsrEmailState } from '@/utils/atoms';
-import { customerValidationSchema } from './user-validation-schema';
-import { getAuthCredentials } from '@/utils/auth-utils';
-import { Company, DEALER } from '@/utils/constants';
 import { useTranslation } from 'react-i18next';
+
+import { customerValidationSchema } from './user-validation-schema';
 
 type FormValues = {
   name: string;
@@ -29,16 +25,6 @@ type FormValues = {
   password: string;
   contact: string;
   type: { value: string; label: string };
-  numberOfDealers: number;
-};
-
-const defaultValues: FormValues = {
-  name: '',
-  email: '',
-  password: '',
-  contact: '',
-  type: { value: '', label: '' },
-  numberOfDealers: 0,
 };
 
 const CustForm = ({
@@ -65,7 +51,6 @@ const CustForm = ({
     formState: { errors },
     control,
   } = useForm<FormValues>({
-    defaultValues,
     resolver: yupResolver(customerValidationSchema),
   });
 
@@ -93,7 +78,7 @@ const CustForm = ({
       });
 
       if (response?.user) {
-        onUserCreated(response.user);
+        onUserCreated(response.user); // Call the parent function to update created user
         onClose();
       } else {
         console.warn('Error: User data not found in response', response);
@@ -166,7 +151,6 @@ const CustForm = ({
           isClearable={true}
           isLoading={loading}
           className="mb-4"
-          onChange={(value) => setSelectedType(value)}
         />
         <div className="mt-4 flex justify-end space-x-4">
           <Button
@@ -184,6 +168,5 @@ const CustForm = ({
     </form>
   );
 };
-
 
 export default CustForm;
