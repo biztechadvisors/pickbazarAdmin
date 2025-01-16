@@ -106,7 +106,7 @@ const CustomerCreateForm = () => {
         permission: type?.value,
         // numberOfDealers,
         // managed_shop: shopData,
-        // shopSlug,
+        shopSlug,
       },
       {
         onError: (error: any) => {
