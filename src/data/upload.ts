@@ -17,3 +17,20 @@ export const useUploadMutation = () => {
     }
   );
 };
+
+export const useDeleteAttachmentMutation = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation(
+    (idOrKey: string) => uploadClient.delete(idOrKey),
+    {
+      onSuccess: () => {
+        queryClient.invalidateQueries(API_ENDPOINTS.ATTACHMENTS);
+        queryClient.invalidateQueries(API_ENDPOINTS.SETTINGS);
+      },
+      onError: (error) => {
+        console.error('Failed to delete attachment:', error.response?.data || error.message);
+      },
+    }
+  );
+};

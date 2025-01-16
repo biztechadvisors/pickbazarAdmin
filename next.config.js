@@ -8,7 +8,7 @@ const withPWA = require('next-pwa')({
 });
 
 module.exports = withPWA({
-  reactStrictMode: true, 
+  reactStrictMode: true,
   i18n,
   images: {
     domains: [
@@ -16,6 +16,7 @@ module.exports = withPWA({
       'res.cloudinary.com',
       's3.amazonaws.com',
       'codenoxtestbucket.s3.ap-south-1.amazonaws.com',
+      'mytest-image-demo.s3.ap-south-1.amazonaws.com',
       '18.141.64.26',
       '127.0.0.1',
       'localhost',

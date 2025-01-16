@@ -5,11 +5,11 @@ import { Attachment } from '@/types';
 import { CloseIcon } from '@/components/icons/close-icon';
 import Loader from '@/components/ui/loader/loader';
 import { useTranslation } from 'next-i18next';
-import { useUploadMutation } from '@/data/upload';
+import { useDeleteAttachmentMutation, useUploadMutation } from '@/data/upload';
 import Image from 'next/image';
 import { zipPlaceholder } from '@/utils/placeholders';
 import { ACCEPTED_FILE_TYPES } from '@/utils/constants';
- 
+
 const getPreviewFiles = (value) => {
   let files = [];
   if (value) {
@@ -17,7 +17,7 @@ const getPreviewFiles = (value) => {
   }
   return files;
 };
- 
+
 export default function Uploader({
   onChange,
   value,
@@ -29,20 +29,21 @@ export default function Uploader({
   const { t } = useTranslation();
   const [files, setFiles] = useState(getPreviewFiles(value));
   const { mutate: upload, isLoading: loading } = useUploadMutation();
+  const deleteAttachmentMutation = useDeleteAttachmentMutation();
   const [error, setError] = useState(null);
- 
+
   // Updated file types to include images and videos
   const ACCEPTED_FILE_TYPES = {
     'image/*': ['.jpg', '.jpeg', '.png', '.webp', '.glb'],
     'video/*': ['.mp4', '.avi', '.mov', '.mkv', '.webm', '.flv', '.wmv', '.ogg', '.3gp'],
   };
- 
+
   const { getRootProps, getInputProps } = useDropzone({
     ...(acceptFile
       ? { ...ACCEPTED_FILE_TYPES }
       : {
-          accept: ACCEPTED_FILE_TYPES,
-        }),
+        accept: ACCEPTED_FILE_TYPES,
+      }),
     multiple,
     maxSize,
     onDrop: async (acceptedFiles) => {
@@ -57,7 +58,7 @@ export default function Uploader({
               data[idx]['file_name'] = `${filename}.${fileType}`;
               return file;
             });
- 
+
             const updatedFiles = multiple ? files.concat(data) : data;
             setFiles(updatedFiles);
             if (onChange) {
@@ -79,30 +80,41 @@ export default function Uploader({
       });
     },
   });
- 
-  const handleDelete = (thumbnail) => {
+
+  const handleDelete = (thumbnail: string) => {
+    console.log("Attempting to delete attachment with thumbnail:", thumbnail);
     const updatedFiles = files.filter((file) => file.thumbnail !== thumbnail);
-    setFiles(updatedFiles);
-    if (onChange) {
-      onChange(updatedFiles);
+
+    if (confirm('Are you sure you want to delete this attachment?')) {
+      deleteAttachmentMutation.mutate(thumbnail, {
+        onSuccess: () => {
+          console.log('Attachment deleted successfully');
+          setFiles(updatedFiles);
+          if (onChange) {
+            onChange(updatedFiles);
+          }
+        },
+        onError: (error: any) => {
+          alert(`Failed to delete attachment: ${error.response?.data?.message || error.message}`);
+        },
+      });
     }
   };
- 
+
   const thumbs = files.map((file, idx) => {
     const imgTypes = ['jpg', 'jpeg', 'png', 'webp', 'gif', 'bmp', 'tif', 'tiff', 'glb'];
     const videoTypes = ['mp4', 'avi', 'mov', 'mkv', 'webm', 'flv', 'wmv', 'ogg', '3gp'];
- 
+
     const splitArray = file?.file_name ? file.file_name.split('.') : file.thumbnail ? file.thumbnail.split('.') : [];
     const fileType = splitArray.pop();
     const filename = splitArray.join('.');
     const isImage = imgTypes.includes(fileType);
     const isVideo = videoTypes.includes(fileType);
- 
+
     return (
       <div
-        className={`relative mt-2 inline-flex flex-col overflow-hidden rounded me-2 ${
-          isImage || isVideo ? 'border border-border-200' : ''
-        }`}
+        className={`relative mt-2 inline-flex flex-col overflow-hidden rounded me-2 ${isImage || isVideo ? 'border border-border-200' : ''
+          }`}
         key={idx}
       >
         {isImage ? (
@@ -146,7 +158,7 @@ export default function Uploader({
       </div>
     );
   });
- 
+
   useEffect(() => {
     // Clean up URLs to prevent memory leaks
     return () => {
@@ -154,7 +166,7 @@ export default function Uploader({
       files.forEach((file) => URL.revokeObjectURL(file.thumbnail));
     };
   }, [files]);
- 
+
   return (
     <section className="upload">
       <div
@@ -178,7 +190,7 @@ export default function Uploader({
         </p>
         {error && <p className="mt-4 text-center text-sm text-red-600">{error}</p>}
       </div>
- 
+
       {(thumbs.length || loading) && (
         <aside className="mt-2 flex flex-wrap">
           {thumbs}
@@ -192,4 +204,3 @@ export default function Uploader({
     </section>
   );
 }
- 

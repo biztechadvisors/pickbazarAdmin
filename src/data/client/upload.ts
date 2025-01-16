@@ -19,4 +19,10 @@ export const uploadClient = {
       options
     );
   },
+
+  delete: async (thumbnail: string) => {
+    const fileKey = thumbnail.substring(thumbnail.lastIndexOf('/') + 1); // Extract file key from URL
+    return HttpClient.delete(`${API_ENDPOINTS.ATTACHMENTS}/${fileKey}`);
+  },
+
 };
