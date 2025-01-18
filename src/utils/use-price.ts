@@ -80,3 +80,5 @@ export default function usePrice(data?: PriceProps | null) {
     ? { price: value, basePrice: null, discount: null }
     : value;
 }
+
+export const convertUsdToInr = (amount:string) => amount.replace('$','₹');

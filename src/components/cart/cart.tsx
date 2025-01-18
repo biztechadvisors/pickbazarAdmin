@@ -9,7 +9,7 @@ import { formatString } from '@/utils/format-string';
 import { useTranslation } from 'next-i18next';
 import { useUI } from '@/contexts/ui.context';
 import { Routes } from '@/config/routes';
-import usePrice from '@/utils/use-price';
+import usePrice, { convertUsdToInr } from '@/utils/use-price';
 import { useCart } from '@/contexts/quick-cart/cart.context';
 import { useMeQuery } from '@/data/user';
 
@@ -90,7 +90,7 @@ const Cart = () => {
             {t('text-checkout')}
           </span>
           <span className="flex h-full flex-shrink-0 items-center rounded-full bg-light px-5 text-accent">
-            {totalPrice}
+            {convertUsdToInr(totalPrice)}
           </span>
         </button>
       </footer>
