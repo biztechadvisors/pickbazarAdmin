@@ -16,8 +16,8 @@ const AdminDashboard = dynamic(() => import('@/components/dashboard/admin'));
 const OwnerDashboard = dynamic(() => import('@/components/dashboard/owner'));
 
 export default function Dashboard({
-  userPermissions,
-}: {
+                                    userPermissions,
+                                  }: {
   userPermissions: string[];
 }) {
   if (
