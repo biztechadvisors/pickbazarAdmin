@@ -3,7 +3,7 @@ import Search from '@/components/common/search';
 import ProductList from '@/components/product/product-list';
 import ErrorMessage from '@/components/ui/error-message';
 import Loader from '@/components/ui/loader/loader';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useTranslation } from 'next-i18next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 
@@ -35,13 +35,27 @@ export default function ProductsPage() {
   const router = useRouter();
   const { permissions } = getAuthCredentials();
   const { data: me } = useMeQuery();
+  const [shopSlug, setShopSlug] = useState<string | null>(null);
+
   const {
     query: { shop },
   } = useRouter();
+
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const storedSlug = localStorage.getItem('shopSlug');
+      if (storedSlug) {
+        setShopSlug(storedSlug);
+      } else {
+        setShopSlug(shop);
+      }
+    }
+  }, []);
+
   const { data: shopData, isLoading: fetchingShop } = useShopQuery({
     slug: shop as string,
   });
-  
+
   // const shopSlug = shopData?.slug
   const shopId = shopData?.id!;
   const { t } = useTranslation();
@@ -73,13 +87,14 @@ export default function ProductsPage() {
       limit: 20,
       dealerId,
       shop_id: shopId,
+      // shopName: shopSlug,
       type,
       categories: category,
       // tags: tags,
       orderBy,
       sortedBy,
       page,
-      search:searchTerm,
+      search: searchTerm,
     },
     {
       enabled: Boolean(shopId),
@@ -89,8 +104,8 @@ export default function ProductsPage() {
   function handleImportModal() {
     openModal('EXPORT_IMPORT_PRODUCT', shopId);
   }
-  function handleOpenModal(){
-    openModal('MODEL_IMPORT',shopId);
+  function handleOpenModal() {
+    openModal('MODEL_IMPORT', shopId);
   }
 
   // function handleOpenModel(){
@@ -164,7 +179,7 @@ export default function ProductsPage() {
                 <ArrowDown className="ms-2" />
               )}
             </button>
-{/* 
+            {/* 
             <button
               onClick={handleImportModal}
               className="hidden h-8 w-8 flex-shrink-0 items-center justify-center rounded-full bg-gray-50 transition duration-300 ms-5 hover:bg-gray-100 md:flex"

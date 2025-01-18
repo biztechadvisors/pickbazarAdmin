@@ -39,7 +39,7 @@ export default function Dashboard() {
     }
   }, []);
 
-  
+
 
   const analyticsQuery = {
     customerId: parseInt(customerId),
@@ -52,8 +52,6 @@ export default function Dashboard() {
     isLoading: analyticsLoading,
     error: analyticsError,
   } = useAnalyticsQuery(analyticsQuery);
-
-  console.log('analyticsData', analyticsData);
 
   let queryConfig = {
     language: locale,
