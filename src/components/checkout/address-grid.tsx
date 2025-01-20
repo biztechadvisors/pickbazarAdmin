@@ -30,6 +30,8 @@ export const AddressGrid: React.FC<AddressesProps> = ({
   const [selectedAddress, setAddress] = useAtom(atom);
   const { openModal } = useModalAction();
 
+  console.log("addresses 33: ", addresses)
+
   useEffect(() => {
     if (addresses && addresses.length > 0) {
       // Ensure selectedAddress is valid

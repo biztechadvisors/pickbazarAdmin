@@ -78,6 +78,9 @@ export const userClient = {
     );
   },
   update: ({ id, input }: { id: string; input: UpdateUser }) => {
+    console.log('input : 81 ', input)
+    console.log('id : 82 ', id)
+
     return HttpClient.put<User>(`${API_ENDPOINTS.USERS}/${id}`, input);
   },
   changePassword: (variables: ChangePasswordInput) => {

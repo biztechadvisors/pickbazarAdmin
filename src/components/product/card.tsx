@@ -65,7 +65,7 @@ const ProductCard = ({ item, isChecked, id, email, phone }: Props) => {
       <div className="relative flex h-48 w-auto items-center justify-center sm:h-64">
         <span className="sr-only">{t('text-product-image')}</span>
         <Image
-          src={image?.original ?? productPlaceholder}
+          src={image?.thumbnail ?? productPlaceholder}
           alt={name}
           fill
           sizes="(max-width: 768px) 100vw"

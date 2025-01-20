@@ -85,6 +85,7 @@ const AddressForm: React.FC<any> = ({ onSubmit }) => {
     data: { address, type },
   } = useModalState();
 
+  console.log("address 88: ", address)
   return (
     <div className="min-h-screen p-5 bg-light sm:p-8 md:min-h-0 md:rounded-xl">
       <h1 className="mb-4 text-lg font-semibold text-center text-heading sm:mb-6">

@@ -177,8 +177,8 @@ export interface GetParams {
   language: string;
   categoryId?: number;
   shopId?: number;
-  shop_id?:number;
-  id?:number;
+  shop_id?: number;
+  id?: number;
 }
 
 export interface QueryOptions {
@@ -322,7 +322,7 @@ export interface Event {
   location: string;
   collaboration: string;
   shopId: number;
-  imageIds: number[]; 
+  imageIds: number[];
   regionName: string;
 }
 export interface AttributeValueInput {
@@ -637,7 +637,7 @@ export type QnaFormValues = {
   question?: string;
   answer?: string;
   type?: string; // Adjust according to `QnAType` enum
-}; 
+};
 export interface CouponInput {
   code: string;
   type: CouponType;
@@ -1664,11 +1664,11 @@ export interface CategoryQueryOptions extends QueryOptions {
   type: string;
   name: string;
   shopId?: number;
-  region_name?: string; 
-  parent: number | null; 
+  region_name?: string;
+  parent: number | null;
   shop: string | null;
-  search:string;
-  shopSlug:string;
+  search: string;
+  shopSlug: string;
 }
 
 export interface SubCategoryQueryOptions extends QueryOptions {
@@ -1689,7 +1689,7 @@ export interface TagQueryOptions extends QueryOptions {
   shopSlug: string;
   slug: string;
   region_name: string[];
-  search: string; 
+  search: string;
 }
 export interface RegionQueryOptions extends QueryOptions {
   shopSlug: string;
@@ -1745,7 +1745,7 @@ export interface TypeQueryOptions extends QueryOptions {
 }
 
 export interface ProductQueryOptions extends QueryOptions {
-  id?:number;
+  id?: number;
   type: string;
   name: string;
   slug: string;
@@ -1764,6 +1764,7 @@ export interface ProductQueryOptions extends QueryOptions {
   userId: string;
   dealerId: string;
   search: string;
+  shopName: string | null;
 }
 
 export interface UserQueryOptions extends QueryOptions {
@@ -1830,7 +1831,7 @@ export interface RegionsQueryOptions extends QueryOptions {
   shop_id: string[];
   shopSlug?: string;
   code?: string;
-  search:string;
+  search: string;
 }
 
 import { SortOrder } from '@/types'; // Ensure SortOrder is imported from the correct path
@@ -1909,69 +1910,69 @@ export interface DealerQueryOptions extends Omit<QueryOptions, 'language'> {
   shop_id: string;
 }
 
-export interface ShopPaginator extends PaginatorInfo<Shop> {}
+export interface ShopPaginator extends PaginatorInfo<Shop> { }
 
-export interface ContactPaginator extends PaginatorInfo<Shop> {}
+export interface ContactPaginator extends PaginatorInfo<Shop> { }
 
-export interface WithdrawPaginator extends PaginatorInfo<Withdraw> {}
+export interface WithdrawPaginator extends PaginatorInfo<Withdraw> { }
 
-export interface UserPaginator extends PaginatorInfo<User> {}
+export interface UserPaginator extends PaginatorInfo<User> { }
 
-export interface QuestionPaginator extends PaginatorInfo<Question> {}
+export interface QuestionPaginator extends PaginatorInfo<Question> { }
 
-export interface StaffPaginator extends PaginatorInfo<User> {}
+export interface StaffPaginator extends PaginatorInfo<User> { }
 
-export interface DealerPaginator extends PaginatorInfo<AddDealerInput> {}
+export interface DealerPaginator extends PaginatorInfo<AddDealerInput> { }
 
-export interface OrderPaginator extends PaginatorInfo<Order> {}
-export interface NotificationPaginator extends PaginatorInfo<Notification> {}
+export interface OrderPaginator extends PaginatorInfo<Order> { }
+export interface NotificationPaginator extends PaginatorInfo<Notification> { }
 
-export interface CouponPaginator extends PaginatorInfo<Coupon> {}
+export interface CouponPaginator extends PaginatorInfo<Coupon> { }
 
-export interface RegionPaginator extends PaginatorInfo<Region> {}
+export interface RegionPaginator extends PaginatorInfo<Region> { }
 
-export interface FaqPaginator extends PaginatorInfo<Faq> {}
+export interface FaqPaginator extends PaginatorInfo<Faq> { }
 
-export interface GetInspiredPaginator extends PaginatorInfo<GetInspired> {}
+export interface GetInspiredPaginator extends PaginatorInfo<GetInspired> { }
 
-export interface CareerPaginator extends PaginatorInfo<Career> {}
+export interface CareerPaginator extends PaginatorInfo<Career> { }
 
-export interface StoreNoticePaginator extends PaginatorInfo<StoreNotice> {}
+export interface StoreNoticePaginator extends PaginatorInfo<StoreNotice> { }
 
-export interface ProductPaginator extends PaginatorInfo<Product> {}
+export interface ProductPaginator extends PaginatorInfo<Product> { }
 
-export interface CategoryPaginator extends PaginatorInfo<Category> {}
+export interface CategoryPaginator extends PaginatorInfo<Category> { }
 
-export interface SubCategoryPaginator extends PaginatorInfo<SubCategory> {}
+export interface SubCategoryPaginator extends PaginatorInfo<SubCategory> { }
 
-export interface TaxPaginator extends PaginatorInfo<Tax> {}
+export interface TaxPaginator extends PaginatorInfo<Tax> { }
 
-export interface ReviewPaginator extends PaginatorInfo<Review> {}
+export interface ReviewPaginator extends PaginatorInfo<Review> { }
 
-export interface TagPaginator extends PaginatorInfo<Tag> {}
+export interface TagPaginator extends PaginatorInfo<Tag> { }
 
-export interface AttributePaginator extends PaginatorInfo<Attribute> {}
+export interface AttributePaginator extends PaginatorInfo<Attribute> { }
 
 export interface AttributeValuePaginator
-  extends PaginatorInfo<AttributeValue> {}
+  extends PaginatorInfo<AttributeValue> { }
 
-export interface ShippingPaginator extends PaginatorInfo<Shipping> {}
+export interface ShippingPaginator extends PaginatorInfo<Shipping> { }
 
-export interface AuthorPaginator extends PaginatorInfo<Author> {}
+export interface AuthorPaginator extends PaginatorInfo<Author> { }
 
-export interface ManufacturerPaginator extends PaginatorInfo<Manufacturer> {}
+export interface ManufacturerPaginator extends PaginatorInfo<Manufacturer> { }
 
-export interface QnaPaginator extends PaginatorInfo<Qna> {}
+export interface QnaPaginator extends PaginatorInfo<Qna> { }
 
-export interface VacancyPaginator extends PaginatorInfo<Vacancy> {}
+export interface VacancyPaginator extends PaginatorInfo<Vacancy> { }
 
-export interface OrderStatusPaginator extends PaginatorInfo<OrderStatus> {}
+export interface OrderStatusPaginator extends PaginatorInfo<OrderStatus> { }
 
-export interface ConversionPaginator extends PaginatorInfo<Conversations> {}
+export interface ConversionPaginator extends PaginatorInfo<Conversations> { }
 
-export interface MessagePaginator extends PaginatorInfo<Message> {}
+export interface MessagePaginator extends PaginatorInfo<Message> { }
 
-export interface SettingsQueryOptions extends QueryOptions {}
+export interface SettingsQueryOptions extends QueryOptions { }
 
 // Stocks TypeScript
 

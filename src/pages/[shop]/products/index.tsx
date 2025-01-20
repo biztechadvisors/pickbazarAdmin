@@ -35,30 +35,14 @@ export default function ProductsPage() {
   const router = useRouter();
   const { permissions } = getAuthCredentials();
   const { data: me } = useMeQuery();
-  const [shopSlug, setShopSlug] = useState<string | null>(null);
-
   const {
-    query: { shop },
-  } = useRouter();
+    query: { shop: queryShop },
+    locale,
+  } = router;
 
-  useEffect(() => {
-    if (typeof window !== 'undefined') {
-      const storedSlug = localStorage.getItem('shopSlug');
-      if (storedSlug) {
-        setShopSlug(storedSlug);
-      } else {
-        setShopSlug(shop);
-      }
-    }
-  }, []);
-
-  const { data: shopData, isLoading: fetchingShop } = useShopQuery({
-    slug: shop as string,
-  });
-
-  // const shopSlug = shopData?.slug
-  const shopId = shopData?.id!;
   const { t } = useTranslation();
+  const [shopSlug, setShopSlug] = useState<string | null>(null);
+  const [shopId, setShopId] = useState<string | null>(null);
   const [searchTerm, setSearchTerm] = useState('');
   const [type, setType] = useState('');
   const [category, setCategory] = useState('');
@@ -67,19 +51,25 @@ export default function ProductsPage() {
   const [sortedBy, setColumn] = useState<SortOrder>(SortOrder.Desc);
   const [visible, setVisible] = useState(false);
   const { openModal } = useModalAction();
-  const { locale } = useRouter();
-  const { data } = useMeQuery();
+
+  // Fetch shop details
+  const { data: shopData, isLoading: fetchingShop } = useShopQuery({
+    slug: queryShop as string,
+  });
+
+  useEffect(() => {
+    if (shopData) {
+      setShopSlug(shopData.slug);
+      setShopId(shopData.id);
+    }
+  }, [shopData]);
 
   const permissionTypes = AllPermission();
-
   const canWrite = permissionTypes.includes('sidebar-nav-item-products');
-
-  const toggleVisible = () => {
-    setVisible((v) => !v);
-  };
 
   const dealerId = me?.dealer?.id;
 
+  // Fetch products
   const { products, paginatorInfo, loading, error } = useProductsQuery(
     {
       language: locale,
@@ -87,34 +77,34 @@ export default function ProductsPage() {
       limit: 20,
       dealerId,
       shop_id: shopId,
-      // shopName: shopSlug,
+      shopName: shopSlug,
       type,
       categories: category,
-      // tags: tags,
       orderBy,
       sortedBy,
       page,
       search: searchTerm,
     },
     {
-      enabled: Boolean(shopId),
+      enabled: Boolean(shopId && shopSlug),
     }
   );
 
   function handleImportModal() {
     openModal('EXPORT_IMPORT_PRODUCT', shopId);
   }
-  function handleOpenModal() {
-    openModal('MODEL_IMPORT', shopId);
+
+  const toggleVisible = () => {
+    setVisible((v) => !v);
+  };
+
+  if (loading || fetchingShop) {
+    return <Loader text={t('common:text-loading')} />;
   }
 
-  // function handleOpenModel(){
-  //   openModal('MODEL_IMPORT',shopSlug);
-  // }
-
-  if (loading || fetchingShop)
-    return <Loader text={t('common:text-loading')} />;
-  if (error) return <ErrorMessage message={error.message} />;
+  if (error) {
+    return <ErrorMessage message={error.message} />;
+  }
 
   function handleSearch({ searchText }: { searchText: string }) {
     setSearchTerm(searchText);
@@ -124,10 +114,11 @@ export default function ProductsPage() {
     setPage(current);
   }
 
+  // Check permissions
   if (
     !hasAccess(adminOnly, permissions) &&
     !me?.shops?.map((shop) => shop.id).includes(shopId) &&
-    me?.managed_shop?.id != shopId
+    me?.managed_shop?.id !== shopId
   ) {
     router.replace(Routes.dashboard);
   }
@@ -148,7 +139,7 @@ export default function ProductsPage() {
 
               {canWrite && locale === Config.defaultLanguage && (
                 <LinkButton
-                  href={`/${shop}/products/create`}
+                  href={`/${shopSlug}/products/create`}
                   className="h-12 ms-4 md:ms-6"
                 >
                   <span className="hidden md:block">

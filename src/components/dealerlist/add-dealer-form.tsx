@@ -14,17 +14,19 @@ import { useCategoriesQuery } from '@/data/category';
 import { useProductsQuery } from '@/data/product';
 import { DatePicker } from '../ui/date-picker';
 import { useAddDealerMutation, useUpdateDealerMutation } from '@/data/dealer';
-import { useUserQuery } from '@/data/user';
+import { useMeQuery, useUserQuery } from '@/data/user';
 import Loader from '../ui/loader/loader';
 import ErrorMessage from '../ui/error-message';
 import dynamic from 'next/dynamic';
 import {
   billingAddressAtom,
-  // customerAtom,
+  customerAtom,
   shippingAddressAtom,
 } from '@/contexts/checkout';
 import { AddressType } from '@/types';
 import { useAtomValue } from 'jotai';
+import { useShopQuery } from '@/data/shop';
+import { useEffect, useState } from 'react';
 
 type FormValues = {
   category: any;
@@ -141,8 +143,6 @@ function SelectCategory({
   );
 }
 
-
-
 function SelectProduct({
   register,
   defaultValue,
@@ -155,7 +155,34 @@ function SelectProduct({
   errors: FieldErrors;
 }) {
   const { t } = useTranslation();
-  const { products, loading, error } = useProductsQuery({});
+  const { data: me } = useMeQuery();
+  const [shopSlug, setShopSlug] = useState<string | null>(null);
+  const dealerId = me?.dealer?.id;
+  const {
+    query: { shop },
+  } = useRouter();
+
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const storedSlug = localStorage.getItem('shopSlug');
+      if (storedSlug) {
+        setShopSlug(storedSlug);
+      } else {
+        setShopSlug(shop);
+      }
+    }
+  }, []);
+
+  const { data: shopData, isLoading: fetchingShop } = useShopQuery({
+    slug: shop as string,
+  });
+
+  const { products, loading, error } = useProductsQuery({
+    dealerId,
+    shop_id: shopData?.id,
+    shopName: shopSlug,
+  });
+
   const options: any = products || [];
   const dbValues: any = defaultValue || [];
 
@@ -239,7 +266,6 @@ function SelectSubType({
   );
 }
 
-
 function SelectStatus({
   defaultValue,
   control,
@@ -279,14 +305,13 @@ export default function CreateOrUpdateDealerForm({ initialValues, id }: IProps) 
   const { data, isLoading, error } = useUserQuery({ id });
   const user: any = data;
 
+  console.log('data ', data)
   { isLoading && <Loader text={t('common:text-loading')} /> }
   { error && <ErrorMessage message={error.message} /> }
 
   const marproduct: any = `{initialValues?.dealerProductMargins}`
   const marcategory: any = `initialValues?.dealerCategoryMargins`
- // Move these hook calls outside of the `onSubmit` function
- // const billingAddresses = useAtomValue(billingAddressAtom);
- // const shippingAddresses = useAtomValue(shippingAddressAtom);
+  // Move these hook calls outside of the `onSubmit` function
 
   const {
     register,
@@ -300,16 +325,19 @@ export default function CreateOrUpdateDealerForm({ initialValues, id }: IProps) 
       ...initialValues,
       ...user,
     },
-  }); 
+  });
   const { mutate: createDealer, isLoading: creating } = useAddDealerMutation();
   const { mutate: updateDealer, isLoading: updating } = useUpdateDealerMutation();
   const AddressGrid = dynamic(() => import('@/components/checkout/address-grid'));
   const billingAddresses = useAtomValue(billingAddressAtom);
   const shippingAddresses = useAtomValue(shippingAddressAtom);
+
+  console.log("billingAddresses : ", billingAddresses)
+  console.log("shippingAddresses : ", shippingAddresses)
+
   const onSubmit = (values: FormValues) => {
     const isActiveVal: any = values.isActive;
-    // const billingAddresses = useAtomValue(billingAddressAtom);
-    // const shippingAddresses = useAtomValue(shippingAddressAtom);
+
     const input = {
       language: router.locale!,
       name: values.name!,
@@ -414,10 +442,10 @@ export default function CreateOrUpdateDealerForm({ initialValues, id }: IProps) 
             userId={user?.id!}
             className="shadow-700 bg-light p-5 md:p-8"
             label={t('text-billing-address')}
-            // count={3}
-            // addresses={user?.address?.filter(
-            //     (address) => address?.type === AddressType.Billing
-            // )}
+            count={3}
+            addresses={user?.adds?.filter(
+              (address) => address?.type === AddressType.Billing
+            )}
             atom={billingAddressAtom}
             type={AddressType.Billing}
           />
@@ -426,10 +454,10 @@ export default function CreateOrUpdateDealerForm({ initialValues, id }: IProps) 
             userId={user?.id!}
             className="shadow-700 bg-light p-5 md:p-8"
             label={t('text-shipping-address')}
-            // count={4}
-            // addresses={user?.address?.filter(
-            //     (address) => address?.type === AddressType.Shipping
-            // )}
+            count={4}
+            addresses={user?.adds?.filter(
+              (address) => address?.type === AddressType.Shipping
+            )}
             atom={shippingAddressAtom}
             type={AddressType.Shipping}
           />

@@ -14,6 +14,7 @@ const AddressCard: React.FC<AddressProps> = ({ checked, address, userId }) => {
   const { t } = useTranslation();
   const { openModal } = useModalAction();
 
+  console.log('address 17', address)
 
   function onEdit() {
     openModal('ADD_OR_UPDATE_ADDRESS', { customerId: userId, address });
