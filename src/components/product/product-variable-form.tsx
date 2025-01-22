@@ -62,16 +62,40 @@ export default function ProductVariableForm({
     getValues,
     formState: { errors },
   } = useFormContext();
+
+  console.log('initialValues.variation_options 66 ', initialValues.variation_options)
+
   const { fields, append, remove } = useFieldArray({
     control,
     name: 'variations',
   });
 
+  // useEffect(() => {
+  //   // Ensure initialValues.variation_options are appended only once
+  //   if (initialValues?.variation_options && fields.length === 0) {
+  //     // Map initial values to match the structure of fields and include attributes/values
+  //     const formattedFields = initialValues.variation_options.map((option) => ({
+  //       ...option,
+  //       attributes: attributes?.items.map((attribute) => ({
+  //         attribute: attributes.items.find((attr) => attr.name === attribute.name) || null,
+  //         value: option.options
+  //           .filter((opt) => opt.name === attribute.name)
+  //           .map((opt) => ({
+  //             id: opt.id,
+  //             value: opt.value,
+  //           })),
+  //       })),
+  //     }));
+
+  //     append(formattedFields); // Append formatted options
+  //   }
+  // }, [initialValues, fields, append, attributes]);
+
   const variations = watch('variations');
 
+  console.log('variations 81 ', variations)
 
   const cartesianProduct = getCartesianProduct(getValues('variations')) || {};
-
 
   return (
     <>

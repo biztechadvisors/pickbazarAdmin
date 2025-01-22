@@ -120,16 +120,13 @@ export const useSubCategoriesQuery = (
     {
       keepPreviousData: true,
       enabled: !!shopSlug, // Ensures the query runs only when shopSlug is set
-      onSuccess: (data) => {
-        console.log("Subcategories fetched: ", data); // Log the response
-      },
     }
   );
 
   return {
-    subcategories: data?.data ?? [], 
-  paginatorInfo: mapPaginatorData(data),
-  error,
-  loading: isLoading,
+    subcategories: data?.data ?? [],
+    paginatorInfo: mapPaginatorData(data),
+    error,
+    loading: isLoading,
   };
 };
