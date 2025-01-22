@@ -30,7 +30,7 @@ export default function ProductVariableForm({
 }: IProps) {
   const { t } = useTranslation();
   const { locale } = useRouter();
-
+  console.log('initialValue::', initialValues);
   // Rename loading from useSettingsQuery to avoid conflict
   const {
     settings,
@@ -66,22 +66,29 @@ export default function ProductVariableForm({
     control,
     name: 'variations',
   });
-
+console.log("Fields ::",fields);
   const variations = watch('variations');
-
 
   const cartesianProduct = getCartesianProduct(getValues('variations')) || {};
 
-
+  useEffect(() => {
+    if (initialValues?.variations?.length) {
+      initialValues.variations.forEach((variation, index) => {
+        append({ ...variation, isOpen: index === 0 }); // Only the first card is open
+      });
+    }
+  }, [initialValues]);
+console.log("Attribute ::",attributes);
   return (
     <>
       <div className="my-5 flex flex-wrap sm:my-8">
         <Description
           title={t('form:form-title-variation-product-info')}
-          details={`${initialValues
-            ? t('form:item-description-update')
-            : t('form:item-description-choose')
-            } ${t('form:form-description-variation-product-info')}`}
+          details={`${
+            initialValues
+              ? t('form:item-description-update')
+              : t('form:item-description-choose')
+          } ${t('form:form-description-variation-product-info')}`}
           className="w-full px-0 pb-5 sm:w-4/12 sm:py-8 sm:pe-4 md:w-1/3 md:pe-5"
         />
         <Card className="w-full p-0 sm:w-8/12 md:w-2/3 md:p-0">
@@ -97,7 +104,15 @@ export default function ProductVariableForm({
                 >
                   <div className="flex items-center justify-between">
                     <Title className="mb-0">
-                      {t('form:form-title-options')} {fieldIndex + 1}
+                      {t('form:form-title-options')} {fieldIndex + 1}{' '}
+                      {/* Append attribute values */}
+                      {watch(`variations.${fieldIndex}.attributes`)
+                        ?.map(
+                          (attr) =>
+                            attr.value?.map((val) => val.value).join(', ') // Extract and join values
+                        )
+                        .join(' | ')}{' '}
+                      {/* Separate attributes with '|' */}
                     </Title>
                     <button
                       onClick={() => remove(fieldIndex)}
@@ -119,18 +134,19 @@ export default function ProductVariableForm({
                               {t('form:input-label-attribute-name')}*
                             </Label>
                             <SelectInput
-                              // name={`variations.${fieldIndex}.attribute`}
                               name={`variations.${fieldIndex}.attributes.${attributeIndex}.attribute`}
                               control={control}
                               defaultValue={field.attribute || ''}
                               getOptionLabel={(option) => option.name}
                               getOptionValue={(option) => option.id}
                               options={
-                                filterAttributes(
-                                  attributes,
-                                  variations,
-                                  fieldIndex
-                                )!
+                                initialValues?.length > 0
+                                  ? initialValues.variation_options[0].options // Use options from variation_option if available
+                                  : filterAttributes(
+                                      attributes,
+                                      variations,
+                                      fieldIndex
+                                    ) // Fall back to filterAttributes
                               }
                               isLoading={loading}
                             />
@@ -143,13 +159,13 @@ export default function ProductVariableForm({
                               isMulti
                               name={`variations.${fieldIndex}.attributes.${attributeIndex}.value`}
                               control={control}
-                              defaultValue={field.value || []} // Initialize as an empty array
+                              defaultValue={field.value || []} // Initialize as an empty array if no value is present
                               getOptionLabel={(option) => option.value}
                               getOptionValue={(option) => option.id}
                               options={
                                 watch(
                                   `variations.${fieldIndex}.attributes.${attributeIndex}.attribute`
-                                )?.values || []
+                                )?.values || [] // Use values if the attribute is selected
                               }
                             />
                           </div>
@@ -254,30 +270,30 @@ export default function ProductVariableForm({
                         {!!watch(
                           `variation_options.${fieldIndex}.is_digital`
                         ) && (
-                            <div className="mt-2">
-                              <Label>{t('form:input-label-digital-file')}</Label>
-                              <FileInput
-                                name={`variation_options.${fieldIndex}.digital_file_input`}
-                                control={control}
-                                multiple={false}
-                                acceptFile={true}
-                                helperText={t('form:text-upload-digital-file')}
-                                defaultValue={{}}
-                              />
-                              <ValidationError
-                                message={t(
-                                  errors?.variation_options?.[fieldIndex]
-                                    ?.digital_file_input?.message
-                                )}
-                              />
-                              <input
-                                type="hidden"
-                                {...register(
-                                  `variation_options.${fieldIndex}.digital_file`
-                                )}
-                              />
-                            </div>
-                          )}
+                          <div className="mt-2">
+                            <Label>{t('form:input-label-digital-file')}</Label>
+                            <FileInput
+                              name={`variation_options.${fieldIndex}.digital_file_input`}
+                              control={control}
+                              multiple={false}
+                              acceptFile={true}
+                              helperText={t('form:text-upload-digital-file')}
+                              defaultValue={{}}
+                            />
+                            <ValidationError
+                              message={t(
+                                errors?.variation_options?.[fieldIndex]
+                                  ?.digital_file_input?.message
+                              )}
+                            />
+                            <input
+                              type="hidden"
+                              {...register(
+                                `variation_options.${fieldIndex}.digital_file`
+                              )}
+                            />
+                          </div>
+                        )}
                       </div>
                       <div className="mb-2">
                         <Checkbox
@@ -336,25 +352,24 @@ export const TitleAndOptionsInput = ({
   register,
   cartesianProduct,
 }: any) => {
-
   const title = Array.isArray(cartesianProduct)
     ? cartesianProduct
-      .flatMap((a) => a.value) // Flatten the values
-      .join('/') // Join with a slash
-      .replace(/,\s*/g, '/') // Replace any commas with slashes
+        .flatMap((a) => a.value) // Flatten the values
+        .join('/') // Join with a slash
+        .replace(/,\s*/g, '/') // Replace any commas with slashes
     : cartesianProduct.value;
 
   const options = Array.isArray(cartesianProduct)
     ? cartesianProduct.map((item) => ({
-      attribute: item.name,
-      values: item.value,
-    }))
+        attribute: item.name,
+        values: item.value,
+      }))
     : [
-      {
-        attribute: cartesianProduct.attribute.name,
-        values: cartesianProduct.value,
-      },
-    ];
+        {
+          attribute: cartesianProduct.attribute.name,
+          values: cartesianProduct.value,
+        },
+      ];
 
   useEffect(() => {
     setValue(`variation_options.${index}.title`, title);
