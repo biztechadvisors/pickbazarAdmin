@@ -37,7 +37,11 @@ const addressSchema = yup.object().shape({
   address: yup.object().shape({
     country: yup.string().required('error-country-required'),
     city: yup.string().required('error-city-required'),
-    state: yup.string().required('error-state-name-required'), // Change to string
+    state: yup.mixed().test('is-string', 'State is required', (value) => {
+      if (typeof value === 'string') return true
+      else if (value && typeof value === 'object' && value.value) return true;
+      return false;
+    }),
     zip: yup.string().required('error-zip-required'),
     street_address: yup.string().required('error-street-required'),
   }),
@@ -81,6 +85,7 @@ const AddressForm: React.FC<any> = ({ onSubmit }) => {
     data: { address, type },
   } = useModalState();
 
+  console.log("address 88: ", address)
   return (
     <div className="min-h-screen p-5 bg-light sm:p-8 md:min-h-0 md:rounded-xl">
       <h1 className="mb-4 text-lg font-semibold text-center text-heading sm:mb-6">
@@ -94,7 +99,7 @@ const AddressForm: React.FC<any> = ({ onSubmit }) => {
             address: {
               country: data.address.country,
               city: data.address.city,
-              state: data.address.state, // Accessing state as a string
+              state: data.address.state.value, // Accessing state as a string
               zip: data.address.zip,
               street_address: data.address.street_address,
             },

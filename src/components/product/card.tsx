@@ -1,5 +1,5 @@
 import Image from 'next/image';
-import usePrice from '@/utils/use-price';
+import usePrice, { convertUsdToInr } from '@/utils/use-price';
 import { productPlaceholder } from '@/utils/placeholders';
 import { useModalAction } from '@/components/ui/modal/modal.context';
 import { AddToCart } from '@/components/cart/add-to-cart/add-to-cart';
@@ -65,7 +65,7 @@ const ProductCard = ({ item, isChecked, id, email, phone }: Props) => {
       <div className="relative flex h-48 w-auto items-center justify-center sm:h-64">
         <span className="sr-only">{t('text-product-image')}</span>
         <Image
-          src={image?.original ?? productPlaceholder}
+          src={image?.thumbnail ?? productPlaceholder}
           alt={name}
           fill
           sizes="(max-width: 768px) 100vw"
@@ -102,7 +102,7 @@ const ProductCard = ({ item, isChecked, id, email, phone }: Props) => {
         ) : (
           <div className="mb-2 flex items-center">
             <span className="text-sm font-semibold text-heading md:text-base">
-              {currentPrice}
+              {convertUsdToInr(currentPrice)}
             </span>
             {basePrice && (
               <del className="text-xs text-muted ms-2 md:text-sm">

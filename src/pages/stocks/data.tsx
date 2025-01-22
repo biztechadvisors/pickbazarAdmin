@@ -13,7 +13,7 @@ export default function DealerStockData() {
   const [page, setPage] = useState(1);
   const { t } = useTranslation();
 
-  const [updatedStocks, setUpdatedStocks] = useState([]);
+      const [updatedStocks, setUpdatedStocks] = useState([]);
 
   const [quant, setQuant] = useState('');
   const [disQuant, setDisQuant] = useState('');
@@ -24,6 +24,7 @@ export default function DealerStockData() {
 
   const { data } = useDealerByIdStocks(id);
   const { mutate: updateStockData } = useUpdateStockData(id);
+  console.log('data', data);
 
   function handleSearch({ searchText }: { searchText: string }) {
     setSearchTerm(searchText);

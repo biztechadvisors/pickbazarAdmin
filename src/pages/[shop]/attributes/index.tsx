@@ -57,7 +57,10 @@ export default function AttributePage() {
     },
     { enabled: Boolean(shopId) }
   );
-
+  const totalPages = Math.ceil((paginatorInfo?.total || 0) / (paginatorInfo?.perPage || 10));
+  useEffect(() => {
+    if (page > totalPages) setPage(1);
+  }, [paginatorInfo?.total, paginatorInfo?.perPage, page]);
   if (!isClient || loading || fetchingShop) {
     return <Loader text={t('common:text-loading')} />;
   }

@@ -58,6 +58,7 @@ export default function TypesPage() {
       setShopSlug(storedSlug);
     }
   }, []);
+
   const { types, paginatorInfo, loading, error } = useTypesQuery({
     // name: searchTerm,
     language: locale,
@@ -69,7 +70,10 @@ export default function TypesPage() {
     page,
     limit: 10,
   });
-
+  const totalPages = Math.ceil((paginatorInfo?.total || 0) / (paginatorInfo?.perPage || 10));
+  useEffect(() => {
+    if (page > totalPages) setPage(1);
+  }, [paginatorInfo?.total, paginatorInfo?.perPage, page]);
   const { permissions } = getAuthCredentials();
   const permissionTypes = AllPermission();
 

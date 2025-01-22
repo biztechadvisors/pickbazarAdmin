@@ -5,7 +5,7 @@ import { CloseIcon } from '@/components/icons/close-icon';
 import { fadeInOut } from '@/utils/motion/fade-in-out';
 import { useTranslation } from 'next-i18next';
 import { useCart } from '@/contexts/quick-cart/cart.context';
-import usePrice from '@/utils/use-price';
+import usePrice, { convertUsdToInr } from '@/utils/use-price';
 import { CustomerData } from './add-to-cart/add-to-cart';
 
 interface CartItemProps {
@@ -89,12 +89,12 @@ const CartItem = ({ item, id, email, phone }: CartItemProps) => {
       </div>
       <div>
         <h3 className="font-bold text-heading">{item.name}</h3>
-        <p className="my-2.5 font-semibold text-accent">{price}</p>
+        <p className="my-2.5 font-semibold text-accent">{convertUsdToInr(price)}</p>
         <span className="text-xs text-body">
           {item.quantity} X {item.unit}
         </span>
       </div>
-      <span className="font-bold text-heading ms-auto">{itemPrice}</span>
+      <span className="font-bold text-heading ms-auto">{convertUsdToInr(itemPrice)}</span>
       <button
         className="flex h-7 w-7 flex-shrink-0 items-center justify-center rounded-full text-muted transition-all duration-200 -me-2 ms-3 hover:bg-gray-100 hover:text-red-600 focus:bg-gray-100 focus:text-red-600 focus:outline-none"
         onClick={() => clearItemFromCart(item.id)}

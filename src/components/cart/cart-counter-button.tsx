@@ -1,6 +1,6 @@
 import CartCheckBagIcon from '@/components/icons/cart-check-bag';
 import { formatString } from '@/utils/format-string';
-import usePrice from '@/utils/use-price';
+import usePrice, { convertUsdToInr } from '@/utils/use-price';
 import { useUI } from '@/contexts/ui.context';
 import { useCart } from '@/contexts/quick-cart/cart.context';
 import { useTranslation } from 'next-i18next';
@@ -27,7 +27,7 @@ const CartCounterButton = () => {
         </span>
       </span>
       <span className="mt-3 w-full rounded bg-light py-2 px-2 text-accent">
-        {totalPrice}
+        {convertUsdToInr(totalPrice)}
       </span>
     </button>
   );

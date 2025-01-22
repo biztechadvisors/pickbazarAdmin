@@ -3,7 +3,7 @@ import Layout from '@/components/layouts/admin';
 import Search from '@/components/common/search';
 import ErrorMessage from '@/components/ui/error-message';
 import Loader from '@/components/ui/loader/loader';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useTranslation } from 'next-i18next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import { adminOnly, getAuthCredentials } from '@/utils/auth-utils';
@@ -26,6 +26,7 @@ import { useAtom } from 'jotai';
 import { toggleAtom } from '@/utils/atoms';
 import { useMeQuery } from '@/data/user';
 import { AllPermission } from '@/utils/AllPermission';
+import { useShopQuery } from '@/data/shop';
 
 export default function ProductsPage() {
     const { locale } = useRouter();
@@ -44,6 +45,28 @@ export default function ProductsPage() {
 
     const { id, email, contact } = meData || {};
 
+    const [shopSlug, setShopSlug] = useState<string | null>(null);
+
+    const {
+        query: { shop },
+    } = useRouter();
+
+    useEffect(() => {
+        if (typeof window !== 'undefined') {
+            const storedSlug = localStorage.getItem('shopSlug');
+            if (storedSlug) {
+                setShopSlug(storedSlug);
+            } else {
+                setShopSlug(shop);
+            }
+        }
+    }, []);
+
+    const { data: shopData, isLoading: fetchingShop } = useShopQuery({
+        slug: shopSlug as string,
+    });
+
+
     const shop_id = meData?.shop_id;
 
     const dealerId = meData?.dealer?.id;
@@ -59,11 +82,12 @@ export default function ProductsPage() {
         type,
         categories: category,
         dealerId,
-        shop_id,
-        search:searchTerm,
+        shop_id: shop_id ? String(shop_id) : shopData?.id ? String(shopData.id) : undefined,
+        shopName: shopSlug || shopData?.name,
+        search: searchTerm,
     });
 
-   
+
 
     const permissionTypes = AllPermission();
 
