@@ -560,7 +560,9 @@ export default function CreateOrUpdateProductForm({
           )}
 
           {/* Variation Type */}
+          
           {product_type?.value === ProductType.Variable && (
+          // {product_type?.value === ProductType.Variable && initialValues?.variations && (
             <ProductVariableForm
               shopId={shopId}
               initialValues={initialValues}

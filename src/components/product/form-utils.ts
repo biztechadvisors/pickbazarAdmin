@@ -638,9 +638,12 @@ export function getProductInputValues(
       quantity: calculateQuantity(variation_options),
 
       variations: variations?.flatMap(({ attributes }: any) =>
+        // attributes.flatMap(({ value }: any) =>
+        //   value?.map(({ id }: any) => ({ attribute_value_id: id }))
+        // )
         attributes.flatMap(({ value }: any) =>
-          value?.map(({ id }: any) => ({ attribute_value_id: id }))
-        )
+          (Array.isArray(value) ? value : []).map(({ id }: any) => ({ attribute_value_id: id }))
+        ) 
       ),
 
       variation_options: {
