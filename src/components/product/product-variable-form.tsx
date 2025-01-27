@@ -426,7 +426,7 @@ export default function ProductVariableForm({
   } = useSettingsQuery({
     language: locale!,
   });
-console.log("INItialVAlue ::",initialValues)
+  console.log('INItialVAlue ::', initialValues);
   if (isSettingsLoading) {
     console.log('Loading settings...');
   }
@@ -456,35 +456,34 @@ console.log("INItialVAlue ::",initialValues)
 
   const variations = watch('variations');
 
-
   const cartesianProduct = getCartesianProduct(getValues('variations')) || {};
 
-    
   useEffect(() => {
-    console.log("first ::",initialValues?.variation_options)
+    console.log('first ::', initialValues?.variation_options);
     if (initialValues?.variation_options?.length) {
-      const initialVariations = initialValues.variation_options.map((option) => ({
-        attributes: option.options.map((attr) => ({
-          attribute: { id: attr.id, name: attr.name }, // Ensure attribute mapping
-          value: { id: attr.id, value: attr.value },   // Ensure value mapping
-        })),
-      }));
+      const initialVariations = initialValues.variation_options.map(
+        (option) => ({
+          attributes: option.options.map((attr) => ({
+            attribute: { id: attr.id, name: attr.name }, // Ensure attribute mapping
+            value: { id: attr.id, value: attr.value }, // Ensure value mapping
+          })),
+        })
+      );
       setValue('variations', initialVariations);
     }
   }, [initialValues, setValue]);
-  console.log("initialValue ::",initialValues)
- 
- 
+  console.log('initialValue ::', initialValues);
 
   return (
     <>
       <div className="my-5 flex flex-wrap sm:my-8">
         <Description
           title={t('form:form-title-variation-product-info')}
-          details={`${initialValues
-            ? t('form:item-description-update')
-            : t('form:item-description-choose')
-            } ${t('form:form-description-variation-product-info')}`}
+          details={`${
+            initialValues
+              ? t('form:item-description-update')
+              : t('form:item-description-choose')
+          } ${t('form:form-description-variation-product-info')}`}
           className="w-full px-0 pb-5 sm:w-4/12 sm:py-8 sm:pe-4 md:w-1/3 md:pe-5"
         />
         <Card className="w-full p-0 sm:w-8/12 md:w-2/3 md:p-0">
@@ -503,16 +502,16 @@ console.log("INItialVAlue ::",initialValues)
                       {t('form:form-title-options')} {fieldIndex + 1}
                     </Title> */}
                     <Title className="mb-0">
-              {t('form:form-title-options')} {fieldIndex + 1}{' '}
-              {watch(`variations.${fieldIndex}.attributes`)
-                ?.map((attr) =>
-                  Array.isArray(attr.value)
-                    ? attr.value.map((val) => val.value).join(', ') // Extract and join values
-                    : ''
-                )
-                .filter(Boolean)
-                .join(' | ')}
-            </Title>
+                      {t('form:form-title-options')} {fieldIndex + 1}{' '}
+                      {watch(`variations.${fieldIndex}.attributes`)
+                        ?.map((attr) =>
+                          Array.isArray(attr.value)
+                            ? attr.value.map((val) => val.value).join(', ') // Extract and join values
+                            : ''
+                        )
+                        .filter(Boolean)
+                        .join(' | ')}
+                    </Title>
                     <button
                       onClick={() => remove(fieldIndex)}
                       type="button"
@@ -574,63 +573,74 @@ console.log("INItialVAlue ::",initialValues)
                       ))}
                     </div> */}
                     <div className="grid gap-5">
-  {attributes?.items?.map((attribute, attributeIndex) => (
-    <div key={attribute.id} className="flex flex-wrap items-center">
-      {/* Attribute Name */}
-      <div className="flex-1">
-        <Label>
-          {t('form:input-label-attribute-name')}*
-        </Label>
-        <SelectInput
-          name={`variations[${fieldIndex}].attributes[${attributeIndex}].attribute`}
-          control={control}
-          defaultValue={
-            watch(`variations[${fieldIndex}].attributes[${attributeIndex}].attribute`) || null
-          }
-          getOptionLabel={(option) => option.name}
-          getOptionValue={(option) => option.id}
-          options={attributes?.items || []}
-          isLoading={loading}
-          onChange={(selected) => {
-            console.log('Selected Attribute:', selected); // Debugging
-            setValue(
-              `variations[${fieldIndex}].attributes[${attributeIndex}].attribute`,
-              selected
-            );
-          }}
-        />
-      </div>
+                      {attributes?.items?.map((attribute, attributeIndex) => (
+                        <div
+                          key={attribute.id}
+                          className="flex flex-wrap items-center"
+                        >
+                          {/* Attribute Name */}
+                          <div className="flex-1">
+                            <Label>
+                              {t('form:input-label-attribute-name')}*
+                            </Label>
+                            <SelectInput
+                              name={`variations[${fieldIndex}].attributes[${attributeIndex}].attribute`}
+                              control={control}
+                              defaultValue={
+                                watch(
+                                  `variations[${fieldIndex}].attributes[${attributeIndex}].attribute`
+                                ) || null
+                              }
+                              getOptionLabel={(option) => option.name}
+                              getOptionValue={(option) => option.id}
+                              options={attributes?.items || []}
+                              isLoading={loading}
+                              onChange={(selected) => {
+                                console.log('Selected Attribute:', selected); // Debugging
+                                setValue(
+                                  `variations[${fieldIndex}].attributes[${attributeIndex}].attribute`,
+                                  selected
+                                );
+                              }}
+                            />
+                          </div>
 
-      {/* Attribute Value */}
-      <div className="flex-1">
-        <Label>
-          {t('form:input-label-attribute-value')}*
-        </Label>
-        <SelectInput
-  isMulti
-  name={`variations[${fieldIndex}].attributes[${attributeIndex}].value`}
-  control={control}
-  defaultValue={
-    watch(`variations[${fieldIndex}].attributes[${attributeIndex}].value`) || []
-  }
-  getOptionLabel={(option) => option.value}
-  getOptionValue={(option) => option.id}
-  options={
-    watch(`variations[${fieldIndex}].attributes[${attributeIndex}].attribute`)?.values || []
-  }
-  onChange={(selectedOptions) => {
-    console.log('Selected Values:', selectedOptions); // Debugging
-    setValue(
-      `variations[${fieldIndex}].attributes[${attributeIndex}].value`,
-      selectedOptions
-    );
-  }}
-/>
-
-      </div>
-    </div>
-  ))}
-</div>
+                          {/* Attribute Value */}
+                          <div className="flex-1">
+                            <Label>
+                              {t('form:input-label-attribute-value')}*
+                            </Label>
+                            <SelectInput
+                              isMulti
+                              name={`variations[${fieldIndex}].attributes[${attributeIndex}].value`}
+                              control={control}
+                              defaultValue={
+                                watch(
+                                  `variations[${fieldIndex}].attributes[${attributeIndex}].value`
+                                ) || []
+                              }
+                              getOptionLabel={(option) => option.value}
+                              getOptionValue={(option) => option.id}
+                              options={
+                                watch(
+                                  `variations[${fieldIndex}].attributes[${attributeIndex}].attribute`
+                                )?.values || []
+                              }
+                              onChange={(selectedOptions) => {
+                                console.log(
+                                  'Selected Values:',
+                                  selectedOptions
+                                ); // Debugging
+                                setValue(
+                                  `variations[${fieldIndex}].attributes[${attributeIndex}].value`,
+                                  selectedOptions
+                                );
+                              }}
+                            />
+                          </div>
+                        </div>
+                      ))}
+                    </div>
 
                     <TitleAndOptionsInput
                       register={register}
@@ -730,30 +740,30 @@ console.log("INItialVAlue ::",initialValues)
                         {!!watch(
                           `variation_options.${fieldIndex}.is_digital`
                         ) && (
-                            <div className="mt-2">
-                              <Label>{t('form:input-label-digital-file')}</Label>
-                              <FileInput
-                                name={`variation_options.${fieldIndex}.digital_file_input`}
-                                control={control}
-                                multiple={false}
-                                acceptFile={true}
-                                helperText={t('form:text-upload-digital-file')}
-                                defaultValue={{}}
-                              />
-                              <ValidationError
-                                message={t(
-                                  errors?.variation_options?.[fieldIndex]
-                                    ?.digital_file_input?.message
-                                )}
-                              />
-                              <input
-                                type="hidden"
-                                {...register(
-                                  `variation_options.${fieldIndex}.digital_file`
-                                )}
-                              />
-                            </div>
-                          )}
+                          <div className="mt-2">
+                            <Label>{t('form:input-label-digital-file')}</Label>
+                            <FileInput
+                              name={`variation_options.${fieldIndex}.digital_file_input`}
+                              control={control}
+                              multiple={false}
+                              acceptFile={true}
+                              helperText={t('form:text-upload-digital-file')}
+                              defaultValue={{}}
+                            />
+                            <ValidationError
+                              message={t(
+                                errors?.variation_options?.[fieldIndex]
+                                  ?.digital_file_input?.message
+                              )}
+                            />
+                            <input
+                              type="hidden"
+                              {...register(
+                                `variation_options.${fieldIndex}.digital_file`
+                              )}
+                            />
+                          </div>
+                        )}
                       </div>
                       <div className="mb-2">
                         <Checkbox
@@ -812,25 +822,24 @@ export const TitleAndOptionsInput = ({
   register,
   cartesianProduct,
 }: any) => {
-
   const title = Array.isArray(cartesianProduct)
     ? cartesianProduct
-      .flatMap((a) => a.value) // Flatten the values
-      .join('/') // Join with a slash
-      .replace(/,\s*/g, '/') // Replace any commas with slashes
+        .flatMap((a) => a.value) // Flatten the values
+        .join('/') // Join with a slash
+        .replace(/,\s*/g, '/') // Replace any commas with slashes
     : cartesianProduct.value;
 
   const options = Array.isArray(cartesianProduct)
     ? cartesianProduct.map((item) => ({
-      attribute: item.name,
-      values: item.value,
-    }))
+        attribute: item.name,
+        values: item.value,
+      }))
     : [
-      {
-        attribute: cartesianProduct.attribute.name,
-        values: cartesianProduct.value,
-      },
-    ];
+        {
+          attribute: cartesianProduct.attribute.name,
+          values: cartesianProduct.value,
+        },
+      ];
 
   useEffect(() => {
     setValue(`variation_options.${index}.title`, title);
