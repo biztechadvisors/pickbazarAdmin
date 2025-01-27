@@ -426,7 +426,7 @@ export default function ProductVariableForm({
   } = useSettingsQuery({
     language: locale!,
   });
-  console.log("INItialVAlue ::", initialValues)
+console.log("INItialVAlue ::",initialValues)
   if (isSettingsLoading) {
     console.log('Loading settings...');
   }
@@ -449,44 +449,19 @@ export default function ProductVariableForm({
     getValues,
     formState: { errors },
   } = useFormContext();
-
-  console.log('initialValues.variation_options 66 ', initialValues.variation_options)
-
   const { fields, append, remove } = useFieldArray({
     control,
     name: 'variations',
   });
 
-  // useEffect(() => {
-  //   // Ensure initialValues.variation_options are appended only once
-  //   if (initialValues?.variation_options && fields.length === 0) {
-  //     // Map initial values to match the structure of fields and include attributes/values
-  //     const formattedFields = initialValues.variation_options.map((option) => ({
-  //       ...option,
-  //       attributes: attributes?.items.map((attribute) => ({
-  //         attribute: attributes.items.find((attr) => attr.name === attribute.name) || null,
-  //         value: option.options
-  //           .filter((opt) => opt.name === attribute.name)
-  //           .map((opt) => ({
-  //             id: opt.id,
-  //             value: opt.value,
-  //           })),
-  //       })),
-  //     }));
-
-  //     append(formattedFields); // Append formatted options
-  //   }
-  // }, [initialValues, fields, append, attributes]);
-
   const variations = watch('variations');
 
-  console.log('variations 81 ', variations)
 
   const cartesianProduct = getCartesianProduct(getValues('variations')) || {};
 
-
+    
   useEffect(() => {
-    console.log("first ::", initialValues?.variation_options)
+    console.log("first ::",initialValues?.variation_options)
     if (initialValues?.variation_options?.length) {
       const initialVariations = initialValues.variation_options.map((option) => ({
         attributes: option.options.map((attr) => ({
@@ -497,9 +472,9 @@ export default function ProductVariableForm({
       setValue('variations', initialVariations);
     }
   }, [initialValues, setValue]);
-  console.log("initialValue ::", initialValues)
-
-
+  console.log("initialValue ::",initialValues)
+ 
+ 
 
   return (
     <>
@@ -528,16 +503,16 @@ export default function ProductVariableForm({
                       {t('form:form-title-options')} {fieldIndex + 1}
                     </Title> */}
                     <Title className="mb-0">
-                      {t('form:form-title-options')} {fieldIndex + 1}{' '}
-                      {watch(`variations.${fieldIndex}.attributes`)
-                        ?.map((attr) =>
-                          Array.isArray(attr.value)
-                            ? attr.value.map((val) => val.value).join(', ') // Extract and join values
-                            : ''
-                        )
-                        .filter(Boolean)
-                        .join(' | ')}
-                    </Title>
+              {t('form:form-title-options')} {fieldIndex + 1}{' '}
+              {watch(`variations.${fieldIndex}.attributes`)
+                ?.map((attr) =>
+                  Array.isArray(attr.value)
+                    ? attr.value.map((val) => val.value).join(', ') // Extract and join values
+                    : ''
+                )
+                .filter(Boolean)
+                .join(' | ')}
+            </Title>
                     <button
                       onClick={() => remove(fieldIndex)}
                       type="button"
@@ -599,63 +574,63 @@ export default function ProductVariableForm({
                       ))}
                     </div> */}
                     <div className="grid gap-5">
-                      {attributes?.items?.map((attribute, attributeIndex) => (
-                        <div key={attribute.id} className="flex flex-wrap items-center">
-                          {/* Attribute Name */}
-                          <div className="flex-1">
-                            <Label>
-                              {t('form:input-label-attribute-name')}*
-                            </Label>
-                            <SelectInput
-                              name={`variations[${fieldIndex}].attributes[${attributeIndex}].attribute`}
-                              control={control}
-                              defaultValue={
-                                watch(`variations[${fieldIndex}].attributes[${attributeIndex}].attribute`) || null
-                              }
-                              getOptionLabel={(option) => option.name}
-                              getOptionValue={(option) => option.id}
-                              options={attributes?.items || []}
-                              isLoading={loading}
-                              onChange={(selected) => {
-                                console.log('Selected Attribute:', selected); // Debugging
-                                setValue(
-                                  `variations[${fieldIndex}].attributes[${attributeIndex}].attribute`,
-                                  selected
-                                );
-                              }}
-                            />
-                          </div>
+  {attributes?.items?.map((attribute, attributeIndex) => (
+    <div key={attribute.id} className="flex flex-wrap items-center">
+      {/* Attribute Name */}
+      <div className="flex-1">
+        <Label>
+          {t('form:input-label-attribute-name')}*
+        </Label>
+        <SelectInput
+          name={`variations[${fieldIndex}].attributes[${attributeIndex}].attribute`}
+          control={control}
+          defaultValue={
+            watch(`variations[${fieldIndex}].attributes[${attributeIndex}].attribute`) || null
+          }
+          getOptionLabel={(option) => option.name}
+          getOptionValue={(option) => option.id}
+          options={attributes?.items || []}
+          isLoading={loading}
+          onChange={(selected) => {
+            console.log('Selected Attribute:', selected); // Debugging
+            setValue(
+              `variations[${fieldIndex}].attributes[${attributeIndex}].attribute`,
+              selected
+            );
+          }}
+        />
+      </div>
 
-                          {/* Attribute Value */}
-                          <div className="flex-1">
-                            <Label>
-                              {t('form:input-label-attribute-value')}*
-                            </Label>
-                            <SelectInput
-                              isMulti
-                              name={`variations[${fieldIndex}].attributes[${attributeIndex}].value`}
-                              control={control}
-                              defaultValue={
-                                watch(`variations[${fieldIndex}].attributes[${attributeIndex}].value`) || []
-                              }
-                              getOptionLabel={(option) => option.value}
-                              getOptionValue={(option) => option.id}
-                              options={
-                                watch(`variations[${fieldIndex}].attributes[${attributeIndex}].attribute`)?.values || []
-                              }
-                              onChange={(selectedOptions) => {
-                                console.log('Selected Values:', selectedOptions); // Debugging
-                                setValue(
-                                  `variations[${fieldIndex}].attributes[${attributeIndex}].value`,
-                                  selectedOptions
-                                );
-                              }}
-                            />
+      {/* Attribute Value */}
+      <div className="flex-1">
+        <Label>
+          {t('form:input-label-attribute-value')}*
+        </Label>
+        <SelectInput
+  isMulti
+  name={`variations[${fieldIndex}].attributes[${attributeIndex}].value`}
+  control={control}
+  defaultValue={
+    watch(`variations[${fieldIndex}].attributes[${attributeIndex}].value`) || []
+  }
+  getOptionLabel={(option) => option.value}
+  getOptionValue={(option) => option.id}
+  options={
+    watch(`variations[${fieldIndex}].attributes[${attributeIndex}].attribute`)?.values || []
+  }
+  onChange={(selectedOptions) => {
+    console.log('Selected Values:', selectedOptions); // Debugging
+    setValue(
+      `variations[${fieldIndex}].attributes[${attributeIndex}].value`,
+      selectedOptions
+    );
+  }}
+/>
 
-                          </div>
-                        </div>
-                      ))}
-                    </div>
+      </div>
+    </div>
+  ))}
+</div>
 
                     <TitleAndOptionsInput
                       register={register}

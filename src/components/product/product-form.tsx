@@ -148,9 +148,10 @@ export default function CreateOrUpdateProductForm({
     defaultValues: getProductDefaultValues(initialValues!, isNewTranslation),
   });
 
+  const { data: meData } = useMeQuery();
+  const shop_id = meData?.shop_id;
   const { taxes, loading, error } = useTaxesQuery({
-    shopId: shopData?.id,
-    shopSlug: shopData?.name
+    shop_id,
   });
 
   const {
