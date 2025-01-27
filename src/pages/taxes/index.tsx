@@ -37,23 +37,22 @@ export default function TaxesPage() {
 
   // Retrieve shop ID from either `shopData` or localStorage
   const shop_id = shopData?.id
-  ? Number(shopData.id)
-  : typeof window !== 'undefined'
-  ? Number(localStorage.getItem('shopId'))
-  : null;
- 
-  // const shop_id = meData?.shop_id
- 
-  const { taxes,paginatorInfo, loading, error } = useTaxesQuery({
+    ? Number(shopData.id)
+    : typeof window !== 'undefined'
+      ? Number(localStorage.getItem('shopId'))
+      : null;
+
+  const { taxes, paginatorInfo, loading, error } = useTaxesQuery({
     // name: searchTerm,
     orderBy,
     sortedBy,
-    shop_id,
-    search:searchTerm,
+    shopId: shop_id,
+    search: searchTerm,
     page,
-    limit:10,
+    limit: 10,
   });
-  console.log("paginatorInfo",paginatorInfo);
+
+  console.log("paginatorInfo", paginatorInfo);
 
   const totalPages = Math.ceil((paginatorInfo?.total || 0) / (paginatorInfo?.perPage || 10));
   useEffect(() => {
@@ -98,10 +97,10 @@ export default function TaxesPage() {
       </Card>
       {!loading ? (
         <TaxList
-         taxes={taxes} 
-         paginatorInfo={paginatorInfo}
-        onPagination={handlePagination}
-         onOrder={setOrder} onSort={setColumn} />
+          taxes={taxes}
+          paginatorInfo={paginatorInfo}
+          onPagination={handlePagination}
+          onOrder={setOrder} onSort={setColumn} />
       ) : null}
     </>
   );

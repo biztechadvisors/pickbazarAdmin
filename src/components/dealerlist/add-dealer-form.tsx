@@ -305,7 +305,6 @@ export default function CreateOrUpdateDealerForm({ initialValues, id }: IProps) 
   const { data, isLoading, error } = useUserQuery({ id });
   const user: any = data;
 
-  console.log('data ', data)
   { isLoading && <Loader text={t('common:text-loading')} /> }
   { error && <ErrorMessage message={error.message} /> }
 
@@ -331,9 +330,6 @@ export default function CreateOrUpdateDealerForm({ initialValues, id }: IProps) 
   const AddressGrid = dynamic(() => import('@/components/checkout/address-grid'));
   const billingAddresses = useAtomValue(billingAddressAtom);
   const shippingAddresses = useAtomValue(shippingAddressAtom);
-
-  console.log("billingAddresses : ", billingAddresses)
-  console.log("shippingAddresses : ", shippingAddresses)
 
   const onSubmit = (values: FormValues) => {
     const isActiveVal: any = values.isActive;

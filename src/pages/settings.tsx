@@ -23,8 +23,7 @@ const Settings: React.FC = () => {
   });
 
   const { taxes, loading: taxLoading } = useTaxesQuery({
-    limit: 999,
-    shop_id: shop_id,
+    shopId: shop_id,
   });
 
   const { shippingClasses, loading: shippingLoading } = useShippingClassesQuery();

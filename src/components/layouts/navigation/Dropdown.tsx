@@ -110,7 +110,7 @@ const Dropdown = () => {
               href="/orders"
               className="relative flex w-full cursor-pointer items-center rounded-lg py-2 px-5 text-sm text-body-dark text-start before:absolute before:-left-0.5 before:top-[18px] before:h-px before:w-3 before:border-t before:border-dashed before:border-gray-300 before:content-[''] hover:text-accent focus:text-accent"
             >
-              <span>Order</span>
+              <span>Customer Orders</span>
             </Link>
           </div>
           {permission && identify == matching && (
@@ -128,7 +128,7 @@ const Dropdown = () => {
               href="/sales"
               className="relative flex w-full cursor-pointer items-center rounded-lg py-2 px-5 text-sm text-body-dark text-start before:absolute before:-left-0.5 before:top-[18px] before:h-px before:w-3 before:border-t before:border-dashed before:border-gray-300 before:content-[''] hover:text-accent focus:text-accent"
             >
-              <span>Sales</span>
+              <span>Dealer Order</span>
             </Link>
           </div>
         </div>
