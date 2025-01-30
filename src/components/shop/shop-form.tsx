@@ -33,7 +33,13 @@ import * as socialIcons from '@/components/icons/social';
 import omit from 'lodash/omit';
 import SwitchInput from '@/components/ui/switch-input';
 import { getAuthCredentials } from '@/utils/auth-utils';
-import { SUPER_ADMIN, Company, OWNER, E_COMMERCE, NON_E_COMMERCE } from '@/utils/constants';
+import {
+  SUPER_ADMIN,
+  Company,
+  OWNER,
+  E_COMMERCE,
+  NON_E_COMMERCE,
+} from '@/utils/constants';
 import { useModalAction } from '../ui/modal/modal.context';
 import OpenAIButton from '../openAI/openAI.button';
 import { useCallback, useEffect, useMemo, useState } from 'react';
@@ -157,6 +163,7 @@ type SelectUserProps = {
 };
 
 const ShopForm = ({ initialValues }: { initialValues?: any }) => {
+  console.log('initialValues$$ ::', initialValues);
   const { mutate: createShop, isLoading: creating } = useCreateShopMutation();
   const { mutate: updateShop, isLoading: updating } = useUpdateShopMutation();
   const [modalIsOpen, setIsOpen] = useState(false);
@@ -186,7 +193,6 @@ const ShopForm = ({ initialValues }: { initialValues?: any }) => {
 
     // Set value for the additionalPermissions field
     setValue('additionalPermissions', updatedPermissions);
-
   };
 
   function openModal() {
@@ -211,23 +217,23 @@ const ShopForm = ({ initialValues }: { initialValues?: any }) => {
     shouldUnregister: true,
     ...(initialValues
       ? {
-        defaultValues: {
-          ...initialValues,
-          logo: getFormattedImage(initialValues.logo),
-          cover_image: getFormattedImage(initialValues.cover_image),
-          settings: {
-            ...initialValues?.settings,
-            socials: initialValues?.settings?.socials
-              ? initialValues?.settings?.socials.map((social: any) => ({
-                icon: updatedIcons?.find(
-                  (icon) => icon?.value === social?.icon
-                ),
-                url: social?.url,
-              }))
-              : [],
+          defaultValues: {
+            ...initialValues,
+            logo: getFormattedImage(initialValues.logo),
+            cover_image: getFormattedImage(initialValues.cover_image),
+            settings: {
+              ...initialValues?.settings,
+              socials: initialValues?.settings?.socials
+                ? initialValues?.settings?.socials.map((social: any) => ({
+                    icon: updatedIcons?.find(
+                      (icon) => icon?.value === social?.icon
+                    ),
+                    url: social?.url,
+                  }))
+                : [],
+            },
           },
-        },
-      }
+        }
       : {}),
     resolver: yupResolver(shopValidationSchema),
   });
@@ -271,11 +277,13 @@ const ShopForm = ({ initialValues }: { initialValues?: any }) => {
   });
 
   // Map options for each category
-  const additionalPermissionOptions = additionalPermissionTrue?.map((e: any) => ({
-    permission_name: e?.permission_name,
-    type_name: e?.type_name,
-    e,
-  }));
+  const additionalPermissionOptions = additionalPermissionTrue?.map(
+    (e: any) => ({
+      permission_name: e?.permission_name,
+      type_name: e?.type_name,
+      e,
+    })
+  );
   const permissionOptions = additionalPermissionFalse?.map((e: any) => ({
     permission_name: e?.permission_name,
     type_name: e?.type_name,
@@ -333,7 +341,10 @@ const ShopForm = ({ initialValues }: { initialValues?: any }) => {
 
   // If there's a created user, add it to the options and select it
   useEffect(() => {
-    if (createdUser && !optionsUser.some((option) => option.id === createdUser.id)) {
+    if (
+      createdUser &&
+      !optionsUser.some((option) => option.id === createdUser.id)
+    ) {
       setUserOptions((prevOptions) => [...prevOptions, createdUser]);
       setSelectedUser(createdUser);
       setValue && setValue('user', createdUser, { shouldValidate: true });
@@ -382,6 +393,8 @@ const ShopForm = ({ initialValues }: { initialValues?: any }) => {
   }
 
   // Create-User-End ---------------------------------
+ 
+const formattedPermissions = additionalPerm?.map((perm) => perm.permission_name) || [];
 
   async function onSubmit(values: FormValues) {
     const settings = {
@@ -389,16 +402,16 @@ const ShopForm = ({ initialValues }: { initialValues?: any }) => {
       location: { ...omit(values?.settings?.location, '__typename') },
       socials: values?.settings?.socials
         ? values?.settings?.socials?.map((social: any) => ({
-          icon: social?.icon?.value,
-          url: social?.url,
-        }))
+            icon: social?.icon?.value,
+            url: social?.url,
+          }))
         : [],
     };
-
+ 
     // Remove companyType from values
     const { companyType, ...filteredValues } = values;
     try {
-      if (initialValues) {
+      if (initialValues) { 
         const { ...restAddress } = filteredValues.address;
 
         await updateShop({
@@ -434,7 +447,7 @@ const ShopForm = ({ initialValues }: { initialValues?: any }) => {
             total_earnings: 0, // Example value
             withdrawn_amount: 0, // Example value
           },
-          additionalPermissions: additionalPerm, // Ensure this is set as needed
+          additionalPermissions: formattedPermissions, // Ensure this is set as needed
           permission: permissionProps?.permission_name,
         });
       }
@@ -451,7 +464,6 @@ const ShopForm = ({ initialValues }: { initialValues?: any }) => {
       <span className="font-bold">1170 x 435{t('common:text-px')}</span>
     </span>
   );
-
 
   // Fixed the loading and error handling.
   if (permissionLoading || creating || updating) {
@@ -478,7 +490,9 @@ const ShopForm = ({ initialValues }: { initialValues?: any }) => {
                 name="permission"
                 placeholder="Select permissions"
                 control={control}
-                getOptionLabel={(option: any) => `${option.type_name} - ${option.permission_name}`}
+                getOptionLabel={(option: any) =>
+                  `${option.type_name} - ${option.permission_name}`
+                }
                 getOptionValue={(option: any) => option.id}
                 options={additionalPermissionOptions}
                 isSearchable={true}
@@ -493,24 +507,27 @@ const ShopForm = ({ initialValues }: { initialValues?: any }) => {
                 name="additionalPermissions"
                 placeholder="Select additional permissions"
                 control={control}
-                getOptionLabel={(option: any) => `${option.type_name} - ${option.permission_name}`}
+                getOptionLabel={(option: any) =>
+                  `${option.type_name} - ${option.permission_name}`
+                }
                 getOptionValue={(option: any) => option.id}
                 options={permissionOptions}
                 isSearchable={true}
                 onChange={handleSelectChange}
-                defaultValue={control._defaultValues?.permission || watch('permission')}
+                defaultValue={
+                  control._defaultValues?.permission || watch('permission')
+                }
                 onAddPermission={handlePermissionUpdate}
               />
             </div>
             <div className="relative">
-
               <div className="flex items-center space-x-2">
                 <input
                   type="checkbox"
                   id="extraPermission"
                   checked={isChecked}
                   onChange={handleCheckboxChange}
-                  className="form-checkbox h-4 w-4 text-blue-600 mb-5"
+                  className="form-checkbox mb-5 h-4 w-4 text-blue-600"
                 />
                 <Label>{t('form:input-label-extra-permission')}</Label>
               </div>
@@ -575,7 +592,7 @@ const ShopForm = ({ initialValues }: { initialValues?: any }) => {
             />
             <div className="mb-5 flex w-full justify-between gap-2">
               <div className="w-4/5">
-                <SelectInput
+                {/* <SelectInput
                   name="user"
                   control={control}
                   getOptionLabel={(option) => `${option?.name || ''} - ${option?.email || ''}`}
@@ -587,12 +604,54 @@ const ShopForm = ({ initialValues }: { initialValues?: any }) => {
                   disabled={shouldDisable}
                   onChange={handleUserChange}
                   defaultValue={selectedUser || currentSelectedUser}
+                /> */}
+                <SelectInput
+                  name="user"
+                  control={control}
+                  getOptionLabel={(option) =>
+                    `${option?.name || ''} - ${option?.email || ''}`
+                  }
+                  getOptionValue={(option) => option?.id}
+                  options={optionsUser}
+                  isLoading={isLoading}
+                  isSearchable
+                  value={
+                    selectedUser ||
+                    currentSelectedUser ||
+                    (initialValues?.owner
+                      ? {
+                          id: initialValues.owner.id,
+                          name: initialValues.owner.name,
+                          email: initialValues.owner.email,
+                        }
+                      : {})
+                  } // Prefill initial value if available
+                  disabled={shouldDisable}
+                  onChange={handleUserChange}
+                  defaultValue={
+                    selectedUser ||
+                    currentSelectedUser ||
+                    (initialValues?.owner
+                      ? {
+                          id: initialValues.owner.id,
+                          name: initialValues.owner.name,
+                          email: initialValues.owner.email,
+                        }
+                      : {})
+                  }
                 />
               </div>
-              <Button onClick={openUserModal}>{t('form:form-title-create-user')}</Button>
-              <ValidationError message={errors?.user?.message && t(errors.user.message)} />
+              <Button onClick={openUserModal}>
+                {t('form:form-title-create-user')}
+              </Button>
+              <ValidationError
+                message={errors?.user?.message && t(errors.user.message)}
+              />
               <Modal open={isUserModalOpen} onClose={closeUserModal}>
-                <CustForm onClose={closeUserModal} onUserCreated={handleUserCreated} />
+                <CustForm
+                  onClose={closeUserModal}
+                  onUserCreated={handleUserCreated}
+                />
               </Modal>
             </div>
             <div className="relative">
