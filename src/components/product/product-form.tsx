@@ -138,9 +138,11 @@ export default function CreateOrUpdateProductForm({
 
   const shopId = shopData?.id!;
   const isNewTranslation = router?.query?.action === 'translate';
+
   const isSlugEditable =
     router?.query?.action === 'edit' &&
     router?.locale === Config.defaultLanguage;
+
   const methods = useForm<ProductFormValues>({
     resolver: yupResolver(productValidationSchema),
     shouldUnregister: true,
@@ -150,8 +152,10 @@ export default function CreateOrUpdateProductForm({
 
   const { data: meData } = useMeQuery();
   const shop_id = meData?.shop_id;
+
   const { taxes, loading, error } = useTaxesQuery({
-    shop_id,
+    shopId: shop_id || shopId,
+    shopSlug: router.query.shop as string || '',
   });
 
   const {
@@ -170,8 +174,8 @@ export default function CreateOrUpdateProductForm({
     useCreateProductMutation();
   const { mutate: updateProduct, isLoading: updating } =
     useUpdateProductMutation();
-  const onSubmit = async (values: ProductFormValues) => {
 
+  const onSubmit = async (values: ProductFormValues) => {
     const inputValues = {
       language: router.locale,
       ...getProductInputValues(values, initialValues),
@@ -206,6 +210,7 @@ export default function CreateOrUpdateProductForm({
       });
     }
   };
+
   const product_type = watch('product_type');
   const { fields, append, remove } = useFieldArray({
     control,
@@ -561,9 +566,8 @@ export default function CreateOrUpdateProductForm({
           )}
 
           {/* Variation Type */}
-          
+
           {product_type?.value === ProductType.Variable && (
-          // {product_type?.value === ProductType.Variable && initialValues?.variations && (
             <ProductVariableForm
               shopId={shopId}
               initialValues={initialValues}
