@@ -34,7 +34,7 @@ const FileInput = ({
           maxSize={maxSize}
           value={value}            // Make sure value is being passed to the Uploader
           onChange={(files) => {
-            const fileIds = files.map((file: any) => file.id);  // Map files to their IDs
+            const fileIds = files.map((file: any) => file);  // Map files to their IDs
             onChange(fileIds);  // Update attachmentIds with file IDs
           }}
         />

@@ -180,22 +180,8 @@ function SelectCategories({
 }) {
   const { locale } = useRouter();
   const { t } = useTranslation();
-  const type = useWatch({
-    control,
-    name: 'type',
-  });
-  const { dirtyFields } = useFormState({
-    control,
-  });
-  useEffect(() => {
-    if (type?.slug && dirtyFields?.type) {
-      setValue('parent', []);
-    }
-  }, [type?.slug]);
 
   const { data: meData } = useMeQuery();
-
-  const shop: string | undefined = meData?.managed_shop?.id;
   const [shopSlug, setShopSlug] = useState<string | null>(null);
 
   useEffect(() => {
@@ -206,10 +192,8 @@ function SelectCategories({
   }, []);
 
   const { categories, loading } = useCategoriesQuery({
-    // shop,
     limit: 10,
-    type,
-    shopId: shop,
+    shopId: meData?.managed_shop?.id,
     shopSlug,
     parent: null,
     language: locale,
@@ -232,18 +216,22 @@ function SelectCategories({
 }
 
 type FormValues = {
-  regions: any;
+  regions?: { name?: string }; // Make regions optional and define its structure
   name: string;
   details: string;
-  parent: any;
-  image: any;
-  icon: any;
-  type: any;
-  region_name: string;
+  parent?: { id?: string | null }; // Make parent optional and define its structure
+  image?: {
+    thumbnail?: string;
+    original?: string;
+    id?: string;
+  }; // Make image optional and define its structure
+  icon?: { value?: string }; // Make icon optional and define its structure
+  type?: { id?: string }; // Make type optional and define its structure
+  region_name?: string[]; // Make region_name optional and define it as an array of strings
 };
 
 const defaultValues = {
-  image: [],
+  image: {},
   name: '',
   details: '',
   parent: '',
@@ -267,7 +255,6 @@ export default function CreateOrUpdateCategoriesForm({
     control,
     setValue,
     watch,
-
     formState: { errors },
   } = useForm<FormValues>({
     // shouldUnregister: true,
@@ -325,16 +312,15 @@ export default function CreateOrUpdateCategoriesForm({
       return;
     }
     const transformedRegions = values.regions?.name ? [values.regions.name] : [];
-
     const input = {
       language: router.locale,
       name: values.name,
       details: values.details,
-      image: {
-        thumbnail: values?.image?.thumbnail,
-        original: values?.image?.original,
-        id: values?.image?.id,
-      },
+      image: values?.image?.length ? {
+        thumbnail: values?.image[0]?.thumbnail,
+        original: values?.image[0]?.original,
+        id: values?.image[0]?.id,
+      } : null,
       icon: values.icon?.value || '',
       parent: values.parent?.id ?? null,
       type_id: values.type?.id,
@@ -420,15 +406,7 @@ export default function CreateOrUpdateCategoriesForm({
               defaultValue={[]}
             />
           </div>
-          {/* <div className="mb-5">
-          <SelectInput
-    name="region"
-    control={control}
-    options={countryOptions}
-    isClearable={true}
-    defaultValue={[]}
-  />
-  </div>   */}
+
           <SelectRegion control={control} errors={errors} />
           <SelectTypes control={control} errors={errors} />
           <SelectCategories control={control} setValue={setValue} />

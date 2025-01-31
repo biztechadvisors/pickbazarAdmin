@@ -131,9 +131,6 @@ function SelectRegion({
 
   const { data: meData } = useMeQuery();
 
-  const ShopSlugName = 'hilltop-marble';
-  // const { data: me } = useMeQuery()
-
   const { regions, loading, paginatorInfo, error } = useRegionsQuery({
     code: meData?.managed_shop?.slug,
   });
@@ -200,13 +197,14 @@ export default function CreateOrUpdateTypeForm({ initialValues }: IProps) {
   const { mutate: createType, isLoading: creating } = useCreateTypeMutation();
   const { mutate: updateType, isLoading: updating } = useUpdateTypeMutation();
   const onSubmit = (values: FormValues) => {
-
+    console.log('values 200:>> ', values.banners);
     const transformedRegions = values.regions?.name ? [values.regions.name] : [];
     const input = {
       language: router.locale,
       name: values.name!,
       icon: values.icon?.value,
       region_name: transformedRegions,
+      shop_id: meData?.managed_shop?.id || initialValues?.shop_id,
       settings: {
         isHome: values?.settings?.isHome,
         productCard: values?.settings?.productCard,
@@ -237,13 +235,12 @@ export default function CreateOrUpdateTypeForm({ initialValues }: IProps) {
       createType({
         ...input,
         ...(initialValues?.slug && { slug: initialValues.slug }),
-        shop_id: meData?.managed_shop?.id || initialValues?.shop_id,
       });
     } else {
+      console.log('input :>> ', input);
       updateType({
         ...input,
         id: initialValues.id!,
-        shop_id: meData?.managed_shop?.id,
       });
     }
   };
@@ -431,16 +428,16 @@ export default function CreateOrUpdateTypeForm({ initialValues }: IProps) {
       </div>
 
       <div className="mb-4 text-end">
-        {/* {initialValues && ( */}
-        <Button
-          variant="outline"
-          onClick={router.back}
-          className="me-4"
-          type="button"
-        >
-          {t('form:button-label-back')}
-        </Button>
-        {/* )} */}
+        {initialValues && (
+          <Button
+            variant="outline"
+            onClick={router.back}
+            className="me-4"
+            type="button"
+          >
+            {t('form:button-label-back')}
+          </Button>
+        )}
 
         <Button loading={creating || updating}>
           {initialValues

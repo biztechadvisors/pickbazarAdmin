@@ -88,7 +88,24 @@ function SelectCategory({
   errors: FieldErrors;
 }) {
   const { t } = useTranslation();
-  const { categories, loading, error } = useCategoriesQuery({});
+
+
+  const { data: meData } = useMeQuery();
+
+  const shop: string | undefined = meData?.managed_shop?.id;
+  const [shopSlug, setShopSlug] = useState<string | undefined>(undefined);
+
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const storedSlug = localStorage.getItem('shopSlug');
+      setShopSlug(storedSlug);
+    }
+  }, []);
+
+  const { categories, loading, error } = useCategoriesQuery({
+    shopId: shop ? parseInt(shop, 10) : undefined,
+    shopSlug,
+  });
   const options: any = categories || [];
   const dbValues: any = defaultValue || [];
 
