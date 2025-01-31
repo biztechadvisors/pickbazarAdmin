@@ -399,7 +399,7 @@ export default function SettingsForm({
   const isNotDefaultSettingsPage = Config.defaultLanguage !== locale;
 
   async function onSubmit(values: FormValues) {
-
+    console.log('Submitting values:', values); 
     const contactDetails = {
       ...values?.contactDetails,
       location: { ...omit(values?.contactDetails?.location, '__typename') },
@@ -454,6 +454,7 @@ export default function SettingsForm({
 
     try {
       if (!settings) {
+        console.log('Calling createSettingsMutation:', mutationParams);
         createSettingsMutation({ shop_id, ...mutationParams });
       } else {
         updateSettingsMutation({ shop_id, ...mutationParams });
