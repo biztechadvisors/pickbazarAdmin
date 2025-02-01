@@ -21,6 +21,7 @@ const Cart = () => {
   const router = useRouter();
 
   function handleCheckout() {
+    console.log("Navigating to checkout with user ID:", id);
     router.push(Routes.checkout);
   }
 
@@ -29,8 +30,8 @@ const Cart = () => {
   });
 
   const { data: meData } = useMeQuery();
-
-  const { id, email, contact } = meData || {};
+  console.log("User Data:", meData);
+  const { id, email, contact } = meData || {}; 
   return (
     <section className="relative flex h-full flex-col bg-white">
       <header className="fixed top-0 z-10 flex h-16 w-full max-w-md items-center justify-between border-b border-border-200 border-opacity-75 bg-light px-6">

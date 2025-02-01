@@ -398,22 +398,95 @@ export default function SettingsForm({
 
   const isNotDefaultSettingsPage = Config.defaultLanguage !== locale;
 
+  // async function onSubmit(values: FormValues) {
+  //   console.log('Submitting values:', values); 
+  //   const contactDetails = {
+  //     ...values?.contactDetails,
+  //     location: { ...omit(values?.contactDetails?.location, '__typename') },
+  //     socials: values?.contactDetails?.socials
+  //       ? values?.contactDetails?.socials.map((social: any) => ({
+  //         icon: social?.icon?.value,
+  //         url: social?.url,
+  //       }))
+  //       : [],
+  //   };
+
+  //   const smsEvent = formatEventOptions(values.smsEvent);
+  //   const emailEvent = formatEventOptions(values.emailEvent);
+
+  //   const mutationParams = {
+  //     id: settings?.id,
+  //     language: locale,
+  //     options: {
+  //       ...values,
+  //       server_info: serverInfo,
+  //       signupPoints: Number(values.signupPoints),
+  //       maxShopDistance: Number(values.maxShopDistance),
+  //       currencyToWalletRatio: Number(values.currencyToWalletRatio),
+  //       minimumOrderAmount: Number(values.minimumOrderAmount),
+  //       freeShippingAmount: Number(values.freeShippingAmount),
+  //       currency: values.currency?.code,
+  //       defaultAi: values.defaultAi?.value,
+  //       defaultPaymentGateway: values.defaultPaymentGateway?.name,
+  //       paymentGateway: values.paymentGateway?.map((gateway: any) => ({
+  //         name: gateway.name,
+  //         title: gateway.title,
+  //       })) || PAYMENT_GATEWAY.slice(0, 2),
+  //       useEnableGateway: values.useEnableGateway || true,
+  //       guestCheckout: values.guestCheckout,
+  //       taxClass: values.taxClass?.id,
+  //       shippingClass: values.shippingClass?.id,
+  //       logo: values.logo,
+  //       smsEvent,
+  //       emailEvent,
+  //       contactDetails,
+  //       seo: {
+  //         ...values.seo,
+  //         ogImage: values.seo?.ogImage,
+  //       },
+  //       currencyOptions: {
+  //         ...values.currencyOptions,
+  //         //@ts-ignore
+  //         formation: values.currencyOptions?.formation?.code,
+  //       },
+  //     },
+  //   };
+
+  //   try {
+  //     if (!settings) {
+  //       console.log('Calling createSettingsMutation:', mutationParams);
+  //       createSettingsMutation({ shop_id, ...mutationParams });
+  //     } else {
+  //       updateSettingsMutation({ shop_id, ...mutationParams });
+  //     }
+  //   } catch (error) {
+  //     const serverErrors = getErrorMessage(error);
+  //     Object.keys(serverErrors?.validation).forEach((field: any) => {
+  //       setError(field.split('.')[1], {
+  //         type: 'manual',
+  //         message: serverErrors?.validation[field][0],
+  //       });
+  //     });
+  //   }
+  // }
+
   async function onSubmit(values: FormValues) {
-    console.log('Submitting values:', values); 
+    console.log("Submitting values:", values); // Debugging: Check if the function is executed
+  
     const contactDetails = {
       ...values?.contactDetails,
-      location: { ...omit(values?.contactDetails?.location, '__typename') },
+      location: { ...omit(values?.contactDetails?.location, "__typename") },
       socials: values?.contactDetails?.socials
         ? values?.contactDetails?.socials.map((social: any) => ({
-          icon: social?.icon?.value,
-          url: social?.url,
-        }))
+            icon: social?.icon?.value,
+            url: social?.url,
+          }))
         : [],
     };
-
+  
     const smsEvent = formatEventOptions(values.smsEvent);
     const emailEvent = formatEventOptions(values.emailEvent);
-
+  
     const mutationParams = {
       id: settings?.id,
       language: locale,
@@ -428,10 +501,11 @@ export default function SettingsForm({
         currency: values.currency?.code,
         defaultAi: values.defaultAi?.value,
         defaultPaymentGateway: values.defaultPaymentGateway?.name,
-        paymentGateway: values.paymentGateway?.map((gateway: any) => ({
-          name: gateway.name,
-          title: gateway.title,
-        })) || PAYMENT_GATEWAY.slice(0, 2),
+        paymentGateway:
+          values.paymentGateway?.map((gateway: any) => ({
+            name: gateway.name,
+            title: gateway.title,
+          })) || PAYMENT_GATEWAY.slice(0, 2),
         useEnableGateway: values.useEnableGateway || true,
         guestCheckout: values.guestCheckout,
         taxClass: values.taxClass?.id,
@@ -446,20 +520,23 @@ export default function SettingsForm({
         },
         currencyOptions: {
           ...values.currencyOptions,
-          //@ts-ignore
           formation: values.currencyOptions?.formation?.code,
         },
       },
     };
-
+  
     try {
       if (!settings) {
         console.log('Calling createSettingsMutation:', mutationParams);
-        createSettingsMutation({ shop_id, ...mutationParams });
+        const data = createSettingsMutation({ shop_id, ...mutationParams });
+        console.log('Mutation success:', data);
       } else {
-        updateSettingsMutation({ shop_id, ...mutationParams });
+        console.log('Calling updateSettingsMutation:', mutationParams);
+        const data = updateSettingsMutation({ shop_id, ...mutationParams });
+        console.log('Mutation success:', data);
       }
     } catch (error) {
+      console.error('Caught error:', error);
       const serverErrors = getErrorMessage(error);
       Object.keys(serverErrors?.validation).forEach((field: any) => {
         setError(field.split('.')[1], {
@@ -469,7 +546,7 @@ export default function SettingsForm({
       });
     }
   }
-
+  
   let paymentGateway = watch('paymentGateway');
   let defaultPaymentGateway = watch('defaultPaymentGateway');
   let useEnableGateway = watch('useEnableGateway');
