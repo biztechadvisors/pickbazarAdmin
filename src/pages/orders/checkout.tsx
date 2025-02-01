@@ -9,7 +9,6 @@ import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import { GetStaticProps } from 'next';
 import Layout from '@/components/layouts/admin';
 import { adminOnly } from '@/utils/auth-utils';
-// import CustomerGrid from '@/components/checkout/customer/customer-grid';
 import { useEffect, useState } from 'react';
 import { useAtom } from 'jotai';
 import Loader from '@/components/ui/loader/loader';
@@ -21,7 +20,6 @@ import { checkoutCustAtom, shopIdAtom } from '@/utils/atoms';
 import UserAddressSelection from '@/components/UserAddressSelection';
 import PageLoader from '@/components/ui/page-loader/page-loader';
 import ErrorMessage from '@/components/ui/error-message';
-import { setCustomer } from '@/components/checkout/customer/CustomerEmail';
 
 const CustomerEmail = dynamic(
   () => import('@/components/checkout/customer/CustomerEmail')
@@ -40,8 +38,9 @@ const RightSideView = dynamic(
 
 export default function CheckoutPage() {
   const [shopId] = useAtom(shopIdAtom);
-  const [customer] = useAtom(customerAtom);
+  const [customer, setCustomer] = useAtom(customerAtom);
 
+  console.log('customer', customer);
   const { data: meData } = useMeQuery();
 
   const { t } = useTranslation();
@@ -51,19 +50,23 @@ export default function CheckoutPage() {
     isLoading: loading,
     error,
     refetch,
-  } = useUserQuery({ id: customer?.id });
+  } = useUserQuery({ id: customer?.id }, {
+    enabled: !!customer?.id, // Only run the query if a customer is selected
+  });
 
   useEffect(() => {
+    console.log('customer?.id', customer?.id);
     if (customer?.id) {
-      refetch(customer?.id);
+      refetch();
     }
   }, [customer?.id]);
 
-
   if (loading) {
-    <div>
-      <PageLoader />
-    </div>;
+    return (
+      <div>
+        <PageLoader />
+      </div>
+    );
   }
 
   if (error) return <ErrorMessage message={error.message} />;
@@ -74,42 +77,46 @@ export default function CheckoutPage() {
         <div className="w-full space-y-6 lg:max-w-2xl">
           <CustomerEmail count={1} />
 
-          <ContactGrid
-            className="shadow-700 bg-light p-5 md:p-8"
-            contact={user?.contact}
-            label={t('text-contact-number')}
-            count={2}
-          />
+          {customer?.id && (
+            <>
+              <ContactGrid
+                className="shadow-700 bg-light p-5 md:p-8"
+                contact={user?.contact}
+                label={t('text-contact-number')}
+                count={2}
+              />
 
-          <AddressGrid
-            userId={user?.id}
-            className="shadow-700 bg-light p-5 md:p-8"
-            label={t('text-billing-address')}
-            count={3}
-            addresses={user?.address?.filter(
-              (address) => address?.type === AddressType.Billing
-            )}
-            atom={billingAddressAtom}
-            type={AddressType.Billing}
-          />
+              <AddressGrid
+                userId={user?.id}
+                className="shadow-700 bg-light p-5 md:p-8"
+                label={t('text-billing-address')}
+                count={3}
+                addresses={user?.address?.filter(
+                  (address) => address?.type === AddressType.Billing
+                )}
+                atom={billingAddressAtom}
+                type={AddressType.Billing}
+              />
 
-          <AddressGrid
-            userId={user?.id!}
-            className="shadow-700 bg-light p-5 md:p-8"
-            label={t('text-shipping-address')}
-            count={4}
-            addresses={user?.address?.filter(
-              (address) => address?.type === AddressType.Shipping
-            )}
-            atom={shippingAddressAtom}
-            type={AddressType.Shipping}
-          />
+              <AddressGrid
+                userId={user?.id!}
+                className="shadow-700 bg-light p-5 md:p-8"
+                label={t('text-shipping-address')}
+                count={4}
+                addresses={user?.address?.filter(
+                  (address) => address?.type === AddressType.Shipping
+                )}
+                atom={shippingAddressAtom}
+                type={AddressType.Shipping}
+              />
 
-          <ScheduleGrid
-            className="shadow-700 bg-light p-5 md:p-8"
-            label={t('text-delivery-schedule')}
-            count={5}
-          />
+              <ScheduleGrid
+                className="shadow-700 bg-light p-5 md:p-8"
+                label={t('text-delivery-schedule')}
+                count={5}
+              />
+            </>
+          )}
         </div>
         <div className="mb-10 mt-10 w-full sm:mb-12 lg:mb-0 lg:w-96">
           <RightSideView />
@@ -118,6 +125,7 @@ export default function CheckoutPage() {
     </div>
   );
 }
+
 CheckoutPage.authenticate = {
   permissions: adminOnly,
 };

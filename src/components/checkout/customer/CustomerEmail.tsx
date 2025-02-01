@@ -10,7 +10,6 @@ import { useRouter } from 'next/router';
 import { ADMIN, DEALER, STAFF, Company, SUPER_ADMIN } from '@/utils/constants';
 import { getAuthCredentials } from '@/utils/auth-utils';
 
-
 const CustomerEmail = ({ count }) => {
   const { closeModal } = useModalAction();
   const { t } = useTranslation('common');
@@ -28,16 +27,8 @@ const CustomerEmail = ({ count }) => {
   const { data: meData } = useMeQuery();
   const { id: usrById, email } = meData || {};
 
-  // useEffect(() => {
-  //   const storedInputValue = localStorage.getItem('inputValue');
-  //   if (storedInputValue) {
-  //     setInputValue(storedInputValue);
-  //   }
-  // }, []);
-
   useEffect(() => {
     if (typeof window !== 'undefined') {
-      // Ensure we're in the browser environment
       const storedInputValue = localStorage.getItem('inputValue');
       if (storedInputValue) {
         setInputValue(storedInputValue);
@@ -67,17 +58,9 @@ const CustomerEmail = ({ count }) => {
     }
   }
 
-  // function handleInputChange(value) {
-  //   setInputValue(value);
-  //   localStorage.setItem('inputValue', value);
-  //   fetchEmailSuggestions(value);
-  //   setShowAddButton(true);
-  // }
-
   function handleInputChange(value) {
     setInputValue(value);
     if (typeof window !== 'undefined') {
-      // Ensure we're in the browser environment
       localStorage.setItem('inputValue', value);
     }
     fetchEmailSuggestions(value);
