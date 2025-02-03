@@ -12,6 +12,7 @@ interface CustomerProps {
 
 const CustomerGrid = ({ label, count, className }: CustomerProps) => {
   const [customer] = useAtom(customerAtom);
+  console.log('customer 15', customer);
   const { openModal } = useModalAction();
   const { t } = useTranslation('common');
 

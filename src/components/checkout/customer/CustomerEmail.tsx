@@ -25,11 +25,12 @@ const CustomerEmail = ({ count }) => {
   );
 
   const { data: meData } = useMeQuery();
-  const { id: usrById, email } = meData || {};
+  const { id: usrById } = meData || {};
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
       const storedInputValue = localStorage.getItem('inputValue');
+      console.log('storedInputValue 33', storedInputValue);
       if (storedInputValue) {
         setInputValue(storedInputValue);
       }
@@ -78,6 +79,7 @@ const CustomerEmail = ({ count }) => {
 
   function handleSelectEmail(suggestion, e) {
     e.preventDefault();
+    console.log('suggestion 82', suggestion);
     setCustomer({
       id: suggestion.value,
       email: suggestion.email,

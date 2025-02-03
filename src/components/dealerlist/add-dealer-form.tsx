@@ -20,7 +20,6 @@ import ErrorMessage from '../ui/error-message';
 import dynamic from 'next/dynamic';
 import {
   billingAddressAtom,
-  customerAtom,
   shippingAddressAtom,
 } from '@/contexts/checkout';
 import { AddressType } from '@/types';

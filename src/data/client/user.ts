@@ -131,7 +131,6 @@ export const userClient = {
     });
   },
   fetchUser: ({ id }: { id: string }) => {
-    console.log('id : 134fetchUser ', id)
     return HttpClient.get<User>(`${API_ENDPOINTS.USERS}/${id}`);
   },
   resendVerificationEmail: () => {
