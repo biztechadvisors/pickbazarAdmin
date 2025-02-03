@@ -21,6 +21,7 @@ const Cart = () => {
   const router = useRouter();
 
   function handleCheckout() {
+    
     console.log("Navigating to checkout with user ID:", id);
     router.push(Routes.checkout);
   }

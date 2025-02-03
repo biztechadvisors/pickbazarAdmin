@@ -44,6 +44,7 @@ export type PaymentMethodName = 'CASH_ON_DELIVERY' | 'CASH';
 
 // Original atom.
 export const checkoutAtom = atomWithStorage(CHECKOUT, defaultCheckout);
+
 export const clearCheckoutAtom = atom(null, (_get, set, _data) => {
   return set(checkoutAtom, defaultCheckout);
 });
@@ -94,19 +95,24 @@ export const customerContactAtom = atom(
     return set(checkoutAtom, { ...prev, customer_contact: data });
   }
 );
+
 export const customerAtom = atom(
   (get) => get(checkoutAtom).customer,
   (get, set, data: any) => {
     console.log("data********",data)
     const prev = get(checkoutAtom);
-    return set(checkoutAtom, {
-      ...prev,
-      billing_address: null,
-      shipping_address: null,
-      delivery_time: null,
-      customer_contact: '',
-      customer: data,
-    });
+    if (data) {
+      console.log('data', data);
+      set(checkoutAtom, {
+        ...prev,
+        customer: data,
+      });
+    } else {
+      set(checkoutAtom, {
+        ...prev,
+        customer: null,
+      });
+    }
   }
 );
 

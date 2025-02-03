@@ -472,7 +472,6 @@ export default function SettingsForm({
   // }
 
   async function onSubmit(values: FormValues) {
-
     const contactDetails = {
       ...values?.contactDetails,
       location: { ...omit(values?.contactDetails?.location, "__typename") },
