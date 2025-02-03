@@ -90,9 +90,6 @@ function SelectRegion({
 
   const { data: meData } = useMeQuery();
 
-  const ShopSlugName = 'hilltop-marble';
-  // const { data: me } = useMeQuery()
-
   const { regions, loading, paginatorInfo, error } = useRegionsQuery({
     code: meData?.managed_shop?.slug,
   });
@@ -129,8 +126,8 @@ function SelectCategories({
     control,
     name: 'type',
   });
-  const router = useRouter();  
-  const { data: meData } = useMeQuery(); 
+  const router = useRouter();
+  const { data: meData } = useMeQuery();
 
   const {
     query: { shops },
@@ -140,7 +137,7 @@ function SelectCategories({
     slug: shops as string,
   });
 
-  const shopId = shopData?.id!; 
+  const shopId = shopData?.id!;
 
   const shop: string | undefined = meData?.managed_shop?.id;
 

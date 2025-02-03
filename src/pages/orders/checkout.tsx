@@ -87,7 +87,7 @@ export default function CheckoutPage() {
             className="shadow-700 bg-light p-5 md:p-8"
             label={t('text-billing-address')}
             count={3}
-            addresses={user?.address?.filter(
+            addresses={user?.adds?.filter(
               (address) => address?.type === AddressType.Billing
             )}
             atom={billingAddressAtom}

@@ -169,6 +169,7 @@ type FormValues = {
   currencyToWalletRatio: number;
   contactDetails: ContactDetailsInput;
   deliveryTime: {
+    id: any;
     title: string;
     description: string;
   }[];
@@ -471,8 +472,7 @@ export default function SettingsForm({
   // }
 
   async function onSubmit(values: FormValues) {
-    console.log("Submitting values:", values); // Debugging: Check if the function is executed
-  
+
     const contactDetails = {
       ...values?.contactDetails,
       location: { ...omit(values?.contactDetails?.location, "__typename") },
@@ -501,11 +501,10 @@ export default function SettingsForm({
         currency: values.currency?.code,
         defaultAi: values.defaultAi?.value,
         defaultPaymentGateway: values.defaultPaymentGateway?.name,
-        paymentGateway:
-          values.paymentGateway?.map((gateway: any) => ({
-            name: gateway.name,
-            title: gateway.title,
-          })) || PAYMENT_GATEWAY.slice(0, 2),
+        paymentGateway: values.paymentGateway?.map((gateway: any) => ({
+          name: gateway.name,
+          title: gateway.title,
+        })) || PAYMENT_GATEWAY.slice(0, 2),
         useEnableGateway: values.useEnableGateway || true,
         guestCheckout: values.guestCheckout,
         taxClass: values.taxClass?.id,
@@ -1074,21 +1073,26 @@ export default function SettingsForm({
               >
                 <div className="grid grid-cols-1 gap-5 sm:grid-cols-5">
                   <div className="grid grid-cols-1 gap-5 sm:col-span-4">
+                    {/* Hidden input for deliveryTime ID */}
+                    <input
+                      type="hidden"
+                      {...register(`deliveryTime.${index}.id` as const)}
+                      defaultValue={item?.id || null} // Set ID if it exists, otherwise null
+                    />
+
                     <Input
                       label={t('form:input-delivery-time-title')}
                       variant="outline"
                       {...register(`deliveryTime.${index}.title` as const)}
-                      defaultValue={item?.title!} // make sure to set up defaultValue
+                      defaultValue={item?.title!} // Set default value for title
                       // @ts-ignore
                       error={t(errors?.deliveryTime?.[index]?.title?.message)}
                     />
                     <TextArea
                       label={t('form:input-delivery-time-description')}
                       variant="outline"
-                      {...register(
-                        `deliveryTime.${index}.description` as const
-                      )}
-                      defaultValue={item.description!} // make sure to set up defaultValue
+                      {...register(`deliveryTime.${index}.description` as const)}
+                      defaultValue={item.description!} // Set default value for description
                     />
                   </div>
 
@@ -1107,7 +1111,7 @@ export default function SettingsForm({
           </div>
           <Button
             type="button"
-            onClick={() => append({ title: '', description: '' })}
+            onClick={() => append({ id: null, title: '', description: '' })} // Append new deliveryTime with id: null
             className="w-full sm:w-auto"
           >
             {t('form:button-label-add-delivery-time')}
