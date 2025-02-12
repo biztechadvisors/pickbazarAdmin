@@ -9,16 +9,12 @@ import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import { GetStaticProps } from 'next';
 import Layout from '@/components/layouts/admin';
 import { adminOnly } from '@/utils/auth-utils';
-// import CustomerGrid from '@/components/checkout/customer/customer-grid';
 import { useEffect, useState } from 'react';
 import { useAtom } from 'jotai';
 import Loader from '@/components/ui/loader/loader';
-import { useMeQuery, useUserQuery } from '@/data/user';
+import { useUserQuery } from '@/data/user';
 import { AddressType } from '@/types';
-import { PlusIcon } from '@/components/icons/plus-icon';
-// import AddCustomerSlider from './AddCustomerSlider';
-import { checkoutCustAtom, shopIdAtom } from '@/utils/atoms';
-import UserAddressSelection from '@/components/UserAddressSelection';
+import { shopIdAtom } from '@/utils/atoms';
 
 const CustomerEmail = dynamic(
   () => import('@/components/checkout/customer/CustomerEmail')
@@ -36,8 +32,8 @@ const RightSideViewStock = dynamic(
 );
 
 export default function CheckoutPage() {
-  const [shopId] = useAtom(shopIdAtom);
   const [customer] = useAtom(customerAtom);
+  console.log('customer 36', customer);
   const { t } = useTranslation();
 
   const {
@@ -46,6 +42,7 @@ export default function CheckoutPage() {
     refetch,
   } = useUserQuery({ id: customer?.id });
 
+  console.log('user 45', user);
   useEffect(() => {
     if (customer?.id) {
       refetch(customer?.id);
@@ -54,7 +51,7 @@ export default function CheckoutPage() {
 
   if (loading) return <Loader text={t('common:text-loading')} />;
 
- 
+
 
   return (
     <div className="bg-gray-100">

@@ -49,12 +49,11 @@ export default function ProfilePage() {
       </div>
       <EmailUpdateForm me={data} />
       <ProfileUpdateFrom me={data} />
-      <ChangePasswordForm />
-
+      <ChangePasswordForm /> 
       {data?.permission?.type_name === DEALER && (
         <div ref={userAddressSelectionRef}>
           <UserAddressSelection
-            addresses={data.address}
+            addresses={data.adds}
             dealerId={data.id}
             type={AddressType.Billing}
             selectedAddress={selectedAddress}

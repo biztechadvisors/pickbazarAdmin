@@ -14,8 +14,7 @@ const UserAddressSelection = ({
   selectedAddress,
   setSelectedAddress,
 }: any) => {
-  const [showAllAddresses, setShowAllAddresses] = useState(false);
-
+  const [showAllAddresses, setShowAllAddresses] = useState(false); 
   const { openModal } = useModalAction();
 
   const handleAddressSelection = (address: { address: { street_address: string | number | boolean | React.ReactFragment | React.ReactPortal | React.ReactElement<any, string | React.JSXElementConstructor<any>> | Record<string, unknown> | null | undefined; }; }) => {

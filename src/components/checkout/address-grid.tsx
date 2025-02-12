@@ -26,8 +26,13 @@ export const AddressGrid: React.FC<AddressesProps> = ({
   count,
   type,
 }) => {
+  console.log('userId 29 ', userId);
+  console.log('addresses 45 ', addresses);
   const { t } = useTranslation('common');
+
   const [selectedAddress, setAddress] = useAtom(atom);
+  console.log('selectedAddress 48 ', selectedAddress);
+
   const { openModal } = useModalAction();
 
   useEffect(() => {
@@ -43,7 +48,6 @@ export const AddressGrid: React.FC<AddressesProps> = ({
       }
     }
   }, [addresses, selectedAddress, setAddress]);
-
 
   function onAdd() {
     openModal('ADD_OR_UPDATE_ADDRESS', { customerId: userId, type });
