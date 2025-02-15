@@ -25,6 +25,8 @@ import Spinner from '@/components/ui/loader/spinner/spinner';
 import { useSettings } from '@/framework/rest/settings';
 import { useSettingsQuery } from '@/data/settings';
 import { useRouter } from 'next/router';
+import { loadStripe } from '@stripe/stripe-js';
+import { Elements, CardElement, useStripe, useElements } from '@stripe/react-stripe-js';
 
 interface PaymentSubGateways {
   name: string;
@@ -41,6 +43,66 @@ interface PaymentGroupOptionProps {
   payment: PaymentMethodInformation;
   theme?: string;
 }
+//stripe++++
+const StripePayment = () => {
+  const stripe = useStripe();
+  const elements = useElements();
+  const [error, setError] = useState(null);
+  const [loading, setLoading] = useState(false);
+
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+
+    if (!stripe || !elements) {
+      return;
+    }
+
+    setLoading(true);
+
+    const { error, paymentMethod } = await stripe.createPaymentMethod({
+      type: 'card',
+      card: elements.getElement(CardElement),
+    });
+
+    if (error) {
+      setError(error.message);
+      setLoading(false);
+    } else {
+      const response = await fetch('/api/create-payment-intent', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ amount: 1000 }), // Amount in cents
+      });
+
+      const { clientSecret } = await response.json();
+
+      const { error: confirmError } = await stripe.confirmCardPayment(clientSecret, {
+        payment_method: paymentMethod.id,
+      });
+
+      if (confirmError) {
+        setError(confirmError.message);
+      } else {
+        // Payment succeeded
+        alert('Payment successful!');
+      }
+
+      setLoading(false);
+    }
+  };
+
+  return (
+    <form onSubmit={handleSubmit}>
+      <CardElement />
+      {error && <div style={{ color: 'red' }}>{error}</div>}
+      <button type="submit" disabled={!stripe || loading}>
+        {loading ? 'Processing...' : 'Pay'}
+      </button>
+    </form>
+  );
+};
 
 // const PAYMENT_GATEWAYS = [
 //   { name: 'stripe', title: 'Stripe' },
@@ -130,7 +192,11 @@ const PaymentGrid: React.FC<{ className?: string; theme?: 'bw' }> = ({
       name: 'Stripe',
       value: PaymentGateway.STRIPE,
       icon: <StripeIcon />,
-      component: PaymentOnline,
+      component: () => (
+        <Elements stripe={loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY)}>
+          <StripePayment />
+        </Elements>
+      ),
     },
     PAYPAL: {
       name: 'Paypal',
