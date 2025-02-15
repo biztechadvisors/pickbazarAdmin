@@ -104,14 +104,14 @@ const StripePayment = () => {
   );
 };
 
-// const PAYMENT_GATEWAYS = [
-//   { name: 'stripe', title: 'Stripe' },
-//   { name: 'paypal', title: 'Paypal' },
-//   { name: 'razorpay', title: 'RazorPay' },
-//   { name: 'mollie', title: 'Mollie' },
-//   { name: 'paystack', title: 'Paystack' },
-//   { name: 'sslcommerz', title: 'SslCommerz' },
-// ];
+const PAYMENT_GATEWAYS = [
+  { name: 'stripe', title: 'Stripe' },
+  { name: 'paypal', title: 'Paypal' },
+  { name: 'razorpay', title: 'RazorPay' },
+  // { name: 'mollie', title: 'Mollie' },
+  // { name: 'paystack', title: 'Paystack' },
+  // { name: 'sslcommerz', title: 'SslCommerz' },
+];
 
 const PaymentGroupOption: React.FC<PaymentGroupOptionProps> = ({
   payment: { name, value, icon },

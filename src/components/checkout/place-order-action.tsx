@@ -48,18 +48,22 @@ export const PlaceOrderAction: React.FC<{
       payable_amount
 
     },
+<<<<<<< HEAD
   ] = useAtom(checkoutAtom); 
+=======
+  ] = useAtom(checkoutAtom);
+>>>>>>> 9310f61b7be587b40f6e2f5f56589b30d60ea828
   const [discount] = useAtom(discountAtom);
   const [use_wallet_points] = useAtom(walletAtom);
 
   const { data: meData } = useMeQuery();
   const dealerId = meData?.id;
   // const shop_id = meData?.shop_id;
-  const shop_id = meData?.shop_id 
-  || meData?.managed_shop?.id 
-  || meData?.owned_shops?.[0]?.id 
-  || localStorage.getItem("shop_id");
- 
+  const shop_id = meData?.shop_id
+    || meData?.managed_shop?.id
+    || meData?.owned_shops?.[0]?.id
+    || localStorage.getItem("shop_id");
+
 
   const checkDealerId = meData?.dealer?.id;
 
@@ -95,8 +99,6 @@ export const PlaceOrderAction: React.FC<{
     },
     Number(discount)
   );
-
-
 
   const handlePlaceOrder = () => {
     if (!customer_contact) {
@@ -193,56 +195,6 @@ export const PlaceOrderAction: React.FC<{
 
     createOrder(input);
   };
-
-
-  //  const handlePlaceOrder = () => {
-  //   if (!customer_contact) {
-  //     setErrorMessage('Contact Number Is Required');
-  //     return;
-  //   }
-  //   if (!use_wallet_points && !payment_gateway) {
-  //     setErrorMessage('Payment Gateway Is Required');
-  //     return;
-  //   }
-
-  //   const isFullWalletPayment = use_wallet_points && payable_amount === 0;
-
-  //   const gateWay = isFullWalletPayment
-  //     ? PaymentGateway.FULL_WALLET_PAYMENT
-  //     : payment_gateway;
-
-  //   const input = {
-  //     products: available_items?.map((item) => formatOrderedProduct(item)),
-  //     amount: subtotal,
-  //     coupon_id: Number(coupon?.id),
-  //     discount: discount ?? 0,
-  //     paid_total: total,
-  //     sales_tax: verified_response?.total_tax,
-  //     delivery_fee: freeShippings ? 0 : verified_response?.shipping_charge,
-  //     total,
-  //     dealerId,
-  //     delivery_time: delivery_time?.title,
-  //     customer,
-  //     customer_id: customer?.id,
-  //     customer_contact,
-  //     customer_name,
-  //     note,
-  //     payment_gateway: gateWay,
-  //     payment_sub_gateway,
-  //     use_wallet_points,
-  //     isFullWalletPayment,
-  //     billing_address: {
-  //       ...(billing_address?.address && billing_address.address),
-  //     },
-  //     shipping_address: {
-  //       ...(shipping_address?.address && shipping_address.address),
-  //     },
-  //     saleBy: selectedAddress?.address ?? null,
-  //   };
-
-  //   createOrder(input);
-  // };
-
 
   const isDigitalCheckout = available_items.find((item) =>
     Boolean(item.is_digital)

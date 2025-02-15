@@ -66,8 +66,12 @@ const AddStaffForm = () => {
     slug: shopSlug as string,
   });
 
-  // const shopId = shopData?.id!;
-  const userId = shopData?.owner_id;
+  let userId: any;
+  if (meData?.permission.permission_name == "Owner") {
+    userId = meData.id;
+  } else {
+    userId = shopData?.owner_id;
+  }
 
   const {
     register,
@@ -98,7 +102,6 @@ const AddStaffForm = () => {
         permission: type?.value,
         numberOfDealers,
         managed_shop: shopData,
-        // slug: "hilltop-marble",
         shopSlug,
         createdBy: userId,
       },

@@ -163,7 +163,6 @@ type SelectUserProps = {
 };
 
 const ShopForm = ({ initialValues }: { initialValues?: any }) => {
-  console.log('initialValues$$ ::', initialValues);
   const { mutate: createShop, isLoading: creating } = useCreateShopMutation();
   const { mutate: updateShop, isLoading: updating } = useUpdateShopMutation();
   const [modalIsOpen, setIsOpen] = useState(false);
