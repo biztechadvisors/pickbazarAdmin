@@ -50,7 +50,7 @@ export default function CheckoutPage() {
     if (customer?.id) {
       refetch(customer?.id);
     }
-  }, [customer?.id]);
+  }, [customer]);
 
 
   if (loading) {
@@ -59,6 +59,7 @@ export default function CheckoutPage() {
     </div>;
   }
 
+  // if (loading && !selectedUser) return <PageLoader />; // Show loading until user is selected
   if (error) return <ErrorMessage message={error.message} />;
 
   return (

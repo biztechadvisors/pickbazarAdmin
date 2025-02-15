@@ -10,17 +10,17 @@ import { useRouter } from 'next/router';
 import { ADMIN, DEALER, STAFF, Company, SUPER_ADMIN } from '@/utils/constants';
 import { getAuthCredentials } from '@/utils/auth-utils';
 
-const CustomerEmail = ({ count }) => {
+const CustomerEmail = ({ count }) => { 
   const { closeModal } = useModalAction();
   const { t } = useTranslation('common');
-  const [selectedCustomer, setCustomer] = useAtom(customerAtom);
+  const [selectedCustomer, setCustomer] = useAtom(customerAtom || []);
   const [inputValue, setInputValue] = useState('');
   const [emailSuggestions, setEmailSuggestions] = useState([]);
   const [loading, setLoading] = useState(false);
   const [showAddButton, setShowAddButton] = useState(true);
   const router = useRouter();
   const { permissions } = getAuthCredentials();
-  const isPermission = permissions?.some(role =>
+  const isPermission = permissions?.some((role) =>
     [DEALER, SUPER_ADMIN, STAFF, Company, ADMIN].includes(role)
   );
 
@@ -43,7 +43,7 @@ const CustomerEmail = ({ count }) => {
       const response = await userClient.fetchUsers({
         email: inputValue,
         page: 1,
-        usrById,
+        usrById: meData?.id,
       });
       const users = response?.data || [];
       const suggestions = users.map((user) => ({
@@ -78,6 +78,7 @@ const CustomerEmail = ({ count }) => {
   }
 
   function handleSelectEmail(suggestion, e) {
+    console.log('selected -- 95', suggestion);
     e.preventDefault();
     console.log('suggestion 82', suggestion);
     setCustomer({

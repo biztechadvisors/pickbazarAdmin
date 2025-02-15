@@ -23,8 +23,7 @@ export function useSettings() {
     [API_ENDPOINTS.SETTINGS, formattedOptions],
     ({ queryKey, pageParam }) =>
       client.settings.all(Object.assign({}, queryKey[1], pageParam))
-  );
-
+  ); 
   return {
     settings: data?.options ?? {},
     isLoading,

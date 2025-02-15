@@ -24,6 +24,8 @@ const Variation = ({ product, id, email, contact }: Props) => {
     () => getVariations(product?.variations),
     [product?.variations]
   );
+  
+console.log("+++++++++++",product)
   const isSelected = isVariationSelected(variations, attributes);
   let selectedVariation: any = {};
   if (isSelected) {
@@ -62,22 +64,24 @@ const Variation = ({ product, id, email, contact }: Props) => {
   );
 };
 
-const ProductVariation = ({ productSlug }: { productSlug: object }) => {
+const ProductVariation = ({ productSlug }: { productSlug: any }) => {
   const { locale } = useRouter();
 
   const { data }: any = useMeQuery();
   const userId = data?.dealer?.id;
 
-  const { slug, shop_id } = productSlug;
-
+  const { slug, shop_id } = productSlug || {};
+  console.log("ProductVariation Params:", { slug, userId, shop_id });
   const { product, isLoading: loading } = useProductQuery({
-    slug: slug,
-    userId,
-    shop_id: shop_id,
+    slug: slug || '',
+    id: userId || '',
+    shop_id: shop_id || '',
     language: locale!,
   });
-
+   
   const { id, email, contact } = data || {};
+  console.log('Variation Component Product:', product);
+console.log("Fetching product with slug:", slug, "userId:", userId, "shop_id:", shop_id);
 
   if (loading || !product) return <div>Loading</div>;
   return (

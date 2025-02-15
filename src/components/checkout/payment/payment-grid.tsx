@@ -23,6 +23,8 @@ import { FlutterwaveIcon } from '@/components/icons/payment-gateways/flutterwave
 import { paymentGatewayAtom } from '@/contexts/checkout';
 import Spinner from '@/components/ui/loader/spinner/spinner';
 import { useSettings } from '@/framework/rest/settings';
+import { useSettingsQuery } from '@/data/settings';
+import { useRouter } from 'next/router';
 
 interface PaymentSubGateways {
   name: string;
@@ -40,14 +42,14 @@ interface PaymentGroupOptionProps {
   theme?: string;
 }
 
-// const PAYMENT_GATEWAYS = [
-//   { name: 'stripe', title: 'Stripe' },
-//   { name: 'paypal', title: 'Paypal' },
-//   { name: 'razorpay', title: 'RazorPay' },
-//   { name: 'mollie', title: 'Mollie' },
-//   { name: 'paystack', title: 'Paystack' },
-//   { name: 'sslcommerz', title: 'SslCommerz' },
-// ];
+const PAYMENT_GATEWAYS = [
+  { name: 'stripe', title: 'Stripe' },
+  { name: 'paypal', title: 'Paypal' },
+  { name: 'razorpay', title: 'RazorPay' },
+  // { name: 'mollie', title: 'Mollie' },
+  // { name: 'paystack', title: 'Paystack' },
+  // { name: 'sslcommerz', title: 'SslCommerz' },
+];
 
 const PaymentGroupOption: React.FC<PaymentGroupOptionProps> = ({
   payment: { name, value, icon },
@@ -83,25 +85,40 @@ const PaymentGrid: React.FC<{ className?: string; theme?: 'bw' }> = ({
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [gateway, setGateway] = useAtom(paymentGatewayAtom);
   const { t } = useTranslation('common');
-  const { settings, isLoading } = useSettings()
+  const { locale } = useRouter();
+  // const { settings,loading ,error } = useSettingsQuery();
+  const {
+    // @ts-ignore
+    settings: { options }, loading: { isLoading }
+  } = useSettingsQuery({
+    language: locale!,
+  });
+
+  console.log('useSettings Hook Called'); // Check if the hook runs
+
+
+
   // If no payment gateway is set and cash on delivery also disable then cash on delivery will be on by default
   const isEnableCashOnDelivery =
-    (!settings?.useCashOnDelivery && !settings?.paymentGateway) ||
-    settings?.useCashOnDelivery;
+    (!options?.useCashOnDelivery && !options?.paymentGateway) ||
+    options?.useCashOnDelivery;
 
   // default payment gateway
   // const defaultPaymentGateway = settings?.defaultPaymentGateway.toUpperCase();
 
   const [defaultGateway, setDefaultGateway] = useState(
-    settings?.defaultPaymentGateway?.toUpperCase() || ''
+    options?.defaultPaymentGateway?.toUpperCase() || ''
   );
   const [cashOnDelivery, setCashOnDelivery] = useState(
-    (!settings?.useCashOnDelivery && !settings?.paymentGateway) ||
-    settings?.useCashOnDelivery
+    (!options?.useCashOnDelivery && !options?.paymentGateway) ||
+    options?.useCashOnDelivery
   );
   const [availableGateway, setAvailableGateway] = useState(
-    settings?.paymentGateway || []
+    options?.paymentGateway || []
   );
+  console.log('Settings::::::', options);
+
+  console.log('Available Payment Gateways:', options?.paymentGateway);
 
   // FixME
   // @ts-ignore
@@ -216,9 +233,9 @@ const PaymentGrid: React.FC<{ className?: string; theme?: 'bw' }> = ({
   // }, [isLoading, cashOnDelivery, defaultGateway, availableGateway]);
 
   useEffect(() => {
-    if (settings && availableGateway) {
+    if (options && availableGateway) {
       setGateway(
-        settings?.defaultPaymentGateway?.toUpperCase() as PaymentGateway
+        options?.defaultPaymentGateway?.toUpperCase() as PaymentGateway
       );
     } else {
       setGateway(PaymentGateway.COD);
@@ -256,18 +273,17 @@ const PaymentGrid: React.FC<{ className?: string; theme?: 'bw' }> = ({
         </RadioGroup.Label>
 
         <div className="mb-8 grid grid-cols-2 gap-4 md:grid-cols-3">
-          {/* {settings?.paymentGateway && (
-            <PaymentGroupOption
-              theme={theme}
-              payment={
-                AVAILABLE_PAYMENT_METHODS_MAP[
-                  settings?.paymentGateway?.toUpperCase() as PaymentGateway
-                ]
-              }
-            />
-          )} */}
+          {options?.paymentGateway?.map(({ name }: { name: string }, index: number) => (
+            <Fragment key={index}>
+              <PaymentGroupOption
+                theme={theme}
+                payment={AVAILABLE_PAYMENT_METHODS_MAP[name.toUpperCase() as PaymentGateway]}
+              />
+            </Fragment>
+          ))}
 
-          {settings?.useEnableGateway &&
+
+          {/* {options?.useEnableGateway &&
             availableGateway &&
             availableGateway?.map((gateway: any, index: any) => {
               return (
@@ -282,7 +298,7 @@ const PaymentGrid: React.FC<{ className?: string; theme?: 'bw' }> = ({
                   />
                 </Fragment>
               );
-            })}
+            })} */}
 
           {cashOnDelivery && (
             <PaymentGroupOption

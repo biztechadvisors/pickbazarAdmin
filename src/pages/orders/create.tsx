@@ -65,7 +65,7 @@ export default function ProductsPage() {
     const { data: shopData, isLoading: fetchingShop } = useShopQuery({
         slug: shopSlug as string,
     });
-
+console.log("first0000",shopData);
 
     const shop_id = meData?.shop_id;
 
