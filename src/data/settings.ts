@@ -65,7 +65,7 @@ export const useSettingsQuery = ({ language }: { language: string }) => {
       initialData: undefined,
     }
   );
-  console.log("SettingDATA%%",data);
+
   return {
     settings: data ?? {},
     error,

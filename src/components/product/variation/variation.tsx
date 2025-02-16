@@ -7,7 +7,6 @@ import isEqual from 'lodash/isEqual';
 import { AttributesProvider, useAttributes } from './attributes.context';
 import { AddToCart } from '@/components/cart/add-to-cart/add-to-cart';
 import { useProductQuery } from '@/data/product';
-import { Config } from '@/config';
 import { useRouter } from 'next/router';
 import { useMeQuery } from '@/data/user';
 
@@ -24,8 +23,7 @@ const Variation = ({ product, id, email, contact }: Props) => {
     () => getVariations(product?.variations),
     [product?.variations]
   );
-  
-console.log("+++++++++++",product)
+
   const isSelected = isVariationSelected(variations, attributes);
   let selectedVariation: any = {};
   if (isSelected) {
@@ -70,18 +68,17 @@ const ProductVariation = ({ productSlug }: { productSlug: any }) => {
   const { data }: any = useMeQuery();
   const userId = data?.dealer?.id;
 
-  const { slug, shop_id } = productSlug || {};
-  console.log("ProductVariation Params:", { slug, userId, shop_id });
+  const { slug, product_id, shop_id } = productSlug || {};
+
   const { product, isLoading: loading } = useProductQuery({
     slug: slug || '',
-    id: userId || '',
+    id: product_id || '',
     shop_id: shop_id || '',
+    userId,
     language: locale!,
   });
-   
+
   const { id, email, contact } = data || {};
-  console.log('Variation Component Product:', product);
-console.log("Fetching product with slug:", slug, "userId:", userId, "shop_id:", shop_id);
 
   if (loading || !product) return <div>Loading</div>;
   return (

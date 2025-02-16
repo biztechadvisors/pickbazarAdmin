@@ -8,6 +8,9 @@ import { useTranslation } from 'next-i18next';
 const CartCounterButton = () => {
   const { t } = useTranslation();
   const { totalUniqueItems, total } = useCart();
+  console.log("totalUniqueItems ", totalUniqueItems)
+  console.log("total ", total)
+
   const { openCartSidebar } = useUI();
   const { price: totalPrice } = usePrice({
     amount: total,

@@ -48,11 +48,7 @@ export const PlaceOrderAction: React.FC<{
       payable_amount
 
     },
-<<<<<<< HEAD
-  ] = useAtom(checkoutAtom); 
-=======
   ] = useAtom(checkoutAtom);
->>>>>>> 9310f61b7be587b40f6e2f5f56589b30d60ea828
   const [discount] = useAtom(discountAtom);
   const [use_wallet_points] = useAtom(walletAtom);
 
@@ -86,7 +82,7 @@ export const PlaceOrderAction: React.FC<{
 
   const subtotal = calculateTotal(available_items);
 
-  const { settings: option } = useSettings(); 
+  const { settings: option } = useSettings();
 
   let freeShippings =
     option?.freeShipping && Number(option?.freeShippingAmount) <= subtotal;
@@ -116,41 +112,41 @@ export const PlaceOrderAction: React.FC<{
       ? PaymentGateway.FULL_WALLET_PAYMENT
       : payment_gateway;
 
-      const input = {
-        products: available_items?.map((item) => formatOrderedProduct(item)),
-        amount: subtotal,
-        discount: discount ?? 0,
-        paid_total: total,
-        sales_tax: verified_response?.total_tax,
-        delivery_fee: freeShippings ? 0 : verified_response?.shipping_charge,
-        total,
-        dealerId,
-        delivery_time: delivery_time?.title,
-        customerId: customer?.id,
-        customer_contact,
-        // billing_customer_name: customer_name,  // Renamed field
-        billing_customer_name: customer?.label,
-        payment_gateway: gateWay,
-        payment_id: "payment12345",
-        status: "order-pending",
-        shop_id:shop_id,
-        billing_address: {
-          street_address: billing_address?.address?.street_address,
-          country: billing_address?.address?.country,
-          city: billing_address?.address?.city,
-          state: billing_address?.address?.state,
-          zip: billing_address?.address?.zip
-        },
-        shipping_address: {
-          street_address: shipping_address?.address?.street_address,
-          country: shipping_address?.address?.country,
-          city: shipping_address?.address?.city,
-          state: shipping_address?.address?.state,
-          zip: shipping_address?.address?.zip
-        },
-        language: "en",
-      };
-      
+    const input = {
+      products: available_items?.map((item) => formatOrderedProduct(item)),
+      amount: subtotal,
+      discount: discount ?? 0,
+      paid_total: total,
+      sales_tax: verified_response?.total_tax,
+      delivery_fee: freeShippings ? 0 : verified_response?.shipping_charge,
+      total,
+      dealerId,
+      delivery_time: delivery_time?.title,
+      customerId: customer?.id,
+      customer_contact,
+      // billing_customer_name: customer_name,  // Renamed field
+      billing_customer_name: customer?.label,
+      payment_gateway: gateWay,
+      payment_id: "payment12345",
+      status: "order-pending",
+      shop_id: shop_id,
+      billing_address: {
+        street_address: billing_address?.address?.street_address,
+        country: billing_address?.address?.country,
+        city: billing_address?.address?.city,
+        state: billing_address?.address?.state,
+        zip: billing_address?.address?.zip
+      },
+      shipping_address: {
+        street_address: shipping_address?.address?.street_address,
+        country: shipping_address?.address?.country,
+        city: shipping_address?.address?.city,
+        state: shipping_address?.address?.state,
+        zip: shipping_address?.address?.zip
+      },
+      language: "en",
+    };
+
 
     // const input = {
     //   products: available_items?.map((item) => formatOrderedProduct(item)),

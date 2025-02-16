@@ -165,6 +165,8 @@ const CreatePermission = () => {
         );
       });
 
+      console.log("last 168 ", last)
+
       return last;
     }
   };

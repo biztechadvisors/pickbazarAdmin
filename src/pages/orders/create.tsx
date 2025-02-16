@@ -65,11 +65,10 @@ export default function ProductsPage() {
     const { data: shopData, isLoading: fetchingShop } = useShopQuery({
         slug: shopSlug as string,
     });
-console.log("first0000",shopData);
 
     const shop_id = meData?.shop_id;
 
-    const dealerId = meData?.dealer?.id;
+    const dealerId = meData?.dealer && meData?.dealer.id
 
     const [isChecked] = useAtom(toggleAtom);
 
@@ -86,8 +85,6 @@ console.log("first0000",shopData);
         shopName: shopSlug || shopData?.name,
         search: searchTerm,
     });
-
-
 
     const permissionTypes = AllPermission();
 

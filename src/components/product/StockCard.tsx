@@ -27,6 +27,7 @@ const StockCard = ({ item, isChecked, inStock }: Props) => {
   const { t } = useTranslation();
   const {
     slug,
+    id: product_id,
     name,
     image,
     product_type,
@@ -68,7 +69,7 @@ const StockCard = ({ item, isChecked, inStock }: Props) => {
   const canWrite = permissionTypes.includes('sidebar-nav-item-create-order');
 
   function handleVariableProduct() {
-    return openModal('SELECT_PRODUCT_VARIATION', slug);
+    return openModal('SELECT_PRODUCT_VARIATION', { slug, product_id, undefined });
   }
 
   return (

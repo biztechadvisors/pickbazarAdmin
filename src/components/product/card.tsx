@@ -21,6 +21,7 @@ const ProductCard = ({ item, isChecked, id, email, phone }: Props) => {
   const { t } = useTranslation();
   const {
     slug,
+    id: product_id,
     name,
     image,
     product_type,
@@ -55,7 +56,7 @@ const ProductCard = ({ item, isChecked, id, email, phone }: Props) => {
   const canWrite = permissionTypes.includes('sidebar-nav-item-create-order');
 
   function handleVariableProduct() {
-    return openModal('SELECT_PRODUCT_VARIATION', { slug, shop_id });
+    return openModal('SELECT_PRODUCT_VARIATION', { slug, product_id, shop_id });
   }
 
   return (
@@ -89,7 +90,7 @@ const ProductCard = ({ item, isChecked, id, email, phone }: Props) => {
       </div>
 
       <header className="p-3 md:p-6">
-        {product_type === ProductType.Variable ? (
+        {product_type === ProductType.Simple ? (
           <div className="mb-2">
             <span className="text-sm font-semibold text-heading md:text-base">
               {minPrice}

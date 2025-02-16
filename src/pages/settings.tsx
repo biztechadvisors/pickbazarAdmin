@@ -24,6 +24,7 @@ const Settings: React.FC = () => {
 
   const { taxes, loading: taxLoading } = useTaxesQuery({
     shopId: shop_id,
+    shopSlug: meData?.managed_shop?.slug
   });
 
   const { shippingClasses, loading: shippingLoading } = useShippingClassesQuery();
@@ -49,7 +50,7 @@ const Settings: React.FC = () => {
       </div>
       <SettingsForm
         settings={settings}
-        taxClasses={taxes}
+        taxClasses={taxes?.items}
         shippingClasses={shippingClasses}
       />
     </>
