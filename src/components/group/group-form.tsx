@@ -103,7 +103,7 @@ const productCards = [
 type BannerInput = {
   title: string;
   description: string;
-  image: AttachmentInput;
+  image: AttachmentInput[];
 };
 
 type FormValues = {
@@ -197,7 +197,6 @@ export default function CreateOrUpdateTypeForm({ initialValues }: IProps) {
   const { mutate: createType, isLoading: creating } = useCreateTypeMutation();
   const { mutate: updateType, isLoading: updating } = useUpdateTypeMutation();
   const onSubmit = (values: FormValues) => {
-    console.log('values 200:>> ', values.banners);
     const transformedRegions = values.regions?.name ? [values.regions.name] : [];
     const input = {
       language: router.locale,
@@ -217,14 +216,7 @@ export default function CreateOrUpdateTypeForm({ initialValues }: IProps) {
           id,
         })
       ),
-      banners: values?.banners?.map((banner) => ({
-        ...banner,
-        image: {
-          id: banner?.image?.id,
-          thumbnail: banner?.image?.thumbnail,
-          original: banner?.image?.original,
-        },
-      })),
+      banners: values?.banners,
     };
 
     if (
