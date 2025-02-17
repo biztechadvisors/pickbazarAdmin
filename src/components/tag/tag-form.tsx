@@ -167,7 +167,7 @@ type FormValues = {
   name: string;
   type: any;
   details: string;
-  image: any;
+  image: any[];
   icon: any;
   region_name: string;
 };
@@ -193,7 +193,6 @@ export default function CreateOrUpdateTagForm({ initialValues }: IProps) {
   const [orderBy, setOrder] = useState('created_at');
   const [sortedBy, setColumn] = useState<SortOrder>(SortOrder.Desc);
 
-  const { data: meData } = useMeQuery();
   const [shopSlug, setShopSlug] = useState<string | null>(null);
 
   useEffect(() => {
@@ -264,11 +263,7 @@ export default function CreateOrUpdateTagForm({ initialValues }: IProps) {
       language: router.locale,
       name: values.name,
       details: values.details,
-      image: {
-        thumbnail: values?.image?.thumbnail,
-        original: values?.image?.original,
-        id: values?.image?.id,
-      },
+      image: values.image,
       icon: values.icon?.value ?? '',
       type_id: values.type?.id,
       shopSlug: shopSlug,

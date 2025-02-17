@@ -85,28 +85,30 @@ function SelectRegion({
   control: Control<FormValues>;
   errors: FieldErrors;
 }) {
-  const { locale } = useRouter();
+
   const { t } = useTranslation();
 
   const { data: meData } = useMeQuery();
 
-  const { regions, loading, paginatorInfo, error } = useRegionsQuery({
+  const { regions, error } = useRegionsQuery({
     code: meData?.managed_shop?.slug,
   });
 
   if (error) {
     console.error("Error fetching regions:", error);
   }
+
   return (
     <div className="mb-5">
       <Label>Select Region</Label>
       <SelectInput
-        name="region"
+        name="regions"
         control={control}
         getOptionLabel={(option: any) => option.name}
         getOptionValue={(option: any) => option.id}
         options={regions?.items || []}
         isLoading={!regions}
+        defaultValue={control._defaultValues}
       />
       <ValidationError message={t(errors.type?.message)} />
     </div>
@@ -126,7 +128,7 @@ function SelectCategories({
     control,
     name: 'type',
   });
-  const router = useRouter();
+
   const { data: meData } = useMeQuery();
 
   const {
@@ -146,7 +148,7 @@ function SelectCategories({
   });
   useEffect(() => {
     if (type?.slug && dirtyFields?.type) {
-      setValue('category_id', []);
+      setValue('category', []);
     }
   }, [type?.slug]);
 
@@ -154,13 +156,13 @@ function SelectCategories({
     limit: 999,
     type: type?.slug,
     language: locale,
-    shopId: shop || shopId,
+    shopId: shop || parseInt(shopId),
   });
   return (
     <div>
       <Label>{t('form:input-label-parent-category')}</Label>
       <SelectInput
-        name="category_id"
+        name="category"
         control={control}
         getOptionLabel={(option: any) => option.name}
         getOptionValue={(option: any) => option.id}
@@ -176,21 +178,21 @@ function SelectCategories({
 type FormValues = {
   name: string;
   details: string;
-  category_id: any;
+  category: any;
   image: any;
   type: any;
   slug: string;
-  region_name: string;
+  regions: any;
 };
 
 const defaultValues = {
   image: [],
   name: '',
   details: '',
-  category_id: '',
+  category: '',
   type: '',
   slug: '',
-  region_name: '',
+  regions: '',
 };
 
 type IProps = {
@@ -206,7 +208,6 @@ export default function CreateOrUpdateSubCategoriesForm({
   const isSlugEditable =
     router?.query?.action === 'edit' &&
     router?.locale === Config.defaultLanguage;
-  const isNewTranslation = router?.query?.action === 'translate';
 
   const [formValues, setFormValues] = useState<FormValues>(initialValues || defaultValues);
 
@@ -258,19 +259,15 @@ export default function CreateOrUpdateSubCategoriesForm({
     useUpdateSubCategoryMutation();
 
   const onSubmit = async (values: FormValues) => {
-
-    const transformedRegions = values.region?.name ? [values.region.name] : [];
+    console.log("values 261 ", values)
+    const transformedRegions = Array.isArray(values.regions) ? [values.regions[0].name] : [values.regions.name];
     const input = {
       language: router.locale,
       name: values.name,
+      slug: values.slug,
       details: values.details,
-      image: {
-        thumbnail: values?.image?.thumbnail,
-        original: values?.image?.original,
-        id: values?.image?.id,
-      },
+      image: values.image,
       category_id: values.category?.id ?? null,
-
       shop_id: shop,
       regionName: transformedRegions,
     };
@@ -291,9 +288,7 @@ export default function CreateOrUpdateSubCategoriesForm({
         shop_id: meData?.managed_shop?.id,
       });
     }
-
   };
-
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>

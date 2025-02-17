@@ -96,29 +96,35 @@ export default function ProductVariableForm({
     console.log('attributes 97 :', attributes);
 
     const attributeValues = attributes.reduce((acc: any[], attr: any) => {
-      const values = attr.value.map((val: any) => ({
-        attribute_value_id: val.id,
-      }));
-      return acc.concat(values);
+      // Check if attr.value is an array before calling .map
+      if (Array.isArray(attr.value)) {
+        const values = attr.value.map((val: any) => ({
+          attribute_value_id: val.id,
+        }));
+        return acc.concat(values);
+      }
+      // Handle the case where attr.value is not an array (if needed)
+      return acc;
     }, []);
 
     setValue('variations', attributeValues);
 
     const options = attributes.map((attr: any) => ({
       name: attr.attribute.name,
-      value: attr.value.map((val: any) => val.value).join(','),
+      value: Array.isArray(attr.value) ? attr.value.map((val: any) => val.value).join(',') : '', // Fallback if attr.value is not an array
     }));
 
     setValue(`variation_options[${fieldIndex}].options`, options);
 
     const title = attributes
       .map((attr: any) =>
-        attr.value.map((val: any) => val.value).join(',')
+        Array.isArray(attr.value) ? attr.value.map((val: any) => val.value).join(',') : ''
       )
       .join('/');
 
     setValue(`variation_options[${fieldIndex}].title`, title);
   };
+
 
   return (
     <>
@@ -138,7 +144,6 @@ export default function ProductVariableForm({
             </Title>
             <div>
               {fields?.map((field, fieldIndex) => {
-                const initialOption = initialValues?.variation_options?.[fieldIndex];
                 return (
                   <div key={field.id} className="border-b border-dashed border-border-200 p-5 last:border-0 md:p-8">
                     <div className="flex items-center justify-between">
@@ -165,16 +170,14 @@ export default function ProductVariableForm({
                     <div className="mt-5 rounded border border-gray-300 p-5">
                       <div className="grid gap-5">
                         {attributes?.items?.map((attribute, attributeIndex) => {
-                          console.log('attribute 168 :', attribute);
-                          console.log('attributeIndex 169 :', attributeIndex);
+
                           const initialOption = initialValues?.variation_options?.[fieldIndex];
-                          console.log('initialOption 170 :', initialOption);
+
                           const initialAttribute = initialOption?.options?.[attributeIndex];
-                          console.log('initialAttribute 173 :', initialAttribute);
+
                           const initialAttributeValue = initialAttribute?.value || [];
-                          console.log('initialAttributeValue 175 :', initialAttribute);
+
                           const initialAttributeName = initialAttribute?.attribute || null;
-                          console.log('initialAttributeName 177 :', initialAttributeName);
 
                           return (
                             <div key={attribute.id} className="flex flex-wrap items-center">
@@ -318,4 +321,3 @@ export default function ProductVariableForm({
     </>
   );
 }
-

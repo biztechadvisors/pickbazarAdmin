@@ -101,6 +101,7 @@ type ProductFormProps = {
 export default function CreateOrUpdateProductForm({
   initialValues,
 }: ProductFormProps) {
+  console.log("initialValues 104", initialValues)
   const router = useRouter();
   const { locale } = router;
   const [isSlugDisable, setIsSlugDisable] = useState<boolean>(true);
@@ -176,6 +177,7 @@ export default function CreateOrUpdateProductForm({
     useUpdateProductMutation();
 
   const onSubmit = async (values: ProductFormValues) => {
+    console.log("values 180", values)
     const inputValues = {
       language: router.locale,
       ...getProductInputValues(values, initialValues),
@@ -183,8 +185,7 @@ export default function CreateOrUpdateProductForm({
 
     try {
       if (
-        !initialValues ||
-        !initialValues.translated_languages.includes(router.locale!)
+        !initialValues
       ) {
         //@ts-ignore
         createProduct({

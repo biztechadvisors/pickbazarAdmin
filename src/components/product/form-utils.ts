@@ -180,16 +180,20 @@ export function getProductDefaultValues(
   });
 }
 
-export function filterAttributes(attributes: any, variations: any) {
-
-  console.log('attributes 185 :', attributes);
-  console.log('variations 186 :', variations);
+export function filterAttributes(attributes: any, variations: any, fieldIndex: number) {
   if (!attributes || !attributes.items) return [];
-  const usedSlugs = variations?.flatMap((variation: any) =>
-    variation.attributes?.map((attr: any) => attr.attribute?.slug)
-  ) || [];
+
+  const usedSlugs = variations?.map((variation: any, index: number) => {
+    if (index !== fieldIndex) {
+      return variation.attributes?.map((attr: any) => attr.attribute?.slug);
+    }
+    return [];
+  }).flat() || [];
+
+  // Filter attributes that have already been selected in other variations
   return attributes.items.filter((attr: any) => !usedSlugs.includes(attr.slug));
 }
+
 
 // export function getCartesianProduct(values: any) {
 //   console.log('values 192 :', values);
@@ -257,9 +261,6 @@ export function getProductInputValues(
     variations,
     ...simpleValues
   } = values;
-
-  console.log('variation_options 247 :', variation_options);
-  console.log('variations 248 :', variations);
 
   const processedFile = processFileWithName(digital_file_input);
 
