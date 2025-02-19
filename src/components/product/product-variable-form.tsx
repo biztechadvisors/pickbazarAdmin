@@ -93,8 +93,6 @@ export default function ProductVariableForm({
 
     const attributes = watch(`variation_options[${fieldIndex}].attributes`);
 
-    console.log('attributes 97 :', attributes);
-
     const attributeValues = attributes.reduce((acc: any[], attr: any) => {
       // Check if attr.value is an array before calling .map
       if (Array.isArray(attr.value)) {

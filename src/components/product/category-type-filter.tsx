@@ -1,5 +1,5 @@
 import Select from '@/components/ui/select/select';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'next-i18next';
 import Label from '@/components/ui/label';
 import cn from 'classnames';
@@ -7,6 +7,7 @@ import { useCategoriesQuery } from '@/data/category';
 import { useRouter } from 'next/router';
 import { useTypesQuery } from '@/data/type';
 import { ActionMeta } from 'react-select';
+import { useShopQuery } from '@/data/shop';
 
 type Props = {
   onCategoryFilter: (newValue: any, actionMeta: ActionMeta<unknown>) => void;
@@ -22,10 +23,33 @@ export default function CategoryTypeFilter({
   const { locale } = useRouter();
   const { t } = useTranslation();
 
+  const [shopSlug, setShopSlug] = useState<string | null>(null);
+
+  const {
+    query: { shop },
+  } = useRouter();
+
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const storedSlug = localStorage.getItem('shopSlug');
+      if (storedSlug) {
+        setShopSlug(storedSlug);
+      } else {
+        setShopSlug(shop);
+      }
+    }
+  }, []);
+
+  const { data: shopData, isLoading: fetchingShop } = useShopQuery({
+    slug: shopSlug as string,
+  });
+
+
   const { types, loading } = useTypesQuery({ language: locale });
   const { categories, loading: categoryLoading } = useCategoriesQuery({
     limit: 999,
     language: locale,
+    shopSlug: shopData?.slug
   });
 
   return (

@@ -14,27 +14,32 @@ interface Props {
 
 const ProductTagInput = ({ control, setValue }: Props) => {
   const { t } = useTranslation();
+  const { locale, query } = useRouter();
 
-  const router = useRouter();
-  const { locale } = router;
+  const shopSlug = query.shop as string;
 
   const type = useWatch({
     control,
     name: 'type',
   });
-  const { dirtyFields } = useFormState({
+
+  const defaulttags = useWatch({
     control,
+    name: 'tags',
   });
+
   useEffect(() => {
-    if (type?.slug && dirtyFields?.type) {
-      setValue('tags', []);
+    if (defaulttags) {
+      setValue('tags', [...defaulttags]);
+    } else {
+      setValue('tags', [])
     }
-  }, [type?.slug]);
+  }, []);
 
   const { data: shopData } = useShopQuery(
-    { slug: router.query.shop as string },
+    { slug: shopSlug },
     {
-      enabled: !!router.query.shop,
+      enabled: !!shopSlug,
     }
   );
 
@@ -42,7 +47,7 @@ const ProductTagInput = ({ control, setValue }: Props) => {
     limit: 999,
     type: type?.slug,
     language: locale,
-    shopSlug: shopData?.slug
+    shopSlug: shopData?.slug,
   });
 
   return (
@@ -54,7 +59,6 @@ const ProductTagInput = ({ control, setValue }: Props) => {
         control={control}
         getOptionLabel={(option: any) => option.name}
         getOptionValue={(option: any) => option.id}
-        // @ts-ignore
         options={tags}
         isLoading={loading}
       />

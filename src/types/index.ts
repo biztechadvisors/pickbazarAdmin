@@ -858,6 +858,8 @@ export interface CreateProduct {
   unit: string;
   description?: string;
   categories?: string[];
+  subcategories?: string[];
+  tags?: string[];
   variations?: AttributeProductPivot[];
   in_stock?: boolean;
   is_taxable?: boolean;
@@ -990,7 +992,7 @@ export interface CreateCategoryInput {
 
 export interface CreateSubCategoryInput {
   name: string;
-  // type_id?: string;
+  type_id?: string;
   category_id?: number;
   details?: string;
   image?: AttachmentInput;
