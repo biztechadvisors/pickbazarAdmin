@@ -21,11 +21,11 @@ import { Event } from '@/types';
 function SelectRegion({
   control,
   errors,
-                        initialValue,
+  initialValue,
 }: {
   control: Control<FormValues>;
   errors: FieldErrors;
-  initialValue:string;
+  initialValue: string;
 }) {
   const { locale } = useRouter();
   const { t } = useTranslation();
@@ -98,17 +98,14 @@ const EventCreateOrUpdate = ({ initialValues }: IProps) => {
   const { data: shopData } = useShopQuery(
     { slug: shop as string, },
     { enabled: !!shop }
-  ); 
+  );
   // Retrieve shop ID from either `shopData` or localStorage
   const shopId = shopData?.id
-  ? Number(shopData.id)
-  : typeof window !== 'undefined'
-  ? Number(localStorage.getItem('shopId'))
-  : null;
+    ? Number(shopData.id)
+    : typeof window !== 'undefined'
+      ? Number(localStorage.getItem('shopId'))
+      : null;
 
-console.log('Shop ID:', shopId);
-  // const shopId = initialValues?.shopId || meData?.shop_id || shopData?.id || 0;
-console.log("shopIDID::",shopId)
   const { register, handleSubmit, control, formState: { errors } } = useForm<FormValues>({
 
     defaultValues: {
@@ -329,7 +326,7 @@ console.log("shopIDID::",shopId)
               variant="outline"
               className="mb-5"
             /> */}
-            <SelectRegion control={control} errors={errors} initialValue={initialValues?.region.name}/>
+            <SelectRegion control={control} errors={errors} initialValue={initialValues?.region.name} />
           </Card>
         </div>
 

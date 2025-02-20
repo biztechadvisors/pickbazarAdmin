@@ -1,10 +1,10 @@
 import SelectInput from '@/components/ui/select-input';
 import Label from '@/components/ui/label';
-import { Control, useFormState, useWatch } from 'react-hook-form';
+import { Control, useWatch } from 'react-hook-form';
 import { useEffect } from 'react';
+import { useTranslation } from 'next-i18next';
 import { useTagsQuery } from '@/data/tag';
 import { useRouter } from 'next/router';
-import { useTranslation } from 'next-i18next';
 import { useShopQuery } from '@/data/shop';
 
 interface Props {
@@ -27,14 +27,6 @@ const ProductTagInput = ({ control, setValue }: Props) => {
     control,
     name: 'tags',
   });
-
-  useEffect(() => {
-    if (defaulttags) {
-      setValue('tags', [...defaulttags]);
-    } else {
-      setValue('tags', [])
-    }
-  }, []);
 
   const { data: shopData } = useShopQuery(
     { slug: shopSlug },
@@ -59,6 +51,7 @@ const ProductTagInput = ({ control, setValue }: Props) => {
         control={control}
         getOptionLabel={(option: any) => option.name}
         getOptionValue={(option: any) => option.id}
+        defaultValue={defaulttags}
         options={tags}
         isLoading={loading}
       />

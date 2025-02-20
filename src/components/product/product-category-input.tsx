@@ -1,6 +1,6 @@
 import SelectInput from '@/components/ui/select-input';
 import Label from '@/components/ui/label';
-import { Control, useFormState, useWatch } from 'react-hook-form';
+import { Control, useWatch } from 'react-hook-form';
 import { useEffect } from 'react';
 import { useTranslation } from 'next-i18next';
 import { useCategoriesQuery } from '@/data/category';
@@ -34,14 +34,6 @@ const ProductCategoryInput = ({ control, setValue }: Props) => {
     name: 'categories',
   });
 
-  useEffect(() => {
-    if (defaultCategories.length > 0) {
-      setValue('categories', [...defaultCategories]);
-    } else {
-      setValue('categories', []);
-    }
-  }, [defaultCategories, setValue]);
-
   const { categories, loading } = useCategoriesQuery({
     limit: 999,
     type: type?.slug,
@@ -60,6 +52,7 @@ const ProductCategoryInput = ({ control, setValue }: Props) => {
         getOptionValue={(option: any) => option.id}
         options={categories}
         isLoading={loading}
+        defaultValue={defaultCategories}
         onChange={(selectedOptions: any) =>
           setValue('categoryId', selectedOptions?.[0]?.id || null)
         }

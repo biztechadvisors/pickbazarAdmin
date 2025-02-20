@@ -229,7 +229,6 @@ export default function CreateOrUpdateTypeForm({ initialValues }: IProps) {
         ...(initialValues?.slug && { slug: initialValues.slug }),
       });
     } else {
-      console.log('input :>> ', input);
       updateType({
         ...input,
         id: initialValues.id!,

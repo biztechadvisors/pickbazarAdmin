@@ -82,13 +82,13 @@ export default function Uploader({
   });
 
   const handleDelete = (thumbnail: string) => {
-    console.log("Attempting to delete attachment with thumbnail:", thumbnail);
+
     const updatedFiles = files.filter((file) => file.thumbnail !== thumbnail);
 
     if (confirm('Are you sure you want to delete this attachment?')) {
       deleteAttachmentMutation.mutate(thumbnail, {
         onSuccess: () => {
-          console.log('Attachment deleted successfully');
+
           setFiles(updatedFiles);
           if (onChange) {
             onChange(updatedFiles);

@@ -56,7 +56,7 @@ export const productTypeOptions: ProductTypeOption[] = Object.entries(
 }));
 
 export function getFormattedVariations(variations: any) {
-  // console.log('variations 56 :', variations);
+
   const variationGroup = groupBy(variations, 'attribute.slug');
   return Object.values(variationGroup)?.map((vg) => {
     return {
@@ -198,39 +198,6 @@ export function filterAttributes(attributes: any, variations: any, fieldIndex: n
   // Filter attributes that have already been selected in other variations
   return attributes.items.filter((attr: any) => !usedSlugs.includes(attr.slug));
 }
-
-
-// export function getCartesianProduct(values: any) {
-//   console.log('values 192 :', values);
-//   if (!values || values.length === 0) return [];
-
-//   // Group values by attribute name
-//   const grouped = groupBy(values, (v) => v.attribute.name);
-//   const attributes = Object.keys(grouped).map((name) => ({
-//     name,
-//     values: grouped[name].map((v) => v.value),
-//   }));
-
-//   // Generate cartesian product
-//   const combine = (arrays: any[][]): any[][] => {
-//     if (arrays.length === 0) return [[]];
-//     const [first, ...rest] = arrays;
-//     const combinations = combine(rest);
-//     return first.flatMap(value =>
-//       combinations.map(comb => [value, ...comb])
-//     );
-//   };
-
-//   const valueArrays = attributes.map(attr => attr.values);
-//   const product = combine(valueArrays);
-
-//   return product.map((combination) => ({
-//     attributes: attributes.map((attr, index) => ({
-//       name: attr.name,
-//       value: combination[index],
-//     })),
-//   }));
-// }
 
 export function processFileWithName(file_input: any) {
   // Process Digital File Name section

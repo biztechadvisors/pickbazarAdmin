@@ -1,6 +1,6 @@
 import SelectInput from '@/components/ui/select-input';
 import Label from '@/components/ui/label';
-import { Control, useFormState, useWatch } from 'react-hook-form';
+import { Control, useWatch } from 'react-hook-form';
 import { useEffect } from 'react';
 import { useTranslation } from 'next-i18next';
 import { useSubCategoriesQuery } from '@/data/subcategory';
@@ -32,16 +32,6 @@ const ProductSubCategoryInput = ({ control, setValue }: Props) => {
     name: 'subCategories',
   });
 
-  console.log("defaultsubCategories ", defaultsubCategories)
-
-  useEffect(() => {
-    if (defaultsubCategories) {
-      setValue('subcategories', [...defaultsubCategories]);
-    } else {
-      setValue('subcategories', [])
-    }
-  }, []);
-
   const { subcategories, loading } = useSubCategoriesQuery({
     limit: 999,
     type: type?.slug,
@@ -60,6 +50,7 @@ const ProductSubCategoryInput = ({ control, setValue }: Props) => {
         getOptionLabel={(option: any) => option.name}
         getOptionValue={(option: any) => option.id}
         options={subcategories}
+        defaultValue={defaultsubCategories}
         isLoading={loading}
       />
     </div>

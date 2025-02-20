@@ -39,7 +39,7 @@ export default function CreateOrUpdateFaqForm({ initialValues }: IProps) {
     // resolver: yupResolver(RegionsValidationSchema),
     defaultValues: initialValues ?? defaultValues,
   });
- 
+
 
   const {
     query: { shops },
@@ -51,14 +51,11 @@ export default function CreateOrUpdateFaqForm({ initialValues }: IProps) {
 
   // Retrieve shop ID from either `shopData` or localStorage
   const shop_id = shopData?.id
-  ? Number(shopData.id)
-  : typeof window !== 'undefined'
-  ? Number(localStorage.getItem('shopId'))
-  : null;
+    ? Number(shopData.id)
+    : typeof window !== 'undefined'
+      ? Number(localStorage.getItem('shopId'))
+      : null;
 
-console.log('Shop ID:', shop_id);
-//   const shop_id = me?.shop_id;
-//  console.log("ShopID:::",shop_id)
   const { mutate: createFaqClass, isLoading: creating } =
     useCreateFaqClassMutation(shop_id);
   const { mutate: updateFaqClass, isLoading: updating } =

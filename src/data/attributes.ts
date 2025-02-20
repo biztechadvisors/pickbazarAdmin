@@ -7,8 +7,6 @@ import { API_ENDPOINTS } from './client/api-endpoints';
 import { Attribute, AttributeQueryOptions, GetParams } from '@/types';
 import { attributeClient } from '@/data/client/attribute';
 import { Config } from '@/config';
-import { Company, SUPER_ADMIN } from '@/utils/constants';
-import { getAuthCredentials } from '@/utils/auth-utils';
 import { mapPaginatorData } from '@/utils/data-mappers';
 
 export const useCreateAttributeMutation = () => {

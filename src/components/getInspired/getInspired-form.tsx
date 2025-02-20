@@ -17,7 +17,7 @@ import { useShopQuery } from '@/data/shop';
 export default function CreateOrUpdateGetInspiredForm({ initialValues }) {
   const { t } = useTranslation();
   const { data: me } = useMeQuery();
-  const router = useRouter(); 
+  const router = useRouter();
   // const shop_id = me?.shop_id;
   const {
     query: { shops },
@@ -29,12 +29,11 @@ export default function CreateOrUpdateGetInspiredForm({ initialValues }) {
 
   // Retrieve shop ID from either `shopData` or localStorage
   const shop_id = shopData?.id
-  ? Number(shopData.id)
-  : typeof window !== 'undefined'
-  ? Number(localStorage.getItem('shopId'))
-  : null;
+    ? Number(shopData.id)
+    : typeof window !== 'undefined'
+      ? Number(localStorage.getItem('shopId'))
+      : null;
 
-console.log('Shop ID:', shop_id);
   const [attachmentIds, setAttachmentIds] = useState([]); // State to hold attachment IDs
 
   const {
