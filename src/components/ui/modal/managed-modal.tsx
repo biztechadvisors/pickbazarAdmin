@@ -135,6 +135,10 @@ const OpenAiModal = dynamic(() => import('@/components/openAI/openAI.modal'));
 const ComposerMessage = dynamic(
   () => import('@/components/message/compose-message')
 );
+const StripeElementModal = dynamic(
+  () => import('@/components/payment/stripe-element-modal'),
+  { ssr: false }
+);
 
 function renderModal(view: MODAL_VIEWS | undefined, data: any) {
   switch (view) {
@@ -245,6 +249,7 @@ const ManagedModal = () => {
     <Modal open={isOpen} onClose={closeModal}>
       {renderModal(view, data)}
       {view === 'GATEWAY_MODAL' && <GateWayControlModal />}
+      {view === 'STRIPE_ELEMENT_MODAL' && <StripeElementModal />}
     </Modal>
   );
 };

@@ -23,7 +23,9 @@ const RazorpayPaymentModal: React.FC<Props> = ({
   const { t } = useTranslation();
   const { closeModal } = useModalAction();
   const { loadRazorpayScript, checkScriptLoaded } = useRazorpay();
-  const { settings, isLoading: isSettingsLoading } = useSettings();
+  const shopSlug = typeof window !== 'undefined' ? localStorage.getItem("shopSlug") : null;
+
+  const { settings, isLoading: isSettingsLoading } = useSettings(shopSlug);
   const { order, isLoading, refetch } = useOrder({
     tracking_number: trackingNumber,
   });

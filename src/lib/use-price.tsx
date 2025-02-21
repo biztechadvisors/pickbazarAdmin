@@ -20,8 +20,8 @@ export function formatPrice({
     maximumFractionDigits: fractions,
   });
 
-  if(currencyCode==='INR'){
-    amount = amount*83.05
+  if (currencyCode === 'INR') {
+    amount = amount * 83.05
   }
   return formatCurrency.format(amount);
 }
@@ -60,13 +60,20 @@ export default function usePrice(
     currencyCode?: string;
   } | null
 ) {
+  // Ensure localStorage is only accessed in the browser
+  const shopSlug = typeof window !== 'undefined' ? localStorage.getItem("shopSlug") : null;
+
   const {
     settings: { currency, currencyOptions },
-  } = useSettings();
+  } = useSettings(shopSlug);  // ✅ Pass shopSlug correctly (not as an object)
+
   const { amount, baseAmount, currencyCode } = {
     ...data,
     currencyCode: currency ?? 'USD',
   };
+
+  console.log("70 ", currencyOptions);
+
   const { formation, fractions } = currencyOptions!;
 
   const { locale } = useRouter();
@@ -74,27 +81,25 @@ export default function usePrice(
     if (typeof amount !== 'number' || !currencyCode) return '';
     const fractionalDigit = fractions ? fractions : 2;
     let currentLocale = formation ? formation : 'en';
-    // if (process.env.NEXT_PUBLIC_ENABLE_MULTI_LANG) {
-    //   currentLocale = locale ? locale : 'en';
-    // }
 
     return baseAmount
       ? formatVariantPrice({
-          amount,
-          baseAmount,
-          currencyCode,
-          locale: currentLocale,
-          fractions: fractionalDigit,
-        })
+        amount,
+        baseAmount,
+        currencyCode,
+        locale: currentLocale,
+        fractions: fractionalDigit,
+      })
       : formatPrice({
-          amount,
-          currencyCode,
-          locale: currentLocale,
-          fractions: fractionalDigit,
-        });
+        amount,
+        currencyCode,
+        locale: currentLocale,
+        fractions: fractionalDigit,
+      });
   }, [amount, baseAmount, currencyCode, locale]);
 
   return typeof value === 'string'
     ? { price: value, basePrice: null, discount: null }
     : value;
 }
+

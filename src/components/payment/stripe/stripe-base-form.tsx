@@ -17,6 +17,7 @@ import {
 } from '@/components/ui/modal/modal.context';
 import { useCards } from '@/framework/rest/card';
 import StipeElementViewHeader from '../stripe-element-view-header';
+import { CardCvcElement, CardExpiryElement, CardNumberElement } from '@stripe/react-stripe-js';
 
 interface Props {
     handleSubmit: any;

@@ -9,6 +9,8 @@ import { useUpdateStockQuantity, useGetStock } from '@/data/stock';
 import Select from '../ui/select/select';
 import Input from '../ui/input';
 import Button from '../ui/button';
+import { AllPermission } from '@/utils/AllPermission';
+import { SortOrder } from '@/types';
 
 export type IProps = {
   me: any;

@@ -32,17 +32,17 @@ export default function Orders() {
     const { t } = useTranslation();
     const [orderBy, setOrder] = useState('created_at');
     const [sortedBy, setColumn] = useState<SortOrder>(SortOrder.Desc);
- 
+
     function handleSearch({ searchText }: { searchText: string }) {
         setSearchTerm(searchText);
         setPage(1);
     }
- 
+
     function handlePagination(current: any) {
         setPage(current);
     }
 
-    const { data: me } = useMeQuery(); 
+    const { data: me } = useMeQuery();
     const DealerShow = me?.permission.type_name === DEALER;
     const ShopShow = me?.permission.type_name === Company;
 
@@ -55,32 +55,30 @@ export default function Orders() {
         }
     );
 
- 
- 
- 
     const shopId = shopData?.id!;
-    
+
     const queryConfig = {
         language: locale,
         limit: 20,
         page,
+        shopSlug: shopData?.slug,
         // tracking_number:searchTerm,
-        search:searchTerm,
-        // customer_id: me?.id,
-        
+        search: searchTerm,
+        customer_id: me?.id,
+
     };
 
     if (DealerShow) {
         queryConfig.shopSlug = me?.managed_shop?.slug;
-        queryConfig.customer_id = me?.id;``
-    } else if (ShopShow) {        
+        queryConfig.customer_id = me?.id; ``
+    } else if (ShopShow) {
         // queryConfig.shop_id = me?.managed_shop?.id;
         queryConfig.shopSlug = me?.managed_shop?.slug;
-    }    
+    }
 
     const { orders, loading, paginatorInfo, error } = useOrdersQuery(queryConfig);
 
-   
+
 
     const { refetch } = useExportOrderQuery(
         {
@@ -88,36 +86,37 @@ export default function Orders() {
         },
         { enabled: false }
     );
- 
+
     async function handleExportOrder() {
         try {
+            console.log("94 orders ", orders)
             const ordersData = orders.filter(
                 (order) => order?.customer_id !== order?.dealer?.id
             );
-         
+
             if (!ordersData.length) {
                 console.error('No matching orders found for export.');
                 return; // Handle no data scenario (e.g., display message to user)
             }
- 
+
             const formattedData = transformForExcel(ordersData);
- 
+
             const contentType = 'text/csv;charset=utf-8'; // Consistent with CSV export
             const filename = generateFilename(contentType);
- 
+
             const blob = new Blob([formattedData], { type: contentType });
             const link = document.createElement('a');
             link.href = URL.createObjectURL(blob);
             link.download = filename;
             link.click();
- 
+
             setTimeout(() => URL.revokeObjectURL(link.href), 10000); // Revoke after 10 seconds
         } catch (error) {
             console.error('Error fetching or formatting data:', error);
             // Handle error gracefully (e.g., display message to user)
         }
     }
- 
+
     function transformForExcel(ordersData: any) {
         // Create an array with column headers
         const headerRow = [
@@ -141,7 +140,7 @@ export default function Orders() {
             'Shipping Address',
             'Logistic Provider',
         ];
- 
+
         // Create an array of data rows with corresponding values
         const dataRows = ordersData.map((order: any) => {
             const billingAddress = order.billing_address
@@ -150,20 +149,20 @@ export default function Orders() {
             const shippingAddress = order.shipping_address
                 ? `${order.shipping_address.street_address} ${order.shipping_address.country} ${order.shipping_address.city} ${order.shipping_address.state} ${order.shipping_address.zip}`
                 : '';
- 
+
             const escapedBillingAddress = billingAddress.replace(/,\r\n/g, '');
             const escapedShippingAddress = shippingAddress.replace(/,\r\n/g, '');
- 
+
             // Extract and format contact number with country code (assuming country code is in a separate field)
             const contactNumber = order.customer_contact
                 ? order.customer_contact // Remove non-digits
                 : '';
- 
+
             // Remove non-digits from tracking number
             const trackingNumber = order.tracking_number ? order.tracking_number : '';
- 
- 
- 
+
+
+
             return [
                 order.payment_intent?.order_id || null, // Handle potential missing values
                 order.customer?.email || null,
@@ -186,13 +185,13 @@ export default function Orders() {
                 order.logistics_provider,
             ];
         });
- 
+
         // Combine header row and data rows into a single string
         const csvContent = [headerRow.join(',')].concat(dataRows.map((row: any) => row.join(','))).join('\n');
- 
+
         return csvContent;
     }
- 
+
     function generateFilename(contentType: any) {
         const dateString = new Date().toISOString().slice(0, 10); // YYYY-MM-DD format
         let extension;
@@ -208,25 +207,22 @@ export default function Orders() {
         }
         return `export-data-${dateString}${extension}`;
     }
- 
+
     if (loading) return <Loader text={t('common:text-loading')} />;
- 
+
     if (loading) return <Loader text={t('common:text-loading')} />;
     if (error) return <ErrorMessage message={error.message} />;
- 
-   
- 
+
+
+    console.log("orders 217 ", orders)
     const customerOrderList = orders.filter(
         (order) => order?.customer_id !== order?.dealer?.id
     );
- 
+
     // var ordersData = orders.filter(
     //     (order) => order?.customer_id == order?.dealer?.id
     // );
 
-
-    
-    
     return (
         <>
             <Card className="mb-8 flex flex-col items-center justify-between md:flex-row">
@@ -235,11 +231,11 @@ export default function Orders() {
                         {t('form:input-label-orders')}
                     </h1>
                 </div>
- 
+
                 <div className="flex w-full flex-col items-center ms-auto md:w-1/2 md:flex-row">
                     <Search onSearch={handleSearch} />
                 </div>
- 
+
                 <Menu
                     as="div"
                     className="relative inline-block ltr:text-left rtl:text-right"
@@ -282,7 +278,7 @@ export default function Orders() {
                     </Transition>
                 </Menu>
             </Card>
- 
+
             {DealerShow ? (
                 <StockList
                     orders={customerOrderList}
@@ -297,20 +293,19 @@ export default function Orders() {
                     paginatorInfo={paginatorInfo}
                     onPagination={handlePagination}
                     onOrder={setOrder}
-                    onSort={setColumn}
-                />
+                    onSort={setColumn} Shop={false} />
             )}
- 
-         
+
+
         </>
     );
 }
- 
+
 Orders.authenticate = {
     permissions: adminOnly,
 };
 Orders.Layout = Layout;
- 
+
 export const getStaticProps = async ({ locale }: any) => ({
     props: {
         ...(await serverSideTranslations(locale, ['table', 'common', 'form'])),

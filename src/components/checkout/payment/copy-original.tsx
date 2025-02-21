@@ -94,12 +94,6 @@ const PaymentGrid: React.FC<{ className?: string; theme?: 'bw' }> = ({
       icon: '/payment/razorpay.png',
       component: PaymentOnline,
     },
-    MOLLIE: {
-      name: 'Mollie',
-      value: PaymentGateway.MOLLIE,
-      icon: '/payment/mollie.png',
-      component: PaymentOnline,
-    },
     CASH_ON_DELIVERY: {
       name: t('text-cash-on-delivery'),
       value: PaymentGateway.COD,
@@ -142,8 +136,8 @@ const PaymentGrid: React.FC<{ className?: string; theme?: 'bw' }> = ({
               theme={theme}
               payment={
                 AVAILABLE_PAYMENT_METHODS_MAP[
-                  //@ts-ignore
-                  settings?.paymentGateway?.toUpperCase() as PaymentGateway
+                //@ts-ignore
+                settings?.paymentGateway?.toUpperCase() as PaymentGateway
                 ]
               }
             />
