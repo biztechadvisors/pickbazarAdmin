@@ -26,12 +26,10 @@ export const AddressGrid: React.FC<AddressesProps> = ({
   count,
   type,
 }) => {
-  console.log('userId 29 ', userId);
-  console.log('addresses 45 ', addresses);
+
   const { t } = useTranslation('common');
 
   const [selectedAddress, setAddress] = useAtom(atom);
-  console.log('selectedAddress 48 ', selectedAddress);
 
   const { openModal } = useModalAction();
 

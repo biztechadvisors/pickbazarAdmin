@@ -10,6 +10,7 @@ import {
   AttachmentInput,
   VariationOption,
   Variation,
+  SubCategory,
 } from '@/types';
 import groupBy from 'lodash/groupBy';
 import orderBy from 'lodash/orderBy';
@@ -26,6 +27,7 @@ export type ProductFormValues = Omit<
   | 'manufacturer_id'
   | 'shop_id'
   | 'categories'
+  | 'subcategories'
   | 'tags'
   | 'digital_file'
 > & {
@@ -34,6 +36,7 @@ export type ProductFormValues = Omit<
   author: Pick<Author, 'id' | 'name'>;
   manufacturer: Pick<Manufacturer, 'id' | 'name'>;
   categories: Pick<Category, 'id' | 'name'>[];
+  subcategories: Pick<SubCategory, 'id' | 'name'>[];
   tags: Pick<Tag, 'id' | 'name'>[];
   digital_file_input: AttachmentInput;
   is_digital: boolean;
@@ -53,7 +56,7 @@ export const productTypeOptions: ProductTypeOption[] = Object.entries(
 }));
 
 export function getFormattedVariations(variations: any) {
-  // console.log('variations 56 :', variations);
+
   const variationGroup = groupBy(variations, 'attribute.slug');
   return Object.values(variationGroup)?.map((vg) => {
     return {
@@ -108,6 +111,7 @@ export function getProductDefaultValues(
       min_price: 0.0,
       max_price: 0.0,
       categories: [],
+      subcategories: [],
       tags: [],
       in_stock: true,
       is_taxable: false,
@@ -164,6 +168,7 @@ export function getProductDefaultValues(
     ...(isNewTranslation && {
       type: null,
       categories: [],
+      subcategories: [],
       author_id: null,
       manufacturer_id: null,
       tags: [],
@@ -194,39 +199,6 @@ export function filterAttributes(attributes: any, variations: any, fieldIndex: n
   return attributes.items.filter((attr: any) => !usedSlugs.includes(attr.slug));
 }
 
-
-// export function getCartesianProduct(values: any) {
-//   console.log('values 192 :', values);
-//   if (!values || values.length === 0) return [];
-
-//   // Group values by attribute name
-//   const grouped = groupBy(values, (v) => v.attribute.name);
-//   const attributes = Object.keys(grouped).map((name) => ({
-//     name,
-//     values: grouped[name].map((v) => v.value),
-//   }));
-
-//   // Generate cartesian product
-//   const combine = (arrays: any[][]): any[][] => {
-//     if (arrays.length === 0) return [[]];
-//     const [first, ...rest] = arrays;
-//     const combinations = combine(rest);
-//     return first.flatMap(value =>
-//       combinations.map(comb => [value, ...comb])
-//     );
-//   };
-
-//   const valueArrays = attributes.map(attr => attr.values);
-//   const product = combine(valueArrays);
-
-//   return product.map((combination) => ({
-//     attributes: attributes.map((attr, index) => ({
-//       name: attr.name,
-//       value: combination[index],
-//     })),
-//   }));
-// }
-
 export function processFileWithName(file_input: any) {
   // Process Digital File Name section
   const splitArray = file_input?.original?.split('/');
@@ -255,6 +227,7 @@ export function getProductInputValues(
     image,
     is_digital,
     categories,
+    subcategories,
     tags,
     digital_file_input,
     variation_options,
@@ -272,6 +245,7 @@ export function getProductInputValues(
     type_id: type?.id,
     product_type: product_type?.value,
     categories: categories.map((category) => category?.id),
+    subcategories: subcategories.map((subcategory) => subcategory?.id),
     tags: tags.map((tag) => tag?.id),
     image: omitTypename<any>(image),
     gallery: values.gallery?.map((gi: any) => omitTypename(gi)),

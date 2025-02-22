@@ -10,7 +10,7 @@ import { useRouter } from 'next/router';
 import { ADMIN, DEALER, STAFF, Company, SUPER_ADMIN } from '@/utils/constants';
 import { getAuthCredentials } from '@/utils/auth-utils';
 
-const CustomerEmail = ({ count }) => { 
+const CustomerEmail = ({ count }) => {
   const { closeModal } = useModalAction();
   const { t } = useTranslation('common');
   const [selectedCustomer, setCustomer] = useAtom(customerAtom || []);
@@ -30,7 +30,6 @@ const CustomerEmail = ({ count }) => {
   useEffect(() => {
     if (typeof window !== 'undefined') {
       const storedInputValue = localStorage.getItem('inputValue');
-      console.log('storedInputValue 33', storedInputValue);
       if (storedInputValue) {
         setInputValue(storedInputValue);
       }
@@ -78,9 +77,7 @@ const CustomerEmail = ({ count }) => {
   }
 
   function handleSelectEmail(suggestion, e) {
-    console.log('selected -- 95', suggestion);
     e.preventDefault();
-    console.log('suggestion 82', suggestion);
     setCustomer({
       id: suggestion.value,
       email: suggestion.email,

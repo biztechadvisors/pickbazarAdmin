@@ -177,34 +177,33 @@ export default function CreateOrUpdateProductForm({
     useUpdateProductMutation();
 
   const onSubmit = async (values: ProductFormValues) => {
-    console.log("values 180", values)
+
     const inputValues = {
       language: router.locale,
       ...getProductInputValues(values, initialValues),
+      slug: initialValues?.slug || undefined,
+      shop_id: shopId || initialValues?.shop_id,
     };
 
     try {
-      if (
-        !initialValues
-      ) {
-        //@ts-ignore
+      if (!initialValues) {
+        //@ts-ignore 
         createProduct({
           ...inputValues,
           ...(initialValues?.slug && { slug: initialValues.slug }),
           shop_id: shopId || initialValues?.shop_id,
         });
       } else {
-        //@ts-ignore
+        //@ts-ignore 
         updateProduct({
-          ...inputValues,
-          id: initialValues.id!,
+          ...inputValues, id: initialValues.id!,
           shop_id: initialValues.shop_id!,
         });
       }
     } catch (error) {
       const serverErrors = getErrorMessage(error);
-      Object.keys(serverErrors?.validation).forEach((field: any) => {
-        setError(field.split('.')[1], {
+      Object.keys(serverErrors?.validation).forEach((field) => {
+        return setError(field.split('.')[1], {
           type: 'manual',
           message: serverErrors?.validation[field][0],
         });

@@ -94,10 +94,6 @@ const PaymentGrid: React.FC<{ className?: string; theme?: 'bw' }> = ({
     language: locale!,
   });
 
-  console.log('useSettings Hook Called'); // Check if the hook runs
-
-
-
   // If no payment gateway is set and cash on delivery also disable then cash on delivery will be on by default
   const isEnableCashOnDelivery =
     (!options?.useCashOnDelivery && !options?.paymentGateway) ||
@@ -116,9 +112,6 @@ const PaymentGrid: React.FC<{ className?: string; theme?: 'bw' }> = ({
   const [availableGateway, setAvailableGateway] = useState(
     options?.paymentGateway || []
   );
-  console.log('Settings::::::', options);
-
-  console.log('Available Payment Gateways:', options?.paymentGateway);
 
   // FixME
   // @ts-ignore

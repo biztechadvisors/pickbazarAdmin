@@ -29,7 +29,6 @@ const CreateOrUpdateAddressForm = () => {
 
   function onSubmit(values: FormValues) {
     const { __typename, ...rest } = values;
-    console.log("update 32")
     updateProfile({
       id: customerId,
       input: {

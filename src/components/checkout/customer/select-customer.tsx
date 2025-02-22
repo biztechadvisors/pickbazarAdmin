@@ -12,7 +12,6 @@ const AddOrUpdateCheckoutCustomer = () => {
   const { closeModal } = useModalAction();
   const { t } = useTranslation('common');
   const [selectedCustomer, setCustomer] = useAtom(customerAtom);
-  console.log('selectedCustomer 15 ', selectedCustomer);
   function onCustomerUpdate(customer: any) {
     setCustomer({
       id: customer.value,
@@ -28,7 +27,6 @@ const AddOrUpdateCheckoutCustomer = () => {
       [API_ENDPOINTS.USERS, { text: inputValue, page: 1 }],
       () => userClient.fetchUsers({ name: inputValue, page: 1 })
     );
-    console.log('data 31', data);
     return data?.data?.map((user: any) => ({
       value: user.id,
       label: user.name,

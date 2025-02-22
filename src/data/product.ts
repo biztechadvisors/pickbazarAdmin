@@ -48,27 +48,17 @@ export const useUpdateProductMutation = () => {
   const { t } = useTranslation();
   const queryClient = useQueryClient();
   const router = useRouter();
+
   return useMutation(productClient.update, {
     onSuccess: async (data) => {
-      // const generateRedirectUrl = router.query.shop
-      //   ? `/${router.query.shop}${Routes.product.list}`
-      //   : Routes.product.list;
-      // await router.push(
-      //   `${generateRedirectUrl}/${data?.slug}/edit`,
-      //   undefined,
-      //   {
-      //     locale: Config.defaultLanguage,
-      //   }
-      // );
       const generateRedirectUrl = router.query.shop
         ? `/${router.query.shop}${Routes.product.list}`
         : Routes.product.list;
-      await Router.push(generateRedirectUrl, undefined, {
+      await router.push(generateRedirectUrl, undefined, {
         locale: Config.defaultLanguage,
       });
       toast.success(t('common:successfully-updated'));
     },
-    // Always refetch after error or success:
     onSettled: () => {
       queryClient.invalidateQueries(API_ENDPOINTS.PRODUCTS);
     },
@@ -77,21 +67,6 @@ export const useUpdateProductMutation = () => {
     },
   });
 };
-
-// export const useUpdateQuantity = () => {
-//   const queryClient = useQueryClient();
-//   const { t } = useTranslation('common');
-//   return useMutation(productClient.updateQuantity, {
-//     onSuccess: () => {
-//       toast.success(t('Quantity Updated'));
-//     },
-//     // Always refetch after error or success:
-//     onSettled: (data) => {
-//       queryClient.refetchQueries(API_ENDPOINTS.GENERATE_DESCRIPTION);
-//       data;
-//     },
-//   });
-// };
 
 export const useDeleteProductMutation = () => {
   const queryClient = useQueryClient();
@@ -120,7 +95,7 @@ export const useProductQuery = ({
     [API_ENDPOINTS.PRODUCTS, { slug, id, language, shop_id }],
     () => productClient.get({ slug, id, language, shop_id })
   );
-   
+
   return {
     product: data ?? [],
     error,
@@ -141,7 +116,7 @@ export const useProductsQuery = (
       ...options,
     }
   );
- 
+
   return {
     products: data?.data ?? [],
     paginatorInfo: mapPaginatorData(data),
@@ -172,11 +147,11 @@ export const useUpdateQuantity = () => {
   return useMutation(productClient.updateQuantity, {
     onSuccess: async (data) => {
       const generateRedirectUrl = router.query.shop
-      ? `/${router.query.shop}${Routes.product.list}`
-      : Routes.product.list;
-    await Router.push(generateRedirectUrl, undefined, {
-      locale: Config.defaultLanguage,
-    });
+        ? `/${router.query.shop}${Routes.product.list}`
+        : Routes.product.list;
+      await Router.push(generateRedirectUrl, undefined, {
+        locale: Config.defaultLanguage,
+      });
       toast.success(t('Quantity Updated'));
     },
     // Always refetch after error or success:
