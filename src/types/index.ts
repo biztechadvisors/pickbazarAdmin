@@ -880,7 +880,7 @@ export interface CreateProduct {
   unit: string;
   description?: string;
   categories?: string[];
-  subcategories?: string[];
+  subCategories?: string[];
   tags?: string[];
   variations?: AttributeProductPivot[];
   in_stock?: boolean;

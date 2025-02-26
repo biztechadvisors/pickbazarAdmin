@@ -27,7 +27,7 @@ export type ProductFormValues = Omit<
   | 'manufacturer_id'
   | 'shop_id'
   | 'categories'
-  | 'subcategories'
+  | 'subCategories'
   | 'tags'
   | 'digital_file'
 > & {
