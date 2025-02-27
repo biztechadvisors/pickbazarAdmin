@@ -50,7 +50,7 @@ const ProductSubCategoryInput = ({ control, setValue }: Props) => {
     <div className="mb-5">
       <Label>{t('form:input-label-subcategories')}</Label>
       <SelectInput
-        name="subcategories"
+        name="subCategories"
         isMulti
         control={control}
         getOptionLabel={(option: any) => option.name}

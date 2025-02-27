@@ -90,9 +90,13 @@ const CartItem = ({ item, id, email, phone }: CartItemProps) => {
       <div>
         <h3 className="font-bold text-heading">{item.name}</h3>
         <p className="my-2.5 font-semibold text-accent">{convertUsdToInr(price)}</p>
-        <span className="text-xs text-body">
-          {item.quantity} X {item.unit}
-        </span>
+        {/* <span className="text-xs text-body">
+          {item.quantity} Total Qtr {item.unit}
+        </span> */}
+        {/* <span className="text-xs text-body whitespace-nowrap">
+  {item.quantity} Added Qtr | Total: {item.unit}
+</span> */}
+
       </div>
       <span className="font-bold text-heading ms-auto">{convertUsdToInr(itemPrice)}</span>
       <button
