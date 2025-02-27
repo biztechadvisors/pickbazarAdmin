@@ -18,6 +18,7 @@ import { AllPermission } from '@/utils/AllPermission';
 import { useGetStockSeals } from '@/data/stock';
 import { Company, DEALER } from '@/utils/constants';
 import { useEffect, useState } from 'react';
+import { useShopQuery } from '@/data/shop';
 
 export default function Dashboard() {
   const { t } = useTranslation();
@@ -39,8 +40,8 @@ export default function Dashboard() {
     }
   }, []);
 
-
-
+const { data: shopData, isLoading: shopLoading, error: shopError } = useShopQuery({ slug: shopSlug?.toString() });
+console.log("shop+++",shopData)
   const analyticsQuery = {
     customerId: parseInt(customerId),
     state: '',
@@ -122,84 +123,117 @@ export default function Dashboard() {
     orderError?.message ||
     popularProductError?.message;
 
-  return (
-    <>
-      {errorMessage && <ErrorMessage message={errorMessage} />}
+    return (
+      <>
+        {errorMessage && <ErrorMessage message={errorMessage} />}
+    
+        {/* Cover Image and Logo Section */}
+        {/* <div className="relative mt-4 mb-20 right-4 flex flex-col items-center bg-white p-2 rounded-lg shadow-md mb-20"> */}
+    {shopData.logo?.original && (
+      <img
+        src={shopData.logo.original}
+        alt="Logo"
+        className="w-14 h-14 object-cover rounded-full "
+      />
+    )}
+    <span className="mt-2 text-sm font-semibold text-gray-700">
+      {shopData.name}
+    </span>
+  {/* </div> */}
+        <div className="relative w-full">
+  {/* Logo & Shop Name - Positioned in the top-right corner */}
 
-      <div className="mb-6 grid w-full grid-cols-1 gap-5 sm:grid-cols-2 xl:grid-cols-4">
-        <StickerCard
-          titleTransKey="sticker-card-title-rev"
-          subtitleTransKey="sticker-card-subtitle-rev"
-          icon={<DollarIcon className="h-7 w-7" color="#047857" />}
-          iconBgStyle={{ backgroundColor: '#A7F3D0' }}
-          price={analyticsData?.totalRevenue ?? 0}
-        />
-        <StickerCard
-          titleTransKey="sticker-card-title-order"
-          subtitleTransKey="sticker-card-subtitle-order"
-          icon={<CartIconBig />}
-          price={analyticsData?.totalOrders ?? 0}
-        />
-        <StickerCard
-          titleTransKey="sticker-card-title-today-rev"
-          icon={<CoinIcon />}
-          price={analyticsData?.todaysRevenue ?? 0}
-        />
-        <StickerCard
-          titleTransKey={
-            canWrite
-              ? 'sticker-card-title-total-shops'
-              : 'sticker-card-title-total-cutomer'
-          }
-          icon={
-            canWrite ? (
-              <ShopIcon className="w-6" color="#1D4ED8" />
-            ) : (
-              <CustomerIcon className="w-6" color="#1D4ED8" />
-            )
-          }
-          iconBgStyle={{ backgroundColor: '#93C5FD' }}
-          price={
-            canWrite
-              ? analyticsData?.totalShops ?? 0
-              : analyticsData?.totalCustomers ?? 0
-          }
-        />
-      </div>
 
-      <div className="mb-6 flex w-full flex-wrap md:flex-nowrap">
-        <ColumnChart
-          widgetTitle={t('common:sale-history')}
-          colors={['#03D3B5']}
-          series={salesByYear}
-          categories={[
-            t('common:january'),
-            t('common:february'),
-            t('common:march'),
-            t('common:april'),
-            t('common:may'),
-            t('common:june'),
-            t('common:july'),
-            t('common:august'),
-            t('common:september'),
-            t('common:october'),
-            t('common:november'),
-            t('common:december'),
-          ]}
+  {/* Cover Image Section */}
+  {shopData && (
+    <div className="relative mb-6 w-full rounded-lg overflow-hidden shadow-lg">
+      {shopData.cover_image?.length > 0 && (
+        <img
+          src={shopData.cover_image[0]?.original}
+          alt="Cover"
+          className="w-full h-52 object-cover"
         />
-      </div>
+      )}
+    </div>
+  )}
+</div>
 
-      <div className="mb-6  w-full flex-wrap space-y-6 xl:flex-nowrap xl:space-y-0 xl:space-x-5">
-        <RecentOrders
-          orders={orderData}
-          title={t('table:recent-order-table-title')}
-        />
-      </div>
-      {DealerShow ? (
-        <div className="mb-6  w-full flex-wrap space-y-6 xl:flex-nowrap xl:space-y-0 xl:space-x-5">
-          <RecentOrders orders={DealerSalesList} title={t('Recent Sales')} />
+
+        <div className="mb-6 grid w-full grid-cols-1 gap-5 sm:grid-cols-2 xl:grid-cols-4">
+          <StickerCard
+            titleTransKey="sticker-card-title-rev"
+            subtitleTransKey="sticker-card-subtitle-rev"
+            icon={<DollarIcon className="h-7 w-7" color="#047857" />}
+            iconBgStyle={{ backgroundColor: '#A7F3D0' }}
+            price={analyticsData?.totalRevenue ?? 0}
+          />
+          <StickerCard
+            titleTransKey="sticker-card-title-order"
+            subtitleTransKey="sticker-card-subtitle-order"
+            icon={<CartIconBig />}
+            price={analyticsData?.totalOrders ?? 0}
+          />
+          <StickerCard
+            titleTransKey="sticker-card-title-today-rev"
+            icon={<CoinIcon />}
+            price={analyticsData?.todaysRevenue ?? 0}
+          />
+          <StickerCard
+            titleTransKey={
+              canWrite
+                ? 'sticker-card-title-total-shops'
+                : 'sticker-card-title-total-cutomer'
+            }
+            icon={
+              canWrite ? (
+                <ShopIcon className="w-6" color="#1D4ED8" />
+              ) : (
+                <CustomerIcon className="w-6" color="#1D4ED8" />
+              )
+            }
+            iconBgStyle={{ backgroundColor: '#93C5FD' }}
+            price={
+              canWrite
+                ? analyticsData?.totalShops ?? 0
+                : analyticsData?.totalCustomers ?? 0
+            }
+          />
         </div>
-      ) : null}
-    </>
-  );
+    
+        <div className="mb-6 flex w-full flex-wrap md:flex-nowrap">
+          <ColumnChart
+            widgetTitle={t('common:sale-history')}
+            colors={['#03D3B5']}
+            series={salesByYear}
+            categories={[
+              t('common:january'),
+              t('common:february'),
+              t('common:march'),
+              t('common:april'),
+              t('common:may'),
+              t('common:june'),
+              t('common:july'),
+              t('common:august'),
+              t('common:september'),
+              t('common:october'),
+              t('common:november'),
+              t('common:december'),
+            ]}
+          />
+        </div>
+    
+        <div className="mb-6 w-full flex-wrap space-y-6 xl:flex-nowrap xl:space-y-0 xl:space-x-5">
+          <RecentOrders
+            orders={orderData}
+            title={t('table:recent-order-table-title')}
+          />
+        </div>
+        
+        {DealerShow ? (
+          <div className="mb-6 w-full flex-wrap space-y-6 xl:flex-nowrap xl:space-y-0 xl:space-x-5">
+            <RecentOrders orders={DealerSalesList} title={t('Recent Sales')} />
+          </div>
+        ) : null}
+      </>
+    );
 }

@@ -82,7 +82,7 @@ const ShopList = ({
     {
       title: (
         <TitleWithSort
-          title={t('table:table-item-title')}
+          title={t('Company Name')}
           ascending={
             sortingObj.sort === SortOrder.Asc && sortingObj.column === 'name'
           }
@@ -107,40 +107,85 @@ const ShopList = ({
       align: 'center',
       render: (owner: any) => owner.name,
     },
+
+    // New added permission name 
     {
       title: (
         <TitleWithSort
-          title={t('table:table-item-total-products')}
+          title={t('Permission')}
           ascending={
-            sortingObj.sort === SortOrder.Asc &&
-            sortingObj.column === 'products_count'
+            sortingObj.sort === SortOrder.Asc && sortingObj.column === 'permission.permission_name'
           }
-          isActive={sortingObj.column === 'products_count'}
+          isActive={sortingObj.column === 'permission.permission_name'}
         />
       ),
       className: 'cursor-pointer',
-      dataIndex: 'products_count',
-      key: 'products_count',
-      align: 'center',
-      onHeaderCell: () => onHeaderClick('products_count'),
+      dataIndex: 'permission.permission_name',
+      key: 'permission',
+      align: alignLeft,
+      onHeaderCell: () => onHeaderClick('permission.permission_name'),
+      render: (_, { permission }: any) => (
+        <span className="whitespace-nowrap">
+          {permission?.permission_name || 'N/A'} {/* Handle undefined values */}
+        </span>
+      ),
     },
+    //New added Dealer count
     {
       title: (
         <TitleWithSort
-          title={t('table:table-item-total-orders')}
+          title={t('DealerCount')}
           ascending={
-            sortingObj.sort === SortOrder.Asc &&
-            sortingObj.column === 'orders_count'
+            sortingObj.sort === SortOrder.Asc && sortingObj.column === 'delaerCount'
           }
-          isActive={sortingObj.column === 'orders_count'}
+          isActive={sortingObj.column === 'delaerCount'}
         />
       ),
       className: 'cursor-pointer',
-      dataIndex: 'orders_count',
-      key: 'orders_count',
-      align: 'center',
-      onHeaderCell: () => onHeaderClick('orders_count'),
+      dataIndex: 'delaerCount',
+      key: 'delaerCount',
+      align: alignLeft,
+      onHeaderCell: () => onHeaderClick('delaerCount'),
+      render: (delaerCount: any, { slug }: any) => (
+        <Link href={`/${slug}`}>
+          <span className="whitespace-nowrap">{delaerCount}</span>
+        </Link>
+      ),
     },
+    // {
+    //   title: (
+    //     <TitleWithSort
+    //       title={t('table:table-item-total-products')}
+    //       ascending={
+    //         sortingObj.sort === SortOrder.Asc &&
+    //         sortingObj.column === 'products_count'
+    //       }
+    //       isActive={sortingObj.column === 'products_count'}
+    //     />
+    //   ),
+    //   className: 'cursor-pointer',
+    //   dataIndex: 'products_count',
+    //   key: 'products_count',
+    //   align: 'center',
+    //   onHeaderCell: () => onHeaderClick('products_count'),
+    // },
+    // {
+    //   title: (
+    //     <TitleWithSort
+    //       title={t('table:table-item-total-orders')}
+    //       ascending={
+    //         sortingObj.sort === SortOrder.Asc &&
+    //         sortingObj.column === 'orders_count'
+    //       }
+    //       isActive={sortingObj.column === 'orders_count'}
+    //     />
+    //   ),
+    //   className: 'cursor-pointer',
+    //   dataIndex: 'orders_count',
+    //   key: 'orders_count',
+    //   align: 'center',
+    //   onHeaderCell: () => onHeaderClick('orders_count'),
+    // },
     {
       title: (
         <TitleWithSort
