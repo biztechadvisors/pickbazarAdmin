@@ -71,12 +71,69 @@ export class UserService {
 
 
 
+// export const useMeQuery = () => {
+//   const router = useRouter();
+//   const queryClient = useQueryClient();
+//   const [userDetails, setUserDetails] = useState(() =>
+//     UserService.getUserDetails()
+//   );
+
+//   useEffect(() => {
+//     const fetchUserData = async () => {
+//       const user = await UserService.getUserDetails();
+//       setUserDetails(user);
+//     };
+
+//     fetchUserData();
+//   }, []);
+
+//   const { username, sub } = userDetails;
+
+//   const userDataQuery = useQuery<User, Error>(
+//     [API_ENDPOINTS.ME, { username, sub }],
+//     () => userClient.me({ username, sub }),
+//     {
+//       enabled: !!username && !!sub,
+//       initialData: () => {
+//         const cachedData = queryClient.getQueryData<User>([
+//           API_ENDPOINTS.ME,
+//           { username, sub },
+//         ]);
+//         return cachedData;
+//       },
+//       retry: false,
+//       onError: (err) => {
+//         if (axios.isAxiosError(err)) {
+//           if (err.response?.status === 409) {
+//             setEmailVerified(false);
+//             router.replace(Routes.verifyEmail);
+//           } else {
+//             toast.error('Error fetching user data');
+//           }
+//         }
+//       },
+//     }
+//   );
+
+//   const memoizedUserDataQuery = useMemo(() => userDataQuery, [userDataQuery]);
+
+//   if (!username || !sub) {
+//     return {
+//       data: null,
+//       isLoading: false,
+//       isError: false,
+//       error: null,
+//       refetch: () => { },
+//     };
+//   }
+
+//   return memoizedUserDataQuery;
+// };
+
 export const useMeQuery = () => {
   const router = useRouter();
   const queryClient = useQueryClient();
-  const [userDetails, setUserDetails] = useState(() =>
-    UserService.getUserDetails()
-  );
+  const [userDetails, setUserDetails] = useState(() => UserService.getUserDetails());
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -91,15 +148,18 @@ export const useMeQuery = () => {
 
   const userDataQuery = useQuery<User, Error>(
     [API_ENDPOINTS.ME, { username, sub }],
-    () => userClient.me({ username, sub }),
+    async () => {
+      const response = await userClient.me({ username, sub });
+
+      // Set data in the cache
+      queryClient.setQueryData([API_ENDPOINTS.ME, { username, sub }], response);
+
+      return response;
+    },
     {
       enabled: !!username && !!sub,
       initialData: () => {
-        const cachedData = queryClient.getQueryData<User>([
-          API_ENDPOINTS.ME,
-          { username, sub },
-        ]);
-        return cachedData;
+        return queryClient.getQueryData<User>([API_ENDPOINTS.ME, { username, sub }]);
       },
       retry: false,
       onError: (err) => {
@@ -123,12 +183,14 @@ export const useMeQuery = () => {
       isLoading: false,
       isError: false,
       error: null,
-      refetch: () => { },
+      refetch: () => {},
     };
   }
 
   return memoizedUserDataQuery;
 };
+
+
 
 export function useLogin() {
   return useMutation(userClient.login);

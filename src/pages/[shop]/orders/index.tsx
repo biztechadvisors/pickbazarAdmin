@@ -31,7 +31,6 @@ export default function Orders() {
   const router = useRouter();
   const { permissions } = getAuthCredentials();
   const { data: me } = useMeQuery();
-
   const { locale } = useRouter();
   const {
     query: { shop },
@@ -42,6 +41,7 @@ export default function Orders() {
   const { data: shopData, isLoading: fetchingShop } = useShopQuery({
     slug: shop as string,
   });
+
   const shopId = shopData?.id!;
   const [searchTerm, setSearchTerm] = useState('');
   const [page, setPage] = useState(1);
