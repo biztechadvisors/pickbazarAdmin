@@ -173,6 +173,9 @@ function SelectProduct({
   const { t } = useTranslation();
   const { data: me } = useMeQuery();
   const [shopSlug, setShopSlug] = useState<string | null>(null);
+  const [selectAll, setSelectAll] = useState(false);
+  const [globalMargin, setGlobalMargin] = useState("");
+
   const dealerId = me?.dealer?.id;
   const {
     query: { shop },
@@ -196,57 +199,97 @@ function SelectProduct({
   const { products, loading, error } = useProductsQuery({
     dealerId,
     shop_id: shopData?.id,
-    shopName: shopSlug,
+    shopName: shopSlug, 
+    limit:1000,
   });
 
   const options: any = products || [];
   const dbValues: any = defaultValue || [];
 
-  const { fields, append, remove } = useFieldArray({
+  const { fields, append, remove, replace } = useFieldArray({
     control,
     name: 'dealerProductMargins',
   });
+
+  // Handle "Select All" Toggle
+  const handleSelectAll = () => {
+    if (!selectAll) {
+      // If selecting all, populate all products with a default margin
+      replace(options.map((product: any) => ({ product, margin: globalMargin })));
+    } else {
+      // If deselecting, clear all selections
+      replace([]);
+    }
+    setSelectAll(!selectAll);
+  };
 
   return (
     <div className="mt-5">
       <Label>{t('form:input-label-products')}</Label>
 
-      {fields.map((item, index) => (
-        <div key={item.id} className="flex items-center">
-          <SelectInput
-            name={`dealerProductMargins[${index}].product`}
-            control={control}
-            defaultValue={dbValues[index]?.product || null}
-            getOptionLabel={(option: any) => `${option.name}`}
-            getOptionValue={(option: any) => option.name}
-            options={options}
-            isLoading={loading}
-            isSearchable={true}
-          />
+      {/* "Select All" Checkbox */}
+      <div className="flex items-center mb-3">
+        <input
+          type="checkbox"
+          checked={selectAll}
+          onChange={handleSelectAll}
+          className="mr-2"
+        />
+        <span>{t('Select All Products')}</span>
+      </div>
 
+      {/* If "Select All" is checked, show only one margin input */}
+      {selectAll ? (
+        <div className="flex items-center">
           <Input
-            {...register(`dealerProductMargins.${index}.margin` as const)}
-            defaultValue={dbValues[index]?.margin || ''}
-            variant="outline"
-            className="ml-5 mb-3"
-            placeholder={t('margin %')}
-          />
-
-          <button
-            onClick={() => {
-              remove(index);
+            value={globalMargin}
+            onChange={(e) => {
+              setGlobalMargin(e.target.value);
+              replace(options.map((product: any) => ({ product, margin: e.target.value })));
             }}
-            type="button"
-            className="text-sm text-red-500 transition-colors duration-200 hover:text-red-700 focus:outline-none sm:col-span-1 sm:mt-4 ml-3"
-          >
-            {t('form:button-label-remove')}
-          </button>
+            variant="outline"
+            className="mb-3"
+            placeholder={t('Margin % for all')}
+          />
         </div>
-      ))}
+      ) : (
+        fields.map((item, index) => (
+          <div key={item.id} className="flex items-center">
+            <SelectInput
+              name={`dealerProductMargins[${index}].product`}
+              control={control}
+              defaultValue={dbValues[index]?.product || null}
+              getOptionLabel={(option: any) => `${option.name}`}
+              getOptionValue={(option: any) => option.name}
+              options={options}
+              isLoading={loading}
+              isSearchable={true}
+            />
 
-      <Button className='mt-4' type="button" onClick={() => append({ product: null, margin: '' })}>
-        {t('form:button-label-add-product')}
-      </Button>
+            <Input
+              {...register(`dealerProductMargins.${index}.margin` as const)}
+              defaultValue={dbValues[index]?.margin || ''}
+              variant="outline"
+              className="ml-5 mb-3"
+              placeholder={t('Margin %')}
+            />
+
+            <button
+              onClick={() => remove(index)}
+              type="button"
+              className="text-sm text-red-500 transition-colors duration-200 hover:text-red-700 focus:outline-none sm:col-span-1 sm:mt-4 ml-3"
+            >
+              {t('form:button-label-remove')}
+            </button>
+          </div>
+        ))
+      )}
+
+      {!selectAll && (
+        <Button className="mt-4" type="button" onClick={() => append({ product: null, margin: '' })}>
+          {t('form:button-label-add-product')}
+        </Button>
+      )}
 
       <ValidationError message={t(errors.product?.message)} />
     </div>

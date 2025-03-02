@@ -29,7 +29,7 @@ const DealerList = ({
   onPagination,
   onSort, 
   onOrder }: IProps) => {
-
+console.log("Delaer__",users);
   const { t } = useTranslation();
   const { alignLeft, alignRight } = useIsRTL();
   const { permissions } = getAuthCredentials();

@@ -7,9 +7,9 @@ export interface State {
 const initialState = {
   siteTitle: 'PickBazar',
   siteSubtitle: '',
-  currency: 'USD',
+  currency: 'INR',
   currencyOptions: {
-    formation: "en-US",
+    formation: "en-IN",
     fractions: 2,
   },
   logo: {

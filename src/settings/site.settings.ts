@@ -56,7 +56,7 @@ export const siteSettings = {
       },
       {
         href: Routes.shop.list,
-        label: 'sidebar-nav-item-shops',
+        label: 'sidebar-nav-item-customer',
         icon: 'MyShopIcon',
         permissions: ownerOnly,
       },
@@ -66,12 +66,12 @@ export const siteSettings = {
         icon: 'CalendarScheduleIcon',
         permissions: ownerOnly,
       },
-      {
-        href: Routes.user.list,
-        label: 'sidebar-nav-item-customer',
-        icon: 'UsersIcon',
-        permissions: ownerOnly,
-      },
+      // {
+      //   href: Routes.user.list,
+      //   label: 'sidebar-nav-item-customer',
+      //   icon: 'UsersIcon',
+      //   permissions: ownerOnly,
+      // },
       {
         href: Routes.staff.list,
         label: 'sidebar-nav-item-staffs',
@@ -82,6 +82,11 @@ export const siteSettings = {
       {
         href: Routes.dashboard,
         label: 'sidebar-nav-item-dashboard',
+        icon: 'DashboardIcon',
+      },
+      {
+        href: Routes.helpInventory, // Add help link
+        label: 'sidebar-nav-item-help',
         icon: 'DashboardIcon',
       },
       {

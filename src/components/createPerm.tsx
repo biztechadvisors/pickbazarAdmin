@@ -232,6 +232,7 @@ const CreatePerm = ({ onPermissionCreate,PermissionDatas,selectedPermissions,set
                 }`}
               onChange={handleChange}
               value={selectedType}
+                    disabled={isEditMode}
             >
               <option>{typeName}</option>
             </select>
@@ -255,6 +256,7 @@ const CreatePerm = ({ onPermissionCreate,PermissionDatas,selectedPermissions,set
                 }`}
               placeholder={t('Enter permissions')}
               value={permissionName}
+              disabled={isEditMode} 
               onChange={handlePermissionNameChange}
             />
             {permissionError && (
