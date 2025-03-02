@@ -18,7 +18,9 @@ const StipeElementViewHeader: React.FC<Props> = ({
 }) => {
   const { openModal } = useModalAction();
   const { t } = useTranslation('common');
-  const { settings } = useSettings();
+  const shopSlug = typeof window !== 'undefined' ? localStorage.getItem("shopSlug") : null;
+
+  const { settings } = useSettings(shopSlug);
 
   const handleAddNewCard = () => {
     openModal('STRIPE_ELEMENT_MODAL', {

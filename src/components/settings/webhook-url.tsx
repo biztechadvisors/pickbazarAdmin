@@ -1,19 +1,11 @@
 import { useEffect, useState } from 'react';
 import { useCopyToClipboard } from 'react-use';
 import { ClipboardIcon } from '@/components/icons/clipboard';
-import { MollieIcon } from '@/components/icons/payment-gateways/mollie';
 import { PayPalIcon } from '@/components/icons/payment-gateways/paypal';
 import { RazorPayIcon } from '@/components/icons/payment-gateways/razorpay';
 import { StripeIcon } from '@/components/icons/payment-gateways/stripe';
-import { SSLComerz } from '@/components/icons/payment-gateways/sslcomerz';
-import { PayStack } from '@/components/icons/payment-gateways/paystack';
-import { IyzicoIcon } from '@/components/icons/payment-gateways/iyzico';
-import { XenditIcon } from '@/components/icons/payment-gateways/xendit';
 import Badge from '@/components/ui/badge/badge';
 import Image from 'next/image';
-import { BkashIcon } from '../icons/payment-gateways/bkash';
-import { PaymongoIcon } from '../icons/payment-gateways/paymongo';
-import { FlutterwaveIcon } from '../icons/payment-gateways/flutterwave';
 
 interface WebHookURLProps {
   gateway: gatewayType;
@@ -32,18 +24,10 @@ const WebHookURL = ({ gateway }: WebHookURLProps) => {
     stripe: <StripeIcon className="h-4 w-auto" />,
     paypal: <PayPalIcon className="h-4 w-auto" />,
     razorpay: <RazorPayIcon className="h-4 w-auto" />,
-    mollie: <MollieIcon className="h-4 w-auto" />,
-    sslcommerz: <SSLComerz className="h-4 w-auto" />,
-    paystack: <PayStack className="h-4 w-auto" />,
-    iyzico: <IyzicoIcon className="h-4 w-auto" />,
-    xendit: <XenditIcon className="h-4 w-auto" />,
-    bkash: <BkashIcon className="h-4 w-auto" />,
-    paymongo: <PaymongoIcon className="h-4 w-auto" />,
-    flutterwave: <FlutterwaveIcon className="h-4 w-auto" />,
+
   };
-  const url = `${
-    process.env.NEXT_PUBLIC_REST_API_ENDPOINT
-  }/webhooks/${gateway?.name?.toLowerCase()}`;
+  const url = `${process.env.NEXT_PUBLIC_REST_API_ENDPOINT
+    }/webhooks/${gateway?.name?.toLowerCase()}`;
 
   setTimeout(() => {
     setCopied(false);

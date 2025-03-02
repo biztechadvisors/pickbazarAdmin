@@ -77,15 +77,7 @@ export enum PaymentGateway {
   CASH = 'CASH',
   FULL_WALLET_PAYMENT = 'FULL_WALLET_PAYMENT',
   PAYPAL = 'PAYPAL',
-  MOLLIE = 'MOLLIE',
   RAZORPAY = 'RAZORPAY',
-  PAYMONGO = 'PAYMONGO',
-  PAYSTACK = 'PAYSTACK',
-  XENDIT = 'XENDIT',
-  SSLCOMMERZ = 'SSLCOMMERZ',
-  IYZICO = 'IYZICO',
-  BKASH = 'BKASH',
-  FLUTTERWAVE = 'FLUTTERWAVE',
 }
 
 export interface PaymentIntentInfo {
@@ -411,6 +403,26 @@ export interface ConnectTypeBelongsTo {
   connect?: string;
 }
 
+export interface CreateRefundInput {
+  order_id: string;
+  title: string;
+  description: string;
+  images: Attachment[];
+}
+
+export interface CreateOrderPaymentInput {
+  tracking_number: string;
+  payment_gateway: string;
+  paymentIntentInfo: any;
+}
+
+export interface CreateFeedbackInput {
+  model_id: string;
+  model_type: string;
+  positive?: boolean;
+  negative?: boolean;
+}
+
 export interface Card {
   expires: string;
   network: string;
@@ -658,6 +670,16 @@ export interface FaqInput {
   code: string;
 }
 
+export interface DownloadableFile {
+  id: string;
+  purchase_key: string;
+  digital_file_id: string;
+  customer_id: string;
+  file: DigitalFile;
+  created_at: string;
+  updated_at: string;
+}
+
 export interface ContactInput {
   fullName: string;
   phone: string;
@@ -858,7 +880,7 @@ export interface CreateProduct {
   unit: string;
   description?: string;
   categories?: string[];
-  subcategories?: string[];
+  subCategories?: string[];
   tags?: string[];
   variations?: AttributeProductPivot[];
   in_stock?: boolean;
@@ -1666,7 +1688,7 @@ export interface CategoryQueryOptions extends QueryOptions {
   type: string;
   name: string;
   shopId?: number;
-  region_name?: string;
+  region_name?: string[];
   parent: number | null;
   shop: string | null;
   search: string;
@@ -1836,8 +1858,6 @@ export interface RegionsQueryOptions extends QueryOptions {
   search: string;
 }
 
-import { SortOrder } from '@/types'; // Ensure SortOrder is imported from the correct path
-
 // Updated GetInspiredQueryOptions interface
 export interface GetInspiredQueryOptions extends QueryOptions {
   shopSlug: string; // Required for identifying the shop
@@ -1983,3 +2003,6 @@ export interface CreateStocks {
   products: ConnectProductOrderPivot[];
   dealer: any;
 }
+
+export interface DownloadableFilePaginator
+  extends PaginatorInfo<DownloadableFile> { }

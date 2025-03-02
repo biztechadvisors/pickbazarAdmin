@@ -64,6 +64,11 @@ const AdminLayout: React.FC<{ children?: React.ReactNode }> = ({
   if (router.pathname === Routes.adminMyShops) {
     matchedLinks = [
       {
+        href: Routes.helpInventory,
+        label: 'sidebar-nav-item-help',
+        icon: 'DashboardIcon',
+      },
+      {
         href: Routes.attribute.list,
         label: 'sidebar-nav-item-attributes',
         icon: 'AttributeIcon',
@@ -101,6 +106,12 @@ const AdminLayout: React.FC<{ children?: React.ReactNode }> = ({
     ];
   } else if (router.pathname === Routes.attribute.list) {
     matchedLinks = [
+      {
+        href: Routes.helpInventory,
+        label: 'sidebar-nav-item-help',
+        icon: 'DashboardIcon',
+        description: 'Learn how to use the inventory system.',
+      },
       {
         href: `${Routes.dashboard}`,
         label: 'sidebar-nav-item-inventory-dashboard',
@@ -144,6 +155,11 @@ const AdminLayout: React.FC<{ children?: React.ReactNode }> = ({
     ];
   } else if (router.pathname === Routes.type.list) {
     matchedLinks = [
+      {
+        href: Routes.helpInventory,
+        label: 'sidebar-nav-item-help',
+        icon: 'DashboardIcon', 
+      },
       {
         href: `${Routes.dashboard}`,
         label: 'sidebar-nav-item-inventory-dashboard',
@@ -460,16 +476,21 @@ const AdminLayout: React.FC<{ children?: React.ReactNode }> = ({
         ].includes(link.href)
     );
   }
-
+  matchedLinks.push({
+    href: Routes.helpInventory,
+    label: 'sidebar-nav-item-help',
+    icon: 'DashboardIcon', 
+  });
   const SidebarItemMap = () => (
     <Fragment>
-      {matchedLinks.map(({ href, label, icon }) => (
+      {matchedLinks.map(({ href, label, icon,description }) => (
         <SidebarItem
           href={isDisabled ? '#' : href}
           label={t(label)}
           icon={icon}
           key={href}
           shopStatus={shopStatus}
+          description={description}
         />
       ))}
     </Fragment>

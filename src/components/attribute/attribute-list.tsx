@@ -62,7 +62,7 @@ const AttributeList = ({
 
   let columns = [
     {
-      title: t('table:table-item-id'),
+      title: t('table:Id'),
       dataIndex: 'id',
       key: 'id',
       align: 'center',
@@ -71,7 +71,7 @@ const AttributeList = ({
     {
       title: (
         <TitleWithSort
-          title={t('table:table-item-title')}
+          title={t('table:Title')}
           ascending={
             sortingObj.sort === SortOrder.Asc && sortingObj.column === 'name'
           }
@@ -97,7 +97,7 @@ const AttributeList = ({
       ),
     },
     {
-      title: t('table:table-item-values'),
+      title: t('table:Values'),
       dataIndex: 'values',
       key: 'values',
       align: alignLeft,
@@ -116,7 +116,7 @@ const AttributeList = ({
     {
       ...(canWrite
         ? {
-            title: t('table:table-item-actions'),
+            title: t('table:Actions'),
             dataIndex: 'slug',
             key: 'actions',
             align: alignRight,

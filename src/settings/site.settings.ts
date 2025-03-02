@@ -85,6 +85,11 @@ export const siteSettings = {
         icon: 'DashboardIcon',
       },
       {
+        href: Routes.helpInventory, // Add help link
+        label: 'sidebar-nav-item-help',
+        icon: 'DashboardIcon',
+      },
+      {
         href: Routes.shop.list,
         label: 'sidebar-nav-item-shops',
         icon: 'ShopIcon',

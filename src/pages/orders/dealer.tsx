@@ -57,8 +57,8 @@ export default function DealerOrders() {
         limit: 20,
         page,
         tracking_number: searchTerm,
-        shop_id: shopId ? shopId : null,
-        customer_id: me?.id
+        shop_id: shopId ? shopId : undefined,
+        customer_id: Number(me?.id)
     });
 
     const { refetch } = useExportOrderQuery(
@@ -84,6 +84,7 @@ export default function DealerOrders() {
         }
     }
 
+    console.log("orders ", orders)
     const selfOrderList = orders.filter(
         (order) => order?.customer_id === order?.dealer?.id
     );
@@ -147,8 +148,7 @@ export default function DealerOrders() {
                 paginatorInfo={paginatorInfo}
                 onPagination={handlePagination}
                 onOrder={setOrder}
-                onSort={setColumn}
-            />
+                onSort={setColumn} Shop={false} />
         </>
     );
 }

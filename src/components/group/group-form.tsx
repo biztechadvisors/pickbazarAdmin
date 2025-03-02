@@ -271,7 +271,7 @@ export default function CreateOrUpdateTypeForm({ initialValues }: IProps) {
         </Card>
       </div>
 
-      <div className="my-5 flex flex-wrap border-b border-dashed border-border-base pb-8 sm:my-8">
+      {/* <div className="my-5 flex flex-wrap border-b border-dashed border-border-base pb-8 sm:my-8">
         <Description
           title={t('form:group-settings')}
           details={t('form:group-settings-help-text')}
@@ -323,7 +323,7 @@ export default function CreateOrUpdateTypeForm({ initialValues }: IProps) {
             </div>
           </div>
         </Card>
-      </div>
+      </div> */}
 
       {layoutType === 'classic' ? (
         <div className="my-5 flex flex-wrap border-b border-dashed border-border-base pb-8 sm:my-8">

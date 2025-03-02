@@ -9,19 +9,9 @@ import { useGetPaymentIntent } from '@/framework/rest/order';
 import Button from '@/components/ui/button';
 import { RadioGroup } from '@headlessui/react';
 import cn from 'classnames';
-import { PaymentGateway } from '@/types';
 import { StripeIcon } from '@/components/icons/payment-gateways/stripe';
 import { PayPalIcon } from '@/components/icons/payment-gateways/paypal';
-import { MollieIcon } from '@/components/icons/payment-gateways/mollie';
 import { RazorPayIcon } from '@/components/icons/payment-gateways/razorpay';
-import { SSLComerz } from '@/components/icons/payment-gateways/sslcomerz';
-import { PayStack } from '@/components/icons/payment-gateways/paystack';
-import { IyzicoIcon } from '@/components/icons/payment-gateways/iyzico';
-import { XenditIcon } from '@/components/icons/payment-gateways/xendit';
-import Image from 'next/image';
-import { BkashIcon } from '@/components/icons/payment-gateways/bkash';
-import { PaymongoIcon } from '@/components/icons/payment-gateways/paymongo';
-import { FlutterwaveIcon } from '@/components/icons/payment-gateways/flutterwave';
 
 interface Props {
   buttonSize?: 'big' | 'medium' | 'small';
@@ -37,35 +27,12 @@ const PaymentGateways: React.FC<{
     stripe: <StripeIcon />,
     paypal: <PayPalIcon />,
     razorpay: <RazorPayIcon />,
-    mollie: <MollieIcon />,
-    sslcommerz: <SSLComerz />,
-    paystack: <PayStack />,
-    xendit: <XenditIcon />,
-    iyzico: <IyzicoIcon />,
-    bkash: <BkashIcon />,
-    paymongo: <PaymongoIcon />,
-    flutterwave: <FlutterwaveIcon />,
   };
 
   // default payment gateway
   // const defaultPaymentGateway = settings?.defaultPaymentGateway.toUpperCase();
 
   let temp_gateways = settings?.paymentGateway;
-
-  // if (settings && settings?.paymentGateway) {
-  //   let selectedGateways = [];
-  //   for (let i = 0; i < settings?.paymentGateway.length; i++) {
-  //     selectedGateways.push(settings?.paymentGateway[i].name.toUpperCase());
-  //   }
-
-  //   // if default payment-gateway did not present in the selected gateways, then this will work
-  //   if (!selectedGateways.includes(defaultPaymentGateway)) {
-  //     const pluckedGateway = PAYMENT_GATEWAYS.filter((obj) => {
-  //       return obj.name.toUpperCase() === defaultPaymentGateway;
-  //     });
-  //     Array.prototype.push.apply(temp_gateways, pluckedGateway);
-  //   }
-  // }
 
   return (
     <>
@@ -120,7 +87,9 @@ const GatewayModal: React.FC<Props> = ({ buttonSize = 'small' }) => {
   } = useModalState();
   const { closeModal } = useModalAction();
   const [gateway, setGateway] = useState(order?.payment_gateway || '');
-  const { settings } = useSettings();
+  const shopSlug = typeof window !== 'undefined' ? localStorage.getItem("shopSlug") : null;
+
+  const { settings } = useSettings(shopSlug);
   const { isLoading, getPaymentIntentQuery } = useGetPaymentIntent({
     tracking_number: order?.tracking_number as string,
     payment_gateway: gateway?.name?.toUpperCase() as string,

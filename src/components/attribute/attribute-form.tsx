@@ -14,6 +14,7 @@ import {
   useCreateAttributeMutation,
   useUpdateAttributeMutation,
 } from '@/data/attributes';
+import { toast } from 'react-toastify';
 
 type FormValues = {
   name?: string | null;
@@ -63,6 +64,7 @@ export default function CreateOrUpdateAttributeForm({ initialValues }: IProps) {
       setErrorMessage('Shop ID is required');
       return;
     }
+  
     if (
       (!initialValues &&
         !initialValues?.translated_languages?.includes(router.locale!)) ||
@@ -82,8 +84,12 @@ export default function CreateOrUpdateAttributeForm({ initialValues }: IProps) {
         },
         {
           onError: (error: any) => {
-            setErrorMessage(error?.response?.data?.message);
-            animateScroll.scrollToTop();
+            // Handle duplicate entry error
+            if (error?.response?.status === 500) {
+              toast.error(t('common:duplicate-entry-error'));
+            } else {
+              setErrorMessage(error?.response?.data?.message);
+            }
           },
         }
       );

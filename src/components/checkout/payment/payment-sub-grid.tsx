@@ -52,17 +52,9 @@ const PaymentSubGrid: React.FC<{
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const { t } = useTranslation('common');
 
-  useEffect(() => {
-    if (gateway && gateway === 'PAYMONGO') {
-      setSubGateway(subGateway);
-    } else {
-      setSubGateway('');
-    }
-  }, [gateway, subGateway]);
-  
   return (
     <Fragment>
-      {gateway && gateway === 'PAYMONGO' ? (
+      {gateway ? (
         <Fragment>
           {errorMessage ? (
             <Alert

@@ -1,5 +1,7 @@
 export const Routes = {
   dashboard: '/',
+  help:'/help',
+  helpInventory: '/help-inventory',
   login: '/login',
   logout: '/logout',
   register: '/register',
@@ -57,7 +59,7 @@ export const Routes = {
   },
   attribute: {
     ...routesFactory('/attributes'),
-  },
+  }, 
   attributeValue: {
     ...routesFactory('/attribute-values'),
   },

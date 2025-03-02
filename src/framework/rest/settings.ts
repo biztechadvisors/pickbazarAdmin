@@ -12,18 +12,22 @@ import { useTranslation } from 'next-i18next';
 import { useRouter } from 'next/router';
 import { couponAtom } from '@/contexts/checkout';
 
-export function useSettings() {
+export function useSettings(shopSlug?: string | null) {
   const { locale } = useRouter();
-
+  console.log("shopSlug ", shopSlug)
   const formattedOptions = {
     language: locale,
+    shopSlug: shopSlug || undefined,  // Ensure it's undefined instead of null
   };
 
   const { data, isLoading, error, isFetching } = useQuery<Settings, Error>(
     [API_ENDPOINTS.SETTINGS, formattedOptions],
     ({ queryKey, pageParam }) =>
       client.settings.all(Object.assign({}, queryKey[1], pageParam))
-  ); 
+  );
+
+  console.log("data 27 ", data);
+
   return {
     settings: data?.options ?? {},
     isLoading,

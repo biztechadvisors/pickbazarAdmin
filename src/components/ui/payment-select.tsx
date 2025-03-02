@@ -3,19 +3,10 @@ import { Controller, useForm } from 'react-hook-form';
 import CheckboxGroup from '@/components/ui/checkbox/checkbox-group';
 import { StripeIcon } from '@/components/icons/payment-gateways/stripe';
 import { PayPalIcon } from '@/components/icons/payment-gateways/paypal';
-import { MollieIcon } from '@/components/icons/payment-gateways/mollie';
 import { RazorPayIcon } from '@/components/icons/payment-gateways/razorpay';
-import { SSLComerz } from '@/components/icons/payment-gateways/sslcomerz';
-import { PayStack } from '@/components/icons/payment-gateways/paystack';
-import { IyzicoIcon } from '@/components/icons/payment-gateways/iyzico';
-import { XenditIcon } from '@/components/icons/payment-gateways/xendit';
 import { StarIcon } from '@/components/icons/star-icon';
 import cn from 'classnames';
 import Image from 'next/image';
-import { BkashIcon } from '../icons/payment-gateways/bkash';
-import { PaymongoIcon } from '../icons/payment-gateways/paymongo';
-import { FlutterwaveIcon } from '../icons/payment-gateways/flutterwave';
-
 interface PaymentSelectProps {
   options: OptionType[];
   control: any;
@@ -46,14 +37,6 @@ const PaymentMethodCard = ({
     stripe: <StripeIcon />,
     paypal: <PayPalIcon />,
     razorpay: <RazorPayIcon />,
-    mollie: <MollieIcon />,
-    sslcommerz: <SSLComerz />,
-    paystack: <PayStack />,
-    iyzico: <IyzicoIcon />,
-    xendit: <XenditIcon />,
-    bkash: <BkashIcon />,
-    paymongo: <PaymongoIcon />,
-    flutterwave: <FlutterwaveIcon />,
   };
   return (
     <label

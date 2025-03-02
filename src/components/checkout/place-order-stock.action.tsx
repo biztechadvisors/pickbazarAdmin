@@ -65,9 +65,10 @@ export const PlaceOrderActionStock: React.FC<{
   );
 
   const subtotal = calculateTotal(available_items);
+  const shopSlug = typeof window !== 'undefined' ? localStorage.getItem("shopSlug") : null;
   const {
     settings: { freeShippingAmount, freeShipping },
-  } = useSettings();
+  } = useSettings(shopSlug);
   let freeShippings = freeShipping && Number(freeShippingAmount) <= subtotal;
   const total = calculatePaidTotal(
     {
@@ -132,13 +133,13 @@ export const PlaceOrderActionStock: React.FC<{
   let formatRequiredFields = isDigitalCheckout
     ? [customer_contact, payment_gateway, available_items]
     : [
-        customer_contact,
-        payment_gateway,
-        billing_address,
-        shipping_address,
-        delivery_time,
-        available_items,
-      ];
+      customer_contact,
+      payment_gateway,
+      billing_address,
+      shipping_address,
+      delivery_time,
+      available_items,
+    ];
   // if (!isDigitalCheckout && !me) {
   //   formatRequiredFields.push(customer_name);
   // }

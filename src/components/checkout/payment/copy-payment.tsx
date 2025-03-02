@@ -96,12 +96,6 @@ const PaymentGrid: React.FC<{ className?: string; theme?: 'bw' }> = ({
       icon: '/payment/razorpay.png',
       component: PaymentOnline,
     },
-    MOLLIE: {
-      name: 'Mollie',
-      value: PaymentGateway.MOLLIE,
-      icon: '/payment/mollie.png',
-      component: PaymentOnline,
-    },
     CASH_ON_DELIVERY: {
       name: t('text-cash-on-delivery'),
       value: PaymentGateway.COD,
@@ -141,16 +135,6 @@ const PaymentGrid: React.FC<{ className?: string; theme?: 'bw' }> = ({
         </RadioGroup.Label>
 
         <div className="mb-8 grid grid-cols-2 gap-4 md:grid-cols-3">
-          {/* {settings?.paymentGateway && (
-            <PaymentGroupOption
-              theme={theme}
-              payment={
-                AVAILABLE_PAYMENT_METHODS_MAP[
-                  settings?.paymentGateway?.toUpperCase() as PaymentGateway
-                ]
-              }
-            />
-          )} */}
 
           {settings?.paymentGateway &&
             settings?.paymentGateway.map((gateway: any, index: any) => {
@@ -160,8 +144,8 @@ const PaymentGrid: React.FC<{ className?: string; theme?: 'bw' }> = ({
                     theme={theme}
                     payment={
                       AVAILABLE_PAYMENT_METHODS_MAP[
-                        //@ts-ignore
-                        settings?.gateway as PaymentGateway
+                      //@ts-ignore
+                      settings?.gateway as PaymentGateway
                       ]
                     }
                   />

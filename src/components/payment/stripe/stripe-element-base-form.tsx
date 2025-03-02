@@ -11,7 +11,7 @@ import Spinner from '@/components/ui/loaders/spinner/spinner';
 import { StripePaymentElementOptions } from '@stripe/stripe-js';
 import { PaymentGateway, PaymentIntentInfo } from '@/types';
 import { useModalAction } from '@/components/ui/modal/modal.context';
-import { useOrderPayment } from '@/framework/order';
+import { useOrderPayment } from '@/framework/rest/order';
 import { toast } from 'react-toastify';
 import { useTranslation } from 'react-i18next';
 

@@ -8,21 +8,11 @@ import cn from 'classnames';
 import { PaymentGateway } from '@/types';
 import PaymentOnline from '@/components/checkout/payment/payment-online';
 import PaymentSubGrid from './payment-sub-grid';
-import { PayMongoCase, SSLCommerceCase } from './payment-variable-case';
 import { StripeIcon } from '@/components/icons/payment-gateways/stripe';
 import { PayPalIcon } from '@/components/icons/payment-gateways/paypal';
-import { MollieIcon } from '@/components/icons/payment-gateways/mollie';
 import { RazorPayIcon } from '@/components/icons/payment-gateways/razorpay';
-import { SSLComerz } from '@/components/icons/payment-gateways/sslcomerz';
-import { PayStack } from '@/components/icons/payment-gateways/paystack';
-import { IyzicoIcon } from '@/components/icons/payment-gateways/iyzico';
-import { XenditIcon } from '@/components/icons/payment-gateways/xendit';
-import { BkashIcon } from '@/components/icons/payment-gateways/bkash';
-import { PaymongoIcon } from '@/components/icons/payment-gateways/paymongo';
-import { FlutterwaveIcon } from '@/components/icons/payment-gateways/flutterwave';
 import { paymentGatewayAtom } from '@/contexts/checkout';
 import Spinner from '@/components/ui/loader/spinner/spinner';
-import { useSettings } from '@/framework/rest/settings';
 import { useSettingsQuery } from '@/data/settings';
 import { useRouter } from 'next/router';
 
@@ -46,9 +36,6 @@ const PAYMENT_GATEWAYS = [
   { name: 'stripe', title: 'Stripe' },
   { name: 'paypal', title: 'Paypal' },
   { name: 'razorpay', title: 'RazorPay' },
-  // { name: 'mollie', title: 'Mollie' },
-  // { name: 'paystack', title: 'Paystack' },
-  // { name: 'sslcommerz', title: 'SslCommerz' },
 ];
 
 const PaymentGroupOption: React.FC<PaymentGroupOptionProps> = ({
@@ -138,54 +125,6 @@ const PaymentGrid: React.FC<{ className?: string; theme?: 'bw' }> = ({
       icon: <RazorPayIcon />,
       component: PaymentOnline,
     },
-    MOLLIE: {
-      name: 'Mollie',
-      value: PaymentGateway.MOLLIE,
-      icon: <MollieIcon />,
-      component: PaymentOnline,
-    },
-    SSLCOMMERZ: {
-      name: 'SslCommerz',
-      value: PaymentGateway.SSLCOMMERZ,
-      icon: <SSLComerz />,
-      component: PaymentOnline,
-    },
-    PAYSTACK: {
-      name: 'Paystack',
-      value: PaymentGateway.PAYSTACK,
-      icon: <PayStack />,
-      component: PaymentOnline,
-    },
-    XENDIT: {
-      name: 'Xendit',
-      value: PaymentGateway.XENDIT,
-      icon: <XenditIcon />,
-      component: PaymentOnline,
-    },
-    IYZICO: {
-      name: 'Iyzico',
-      value: PaymentGateway.IYZICO,
-      icon: <IyzicoIcon />,
-      component: PaymentOnline,
-    },
-    BKASH: {
-      name: 'bKash',
-      value: PaymentGateway.BKASH,
-      icon: <BkashIcon />,
-      component: PaymentOnline,
-    },
-    PAYMONGO: {
-      name: 'Paymongo',
-      value: PaymentGateway.PAYMONGO,
-      icon: <PaymongoIcon />,
-      component: PaymentOnline,
-    },
-    FLUTTERWAVE: {
-      name: 'Flutterwave',
-      value: PaymentGateway.FLUTTERWAVE,
-      icon: <FlutterwaveIcon />,
-      component: PaymentOnline,
-    },
 
     CASH_ON_DELIVERY: {
       name: t('text-cash-on-delivery'),
@@ -194,36 +133,6 @@ const PaymentGrid: React.FC<{ className?: string; theme?: 'bw' }> = ({
       component: CashOnDelivery,
     },
   };
-
-  // this is the actual useEffect hooks
-  // useEffect(() => {
-  //   if (settings && availableGateway) {
-  //     // At first, team up the selected gateways.
-  //     let selectedGateways = [];
-  //     for (let i = 0; i < availableGateway.length; i++) {
-  //       selectedGateways.push(availableGateway[i].name.toUpperCase());
-  //     }
-
-  //     // if default payment-gateway did not present in the selected gateways, then this will attach default with selected
-  //     if (!selectedGateways.includes(defaultGateway)) {
-  //       const pluckedGateway = PAYMENT_GATEWAYS.filter((obj) => {
-  //         return obj.name.toUpperCase() === defaultGateway;
-  //       });
-  //       Array.prototype.push.apply(availableGateway, pluckedGateway);
-  //     }
-
-  //     availableGateway.forEach((gateway: any) => {
-  //       setGateway(gateway?.name.toUpperCase() as PaymentGateway);
-  //     });
-
-  //     // TODO : Did not understand properly the planning here. about state
-  //     // setGateway(
-  //     //   settings?.paymentGateway[0]?.name.toUpperCase() as PaymentGateway
-  //     // );
-  //   } else {
-  //     setGateway(PaymentGateway.COD);
-  //   }
-  // }, [isLoading, cashOnDelivery, defaultGateway, availableGateway]);
 
   useEffect(() => {
     if (options && availableGateway) {
@@ -239,11 +148,6 @@ const PaymentGrid: React.FC<{ className?: string; theme?: 'bw' }> = ({
   const Component = PaymentMethod?.component ?? CashOnDelivery;
 
   let payment_sub_gateway: PaymentSubGateways[] = [];
-  switch (gateway) {
-    case 'PAYMONGO':
-      payment_sub_gateway = PayMongoCase;
-      break;
-  }
 
   if (isLoading) {
     return <Spinner showText={false} />;
@@ -275,23 +179,6 @@ const PaymentGrid: React.FC<{ className?: string; theme?: 'bw' }> = ({
             </Fragment>
           ))}
 
-
-          {/* {options?.useEnableGateway &&
-            availableGateway &&
-            availableGateway?.map((gateway: any, index: any) => {
-              return (
-                <Fragment key={index}>
-                  <PaymentGroupOption
-                    theme={theme}
-                    payment={
-                      AVAILABLE_PAYMENT_METHODS_MAP[
-                      gateway?.name.toUpperCase() as PaymentGateway
-                      ]
-                    }
-                  />
-                </Fragment>
-              );
-            })} */}
 
           {cashOnDelivery && (
             <PaymentGroupOption
