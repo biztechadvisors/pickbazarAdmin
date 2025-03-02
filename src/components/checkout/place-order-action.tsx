@@ -53,8 +53,12 @@ export const PlaceOrderAction: React.FC<{
   const [use_wallet_points] = useAtom(walletAtom);
 
   const { data: meData } = useMeQuery();
-  console.log("meData ", meData)
-  const dealerId = meData?.id;
+
+
+  let dealerId: any;
+  if (meData?.dealer?.id && meData?.permission?.permission?.type_name == "Dealer") {
+    dealerId = meData?.dealer && meData?.dealer?.id
+  }
   // const shop_id = meData?.shop_id;
   const shop_id = meData?.shop_id
     || meData?.createdBy.managed_shop?.id

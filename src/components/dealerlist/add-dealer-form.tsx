@@ -173,7 +173,12 @@ function SelectProduct({
   const { t } = useTranslation();
   const { data: me } = useMeQuery();
   const [shopSlug, setShopSlug] = useState<string | null>(null);
-  const dealerId = me?.dealer?.id;
+
+  let dealerId;
+  if (me?.dealer.id && me.permission.permission.type_name == "Dealer") {
+    dealerId = me?.dealer && me?.dealer.id
+  }
+
   const {
     query: { shop },
   } = useRouter();

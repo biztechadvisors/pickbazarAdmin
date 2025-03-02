@@ -6,14 +6,14 @@ import { useState } from 'react';
 import { useTranslation } from 'next-i18next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import { adminOnly } from '@/utils/auth-utils';
-import { useDealerByIdStocks, useUpdateStockData } from '@/data/stocks';
+import { useDealerByIdStocks, useDealerStocks, useUpdateStockData } from '@/data/stocks';
 
 export default function DealerStockData() {
   const [searchTerm, setSearchTerm] = useState('');
   const [page, setPage] = useState(1);
   const { t } = useTranslation();
 
-      const [updatedStocks, setUpdatedStocks] = useState([]);
+  const [updatedStocks, setUpdatedStocks] = useState([]);
 
   const [quant, setQuant] = useState('');
   const [disQuant, setDisQuant] = useState('');
@@ -22,9 +22,14 @@ export default function DealerStockData() {
   const router = useRouter();
   const { id } = router.query;
 
-  const { data } = useDealerByIdStocks(id);
+  // const { data } = useDealerByIdStocks(id);
+
+  const { data, isLoading, isError } = useDealerStocks(id);
+
+  const stocks = data?.[0]?.stocks || [];
+  console.log(stocks);
+
   const { mutate: updateStockData } = useUpdateStockData(id);
-  console.log('data', data);
 
   function handleSearch({ searchText }: { searchText: string }) {
     setSearchTerm(searchText);
@@ -37,7 +42,7 @@ export default function DealerStockData() {
       updatedStock[index][field] = value;
       setUpdatedStocks(updatedStock);
     } else {
-      const newStock = { ...data[index] };
+      const newStock = { ...stocks[index] };
       newStock[field] = value;
       updatedStock[index] = newStock;
       setUpdatedStocks(updatedStock);
@@ -46,7 +51,6 @@ export default function DealerStockData() {
 
   const handleSaveChanges = async (index) => {
     const stocksData = updatedStocks[index];
-
     const {
       quantity: quantityStr,
       ordPendQuant: ordPendQuantStr,
@@ -56,6 +60,7 @@ export default function DealerStockData() {
       product,
     } = stocksData;
 
+    console.log("stocksData 58 ", stocksData)
     const quantity = parseInt(quantityStr, 10);
     const ordPendQuant = parseInt(ordPendQuantStr, 10);
     const dispatchedQuantity = parseInt(dispatchedQuantityStr, 10);
@@ -107,7 +112,7 @@ export default function DealerStockData() {
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-gray-200 bg-white">
-                  {data?.map((item, index) => (
+                  {stocks?.map((item, index) => (
                     <tr key={index}>
                       <td className="border px-4 py-2">{index + 1}</td>
                       <td className="border px-4 py-2">
@@ -120,7 +125,7 @@ export default function DealerStockData() {
                         <input
                           type="number"
                           value={
-                            updatedStocks[index]?.quantity || item.quantity
+                            updatedStocks[index]?.quantity || item.orderedQuantity
                           }
                           onChange={(e) =>
                             handleUpdateStock(index, 'quantity', e.target.value)

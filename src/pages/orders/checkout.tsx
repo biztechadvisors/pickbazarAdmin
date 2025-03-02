@@ -44,8 +44,6 @@ export default function CheckoutPage() {
     refetch,
   } = useUserQuery({ id: customer?.id });
 
-  console.log("user 56 :", user);
-
   useEffect(() => {
     if (customer?.id) {
       refetch(customer?.id);

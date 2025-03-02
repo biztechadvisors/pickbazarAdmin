@@ -15,7 +15,7 @@ import { useRouter } from 'next/router';
 import { useMeQuery } from '@/data/user';
 import { CustomerIcon } from '../icons/sidebar/customer';
 import { AllPermission } from '@/utils/AllPermission';
-import { useGetStockSeals } from '@/data/stock';
+import { useGetStockSales } from '@/data/stock';
 import { Company, DEALER } from '@/utils/constants';
 import { useEffect, useState } from 'react';
 
@@ -86,7 +86,7 @@ export default function Dashboard() {
   const customer_id = meData?.id;
   const shop_id = meData?.managed_shop?.id;
 
-  const { data: response } = useGetStockSeals(customer_id, shop_id);
+  const { data: response } = useGetStockSales(customer_id, shop_id);
 
   const DealerSalesList = response?.data;
 

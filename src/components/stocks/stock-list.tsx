@@ -121,8 +121,9 @@ const StockList = ({ me, onSort, onOrder }: IProps) => {
   const { mutate: updateQuantity, isLoading: updating } =
     useUpdateStockQuantity();
 
-  const { data: stocks, isLoading: loading, error } = useGetStock(me?.id);
-
+  console.log("me 124 ", me)
+  const { data: stocks, isLoading: loading, error } = useGetStock(me.id);
+  console.log("stocks 125 ", stocks)
 
   const permissionTypes = AllPermission();
 

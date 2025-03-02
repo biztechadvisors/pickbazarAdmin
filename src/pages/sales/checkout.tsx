@@ -33,7 +33,6 @@ const RightSideViewStock = dynamic(
 
 export default function CheckoutPage() {
   const [customer] = useAtom(customerAtom);
-  console.log('customer 36', customer);
   const { t } = useTranslation();
 
   const {
@@ -42,7 +41,6 @@ export default function CheckoutPage() {
     refetch,
   } = useUserQuery({ id: customer?.id });
 
-  console.log('user 45', user);
   useEffect(() => {
     if (customer?.id) {
       refetch(customer?.id);

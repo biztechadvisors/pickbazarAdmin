@@ -10,6 +10,7 @@ import { useState } from 'react';
 import { adminOnly, getAuthCredentials, hasAccess } from '@/utils/auth-utils';
 import { useRouter } from 'next/router';
 import { useConversationQuery } from '@/data/conversations';
+
 interface Props {
   className?: string;
 }
@@ -25,6 +26,7 @@ const UserListIndex = ({ className, ...rest }: Props) => {
   function handleComposeClick() {
     openModal('COMPOSE_MESSAGE');
   }
+
   return (
     <>
       <div

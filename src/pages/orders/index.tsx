@@ -18,8 +18,6 @@ import { Menu, Transition } from '@headlessui/react';
 import classNames from 'classnames';
 import { DownloadIcon } from '@/components/icons/download-icon';
 import { useMeQuery } from '@/data/user';
-import StockList from '@/components/stock/StockList';
-import { Company, DEALER } from '@/utils/constants';
 
 export default function Orders() {
     const router = useRouter();
@@ -43,8 +41,6 @@ export default function Orders() {
     }
 
     const { data: me } = useMeQuery();
-    const DealerShow = me?.permission.type_name === DEALER;
-    const ShopShow = me?.permission.type_name === Company;
 
     const { data: shopData, isLoading: fetchingShop } = useShopQuery(
         {
@@ -55,37 +51,18 @@ export default function Orders() {
         }
     );
 
-    const shopId = shopData?.id!;
-
     const queryConfig = {
         language: locale,
         limit: 20,
         page,
-        shopSlug: shopData?.slug,
-        // tracking_number:searchTerm,
+        shop_slug: shopData?.slug,
+        shop_id: shopData?.id,
         search: searchTerm,
         customer_id: me?.id,
-
     };
 
-    if (DealerShow) {
-        queryConfig.shopSlug = me?.managed_shop?.slug;
-        queryConfig.customer_id = me?.id; ``
-    } else if (ShopShow) {
-        // queryConfig.shop_id = me?.managed_shop?.id;
-        queryConfig.shopSlug = me?.managed_shop?.slug;
-    }
-
+    console.log("queryConfig 64 customer", queryConfig)
     const { orders, loading, paginatorInfo, error } = useOrdersQuery(queryConfig);
-
-
-
-    const { refetch } = useExportOrderQuery(
-        {
-            ...(me?.createdBy?.managed_shop?.id && { shop_id: me?.createdBy.managed_shop?.id }),
-        },
-        { enabled: false }
-    );
 
     async function handleExportOrder() {
         try {
@@ -213,15 +190,7 @@ export default function Orders() {
     if (loading) return <Loader text={t('common:text-loading')} />;
     if (error) return <ErrorMessage message={error.message} />;
 
-
-    console.log("orders 217 ", orders)
-    const customerOrderList = orders.filter(
-        (order) => order?.customer_id !== order?.dealer?.id
-    );
-
-    // var ordersData = orders.filter(
-    //     (order) => order?.customer_id == order?.dealer?.id
-    // );
+    const customerOrders = orders.filter(order => !order?.customer?.dealer); // Filter out dealer orders
 
     return (
         <>
@@ -279,24 +248,14 @@ export default function Orders() {
                 </Menu>
             </Card>
 
-            {DealerShow ? (
-                <StockList
-                    orders={customerOrderList}
-                    paginatorInfo={paginatorInfo}
-                    onPagination={handlePagination}
-                    onOrder={setOrder}
-                    onSort={setColumn}
-                />
-            ) : (
-                <OrderList
-                    orders={orders}
-                    paginatorInfo={paginatorInfo}
-                    onPagination={handlePagination}
-                    onOrder={setOrder}
-                    onSort={setColumn} Shop={false} />
-            )}
-
-
+            <OrderList
+                orders={customerOrders}
+                paginatorInfo={paginatorInfo}
+                onPagination={handlePagination}
+                onOrder={setOrder}
+                onSort={setColumn}
+                Shop={false}
+            />
         </>
     );
 }

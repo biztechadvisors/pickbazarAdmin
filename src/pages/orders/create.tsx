@@ -68,7 +68,11 @@ export default function ProductsPage() {
 
     const shop_id = meData?.shop_id;
 
-    const dealerId = meData?.dealer && meData?.dealer.id
+    let dealerId;
+    if (meData?.dealer?.id && meData?.permission?.permission?.type_name == "Dealer") {
+        dealerId = meData?.dealer && meData?.dealer?.id
+    }
+
 
     const [isChecked] = useAtom(toggleAtom);
 

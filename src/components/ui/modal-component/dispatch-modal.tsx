@@ -184,7 +184,7 @@ const DispatchModal: React.FC<DispatchModalProps> = ({
         onClose={onClose}
       >
         <div className="min-h-screen px-4 text-center">
-          <Transition.Child
+          {/* <Transition.Child
             as={Fragment}
             enter="ease-out duration-300"
             enterFrom="opacity-0"
@@ -194,7 +194,7 @@ const DispatchModal: React.FC<DispatchModalProps> = ({
             leaveTo="opacity-0"
           >
             <Dialog.Overlay className="fixed inset-0 bg-black opacity-30" />
-          </Transition.Child>
+          </Transition.Child> */}
 
           <span
             className="inline-block h-screen align-middle"
