@@ -92,6 +92,7 @@ export interface PaymentIntentInfo {
 
 export enum ProductStatus {
   Publish = 'publish',
+  Published = 'Published'
   Draft = 'draft',
   UnderReview = 'under_review',
   Approved = 'approved',

@@ -195,13 +195,82 @@ const ProductList = ({
       },
     },
 
+    // {
+    //   title: (
+    //     <TitleWithSort
+    //       title={t('table:table-item-quantity')}
+    //       ascending={
+    //         sortingObj.sort === SortOrder.Asc &&
+    //         sortingObj.column === 'quantity'
+    //       }
+    //       isActive={sortingObj.column === 'quantity'}
+    //     />
+    //   ),
+    //   className: 'cursor-pointer',
+    //   dataIndex: 'quantity',
+    //   key: 'quantity',
+    //   align: 'center',
+    //   width: 150,
+    //   onHeaderCell: () => onHeaderClick('quantity'),
+    //   render: (quantity: number, id: any) => {
+    //     const [editMode, setEditMode] = useState(false);
+    //     const [editedQuantity, setEditedQuantity] = useState(quantity);
+    //     const [updatedQuantity, setUpdatedQuantity] = useState(quantity);
+    //     const handleShowQuantity = () => {
+    //       setEditMode(true);
+    //     };
+
+    //     const handleEditQuantity = async () => {
+    //       // Handle logic to save edited quantity
+    //       const data = {
+    //         id: id.id,
+    //         quantity: editedQuantity,
+    //       };
+    //       updateQuantity(data);
+    //       setUpdatedQuantity(editedQuantity);
+    //       setEditMode(false);
+    //     };
+
+    //     return (
+    //       <div>
+    //         {editMode ? (
+    //           <>
+    //             <Input
+    //               type="number"
+    //               defaultValue={quantity}
+    //               onChange={(e) => setEditedQuantity(Number(e.target.value))}
+    //             />
+    //             <Button
+    //               onClick={handleEditQuantity}
+    //               size="small"
+    //               className="mt-2"
+    //             >
+    //               Update
+    //             </Button>
+    //           </>
+    //         ) : (
+    //           <>
+    //             {/* <Button onClick={handleShowQuantity}>Show</Button> */}
+    //             <span
+    //               onClick={handleShowQuantity}
+    //               className="font-semibold text-accent underline transition-colors duration-200 ms-1 hover:text-accent-hover hover:no-underline focus:text-accent-700 focus:no-underline focus:outline-none"
+    //             >
+    //               {updatedQuantity}
+    //             </span>
+    //           </>
+    //         )}
+    //       </div>
+    //     );
+    //   },
+    // },
+
+
     {
       title: (
         <TitleWithSort
           title={t('table:table-item-quantity')}
           ascending={
-            sortingObj.sort === SortOrder.Asc &&
-            sortingObj.column === 'quantity'
+            sortingObj.sort === SortOrder.Asc && sortingObj.column === 'quantity'
           }
           isActive={sortingObj.column === 'quantity'}
         />
@@ -212,32 +281,62 @@ const ProductList = ({
       align: 'center',
       width: 150,
       onHeaderCell: () => onHeaderClick('quantity'),
-      render: (quantity: number, id: any) => {
+      render: (quantity: number, record: Product) => {
         const [editMode, setEditMode] = useState(false);
-        const [editedQuantity, setEditedQuantity] = useState(quantity);
-        const [updatedQuantity, setUpdatedQuantity] = useState(quantity);
-        const handleShowQuantity = () => {
-          setEditMode(true);
+        const [selectedVariation, setSelectedVariation] = useState(
+          record.variation_options.length > 0 ? record.variation_options[0] : null
+        );
+        const [editedQuantity, setEditedQuantity] = useState(
+          selectedVariation?.quantity || 0
+        );
+    
+        const handleVariationChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+          const variationId = Number(e.target.value);
+          const variation = record.variation_options.find(v => v.id === variationId);
+          setSelectedVariation(variation || null);
+          setEditedQuantity(variation?.quantity || 0);
         };
-
+    
         const handleEditQuantity = async () => {
-          // Handle logic to save edited quantity
+          if (!selectedVariation) {
+            alert('Please select a variation first.');
+            return;
+          }
+    
           const data = {
-            id: id.id,
-            quantity: editedQuantity,
+            id: record.id,
+            quantity: editedQuantity, 
+            variationId: selectedVariation.id, 
+            shopId: record.shop_id, 
           };
+    
           updateQuantity(data);
-          setUpdatedQuantity(editedQuantity);
           setEditMode(false);
         };
-
+    
         return (
           <div>
+            {/* Variation Selection Dropdown */}
+            {record.variation_options.length > 0 && (
+              <select
+                className="border rounded p-1 mb-2"
+                value={selectedVariation?.id || ''}
+                onChange={handleVariationChange}
+              >
+                {record.variation_options.map((variation) => (
+                  <option key={variation.id} value={variation.id}>
+                    {variation.name} 
+                  </option>
+                ))}
+              </select>
+            )}
+    
+            {/* Show Quantity Only for Selected Variation */}
             {editMode ? (
               <>
                 <Input
                   type="number"
-                  defaultValue={quantity}
+                  value={editedQuantity}
                   onChange={(e) => setEditedQuantity(Number(e.target.value))}
                 />
                 <Button
@@ -249,15 +348,12 @@ const ProductList = ({
                 </Button>
               </>
             ) : (
-              <>
-                {/* <Button onClick={handleShowQuantity}>Show</Button> */}
-                <span
-                  onClick={handleShowQuantity}
-                  className="font-semibold text-accent underline transition-colors duration-200 ms-1 hover:text-accent-hover hover:no-underline focus:text-accent-700 focus:no-underline focus:outline-none"
-                >
-                  {updatedQuantity}
-                </span>
-              </>
+              <span
+                onClick={() => setEditMode(true)}
+                className="font-semibold text-accent underline transition-colors duration-200 ms-1 hover:text-accent-hover hover:no-underline focus:text-accent-700 focus:no-underline focus:outline-none"
+              >
+                {selectedVariation?.quantity ?? 'Add Quantity'}
+              </span>
             )}
           </div>
         );
