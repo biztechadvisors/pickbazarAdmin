@@ -212,7 +212,16 @@ const DispatchModal: React.FC<DispatchModalProps> = ({
             leaveTo="opacity-0 scale-95"
           >
             <div className="my-8 inline-block w-full max-w-6xl transform overflow-hidden rounded-2xl bg-white p-6 text-left align-middle shadow-xl transition-all">
-              <div className="mt-2">
+              <div className="flex justify-between items-center">
+                <h2 className="text-lg font-semibold">{t('Dispatch Details')}</h2>
+                <button
+                  onClick={onClose}
+                  className="text-gray-500 hover:text-gray-700"
+                >
+                  &#x2715;
+                </button>
+              </div>
+              <div className="mt-4">
                 <form onSubmit={handleSubmit(onSubmit)}>
                   <div className="overflow-x-auto">
                     <Table

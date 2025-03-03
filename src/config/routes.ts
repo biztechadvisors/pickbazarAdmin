@@ -36,7 +36,7 @@ export const Routes = {
     `stocks/${encodeURIComponent(tracking_number)}`,
 
   singleorder: '/order',
-  singleSaleOrder: 'sale',
+  singleSaleOrder: '/sale',
   products: (slug: string) => {
     // if (asPath) {
     //   return `/products/${encodeURIComponent(slug)}?type=${asPath}`;

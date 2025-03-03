@@ -90,7 +90,7 @@ export default function OrderDetailsPage() {
   const { price: sub_total } = usePrice({ amount: order?.amount! });
   const { price: shipping_charge } = usePrice({ amount: order?.delivery_fee ?? 0 });
   const { price: wallet_total } = usePrice({ amount: order?.wallet_point?.amount! });
-  const totalItem = order?.products?.reduce((initial = 0, p) => initial + parseInt(p?.pivot?.order_quantity!), 0);
+  const totalItem = order?.products?.reduce((initial = 0, p) => initial + parseInt(p?.order_quantity!), 0);
 
   if (loading) return <Loader text={t('common:text-loading')} />;
   if (error) return <ErrorMessage message={error.message} />;
@@ -142,7 +142,7 @@ export default function OrderDetailsPage() {
         <div>
           <span>{name}</span>
           <span className="mx-2">x</span>
-          <span className="font-semibold text-heading">{item.pivot.order_quantity}</span>
+          <span className="font-semibold text-heading">{item.order_quantity}</span>
         </div>
       ),
     },
@@ -152,7 +152,7 @@ export default function OrderDetailsPage() {
       key: 'price',
       align: alignRight,
       render: function Render(_: any, item: any) {
-        const { price } = usePrice({ amount: parseFloat(item.pivot.subtotal) });
+        const { price } = usePrice({ amount: parseFloat(item.subtotal) });
         return <span>{price}</span>;
       },
     },

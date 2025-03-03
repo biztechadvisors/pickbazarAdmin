@@ -18,6 +18,7 @@ import { Menu, Transition } from '@headlessui/react';
 import classNames from 'classnames';
 import { DownloadIcon } from '@/components/icons/download-icon';
 import { useMeQuery } from '@/data/user';
+import { CUSTOMER } from '@/utils/constants';
 
 export default function Orders() {
     const router = useRouter();
@@ -55,28 +56,19 @@ export default function Orders() {
         language: locale,
         limit: 20,
         page,
-        shop_slug: shopData?.slug,
+        shopSlug: shopData?.slug,
         shop_id: shopData?.id,
         search: searchTerm,
         customer_id: me?.id,
+        type: CUSTOMER
     };
 
-    console.log("queryConfig 64 customer", queryConfig)
     const { orders, loading, paginatorInfo, error } = useOrdersQuery(queryConfig);
 
     async function handleExportOrder() {
         try {
-            console.log("94 orders ", orders)
-            const ordersData = orders.filter(
-                (order) => order?.customer_id !== order?.dealer?.id
-            );
 
-            if (!ordersData.length) {
-                console.error('No matching orders found for export.');
-                return; // Handle no data scenario (e.g., display message to user)
-            }
-
-            const formattedData = transformForExcel(ordersData);
+            const formattedData = transformForExcel(orders);
 
             const contentType = 'text/csv;charset=utf-8'; // Consistent with CSV export
             const filename = generateFilename(contentType);
@@ -190,8 +182,6 @@ export default function Orders() {
     if (loading) return <Loader text={t('common:text-loading')} />;
     if (error) return <ErrorMessage message={error.message} />;
 
-    const customerOrders = orders.filter(order => !order?.customer?.dealer); // Filter out dealer orders
-
     return (
         <>
             <Card className="mb-8 flex flex-col items-center justify-between md:flex-row">
@@ -249,7 +239,7 @@ export default function Orders() {
             </Card>
 
             <OrderList
-                orders={customerOrders}
+                orders={orders}
                 paginatorInfo={paginatorInfo}
                 onPagination={handlePagination}
                 onOrder={setOrder}
