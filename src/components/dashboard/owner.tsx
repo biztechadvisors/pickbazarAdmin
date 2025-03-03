@@ -127,6 +127,7 @@ export default function OwnerDashboard(user: any) {
 
   return (
     <>
+    {canWrite && (//show only if user is owner 
       <div className="mb-6 grid w-full grid-cols-1 gap-5 sm:grid-cols-2 xl:grid-cols-4">
         <div className="w-full">
           <StickerCard
@@ -145,7 +146,7 @@ export default function OwnerDashboard(user: any) {
           />
         </div>
       </div>
-      
+    )}
       {/* Shop List Section */}
       <Card className="mb-8 flex flex-col items-center justify-between md:flex-row">
         <div className="mb-4 md:mb-0 md:w-1/4">

@@ -66,13 +66,20 @@ const AddStaffForm = () => {
     slug: shopSlug as string,
   });
 
-  let userId: any;
-  if (meData?.permission.permission_name == "Owner") {
+  // let userId: any; 
+  // if (meData?.permission.permission_name == "Owner") {
+  //   userId = meData.id;
+  // } else {
+  //   userId = shopData?.owner_id;
+  // } 
+  let userId: string | number | undefined;
+  const userRole = meData?.permission?.type_name;
+  
+  if (userRole === "Owner" || userRole === "Company") {
     userId = meData.id;
   } else {
     userId = shopData?.owner_id;
   }
-
   const {
     register,
     handleSubmit,
@@ -100,8 +107,8 @@ const AddStaffForm = () => {
         password,
         contact,
         permission: type?.value,
-        numberOfDealers,
-        managed_shop: shopData,
+        // numberOfDealers,
+        // managed_shop: shopData,
         shopSlug,
         createdBy: userId,
       },

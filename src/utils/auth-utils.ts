@@ -20,7 +20,8 @@ export const superAdminOnly = [SUPER_ADMIN];
 export const adminOnly = [OWNER, SUPER_ADMIN, ADMIN, DEALER, Company];
 export const ownerOnly = [SUPER_ADMIN, OWNER, DEALER, Company, STAFF];
 export const dealerOnly = [DEALER];
-export const ownerAndStaffOnly = [Company, STAFF];
+export const ownerAndStaffOnly = [OWNER, STAFF,DEALER];
+// export const ownerAndStaffOnly = [OWNER, STAFF];
 
 export interface AuthCredentials {
   token: string | null;

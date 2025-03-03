@@ -14,19 +14,22 @@ import { useShopQuery } from '@/data/shop';
 export default function AuthorizedMenu() {
   const { data } = useMeQuery();
   const { t } = useTranslation('common');
-  const [shopSlug, setShopSlug] = useState<string | null>(null);
+  // const [shopSlug, setShopSlug] = useState<string | null>(null);
 
-  const shopId = data?.managed_shop?.id;
-
-  useEffect(() => {
-    if (typeof window !== 'undefined') {
-      const storedSlug = localStorage.getItem('shopSlug');
-      setShopSlug(storedSlug);
-    }
-  }, []);
+  console.log("USEME__",data)
+  const shopSlug = data?.createdBy?.managed_shop?.slug;
+  const shopId = data?.createdBy?.managed_shop?.id;
+  const userName = data?.name;
+  // useEffect(() => {
+  //   if (typeof window !== 'undefined') {
+  //     const storedSlug = localStorage.getItem('shopSlug');
+  //     setShopSlug(storedSlug);
+  //   }
+  // }, []);
+  console.log("shopSlug**",shopSlug)
 const { data: shopData, isLoading: shopLoading, error: shopError } = useShopQuery({ slug: shopSlug?.toString() });
   const [isChecked, setIsChecked] = useAtom(toggleAtom);
-
+console.log("ShopDATA__",shopData)
   const handleToggle = () => {
     setIsChecked((prevIsChecked) => !prevIsChecked);
   };
@@ -42,7 +45,7 @@ const { data: shopData, isLoading: shopLoading, error: shopError } = useShopQuer
           alt="avatar"
         />
         <div className="mt-1 text-center">
-          <span className="block text-sm font-semibold">{shopData?.name}</span> 
+          <span className="block text-sm font-semibold">{userName}</span> 
         </div>
       </Menu.Button>
 
