@@ -26,8 +26,6 @@ export function useSettings(shopSlug?: string | null) {
       client.settings.all(Object.assign({}, queryKey[1], pageParam))
   );
 
-  console.log("data 27 ", data);
-
   return {
     settings: data?.options ?? {},
     isLoading,

@@ -52,48 +52,28 @@ export default function DealerOrders() {
 
     const { data: me } = useMeQuery();
 
-    const { orders, loading, paginatorInfo, error } = useOrdersQuery({
+    const queryConfig = {
         language: locale,
         limit: 20,
         page,
         tracking_number: searchTerm,
-        shop_id: shopId ? shopId : undefined,
+        shop_id: shopId,
+        shop_slug: shopData?.name,
         customer_id: Number(me?.id)
-    });
+    }
+    console.log("queryConfig 64 dealer", queryConfig)
 
-    const { refetch } = useExportOrderQuery(
-        {
-            ...(shopId && { shop_id: shopId }),
-        },
-        { enabled: false }
-    );
-
-    if (loading) return <Loader text={t('common:text-loading')} />;
-
+    const { orders, loading, paginatorInfo, error } = useOrdersQuery(queryConfig);
     if (loading) return <Loader text={t('common:text-loading')} />;
     if (error) return <ErrorMessage message={error.message} />;
 
-    async function handleExportOrder() {
-        const { data } = await refetch();
-
-        if (data) {
-            const a = document.createElement('a');
-            a.href = data;
-            a.setAttribute('download', 'export-order');
-            a.click();
-        }
-    }
-
-    console.log("orders ", orders)
-    const selfOrderList = orders.filter(
-        (order) => order?.customer_id === order?.dealer?.id
-    );
+    const dealerOrders = orders.filter(order => order.customer?.dealer); // Filter out customer orders
 
     return (
         <>
             <Card className="mb-8 flex flex-col items-center justify-between md:flex-row">
                 <div className="mb-4 md:mb-0 md:w-1/4">
-                    <h1 className="text-lg font-semibold text-heading">Self Orders</h1>
+                    <h1 className="text-lg font-semibold text-heading">Dealer Orders</h1>
                 </div>
 
                 <div className="flex w-full flex-col items-center ms-auto md:w-1/2 md:flex-row">
@@ -144,11 +124,13 @@ export default function DealerOrders() {
             </Card>
 
             <OrderList
-                orders={selfOrderList}
+                orders={dealerOrders}
                 paginatorInfo={paginatorInfo}
                 onPagination={handlePagination}
                 onOrder={setOrder}
-                onSort={setColumn} Shop={false} />
+                onSort={setColumn}
+                Shop={false}
+            />
         </>
     );
 }

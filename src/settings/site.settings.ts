@@ -19,6 +19,9 @@ let permission = hasAccess(dealerOnly, permissions);
 let identify = permissions;
 const matching: any = Type.Dealer;
 
+console.log("permission 17 ", permissions)
+console.log("permission && identify == matching", permission && identify == matching)
+
 export const siteSettings = {
   name: 'PickBazar',
   description: '',
@@ -148,15 +151,15 @@ export const siteSettings = {
       {
         ...(permission && identify == matching
           ? {
-              href: Routes.createSales,
-              label: 'sidebar-nav-item-create-sales',
-              icon: 'OrderListIcon',
-            }
+            href: Routes.createSales,
+            label: 'sidebar-nav-item-create-sales',
+            icon: 'OrderListIcon',
+          }
           : {
-              href: Routes.coupon.list,
-              label: 'sidebar-nav-item-coupons',
-              icon: 'CouponsIcon',
-            }),
+            href: Routes.coupon.list,
+            label: 'sidebar-nav-item-coupons',
+            icon: 'CouponsIcon',
+          }),
       },
       {
         href: Routes.regions.list,
@@ -189,15 +192,15 @@ export const siteSettings = {
       {
         ...(permission && identify == matching
           ? {
-              href: Routes.sales,
-              label: 'sidebar-nav-item-sales',
-              icon: 'SalesIcon',
-            }
+            href: Routes.sales,
+            label: 'sidebar-nav-item-sales',
+            icon: 'SalesIcon',
+          }
           : {
-              href: Routes.tax.list,
-              label: 'sidebar-nav-item-taxes',
-              icon: 'TaxesIcon',
-            }),
+            href: Routes.tax.list,
+            label: 'sidebar-nav-item-taxes',
+            icon: 'TaxesIcon',
+          }),
       },
       {
         href: Routes.shipping.list,
@@ -212,15 +215,15 @@ export const siteSettings = {
       {
         ...(permission && identify == matching
           ? {
-              href: `${Routes.stock.list}/dealer`,
-              label: 'sidebar-nav-item-stocks',
-              icon: 'ProductsIcon',
-            }
+            href: `${Routes.stock.list}/dealer`,
+            label: 'sidebar-nav-item-stocks',
+            icon: 'ProductsIcon',
+          }
           : {
-              href: Routes.stock.list,
-              label: 'sidebar-nav-item-stocks',
-              icon: 'ProductsIcon',
-            }),
+            href: Routes.stock.list,
+            label: 'sidebar-nav-item-stocks',
+            icon: 'ProductsIcon',
+          }),
       },
       {
         href: Routes.refund.list,

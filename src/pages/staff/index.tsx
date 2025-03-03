@@ -79,6 +79,7 @@ export default function StaffsPage() {
     router.replace(Routes.dashboard);
   }
 
+  console.log("staff-page 82 ")
   const filteredUsers = users?.filter(
     (user) => user.permission?.type_name === STAFF
   );

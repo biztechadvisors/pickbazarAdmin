@@ -73,14 +73,7 @@ const UserList = ({ className, filterText, permission, ...rest }: Props) => {
     observer?.observe(element);
   }, [loadMoreRef?.current, filterText, hasMore]);
 
-  // if (loading)
-  //   return (
-  //     <Loader
-  //       className="!h-auto flex-grow"
-  //       showText={false}
-  //       text={t('common:text-loading')}
-  //     />
-  //   );
+
   if (loading && isEmpty(conversations)) {
     return (
       <Loader
