@@ -1,3 +1,4 @@
+import React, { useEffect, useState } from 'react';
 import Button from '@/components/ui/button';
 import Input from '@/components/ui/input';
 import PasswordInput from '@/components/ui/password-input';
@@ -10,20 +11,23 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
 import { useShopQuery } from '@/data/shop';
 import { useAddStaffMutation } from '@/data/staff';
-import { useMeQuery, useRegisterMutation } from '@/data/user';
+import { useMeQuery } from '@/data/user';
 import PhoneInput from 'react-phone-input-2';
 import Label from '../ui/label';
 import Select from '../ui/select/select';
 import { usePermissionData } from '@/data/permission';
 import { getAuthCredentials } from '@/utils/auth-utils';
-
+import { AddStaffFormProps, PermissionItem, PermissionsProps, permissionType } from '@/types';
+import Loader from '@/components/ui/loader/loader';
+import CreatePermission from '@/pages/permission/create';
+import useFormValues from '@/lib/hooks/use-form-values';
 
 type FormValues = {
   name: string;
   email: string;
   password: string;
   contact: string;
-  type: { value: string; label: string };
+  type: { value: string; label: string } | null;
   createdBy: string;
   numberOfDealers: number;
 };
@@ -32,7 +36,7 @@ const defaultValues = {
   email: '',
   password: '',
   contact: '',
-  type: { value: '', label: '' },
+  type: null,
   numberOfDealers: 0, // Added default value for new field
 };
 
@@ -46,15 +50,18 @@ const staffFormSchema = yup.object().shape({
   contact: yup.string().required('form:error-contact-required'),
 });
 
-const AddStaffForm = () => {
+const AddStaffForm:React.FC<AddStaffFormProps> = ({defaultVal,defaultPermissions}) => {
   const router = useRouter();
   const { data: meData } = useMeQuery();
   const { id } = meData || {};
-  const { data: permissionData } = usePermissionData(id);
+  // const { data: permissionData,isLoading } = usePermissionData();
+  const {isEqual,permissionData,permissionOptions:permissionOption,isLoading,permissionName,setPermissionName,permissionNameOptions} = useFormValues();
   // const { mutate: registerUser, isLoading: loading } = useRegisterMutation();
   const { mutate: addStaff, isLoading: loading } = useAddStaffMutation();
   const { t } = useTranslation();
   const { permissions } = getAuthCredentials();
+  const [defaultValue,setDefaultValue] = useState(defaultVal)
+  const [defaultPermission,setDefaultPermission] = useState(defaultPermissions)
 
   const {
     query: { shop },
@@ -76,49 +83,60 @@ const AddStaffForm = () => {
   const {
     register,
     handleSubmit,
+    setValue,
     setError,
     formState: { errors },
     control,
   } = useForm<FormValues>({
     defaultValues,
     resolver: yupResolver(staffFormSchema),
+    mode:"onChange"
   });
 
+  const permissionOptions = permissionOption(permissionType.STAFF)
+  const defaultOption = permissionOptions?.find((option) => option.id === 186);
 
-  const permissionOptions =
-    permissionData?.map((permission: { id: any; permission_name: string }) => ({
-      value: permission.permission_name,
-      label: permission.permission_name,
-      id: permission.id,
-    })) ?? [];
+  useEffect(() => {
+    if(permissionName)
+      setValue("type",permissionNameOptions()[0])
+  }, [permissionName,setValue])
 
-  function onSubmit({ name, email, password, contact, type, numberOfDealers }: FormValues) {
-    addStaff(
-      {
-        name,
-        email,
-        password,
-        contact,
-        permission: type?.value,
-        numberOfDealers,
-        managed_shop: shopData,
-        shopSlug,
-        createdBy: userId,
-      },
-      {
-        onError: (error: any) => {
-          Object.keys(error?.response?.data).forEach((field: any) => {
-            setError(field, {
-              type: 'manual',
-              message: error?.response?.data[field],
-            });
-          });
-        },
-      }
-    );
+  useEffect(() => {
+    if (!control._formValues.type && defaultOption) {
+      setValue("type", defaultOption);
+    }
+  }, [control._formValues.type, defaultOption, setValue]);
+
+  if (isLoading) return <Loader/>
+
+  function onSubmit(data) {
+    console.log("form submitted",data);
+    setPermissionName(null)
+
+    // addStaff(
+    //   {
+    //     name,
+    //     email,
+    //     password,
+    //     contact,
+    //     permission: type?.value,
+    //     numberOfDealers,
+    //     managed_shop: shopData,
+    //     shopSlug,
+    //     createdBy: userId,
+    //   },
+    //   {
+    //     onError: (error: any) => {
+    //       Object.keys(error?.response?.data).forEach((field: any) => {
+    //         setError(field, {
+    //           type: 'manual',
+    //           message: error?.response?.data[field],
+    //         });
+    //       });
+    //     },
+    //   }
+    // );
   }
-
-  const { data } = useMeQuery();
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} noValidate>
@@ -175,7 +193,7 @@ const AddStaffForm = () => {
               />
             )}
           />
-          <Controller
+          {isEqual && <Controller
             name="type"
             control={control}
             render={({ field }) => (
@@ -185,13 +203,24 @@ const AddStaffForm = () => {
                   {...field}
                   getOptionLabel={(option: { label: string }) => option.label}
                   getOptionValue={(option: { value: string }) => option.value}
+                  // value={permissionOptions.find(option => option.id === 186)}
+                  onChange={(value) => {
+                    setValue("type", value);
+                    setDefaultPermission(permissionData?.filter((permission:PermissionsProps) => permission.permission_name === value?.value)[0]?.permissions ??  [])
+                  }}
+                  // defaultValue={defaultValue}
                   options={permissionOptions}
                   isClearable={true}
-                  isLoading={loading}
+                  isLoading={loading && isLoading}
                   className="mb-4"
                 />
               </>
             )}
+          />
+          }
+          <CreatePermission
+            permissionType={permissionType.STAFF}
+            defaultPermissions={defaultPermission}
           />
         </Card>
       </div>

@@ -107,12 +107,6 @@ const StaffList = ({
       },
     },
     {
-      title: t('table:table-item-available_wallet_points'),
-      dataIndex: ['wallet', 'available_points'],
-      key: 'available_wallet_points',
-      align: 'center',
-    },
-    {
       title: (
         <TitleWithSort
           title={t('table:table-item-status')}
