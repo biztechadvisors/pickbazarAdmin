@@ -36,7 +36,7 @@ export type ProductFormValues = Omit<
   author: Pick<Author, 'id' | 'name'>;
   manufacturer: Pick<Manufacturer, 'id' | 'name'>;
   categories: Pick<Category, 'id' | 'name'>[];
-  subcategories: Pick<SubCategory, 'id' | 'name'>[];
+  subCategories: Pick<SubCategory, 'id' | 'name'>[];
   tags: Pick<Tag, 'id' | 'name'>[];
   digital_file_input: AttachmentInput;
   is_digital: boolean;
@@ -111,7 +111,7 @@ export function getProductDefaultValues(
       min_price: 0.0,
       max_price: 0.0,
       categories: [],
-      subcategories: [],
+      subCategories: [],
       tags: [],
       in_stock: true,
       is_taxable: false,
@@ -168,7 +168,7 @@ export function getProductDefaultValues(
     ...(isNewTranslation && {
       type: null,
       categories: [],
-      subcategories: [],
+      subCategories: [],
       author_id: null,
       manufacturer_id: null,
       tags: [],
@@ -227,7 +227,7 @@ export function getProductInputValues(
     image,
     is_digital,
     categories,
-    subcategories,
+    subCategories,
     tags,
     digital_file_input,
     variation_options,
@@ -245,7 +245,7 @@ export function getProductInputValues(
     type_id: type?.id,
     product_type: product_type?.value,
     categories: categories.map((category) => category?.id),
-    subcategories: subcategories.map((subcategory) => subcategory?.id),
+    subCategories: subCategories.map((subcategory) => subcategory?.id),
     tags: tags.map((tag) => tag?.id),
     image: omitTypename<any>(image),
     gallery: values.gallery?.map((gi: any) => omitTypename(gi)),

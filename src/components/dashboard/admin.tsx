@@ -268,7 +268,7 @@ export default function Dashboard() {
   const permissionTypes = AllPermission();
   const canWrite = permissionTypes.includes('sidebar-nav-item-dealerlist');
   const { data: meData } = useMeQuery();
-  const customerId = meData?.id;
+  const customerId = meData?.id; 
   const DealerShow = meData?.permission.type_name === DEALER;
   const ShopShow = meData?.permission.type_name === Company;
   const [shopSlug, setShopSlug] = useState<string | null>(null);
