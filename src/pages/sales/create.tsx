@@ -53,9 +53,9 @@ export default function SalesPage() {
   const [isChecked] = useAtom(toggleAtom);
 
   const { data: stockData, isLoading, error } = useGetStock(meData?.id);
- 
 
-  const permissionTypes = AllPermission(); 
+
+  const permissionTypes = AllPermission();
 
   const canWrite = permissionTypes.includes('sidebar-nav-item-create-order');
 
@@ -121,10 +121,10 @@ export default function SalesPage() {
         <>
           <div className="flex space-x-5">
             <div className="grid w-full grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-2 xl:grid-cols-4 3xl:grid-cols-6">
-              {stockData?.map((e: Product) => (
+              {stockData?.map((e: any) => (
                 <StockCard
                   key={e.id}
-                  item={e.product}
+                  item={e}
                   isChecked={isChecked}
                   inStock={e.inStock}
                 />
