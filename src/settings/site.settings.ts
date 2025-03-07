@@ -56,7 +56,7 @@ export const siteSettings = {
         href: Routes.dashboard,
         label: 'sidebar-nav-item-dashboard',
         icon: 'DashboardIcon',
-        permissions: ownerAndStaffOnly,
+        permissions: ownerOnly,
       },
       {
         href: Routes.shop.list,
@@ -80,7 +80,8 @@ export const siteSettings = {
         href: Routes.staff.list,
         label: 'sidebar-nav-item-staffs',
         icon: 'UsersIcon',
-      },
+        permissions: ownerAndStaffOnly,
+      }, 
     ],
     admin: [
       {

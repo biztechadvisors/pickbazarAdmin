@@ -476,11 +476,12 @@ const AdminLayout: React.FC<{ children?: React.ReactNode }> = ({
         ].includes(link.href)
     );
   }
-  matchedLinks.push({
-    href: Routes.helpInventory,
-    label: 'sidebar-nav-item-help',
-    icon: 'DashboardIcon', 
-  });
+  console.log("MatchList+++",matchedLinks)
+  // matchedLinks.push({
+  //   href: Routes.helpInventory,
+  //   label: 'sidebar-nav-item-help',
+  //   icon: 'DashboardIcon', 
+  // });
   const SidebarItemMap = () => (
     <Fragment>
       {matchedLinks.map(({ href, label, icon,description }) => (

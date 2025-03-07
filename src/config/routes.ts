@@ -1,6 +1,6 @@
 export const Routes = {
   dashboard: '/',
-  help:'/help',
+  // help:'/help',
   helpInventory: '/help-inventory',
   login: '/login',
   logout: '/logout',
