@@ -1,5 +1,5 @@
 import { Table } from '@/components/ui/table';
-import { SortOrder, Type } from '@/types';
+import { MappedPaginatorInfo, SortOrder, Type } from '@/types';
 import { getIcon } from '@/utils/get-icon';
 import * as typeIcons from '@/components/icons/type';
 import { useTranslation } from 'next-i18next';
@@ -23,17 +23,17 @@ export type IProps = {
   onOrder: (current: string) => void;
 };
 
-const DealerList = ({ 
-  users, 
+const DealerList = ({
+  users,
   paginatorInfo,
   onPagination,
-  onSort, 
+  onSort,
   onOrder }: IProps) => {
 console.log("Delaer__",users);
   const { t } = useTranslation();
   const { alignLeft, alignRight } = useIsRTL();
   const { permissions } = getAuthCredentials();
-const permissionTypes = AllPermission(); 
+  const permissionTypes = AllPermission();
 
   const canWrite = permissionTypes.includes('sidebar-nav-item-dealerlist');
 
@@ -69,25 +69,6 @@ const permissionTypes = AllPermission();
       align: 'center',
       width: 60,
     },
-
-    // {
-    //   title: t('table:table-item-icon'),
-    //   dataIndex: 'icon',
-    //   key: 'profile',
-    //   align: 'center',
-    //   render: (icon: string) => {
-    //     if (!icon) return null;
-    //     return (
-    //       <span className="flex items-center justify-center">
-    //         {getIcon({
-    //           iconList: typeIcons,
-    //           iconName: icon,
-    //           className: 'w-5 h-5 max-h-full max-w-full',
-    //         })}
-    //       </span>
-    //     );
-    //   },
-    // },
 
     {
       title: (
@@ -139,8 +120,8 @@ const permissionTypes = AllPermission();
       align: alignLeft,
       onHeaderCell: () => onHeaderClick('walletPoints'),
       render: (dealer: any) => <span className="whitespace-nowrap">{dealer ? dealer.walletBalance : 0}</span>,
-    }, 
-    
+    },
+
     {
       title: t('table:table-item-permissions'),
       dataIndex: 'type',
@@ -149,7 +130,7 @@ const permissionTypes = AllPermission();
       render: (type: any, record: any) => {
         return <div>{type?.type_name}</div>;
       },
-     
+
     },
 
     {
@@ -170,7 +151,7 @@ const permissionTypes = AllPermission();
       onHeaderCell: () => onHeaderClick('is_active'),
       render: (is_active: boolean) => (is_active ? 'Active' : 'Inactive'),
     },
-    
+
     {
       title: t('table:table-item-actions'),
       dataIndex: 'slug',
@@ -189,26 +170,26 @@ const permissionTypes = AllPermission();
 
   return (
     <>
-    <div className="mb-8 overflow-hidden rounded shadow">
-      <Table
-        //@ts-ignore
-        columns={columns}
-        emptyText={t('table:empty-table-data')}
-        data={users}
-        rowKey="id"
-        scroll={{ x: 380 }}
-      />
-    </div>
-     {!!paginatorInfo?.total && (
-      <div className="flex items-center justify-end">
-        <Pagination
-          total={paginatorInfo.total}
-          current={paginatorInfo.currentPage}
-          // pageSize={paginatorInfo.perPage}
-          onChange={onPagination}
+      <div className="mb-8 overflow-hidden rounded shadow">
+        <Table
+          //@ts-ignore
+          columns={columns}
+          emptyText={t('table:empty-table-data')}
+          data={users}
+          rowKey="id"
+          scroll={{ x: 380 }}
         />
       </div>
-    )}
+      {!!paginatorInfo?.total && (
+        <div className="flex items-center justify-end">
+          <Pagination
+            total={paginatorInfo.total}
+            current={paginatorInfo.currentPage}
+            // pageSize={paginatorInfo.perPage}
+            onChange={onPagination}
+          />
+        </div>
+      )}
     </>
   );
 };

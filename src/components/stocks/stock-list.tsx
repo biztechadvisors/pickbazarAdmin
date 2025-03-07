@@ -24,95 +24,95 @@ type SortingObjType = {
   column: string | null;
 };
 
-const EditableQuantity = ({ record, me }: any) => {
-  const [editMode, setEditMode] = useState(false);
-  const [editedQuantity, setEditedQuantity] = useState(record.quantity);
-  const [updatedQuantity, setUpdatedQuantity] = useState(record.quantity);
-  const { mutate: updateQuantity } = useUpdateStockQuantity();
+// const EditableQuantity = ({ record, me }: any) => {
+//   const [editMode, setEditMode] = useState(false);
+//   const [editedQuantity, setEditedQuantity] = useState(record.quantity);
+//   const [updatedQuantity, setUpdatedQuantity] = useState(record.quantity);
+//   const { mutate: updateQuantity } = useUpdateStockQuantity();
 
-  const handleEditQuantity = async () => {
-    const data = {
-      user_id: me?.id,
-      quantity: editedQuantity,
-      status: record.status,
-      inStock: record.inStock,
-      ordPendQuant: record.ordPendQuant,
-      product: record.product.id,
-    };
-    updateQuantity(data);
-    setUpdatedQuantity(editedQuantity);
-    setEditMode(false);
-  };
+//   const handleEditQuantity = async () => {
+//     const data = {
+//       user_id: me?.id,
+//       quantity: editedQuantity,
+//       status: record.status,
+//       inStock: record.inStock,
+//       ordPendQuant: record.ordPendQuant,
+//       product: record.product.id,
+//     };
+//     updateQuantity(data);
+//     setUpdatedQuantity(editedQuantity);
+//     setEditMode(false);
+//   };
 
-  return (
-    <div>
-      {editMode ? (
-        <>
-          <Input
-            type="number"
-            defaultValue={editedQuantity}
-            onChange={(e) => setEditedQuantity(Number(e.target.value))}
-          />
-          <Button onClick={handleEditQuantity} size="small" className="mt-2">
-            Update
-          </Button>
-        </>
-      ) : (
-        <span
-          onClick={() => setEditMode(true)}
-          className="font-semibold text-accent underline transition-colors duration-200 ms-1 hover:text-accent-hover hover:no-underline focus:text-accent-700 focus:no-underline focus:outline-none"
-        >
-          {updatedQuantity}
-        </span>
-      )}
-    </div>
-  );
-};
+//   return (
+//     <div>
+//       {editMode ? (
+//         <>
+//           <Input
+//             type="number"
+//             defaultValue={editedQuantity}
+//             onChange={(e) => setEditedQuantity(Number(e.target.value))}
+//           />
+//           <Button onClick={handleEditQuantity} size="small" className="mt-2">
+//             Update
+//           </Button>
+//         </>
+//       ) : (
+//         <span
+//           onClick={() => setEditMode(true)}
+//           className="font-semibold text-accent underline transition-colors duration-200 ms-1 hover:text-accent-hover hover:no-underline focus:text-accent-700 focus:no-underline focus:outline-none"
+//         >
+//           {updatedQuantity}
+//         </span>
+//       )}
+//     </div>
+//   );
+// };
 
-const EditablePendingQuantity = ({ record, me }: any) => {
-  const [editMode, setEditMode] = useState(false);
-  const [editedQuantity, setEditedQuantity] = useState(record.ordPendQuant);
-  const [updatedQuantity, setUpdatedQuantity] = useState(record.ordPendQuant);
-  const { mutate: updateQuantity } = useUpdateStockQuantity();
+// const EditablePendingQuantity = ({ record, me }: any) => {
+//   const [editMode, setEditMode] = useState(false);
+//   const [editedQuantity, setEditedQuantity] = useState(record.ordPendQuant);
+//   const [updatedQuantity, setUpdatedQuantity] = useState(record.ordPendQuant);
+//   const { mutate: updateQuantity } = useUpdateStockQuantity();
 
-  const handleEditQuantity = async () => {
-    const data = {
-      user_id: me?.id,
-      quantity: record.quantity,
-      status: record.status,
-      inStock: record.inStock,
-      ordPendQuant: editedQuantity,
-      product: record.product.id,
-    };
-    updateQuantity(data);
-    setUpdatedQuantity(editedQuantity);
-    setEditMode(false);
-  };
+//   const handleEditQuantity = async () => {
+//     const data = {
+//       user_id: me?.id,
+//       quantity: record.quantity,
+//       status: record.status,
+//       inStock: record.inStock,
+//       ordPendQuant: editedQuantity,
+//       product: record.product.id,
+//     };
+//     updateQuantity(data);
+//     setUpdatedQuantity(editedQuantity);
+//     setEditMode(false);
+//   };
 
-  return (
-    <div>
-      {editMode ? (
-        <>
-          <Input
-            type="number"
-            defaultValue={editedQuantity}
-            onChange={(e) => setEditedQuantity(Number(e.target.value))}
-          />
-          <Button onClick={handleEditQuantity} size="small" className="mt-2">
-            Update
-          </Button>
-        </>
-      ) : (
-        <span
-          onClick={() => setEditMode(true)}
-          className="font-semibold text-accent underline transition-colors duration-200 ms-1 hover:text-accent-hover hover:no-underline focus:text-accent-700 focus:no-underline focus:outline-none"
-        >
-          {updatedQuantity}
-        </span>
-      )}
-    </div>
-  );
-};
+//   return (
+//     <div>
+//       {editMode ? (
+//         <>
+//           <Input
+//             type="number"
+//             defaultValue={editedQuantity}
+//             onChange={(e) => setEditedQuantity(Number(e.target.value))}
+//           />
+//           <Button onClick={handleEditQuantity} size="small" className="mt-2">
+//             Update
+//           </Button>
+//         </>
+//       ) : (
+//         <span
+//           onClick={() => setEditMode(true)}
+//           className="font-semibold text-accent underline transition-colors duration-200 ms-1 hover:text-accent-hover hover:no-underline focus:text-accent-700 focus:no-underline focus:outline-none"
+//         >
+//           {updatedQuantity}
+//         </span>
+//       )}
+//     </div>
+//   );
+// };
 
 const StockList = ({ me, onSort, onOrder }: IProps) => {
   const router = useRouter();

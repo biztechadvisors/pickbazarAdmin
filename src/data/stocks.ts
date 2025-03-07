@@ -11,11 +11,11 @@ import { toast } from 'react-toastify';
 //     try {
 //       const response = await stockClient.getById(id);
 //       return response;
-      
+
 //     } catch (error) {
 //       throw new Error(error.message);
 //     }
-    
+
 //   });
 // };
 
@@ -124,15 +124,18 @@ export interface StockIdS {
   dealerId: number;
   orderId: string;
 }
+
 export const useFetchStockOrderData = ({ dealerId, orderId }: StockIdS) => {
-  return useQuery([API_ENDPOINTS.STOCK, dealerId, orderId], async () => {
-    try {
+  return useQuery(
+    [API_ENDPOINTS.STOCK, dealerId, orderId],
+    async () => {
       const data = await stockClient.getStockByOrderId({ dealerId, orderId });
       return data;
-    } catch (error) {
-      console.log(error);
+    },
+    {
+      enabled: !!dealerId, // Only run when dealerId is available
     }
-  });
+  );
 };
 
 export const useUpdateStockDataById = (user_id: any) => {
