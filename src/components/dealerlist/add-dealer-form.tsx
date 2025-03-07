@@ -175,8 +175,8 @@ function SelectProduct({
   const [shopSlug, setShopSlug] = useState<string | null>(null);
 
   let dealerId;
-  if (me?.dealer.id && me.permission.permission.type_name == "Dealer") {
-    dealerId = me?.dealer && me?.dealer.id
+  if (me?.dealer?.id && me?.permission?.permission?.type_name == "Dealer") {
+    dealerId = me?.dealer && me?.dealer?.id
   }
 
   const {

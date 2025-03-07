@@ -115,7 +115,7 @@ const DispatchModal: React.FC<DispatchModalProps> = ({
             }`}
           control={control}
           defaultValue={
-            ReceivedButton ? item.receivedQuantity : item.dispatchedQuantity
+            ReceivedButton ? item.dispatchedQuantity : item.receivedQuantity
           }
           render={({ field }) => (
             <input
@@ -136,7 +136,7 @@ const DispatchModal: React.FC<DispatchModalProps> = ({
         <Controller
           name={`products.${item.id}.update_qty`}
           control={control}
-          defaultValue={item.update_qty || 0}
+          defaultValue={ReceivedButton ? item.receivedQuantity : item.dispatchedQuantity}
           render={({ field }) => (
             <input
               type="number"

@@ -206,18 +206,21 @@ export const siteSettings = {
         label: 'sidebar-nav-item-message',
         icon: 'ChatIcon',
       },
+
+      // Stock sidebar ------------------------
       {
-        ...(permission && identify == matching
-          ? {
-            href: `${Routes.stock.list}/dealer`,
-            label: 'sidebar-nav-item-stocks',
-            icon: 'ProductsIcon',
-          }
-          : {
-            href: Routes.stock.list,
-            label: 'sidebar-nav-item-stocks',
-            icon: 'ProductsIcon',
-          }),
+        ...(permission && identify == matching)
+        && {
+          href: `${Routes.stock.list}/dealer`,
+          label: 'sidebar-nav-item-stocks',
+          icon: 'ProductsIcon',
+        }
+        // : {
+        //   href: Routes.stock.list,
+        //   label: 'sidebar-nav-item-stocks',
+        //   icon: 'ProductsIcon',
+        // }
+        // ),
       },
       {
         href: Routes.refund.list,

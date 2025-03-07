@@ -162,7 +162,7 @@ export default function OrderDetailsPage() {
                     <span>{name}</span>
                     <span className="mx-2">x</span>
                     <span className="font-semibold text-heading">
-                        {item.pivot.order_quantity}
+                        {item.order_quantity}
                     </span>
                 </div>
             ),
@@ -174,7 +174,7 @@ export default function OrderDetailsPage() {
             align: alignRight,
             render: function Render(_: any, item: any) {
                 const { price } = usePrice({
-                    amount: parseFloat(item.pivot.subtotal),
+                    amount: parseFloat(item.subtotal),
                 });
                 return <span>{price}</span>;
             },

@@ -130,8 +130,6 @@ export default function DealerOrders() {
             // Remove non-digits from tracking number
             const trackingNumber = order.tracking_number ? order.tracking_number : '';
 
-
-
             return [
                 order.payment_intent?.order_id || null, // Handle potential missing values
                 order.customer?.email || null,

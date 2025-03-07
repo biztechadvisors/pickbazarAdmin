@@ -52,6 +52,9 @@ const OrderList = ({
   const Shop = me?.permission.type_name === Company;
 
   const router = useRouter();
+  const { locale, query } = router;
+  const { shop: shopSlug, dealerId } = query;
+
   const { t } = useTranslation();
   const rowExpandable = (record: any) => record.children?.length;
   const { alignLeft } = useIsRTL();
@@ -274,7 +277,9 @@ const OrderList = ({
             )}
             <ActionButtons
               id={id}
-              detailsUrl={`${Routes.singleorder}/${id}`}
+              detailsUrl={
+                // dealerId ? `${Routes.singleSaleOrder}/${id}` :
+                `${Routes.singleorder}/${id}`}
               customLocale={order.language}
             />
           </>
