@@ -1,3 +1,4 @@
+'use client';
 import React, { useEffect, useState } from 'react';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import Card from '@/components/common/card';
@@ -8,16 +9,26 @@ import Button from '@/components/ui/button';
 import { useQuery } from 'react-query';
 import { permissionClient } from '@/data/client/permission';
 import PermissionJson from '../../../../public/static/permission.json';
-import { useSavePermissionData } from '@/data/permission';
+import { usePermissionData, useSavePermissionData } from '@/data/permission';
 import { useMeQuery } from '@/data/user';
 import { getAuthCredentials } from '@/utils/auth-utils';
 import { newPermission } from '@/contexts/permission/storepermission';
 import { useAtom } from 'jotai';
 import OwnerLayout from '@/components/layouts/owner';
-import { ADMIN, DEALER, OWNER, STAFF, Company } from '@/utils/constants';
+import { ADMIN, Company, DEALER, OWNER, STAFF } from '@/utils/constants';
 import AdminLayout from '@/components/layouts/admin';
+import { CreatePermissionInput, permissionType as PermissionType } from '@/types';
+import useFormValues from '@/lib/hooks/use-form-values';
 
-const CreatePermission = () => {
+
+function Loader() {
+  return null;
+}
+
+const CreatePermission = ({
+  permissionType,
+  defaultPermissions,
+}: CreatePermissionInput) => {
   const router = useRouter();
   const { t } = useTranslation();
   const [typeName, setTypeName] = useState(PermissionJson.type_name);
@@ -25,11 +36,32 @@ const CreatePermission = () => {
   const [selectedType, setSelectedType] = useState('');
   const [menusData, setMenusData] = useState(PermissionJson.Menus);
   const [permissionName, setPermissionName] = useState('');
-  const [selectedPermissions, setSelectedPermissions] = useState([]);
+  const [selectedPermissions, setSelectedPermissions] = useState(
+    defaultPermissions ? defaultPermissions : []
+  );
   const [typeError, setTypeError] = useState('');
   const [permissionError, setPermissionError] = useState('');
 
+  const {
+    isLoading: loading,
+    isEqual,
+    setIsEqual,
+    doesPermissionMatch,
+    setPermissionName:setName
+  } = useFormValues();
+
+
+  if (permissionType)
+    setIsEqual(
+      doesPermissionMatch(
+        selectedPermissions,
+        // defaultPermissions ? defaultPermissions : []
+      )
+    );
   const { permissions } = getAuthCredentials();
+
+  console.log('permissions', selectedPermissions);
+  console.log('Are array equal', isEqual);
 
   const [matched, _] = useAtom(newPermission);
 
@@ -74,36 +106,37 @@ const CreatePermission = () => {
   };
 
   const handleCheckboxChange = (menuItem: any, type: any, isChecked: any) => {
-    const permissionIndex = selectedPermissions.findIndex(
-      (p) => p.type === menuItem
-    );
-    if (permissionIndex !== -1) {
-      const updatedPermissions = [...selectedPermissions];
-      updatedPermissions[permissionIndex] = {
-        ...updatedPermissions[permissionIndex],
-        [type]: isChecked,
-      };
-      if (
-        !updatedPermissions[permissionIndex].read &&
-        !updatedPermissions[permissionIndex].write
-      ) {
-        updatedPermissions.splice(permissionIndex, 1);
-      }
-      setSelectedPermissions(updatedPermissions);
-    } else {
-      if (isChecked) {
-        const newPermission = {
-          type: menuItem,
-          read: false,
-          write: false,
+    setSelectedPermissions((prevPermissions) => {
+      const permissionIndex = prevPermissions.findIndex(
+        (p) => p.type === menuItem
+      );
+
+      if (permissionIndex !== -1) {
+        const updatedPermissions = [...prevPermissions];
+        updatedPermissions[permissionIndex] = {
+          ...updatedPermissions[permissionIndex],
+          [type]: isChecked,
         };
-        newPermission[type] = isChecked;
-        setSelectedPermissions((prevPermissions) => [
-          ...prevPermissions,
-          newPermission,
-        ]);
+
+        // If both read and write are false, remove the permission
+        if (
+          !updatedPermissions[permissionIndex].read &&
+          !updatedPermissions[permissionIndex].write
+        ) {
+          updatedPermissions.splice(permissionIndex, 1);
+        }
+        return updatedPermissions;
+      } else {
+        if (isChecked) {
+          return [
+            ...prevPermissions,
+            { type: menuItem, read: type === 'read', write: type === 'write' },
+          ];
+        }
       }
-    }
+
+      return prevPermissions;
+    });
   };
 
   const handleSavePermission = async () => {
@@ -111,9 +144,9 @@ const CreatePermission = () => {
       setPermissionError('Please enter a permission name.');
       return;
     }
+    let typeToSend = selectedType ? selectedType : permissionType;
 
-    let typeToSend = selectedType;
-    if (!selectedType) {
+    if (!selectedType && !permissionType) {
       const firstType = Object.values(typeName)[0];
       typeToSend = firstType;
       setSelectedType(firstType);
@@ -137,6 +170,7 @@ const CreatePermission = () => {
         const permissionId = router.query.id;
         await mutateUpdate({ permissionId, dataToSend });
       } else {
+        if (permissionType) setName(permissionName);
         await mutatePost(dataToSend2);
       }
     } catch (error) {
@@ -147,10 +181,13 @@ const CreatePermission = () => {
 
   const filteredData = () => {
     if (permissions?.includes(OWNER)) {
-      return Object.entries(menusData).map(([key, value], index) => ({
+      const data = Object.entries(menusData).map(([key, value], index) => ({
         [key]: value,
         id: index + 1,
       }));
+      // console.log('data 147 ', data);
+
+      return data;
     } else {
       const newArrayData = matched.map((item) => item.type);
       const menusDataArray = Object.values(menusData);
@@ -165,7 +202,7 @@ const CreatePermission = () => {
         );
       });
 
-      console.log("last 168 ", last)
+      // console.log('last 168 ', last);
 
       return last;
     }
@@ -204,63 +241,79 @@ const CreatePermission = () => {
     }
   }, []);
 
+  if (loading) return <Loader />;
+
+  const content = (
+    <>
+      <div
+        className={`mb-4 md:mb-0 md:w-1/4 ${permissionType ? 'hidden' : ''}`}
+      >
+        <h1 className="text-xl font-semibold text-heading">
+          Permission Management
+        </h1>
+      </div>
+
+      <div className={`mx-4 md:w-1/4 ${permissionType ? 'hidden' : ''}`}>
+        <label
+          htmlFor="typename"
+          className="block text-sm font-medium text-gray-700"
+        >
+          {t('PERMISSION TYPE')}
+        </label>
+        <select
+          id="typename"
+          name="typename"
+          className={`mt-1 block w-full rounded-md border bg-gray-100 p-2 ${
+            typeError && 'border-red-500'
+          }`}
+          onChange={(e) => handleChange(e)}
+          value={permissionType}
+        >
+          {Object.values(typeName).map((type, index) => (
+            <option key={index} value={type}>
+              {type}
+            </option>
+          ))}
+        </select>
+        {typeError && <p className="mt-1 text-sm text-red-500">{typeError}</p>}
+      </div>
+
+      <div className={`md:w-1/4 ${isEqual ? 'hidden' : 'mt-3'}`}>
+        <label
+          htmlFor="permission"
+          className="block text-sm font-medium text-gray-700"
+        >
+          {t('PERMISSIONS NAME')}
+        </label>
+        <input
+          type="text"
+          id="permission"
+          name="permission"
+          className={`mt-1 block w-full rounded-md border bg-gray-100 p-2 ${
+            permissionError && 'border-red-500'
+          }`}
+          placeholder="Enter permissions"
+          value={permissionName}
+          onChange={(e) => handlePermissionNameChange(e)}
+        />
+        {permissionError && (
+          <p className="mt-1 text-sm text-red-500">{permissionError}</p>
+        )}
+      </div>
+    </>
+  );
+
   return (
     <>
-      <Card className="mb-8 flex flex-col items-center xl:flex-row">
-        <div className="mb-4 md:mb-0 md:w-1/4">
-          <h1 className="text-xl font-semibold text-heading">
-            Permission Management
-          </h1>
+      {permissionType ? (
+        <div className="mb-8 flex flex-col items-center xl:flex-row">
+          {content}
         </div>
-
-        <div className="mx-4 md:w-1/4">
-          <label
-            htmlFor="typename"
-            className="block text-sm font-medium text-gray-700"
-          >
-            {t('PERMISSION TYPE')}
-          </label>
-          <select
-            id="typename"
-            name="typename"
-            className={`mt-1 block w-full rounded-md border bg-gray-100 p-2 ${typeError && 'border-red-500'
-              }`}
-            onChange={(e) => handleChange(e)}
-          >
-            {Object.values(typeName).map((type, index) => (
-              <option key={index} value={type}>
-                {type}
-              </option>
-            ))}
-          </select>
-          {typeError && (
-            <p className="mt-1 text-sm text-red-500">{typeError}</p>
-          )}
-        </div>
-
-        <div className="md:w-1/4">
-          <label
-            htmlFor="permission"
-            className="block text-sm font-medium text-gray-700"
-          >
-            {t('PERMISSIONS NAME')}
-          </label>
-          <input
-            type="text"
-            id="permission"
-            name="permission"
-            className={`mt-1 block w-full rounded-md border bg-gray-100 p-2 ${permissionError && 'border-red-500'
-              }`}
-            placeholder="Enter permissions"
-            value={permissionName}
-            onChange={(e) => handlePermissionNameChange(e)}
-          />
-          {permissionError && (
-            <p className="mt-1 text-sm text-red-500">{permissionError}</p>
-          )}
-        </div>
-      </Card>
-
+      ) : (
+        <Card className="mb-8 flex flex-col items-center xl:flex-row">
+          {content}
+        </Card>
+      )}
       <div className="order-2 col-span-12 sm:col-span-6 xl:order-1 xl:col-span-4 3xl:col-span-3">
         <div className="flex flex-col items-center rounded bg-white px-6 py-8">
           <table className="w-full">
@@ -273,76 +326,79 @@ const CreatePermission = () => {
               </tr>
             </thead>
             <tbody>
-              {filteredData().map((item, index) => (
-                <tr key={index}>
-                  <td className="border p-2">{index + 1}</td>
-                  <td className="border p-2">{Object.keys(item)[0]}</td>
-                  <td className="items-center justify-center border p-2">
-                    <input
-                      className="items-center justify-center"
-                      type="checkbox"
-                      id={`readCheckbox${index}`}
-                      onChange={(e) =>
-                        handleCheckboxChange(
-                          Object.values(item)[0],
-                          'read',
-                          e.target.checked
-                        )
-                      }
-                      checked={
-                        selectedPermissions?.find(
-                          (p) => p.type === Object.values(item)[0]
-                        )?.read || false
-                      }
-                    />
-                  </td>
-                  <td className="items-center justify-center border p-2">
-                    <input
-                      className="items-center justify-center"
-                      type="checkbox"
-                      id={`writeCheckbox${index}`}
-                      onChange={(e) =>
-                        handleCheckboxChange(
-                          Object.values(item)[0],
-                          'write',
-                          e.target.checked
-                        )
-                      }
-                      checked={
-                        selectedPermissions?.find(
-                          (p) => p.type === Object.values(item)[0]
-                        )?.write || false
-                      }
-                    />
-                  </td>
-                </tr>
-              ))}
+              {filteredData().map((item, index) => {
+                const key = Object.keys(item)[0];
+                const value = Object.values(item)[0];
+
+                const defaultPermission = defaultPermissions?.find(
+                  (p) => p.type === value
+                );
+
+                return (
+                  <tr key={index}>
+                    <td className="border p-2">{index + 1}</td>
+                    <td className="border p-2">{key}</td>
+                    <td className="items-center justify-center border p-2">
+                      <input
+                        className="items-center justify-center"
+                        type="checkbox"
+                        id={`readCheckbox${index}`}
+                        onChange={(e) =>
+                          handleCheckboxChange(value, 'read', e.target.checked)
+                        }
+                        checked={
+                          selectedPermissions.find((p) => p.type === value)
+                            ?.read ??
+                          defaultPermission?.read ??
+                          false
+                        }
+                      />
+                    </td>
+                    <td className="items-center justify-center border p-2">
+                      <input
+                        className="items-center justify-center"
+                        type="checkbox"
+                        id={`writeCheckbox${index}`}
+                        onChange={(e) =>
+                          handleCheckboxChange(value, 'write', e.target.checked)
+                        }
+                        checked={
+                          selectedPermissions.find((p) => p.type === value)
+                            ?.write ??
+                          defaultPermission?.write ??
+                          false
+                        }
+                      />
+                    </td>
+                  </tr>
+                );
+              })}
             </tbody>
           </table>
         </div>
       </div>
-      <div className="flex justify-end">
-        <Button
-          variant="outline"
-          onClick={router.back}
-          className="m-4"
-          type="button"
-        >
-          {t('form:button-label-back')}
-        </Button>
-        <Button onClick={handleSavePermission} className="mt-4">
-          Save Permission
-        </Button>
-      </div>
+      {!isEqual && (
+        <div className="flex justify-end">
+          <Button
+            variant="outline"
+            onClick={router.back}
+            className="m-4"
+            type="button"
+          >
+            {t('form:button-label-back')}
+          </Button>
+          <Button onClick={handleSavePermission} className="mt-4">
+            Save Permission
+          </Button>
+        </div>
+      )}
     </>
   );
 };
 
 // Determine layout conditionally based on permissions
 CreatePermission.Layout =
-  getAuthCredentials().permissions?.[0] === OWNER
-    ? OwnerLayout
-    : AdminLayout;
+  getAuthCredentials().permissions?.[0] === OWNER ? OwnerLayout : AdminLayout;
 
 export const getStaticProps = async ({ locale }) => ({
   props: {

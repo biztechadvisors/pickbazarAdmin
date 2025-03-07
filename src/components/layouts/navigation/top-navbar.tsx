@@ -6,21 +6,24 @@ import { NavbarIcon } from '@/components/icons/navbar-icon';
 import { motion } from 'framer-motion';
 import { useTranslation } from 'next-i18next';
 import { Routes } from '@/config/routes';
-import {
-  getAuthCredentials,
-} from '@/utils/auth-utils';
+import { getAuthCredentials } from '@/utils/auth-utils';
 import LanguageSwitcher from './language-switer';
 import { Config } from '@/config';
 import React from 'react';
 import { AllPermission } from '@/utils/AllPermission';
 import { OWNER } from '@/utils/constants';
 import NotificationMenu from './notification-menu';
+import { useRouter } from 'next/router';
+import { useShopQuery } from '@/data/shop';
 
 const Navbar: React.FC = () => {
   const { t } = useTranslation();
   const { toggleSidebar } = useUI();
 
   const { permissions } = getAuthCredentials();
+  const shopSlug = process.env.NEXT_PUBLIC_SHOP_NAME ?? "automobile-demo"
+
+  const { data } = useShopQuery({ slug: shopSlug as string });
 
   // Check if the user has OWNER permission
   const canWrite = permissions?.includes(OWNER);
@@ -54,8 +57,11 @@ const Navbar: React.FC = () => {
             </LinkButton>
           )}
           {enableMultiLang && <LanguageSwitcher />}
-          <NotificationMenu/>
-          <AuthorizedMenu />
+          <NotificationMenu />
+          <div  className="flex flex-col items-center">
+            <AuthorizedMenu />
+            <h1 className="text-sm text-muted">{data?.name}</h1>
+          </div>
         </div>
       </nav>
     </header>
