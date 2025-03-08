@@ -130,6 +130,11 @@ const ManufacturerDeleteView = dynamic(
 const ProductVariation = dynamic(
   () => import('@/components/product/variation/variation')
 );
+
+const StockProductVariation = dynamic(
+  () => import('@/components/product/variation/stockProductvariation')
+);
+
 const AbuseReport = dynamic(() => import('@/components/reviews/abuse-report'));
 const OpenAiModal = dynamic(() => import('@/components/openAI/openAI.modal'));
 const ComposerMessage = dynamic(
@@ -200,6 +205,9 @@ function renderModal(view: MODAL_VIEWS | undefined, data: any) {
       return <UserWalletPointsAddView />;
     case 'SELECT_PRODUCT_VARIATION':
       return <ProductVariation productSlug={data} />;
+
+    case 'SELECT_STOCK_PRODUCT_VARIATION':
+      return <StockProductVariation item={data} />;
     case 'SELECT_CUSTOMER':
       return <SelectCustomer />;
     case 'REPLY_QUESTION':

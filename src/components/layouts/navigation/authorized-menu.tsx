@@ -16,7 +16,6 @@ export default function AuthorizedMenu() {
   const { t } = useTranslation('common');
   // const [shopSlug, setShopSlug] = useState<string | null>(null);
 
-  console.log("USEME__",data)
   const shopSlug = data?.createdBy?.managed_shop?.slug;
   const shopId = data?.createdBy?.managed_shop?.id;
   const userName = data?.name;
@@ -26,10 +25,10 @@ export default function AuthorizedMenu() {
   //     setShopSlug(storedSlug);
   //   }
   // }, []);
-  console.log("shopSlug**",shopSlug)
+
 const { data: shopData, isLoading: shopLoading, error: shopError } = useShopQuery({ slug: shopSlug?.toString() });
   const [isChecked, setIsChecked] = useAtom(toggleAtom);
-console.log("ShopDATA__",shopData)
+
   const handleToggle = () => {
     setIsChecked((prevIsChecked) => !prevIsChecked);
   };

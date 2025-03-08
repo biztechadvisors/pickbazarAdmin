@@ -13,6 +13,7 @@ import { getAuthCredentials } from '@/utils/auth-utils';
 import { siteSettings } from '@/settings/site.settings';
 import { AddToStock } from '../stock/add-to-stock';
 import { AllPermission } from '@/utils/AllPermission';
+import { useMeQuery } from '@/data/user';
 
 interface Props {
   item: Product;
@@ -39,6 +40,10 @@ const StockCard = ({ item, isChecked, inStock }: Props) => {
     margin,
   } = item.product ?? {};
 
+
+  const { data }: any = useMeQuery();
+  const { id, email, contact } = data || {};
+
   const {
     price: currentPrice,
     basePrice,
@@ -62,7 +67,7 @@ const StockCard = ({ item, isChecked, inStock }: Props) => {
   const canWrite = permissionTypes.includes('sidebar-nav-item-create-order');
 
   function handleVariableProduct() {
-    return openModal('SELECT_PRODUCT_VARIATION', { slug, product_id, undefined });
+    return openModal('SELECT_STOCK_PRODUCT_VARIATION', { item });
   }
 
   return (
@@ -137,7 +142,12 @@ const StockCard = ({ item, isChecked, inStock }: Props) => {
             canWrite && (
               <>
                 {Number(quantity) > 0 && (
-                  <AddToStock variant="neon" data={item.product} />
+                  <AddToStock variant="neon"
+                    data={item.product}
+                    id={id}
+                    email={email}
+                    phone={contact}
+                  />
                 )}
               </>
             )
