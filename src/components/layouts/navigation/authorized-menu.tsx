@@ -1,5 +1,5 @@
 import cn from 'classnames';
-import { Fragment, useState } from 'react';
+import { Fragment, useEffect, useState } from 'react';
 import { Menu, Transition } from '@headlessui/react';
 import Avatar from '@/components/common/avatar';
 import Link from '@/components/ui/link';
@@ -9,20 +9,34 @@ import { useMeQuery } from '@/data/user';
 import ToggleSwitch from './ToggleSwitch';
 import { useAtom } from 'jotai';
 import { toggleAtom } from '../../../utils/atoms';
+import { useShopQuery } from '@/data/shop';
 
 export default function AuthorizedMenu() {
   const { data } = useMeQuery();
   const { t } = useTranslation('common');
+  // const [shopSlug, setShopSlug] = useState<string | null>(null);
 
+  console.log("USEME__",data)
+  const shopSlug = data?.createdBy?.managed_shop?.slug;
+  const shopId = data?.createdBy?.managed_shop?.id;
+  const userName = data?.name;
+  // useEffect(() => {
+  //   if (typeof window !== 'undefined') {
+  //     const storedSlug = localStorage.getItem('shopSlug');
+  //     setShopSlug(storedSlug);
+  //   }
+  // }, []);
+  console.log("shopSlug**",shopSlug)
+const { data: shopData, isLoading: shopLoading, error: shopError } = useShopQuery({ slug: shopSlug?.toString() });
   const [isChecked, setIsChecked] = useAtom(toggleAtom);
-
+console.log("ShopDATA__",shopData)
   const handleToggle = () => {
     setIsChecked((prevIsChecked) => !prevIsChecked);
   };
 
   return (
     <Menu as="div" className="relative inline-block text-left">
-      <Menu.Button className="flex items-center focus:outline-none">
+      <Menu.Button className="flex flex-col items-center focus:outline-none">
         <Avatar
           src={
             data?.profile?.avatar?.thumbnail ??
@@ -30,6 +44,9 @@ export default function AuthorizedMenu() {
           }
           alt="avatar"
         />
+        <div className="mt-1 text-center">
+          <span className="block text-sm font-semibold">{userName}</span> 
+        </div>
       </Menu.Button>
 
       <Transition

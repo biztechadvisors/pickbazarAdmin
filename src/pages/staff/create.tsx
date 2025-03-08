@@ -16,6 +16,9 @@ import { useRouter } from 'next/router';
 import AdminLayout from '@/components/layouts/admin';
 import OwnerLayout from '@/components/layouts/owner';
 import { OWNER } from '@/utils/constants';
+import { usePermissionData } from '@/data/permission';
+import { PermissionsProps } from '@/types';
+import Loader from '@/components/ui/loader/loader';
 
 export default function AddStaffPage() {
   const { t } = useTranslation();
@@ -28,6 +31,11 @@ export default function AddStaffPage() {
   const { data: shopData } = useShopQuery({
     slug: shop as string,
   });
+  const { data: permissionData,isLoading } = usePermissionData();
+  const defaultValue = permissionData?.filter((permission:PermissionsProps) => permission.id === 186)[0]?.permission_name
+  const defaultPermission = permissionData?.filter((permission:PermissionsProps) => permission.id === 186)[0]?.permissions
+  if (isLoading) return <Loader />;
+
   const shopId = shopData?.id!;
   if (
     !hasAccess(adminOnly, permissions) &&
@@ -43,7 +51,7 @@ export default function AddStaffPage() {
           {t('form:form-title-create-staff')}
         </h1>
       </div>
-      <AddStaffForm />
+      <AddStaffForm defaultVal={defaultValue} defaultPermissions={defaultPermission}/>
     </>
   );
 }

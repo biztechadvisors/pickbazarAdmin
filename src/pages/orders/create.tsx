@@ -78,8 +78,8 @@ export default function ProductsPage() {
 
     const { products, loading, paginatorInfo, error } = useProductsQuery({
         limit: 18,
-        language: locale,
-        status: ProductStatus.Publish,
+        language: locale,       
+        status: ProductStatus.Publish,       
         name: searchTerm,
         page,
         type,

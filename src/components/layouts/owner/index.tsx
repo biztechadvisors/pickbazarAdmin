@@ -7,7 +7,7 @@ import SidebarItem from '@/components/layouts/navigation/sidebar-item';
 import { useRouter } from 'next/router';
 import { useMeQuery } from '@/data/user';
 import { getAuthCredentials } from '@/utils/auth-utils';
-import { OWNER } from '@/utils/constants';
+import { OWNER, STAFF } from '@/utils/constants';
 import Loader from '@/components/ui/loader/loader';
 
 const OwnerLayout: React.FC<{ children?: React.ReactNode }> = ({
@@ -37,10 +37,11 @@ const OwnerLayout: React.FC<{ children?: React.ReactNode }> = ({
       </div>
     ); // Replace with your loading indicator
   }
-  const matchedLinks = permissions?.includes(OWNER)
+  const matchedLinks = permissions?.includes(OWNER)|| permissions?.includes(STAFF)
     ? siteSettings.sidebarLinks.owner
-    : siteSettings.sidebarLinks.admin;
-
+    : siteSettings.sidebarLinks.admin; 
+    
+    console.log("OwnerMAtch++",matchedLinks);
   const SidebarItemMap = () => (
     <Fragment>
       {matchedLinks.map(({ href, label, icon }) => (

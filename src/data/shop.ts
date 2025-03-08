@@ -72,13 +72,37 @@ export const useUpdateShopMutation = () => {
   });
 };
 
+// export const useShopQuery = ({ slug }: { slug: string }, options?: any) => {
+//   return useQuery<Shop, Error>(
+//     [API_ENDPOINTS.SHOPS, { slug }],
+//     () => shopClient.get({ slug }),
+//     options
+//   );
+// };
+
 export const useShopQuery = ({ slug }: { slug: string }, options?: any) => {
+  const queryClient = useQueryClient();
+
   return useQuery<Shop, Error>(
     [API_ENDPOINTS.SHOPS, { slug }],
-    () => shopClient.get({ slug }),
-    options
+    async () => {
+      const response = await shopClient.get({ slug });
+
+      // Store the fetched data in cache
+      queryClient.setQueryData([API_ENDPOINTS.SHOPS, { slug }], response);
+
+      return response;
+    },
+    {
+      ...options,
+      initialData: () => {
+        // Retrieve cached data if available
+        return queryClient.getQueryData<Shop>([API_ENDPOINTS.SHOPS, { slug }]);
+      },
+    }
   );
 };
+
 
 export const useShopsQuery = (options: Partial<ShopQueryOptions>) => {
   const { data, error, isLoading } = useQuery<ShopPaginator, Error>(
