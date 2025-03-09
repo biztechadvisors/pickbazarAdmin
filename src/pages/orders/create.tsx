@@ -27,6 +27,7 @@ import { toggleAtom } from '@/utils/atoms';
 import { useMeQuery } from '@/data/user';
 import { AllPermission } from '@/utils/AllPermission';
 import { useShopQuery } from '@/data/shop';
+import { DEALER } from '@/utils/constants';
 
 export default function ProductsPage() {
     const { locale } = useRouter();
@@ -73,13 +74,18 @@ export default function ProductsPage() {
         dealerId = meData?.dealer && meData?.dealer?.id
     }
 
-
     const [isChecked] = useAtom(toggleAtom);
+
+    // if (meData?.permission?.type_name || meData?.permission?.createdBy?.permission?.type_name == DEALER) {
+
+    // } else {
+
+    // }
 
     const { products, loading, paginatorInfo, error } = useProductsQuery({
         limit: 18,
-        language: locale,       
-        status: ProductStatus.Publish,       
+        language: locale,
+        status: ProductStatus.Publish,
         name: searchTerm,
         page,
         type,
