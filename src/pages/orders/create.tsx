@@ -42,6 +42,8 @@ export default function ProductsPage() {
         setVisible((v) => !v);
     };
 
+    const [isChecked] = useAtom(toggleAtom);
+
     const { data: meData } = useMeQuery();
 
     const { id, email, contact } = meData || {};
@@ -70,17 +72,10 @@ export default function ProductsPage() {
     const shop_id = meData?.shop_id;
 
     let dealerId;
-    if (meData?.dealer?.id && meData?.permission?.permission?.type_name == "Dealer") {
+    if (meData?.dealer?.id && meData?.permission?.type_name === DEALER || meData?.permission?.createdBy?.permission?.type_name == DEALER) {
+        console.log("dealer cehck 75 ")
         dealerId = meData?.dealer && meData?.dealer?.id
     }
-
-    const [isChecked] = useAtom(toggleAtom);
-
-    // if (meData?.permission?.type_name || meData?.permission?.createdBy?.permission?.type_name == DEALER) {
-
-    // } else {
-
-    // }
 
     const { products, loading, paginatorInfo, error } = useProductsQuery({
         limit: 18,
@@ -95,6 +90,7 @@ export default function ProductsPage() {
         shopName: shopSlug || shopData?.name,
         search: searchTerm,
     });
+
 
     const permissionTypes = AllPermission();
 

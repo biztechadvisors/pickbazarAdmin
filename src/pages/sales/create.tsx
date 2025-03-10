@@ -35,6 +35,7 @@ import Card from '@/components/common/card';
 import StockCounterButton from '@/components/stock/stock-counter-btn';
 import Stock from '@/components/stock/Stock';
 import { AllPermission } from '@/utils/AllPermission';
+import { DEALER } from '@/utils/constants';
 
 export default function SalesPage() {
   const { locale } = useRouter();
@@ -52,8 +53,11 @@ export default function SalesPage() {
   const { data: meData } = useMeQuery();
   const [isChecked] = useAtom(toggleAtom);
 
-  const { data: stockData, isLoading, error } = useGetStock(meData?.id);
-
+  const shouldFetchStock = meData?.id && meData?.permission?.type_name === DEALER || meData?.createdBy?.permission?.type_name === DEALER;
+  console.log("shouldFetchStock 57 ", shouldFetchStock)
+  const { data: stockData, isLoading, error } = useGetStock(meData?.id, {
+    enabled: shouldFetchStock, // Prevent API call when shouldFetchStock is false
+  });
 
   const permissionTypes = AllPermission();
 
@@ -121,7 +125,7 @@ export default function SalesPage() {
         <>
           <div className="flex space-x-5">
             <div className="grid w-full grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-2 xl:grid-cols-4 3xl:grid-cols-6">
-              {stockData?.map((e: any) => (
+              {stockData?.result?.map((e: any) => (
                 <StockCard
                   key={e.id}
                   item={e}

@@ -15,6 +15,7 @@ import { useMeQuery } from '@/data/user';
 import { useSettings } from '@/framework/rest/settings';
 import { dealerAddress } from '@/utils/atoms';
 import { useRouter } from 'next/router';
+import { DEALER } from '@/utils/constants';
 
 interface PlaceOrderActionProps {
   className?: string;
@@ -84,7 +85,12 @@ export const PlaceOrderAction: React.FC<PlaceOrderActionProps> = ({ className, c
   const [use_wallet_points] = useAtom(walletAtom);
 
   const { data: meData } = useMeQuery();
-  const dealerId = meData?.dealer?.id;
+
+  let dealerId: any;
+  if (meData?.permission?.type_name == DEALER) {
+    dealerId = meData?.id;
+  }
+
   const shop_id =
     meData?.shop_id ||
     meData?.createdBy.managed_shop?.id ||
