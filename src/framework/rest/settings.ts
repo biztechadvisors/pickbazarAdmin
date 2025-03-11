@@ -14,7 +14,6 @@ import { couponAtom } from '@/contexts/checkout';
 
 export function useSettings(shopSlug?: string | null) {
   const { locale } = useRouter();
-  console.log("shopSlug ", shopSlug)
   const formattedOptions = {
     language: locale,
     shopSlug: shopSlug || undefined,  // Ensure it's undefined instead of null

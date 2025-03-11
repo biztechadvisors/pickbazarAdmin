@@ -80,6 +80,7 @@ const ProductVariation = ({ productSlug }: { productSlug: any }) => {
 
   const { data }: any = useMeQuery();
   const userId = data?.dealer?.id;
+  const { id, email, contact } = data || {};
 
   const { slug, product_id, shop_id } = productSlug || {};
 
@@ -91,7 +92,6 @@ const ProductVariation = ({ productSlug }: { productSlug: any }) => {
     language: locale!,
   });
 
-  const { id, email, contact } = data || {};
 
   if (loading || !product) return <div>Loading</div>;
   return (

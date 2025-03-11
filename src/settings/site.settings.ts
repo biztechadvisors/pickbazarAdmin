@@ -19,9 +19,6 @@ let permission = hasAccess(dealerOnly, permissions);
 let identify = permissions;
 const matching: any = Type.Dealer;
 
-console.log("permission 17 ", permissions)
-console.log("permission && identify == matching", permission && identify == matching)
-
 export const siteSettings = {
   name: 'PickBazar',
   description: '',
@@ -81,7 +78,7 @@ export const siteSettings = {
         label: 'sidebar-nav-item-staffs',
         icon: 'UsersIcon',
         permissions: ownerAndStaffOnly,
-      }, 
+      },
     ],
     admin: [
       {
@@ -245,7 +242,7 @@ export const siteSettings = {
         icon: 'SettingsIcon',
       },
     ],
-  
+
   },
   product: {
     placeholder: '/product-placeholder.svg',

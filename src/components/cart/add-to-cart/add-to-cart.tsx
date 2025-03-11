@@ -8,12 +8,12 @@ interface Props {
   data: any;
   variant?: 'helium' | 'neon' | 'argon' | 'oganesson' | 'single' | 'big';
   counterVariant?:
-    | 'helium'
-    | 'neon'
-    | 'argon'
-    | 'oganesson'
-    | 'single'
-    | 'details';
+  | 'helium'
+  | 'neon'
+  | 'argon'
+  | 'oganesson'
+  | 'single'
+  | 'details';
   counterClass?: string;
   variation?: any;
   disabled?: boolean;
@@ -59,6 +59,7 @@ export const AddToCart = ({
   const handleAddClick = (
     e: React.MouseEvent<HTMLButtonElement | MouseEvent>
   ) => {
+
     e.stopPropagation();
     addItemToCart(
       customerData,

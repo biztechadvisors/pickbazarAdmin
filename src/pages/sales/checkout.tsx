@@ -47,9 +47,9 @@ export default function CheckoutPage() {
     }
   }, [customer?.id]);
 
+  console.log("user 50 ", user)
+
   if (loading) return <Loader text={t('common:text-loading')} />;
-
-
 
   return (
     <div className="bg-gray-100">
@@ -69,7 +69,7 @@ export default function CheckoutPage() {
             className="shadow-700 bg-light p-5 md:p-8"
             label={t('text-billing-address')}
             count={3}
-            addresses={user?.address?.filter(
+            addresses={user?.adds?.filter(
               (address) => address?.type === AddressType.Billing
             )}
             atom={billingAddressAtom}
@@ -81,7 +81,7 @@ export default function CheckoutPage() {
             className="shadow-700 bg-light p-5 md:p-8"
             label={t('text-shipping-address')}
             count={4}
-            addresses={user?.address?.filter(
+            addresses={user?.adds?.filter(
               (address) => address?.type === AddressType.Shipping
             )}
             atom={shippingAddressAtom}

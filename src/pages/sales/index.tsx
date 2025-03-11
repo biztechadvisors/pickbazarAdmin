@@ -60,7 +60,7 @@ export default function Sales() {
     ...(isCompany && { shopSlug: me?.managed_shop?.slug, type: 'Dealer' }),
   };
 
-  const { orders, loading: ordersLoading, paginatorInfo, error: ordersError } =
+  const { data: orders, loading: ordersLoading, paginatorInfo, error: ordersError } =
     isCompany ? useOrdersQuery(queryConfig) : useGetStockSales(me?.id, me?.createdBy?.shop_id);
 
   const { refetch } = useExportOrderQuery(
