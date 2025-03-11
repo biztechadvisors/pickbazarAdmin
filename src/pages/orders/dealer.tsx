@@ -18,6 +18,7 @@ import { Menu, Transition } from '@headlessui/react';
 import classNames from 'classnames';
 import { DownloadIcon } from '@/components/icons/download-icon';
 import { useMeQuery } from '@/data/user';
+import { DEALER } from '@/utils/constants';
 
 export default function DealerOrders() {
     const router = useRouter();
@@ -52,48 +53,139 @@ export default function DealerOrders() {
 
     const { data: me } = useMeQuery();
 
-    const { orders, loading, paginatorInfo, error } = useOrdersQuery({
+    const queryConfig = {
         language: locale,
         limit: 20,
         page,
         tracking_number: searchTerm,
-        shop_id: shopId ? shopId : undefined,
-        customer_id: Number(me?.id)
-    });
+        shop_id: shopId,
+        shop_slug: shopData?.name,
+        customer_id: Number(me?.id),
+        type: DEALER
 
-    const { refetch } = useExportOrderQuery(
-        {
-            ...(shopId && { shop_id: shopId }),
-        },
-        { enabled: false }
-    );
+    }
 
-    if (loading) return <Loader text={t('common:text-loading')} />;
-
-    if (loading) return <Loader text={t('common:text-loading')} />;
-    if (error) return <ErrorMessage message={error.message} />;
 
     async function handleExportOrder() {
-        const { data } = await refetch();
+        try {
+            const formattedData = transformForExcel(orders);
 
-        if (data) {
-            const a = document.createElement('a');
-            a.href = data;
-            a.setAttribute('download', 'export-order');
-            a.click();
+            const contentType = 'text/csv;charset=utf-8'; // Consistent with CSV export
+            const filename = generateFilename(contentType);
+
+            const blob = new Blob([formattedData], { type: contentType });
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(blob);
+            link.download = filename;
+            link.click();
+
+            setTimeout(() => URL.revokeObjectURL(link.href), 10000); // Revoke after 10 seconds
+        } catch (error) {
+            console.error('Error fetching or formatting data:', error);
+            // Handle error gracefully (e.g., display message to user)
         }
     }
 
-    console.log("orders ", orders)
-    const selfOrderList = orders.filter(
-        (order) => order?.customer_id === order?.dealer?.id
-    );
+    function transformForExcel(ordersData: any) {
+        // Create an array with column headers
+        const headerRow = [
+            'OrderId',
+            'Email',
+            'Order Date',
+            'Delivery Time',
+            'Order Status',
+            'Traking Nunmber',
+            'CouponId',
+            'Amount',
+            'Discount',
+            'Paid',
+            'Total',
+            'Sale Tax',
+            'Delivery Fee',
+            'PaymentId',
+            'Payment Gateway',
+            'Customer Contact',
+            'Billing Address',
+            'Shipping Address',
+            'Logistic Provider',
+        ];
+
+        // Create an array of data rows with corresponding values
+        const dataRows = ordersData.map((order: any) => {
+            const billingAddress = order.billing_address
+                ? `${order.billing_address.street_address} ${order.billing_address.country} ${order.billing_address.city} ${order.billing_address.state} ${order.billing_address.zip}`
+                : '';
+            const shippingAddress = order.shipping_address
+                ? `${order.shipping_address.street_address} ${order.shipping_address.country} ${order.shipping_address.city} ${order.shipping_address.state} ${order.shipping_address.zip}`
+                : '';
+
+            const escapedBillingAddress = billingAddress.replace(/,\r\n/g, '');
+            const escapedShippingAddress = shippingAddress.replace(/,\r\n/g, '');
+
+            // Extract and format contact number with country code (assuming country code is in a separate field)
+            const contactNumber = order.customer_contact
+                ? order.customer_contact // Remove non-digits
+                : '';
+
+            // Remove non-digits from tracking number
+            const trackingNumber = order.tracking_number ? order.tracking_number : '';
+
+            return [
+                order.payment_intent?.order_id || null, // Handle potential missing values
+                order.customer?.email || null,
+                order.created_at,
+                order.delivery_time,
+                order.order_status,
+                trackingNumber,
+                order.coupon_id,
+                order.amount,
+                order.discount,
+                order.paid_total,
+                order.total,
+                order.sales_tax,
+                order.delivery_fee || 0,
+                order.payment_intent?.payment_intent_info.payment_id || null,
+                order.payment_gateway,
+                contactNumber,
+                escapedBillingAddress,
+                escapedShippingAddress,
+                order.logistics_provider,
+            ];
+        });
+
+        // Combine header row and data rows into a single string
+        const csvContent = [headerRow.join(',')].concat(dataRows.map((row: any) => row.join(','))).join('\n');
+
+        return csvContent;
+    }
+
+
+    function generateFilename(contentType: any) {
+        const dateString = new Date().toISOString().slice(0, 10); // YYYY-MM-DD format
+        let extension;
+        switch (contentType) {
+            case 'text/csv;charset=utf-8':
+                extension = '.csv';
+                break;
+            case 'application/pdf': // Add PDF case if PDF export is implemented
+                extension = '.pdf';
+                break;
+            default:
+                extension = '.csv';
+        }
+        return `export-data-${dateString}${extension}`;
+    }
+
+    const { orders, loading, paginatorInfo, error } = useOrdersQuery(queryConfig);
+    if (loading) return <Loader text={t('common:text-loading')} />;
+    if (error) return <ErrorMessage message={error.message} />;
+
 
     return (
         <>
             <Card className="mb-8 flex flex-col items-center justify-between md:flex-row">
                 <div className="mb-4 md:mb-0 md:w-1/4">
-                    <h1 className="text-lg font-semibold text-heading">Self Orders</h1>
+                    <h1 className="text-lg font-semibold text-heading">Dealer Orders</h1>
                 </div>
 
                 <div className="flex w-full flex-col items-center ms-auto md:w-1/2 md:flex-row">
@@ -144,11 +236,13 @@ export default function DealerOrders() {
             </Card>
 
             <OrderList
-                orders={selfOrderList}
+                orders={orders}
                 paginatorInfo={paginatorInfo}
                 onPagination={handlePagination}
                 onOrder={setOrder}
-                onSort={setColumn} Shop={false} />
+                onSort={setColumn}
+                Shop={false}
+            />
         </>
     );
 }

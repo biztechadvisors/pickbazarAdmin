@@ -33,7 +33,20 @@ const Variation = ({ product, id, email, contact }: Props) => {
         Object.values(attributes).sort()
       )
     );
+
+    // Extract variation_id from the selected variation option attribute values
+    if (selectedVariation) {
+      const variationTitleParts = selectedVariation.title.split('/');
+      const variationId = variationTitleParts[variationTitleParts.length - 1].trim();
+      selectedVariation.variation_id = variationId;
+
+      // Include the variation_id in the product's pivot data
+      if (product.pivot) {
+        product.pivot.variation_id = variationId;
+      }
+    }
   }
+
   return (
     <div className="w-[95vw] max-w-lg rounded-md bg-white p-8">
       <h3 className="mb-2 text-center text-2xl font-semibold text-heading">
@@ -67,6 +80,7 @@ const ProductVariation = ({ productSlug }: { productSlug: any }) => {
 
   const { data }: any = useMeQuery();
   const userId = data?.dealer?.id;
+  const { id, email, contact } = data || {};
 
   const { slug, product_id, shop_id } = productSlug || {};
 
@@ -78,7 +92,6 @@ const ProductVariation = ({ productSlug }: { productSlug: any }) => {
     language: locale!,
   });
 
-  const { id, email, contact } = data || {};
 
   if (loading || !product) return <div>Loading</div>;
   return (

@@ -67,7 +67,7 @@ export default function ProductsPage() {
   const permissionTypes = AllPermission();
   const canWrite = permissionTypes.includes('sidebar-nav-item-products');
 
-  const dealerId = me?.dealer?.id;
+  const dealerId = me?.permission?.permission?.type_name == "Dealer" && me?.dealer?.id || null;
 
   // Fetch products
   const { products, paginatorInfo, loading, error } = useProductsQuery(

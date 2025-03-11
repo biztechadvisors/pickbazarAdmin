@@ -11,6 +11,7 @@ import {
   adminAndOwnerOnly,
   adminOnly,
   getAuthCredentials,
+  ownerAndStaffOnly,
   ownerOnly,
 } from '@/utils/auth-utils';
 import { useShopsQuery } from '@/data/shop';
@@ -19,7 +20,11 @@ import permission from '../permission';
 import OwnerLayout from '@/components/layouts/owner';
 import LinkButton from '@/components/ui/link-button';
 import { Routes } from '@/config/routes';
-import { OWNER } from '@/utils/constants';
+import { OWNER,STAFF, ADMIN } from '@/utils/constants';
+import PermissionComponent from '../permission';
+import AdminLayout from '@/components/layouts/admin';
+import { useMeQuery, useUserQuery } from '@/data/user';
+
 
 export default function AllShopPage() {
   const { t } = useTranslation();
@@ -37,12 +42,45 @@ export default function AllShopPage() {
     orderBy,
     sortedBy,
   });
+  
+ // Constants for permissions
+const OWNER = "Owner"; // Replace with the actual value in your permissions array
+const STAFF = "Staff"; // Replace with the actual value in your permissions array
 
+// Fetch current user data
+const { data: meData, isLoading: meLoading, error: meError } = useMeQuery();
+const createdById = meData?.createdBy?.id; // Get the createdBy user ID
 
-  const canWrite = permissions?.includes(OWNER);
+// Fetch the createdBy user's data
+const { data: createdByUser, isLoading: createdByLoading, error: createdByError } = useUserQuery(
+  { id: createdById },
+  { enabled: !!createdById }  
+);
 
-  if (loading) return <Loader text={t('common:text-loading')} />;
-  if (error) return <ErrorMessage message={error.message} />;
+console.log("createdByUser*****", createdByUser); 
+if (meLoading || createdByLoading) {
+  return <Loader text={t('common:text-loading')} />;  
+}
+
+if (meError || createdByError) {
+  return <ErrorMessage message="Error loading user data" />; 
+}
+
+// Determine if the staff member is created by an owner
+const createdByRole = createdByUser?.permission?.type_name; 
+const isCreatedByOwner = createdByRole === OWNER; 
+
+const canWrite =
+  permissions?.includes(OWNER) || // Owners can write
+  (permissions?.includes(STAFF) && isCreatedByOwner); // Staff members created by an owner can write
+
+console.log("canWrite****", canWrite);
+
+  // const canWrite = permissions?.includes(OWNER) || permissions?.includes(STAFF);
+  // // const canWrite = permissions?.includes(OWNER); 
+  
+  // if (loading) return <Loader text={t('common:text-loading')} />;
+  // if (error) return <ErrorMessage message={error.message} />;
 
   function handleSearch({ searchText }: { searchText: string }) {
     setSearchTerm(searchText);
@@ -51,6 +89,8 @@ export default function AllShopPage() {
   function handlePagination(current: any) {
     setPage(current);
   }
+
+
   return (
     <>
       <Card className="mb-8 flex flex-col items-center justify-between md:flex-row">
@@ -88,9 +128,16 @@ export default function AllShopPage() {
   );
 }
 AllShopPage.authenticate = {
-  permissions: adminAndOwnerOnly,
+  // permissions: adminAndOwnerOnly,
+  permissions: ownerAndStaffOnly,
 };
-AllShopPage.Layout = OwnerLayout;
+
+AllShopPage.Layout =
+  getAuthCredentials().permissions?.[0] === OWNER
+    ? OwnerLayout
+    : AdminLayout;
+// AllShopPage.Layout = OwnerLayout;
+
 
 export const getStaticProps = async ({ locale }: any) => ({
   props: {

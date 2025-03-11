@@ -20,16 +20,16 @@ import { useIsRTL } from '@/utils/locals';
 import { ORDER_STATUS } from '@/utils/order-status';
 import usePrice from '@/utils/use-price';
 import { useAtom } from 'jotai';
-import jsPDF from 'jspdf';
-import html2canvas from 'html2canvas';
 import { useTranslation } from 'next-i18next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import Image from 'next/image';
 import { useRouter } from 'next/router';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useMeQuery } from '@/data/user';
-import { DEALER } from '@/utils/constants';
+import { Company, DEALER } from '@/utils/constants';
+import DispatchModal from '@/components/ui/modal-component/dispatch-modal';
+import { useFetchStockOrderData } from '@/data/stocks';
 
 type FormValues = {
   order_status: any;
@@ -41,6 +41,7 @@ export default function OrderDetailsPage() {
   const { alignLeft, alignRight, isRTL } = useIsRTL();
   const { resetCart } = useCart();
   const [, resetCheckout] = useAtom(clearCheckoutAtom);
+  const [isDispatchModalOpen, setDispatchModalOpen] = useState(false);
   const { data: me } = useMeQuery();
   const DealerShow = me?.permission.type_name === DEALER;
 
@@ -49,15 +50,47 @@ export default function OrderDetailsPage() {
     resetCheckout();
   }, [resetCart, resetCheckout]);
 
-  // Hooks are now always called regardless of condition
   const updateOrderMutation = useUpdateOrderMutation();
   const dealerStatusChangeMutation = useDealerStatusChange();
   const mutationHooks = DealerShow ? dealerStatusChangeMutation : updateOrderMutation;
   const { mutate: updateOrder, isLoading: updating, isError, isSuccess } = mutationHooks;
 
-  const orderStocksQuery = useOrderStocksQuery({ id: query.orderId as string, language: locale! });
+  console.log("query.orderId 58 ", query.orderId)
+  console.log("DealerShow 60 ", DealerShow)
+
+  // const orderStocksQuery = useOrderStocksQuery({ id: query.orderId as string, language: locale! });
   const orderQuery = useOrderQuery({ id: query.orderId as string, language: locale! });
-  const { order, isLoading: loading, error } = DealerShow ? orderStocksQuery : orderQuery;
+
+  // console.log("orderStocksQuery ", orderStocksQuery)
+  console.log("orderQuery ", orderQuery)
+
+  const { order: fetchedOrder, isLoading: loading, error } = orderQuery; //DealerShow ? orderStocksQuery :
+
+  // State to store order only once when fetched
+  const [order, setOrder] = useState(fetchedOrder ?? null);
+
+  useEffect(() => {
+    if (fetchedOrder && !order) {
+      setOrder(fetchedOrder);
+    }
+  }, [fetchedOrder, order]);
+
+  console.log("order 62 ", order);
+
+  const dealerId = order?.customer?.permission?.type_name === DEALER ? order?.customer_id ?? null : null;
+
+  const { data: stockOrderData } = useFetchStockOrderData(
+    {
+      dealerId: dealerId,
+      orderId: query.orderId as string,
+    }
+  );
+
+  const handleDispatchUpdate = (data: any) => {
+    console.log('Dispatch updated:', data);
+  };
+
+  const DispatchButton = me?.permission.type_name === Company;
 
   const { refetch } = useDownloadInvoiceMutation(
     {
@@ -74,7 +107,7 @@ export default function OrderDetailsPage() {
 
   const ChangeStatus = ({ order_status }: FormValues) => {
     updateOrder({
-      id: order?.id as string, // Send the dynamic order ID
+      id: order?.id as string,
       name: order_status?.status as string,
       color: order_status?.color as string,
       serial: order_status?.serial as number,
@@ -90,7 +123,7 @@ export default function OrderDetailsPage() {
   const { price: sub_total } = usePrice({ amount: order?.amount! });
   const { price: shipping_charge } = usePrice({ amount: order?.delivery_fee ?? 0 });
   const { price: wallet_total } = usePrice({ amount: order?.wallet_point?.amount! });
-  const totalItem = order?.products?.reduce((initial = 0, p) => initial + parseInt(p?.pivot?.order_quantity!), 0);
+  const totalItem = order?.products?.reduce((initial = 0, p) => initial + parseInt(p?.order_quantity!), 0);
 
   if (loading) return <Loader text={t('common:text-loading')} />;
   if (error) return <ErrorMessage message={error.message} />;
@@ -142,7 +175,7 @@ export default function OrderDetailsPage() {
         <div>
           <span>{name}</span>
           <span className="mx-2">x</span>
-          <span className="font-semibold text-heading">{item.pivot.order_quantity}</span>
+          <span className="font-semibold text-heading">{item.order_quantity}</span>
         </div>
       ),
     },
@@ -152,7 +185,7 @@ export default function OrderDetailsPage() {
       key: 'price',
       align: alignRight,
       render: function Render(_: any, item: any) {
-        const { price } = usePrice({ amount: parseFloat(item.pivot.subtotal) });
+        const { price } = usePrice({ amount: parseFloat(item.subtotal) });
         return <span>{price}</span>;
       },
     },
@@ -195,6 +228,23 @@ export default function OrderDetailsPage() {
                 </Button>
               </form>
             )}
+          {order?.customer?.permission?.type_name === DEALER && (
+            DispatchButton ? (
+              <Button onClick={() => setDispatchModalOpen(true)}>
+                <span className="hidden sm:block">
+                  {t('form:button-label-change-dispatch')}
+                </span>
+                <span className="block sm:hidden">
+                  {t('form:button-label-change-dispatch')}
+                </span>
+              </Button>
+            ) : (
+              <Button onClick={() => setDispatchModalOpen(true)}>
+                <span className="hidden sm:block">{t('Received')}</span>
+                <span className="block sm:hidden">{t('Received')}</span>
+              </Button>
+            )
+          )}
         </div>
         <div className="mt-10 flex flex-col lg:flex-row">
           <div className="w-full shrink-0 items-center lg:w-2/3 lg:pe-5 xl:w-3/4">
@@ -249,6 +299,14 @@ export default function OrderDetailsPage() {
           </div>
         </div>
       </Card>
+      {order?.customer?.permission?.type_name === DEALER && (
+        <DispatchModal
+          isOpen={isDispatchModalOpen}
+          onClose={() => setDispatchModalOpen(false)}
+          order={stockOrderData}
+          dealerId={dealerId}
+          updateDispatch={handleDispatchUpdate}
+        />)}
     </>
   );
 }

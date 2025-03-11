@@ -20,6 +20,8 @@ import { useShopQuery } from '@/data/shop';
 import PhoneInput from 'react-phone-input-2';
 import 'react-phone-input-2/lib/style.css';
 import { useState } from 'react';
+import { PermissionsProps, permissionType } from '@/types';
+import useFormValues from '@/lib/hooks/use-form-values';
 
 type FormValues = {
   name: string;
@@ -46,7 +48,7 @@ const CustomerCreateForm = () => {
   const { data: meData, isLoading: meLoading } = useMeQuery();
   const { mutate: registerUser, isLoading: loading } = useRegisterMutation();
   const { id } = meData || {};
-  const { data: permissionData } = usePermissionData(id);
+  const {permissionData,permissionOptions:permissionOption} = useFormValues()
   const { permissions } = getAuthCredentials();
   // const phoneRegex = /^\+91[0-9]{10}$/;
   const [value, setValue] = useState('');
@@ -73,13 +75,7 @@ const CustomerCreateForm = () => {
     return <Loader />;
   }
 
-  const permissionOptions =
-    permissionData?.map((permission: { id: any; permission_name: string }) => ({
-      value: permission.permission_name,
-      label: permission.permission_name,
-      id: permission.id,
-    })) ?? [];
-
+  const permissionOptions = permissionOption(permissionType.DEALER);
   if (permissions[0] === DEALER || permissions[0] === OWNER || permissions[0] === Company) {
     permissionOptions.push(
       { value: 'Customer', label: 'Customer', id: 'customer_id' },

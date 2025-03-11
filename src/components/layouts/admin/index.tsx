@@ -158,7 +158,7 @@ const AdminLayout: React.FC<{ children?: React.ReactNode }> = ({
       {
         href: Routes.helpInventory,
         label: 'sidebar-nav-item-help',
-        icon: 'DashboardIcon', 
+        icon: 'DashboardIcon',
       },
       {
         href: `${Routes.dashboard}`,
@@ -464,7 +464,7 @@ const AdminLayout: React.FC<{ children?: React.ReactNode }> = ({
           Routes.attribute.list,
           Routes.type.list,
           // Routes.settings,
-          //    Routes.order.list,
+          // Routes.order.list,
           // Routes.refund.list,
           Routes.category.list,
           Routes.subcategory.list,
@@ -476,14 +476,15 @@ const AdminLayout: React.FC<{ children?: React.ReactNode }> = ({
         ].includes(link.href)
     );
   }
-  matchedLinks.push({
-    href: Routes.helpInventory,
-    label: 'sidebar-nav-item-help',
-    icon: 'DashboardIcon', 
-  });
+
+  // matchedLinks.push({
+  //   href: Routes.helpInventory,
+  //   label: 'sidebar-nav-item-help',
+  //   icon: 'DashboardIcon', 
+  // });
   const SidebarItemMap = () => (
     <Fragment>
-      {matchedLinks.map(({ href, label, icon,description }) => (
+      {matchedLinks.map(({ href, label, icon, description }) => (
         <SidebarItem
           href={isDisabled ? '#' : href}
           label={t(label)}

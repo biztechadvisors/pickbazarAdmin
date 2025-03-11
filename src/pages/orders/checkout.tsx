@@ -44,8 +44,6 @@ export default function CheckoutPage() {
     refetch,
   } = useUserQuery({ id: customer?.id });
 
-  console.log("user 56 :", user);
-
   useEffect(() => {
     if (customer?.id) {
       refetch(customer?.id);
@@ -59,7 +57,7 @@ export default function CheckoutPage() {
     </div>;
   }
 
-  // if (loading && !selectedUser) return <PageLoader />; // Show loading until user is selected
+  if (loading && !customer) return <PageLoader />; // Show loading until user is selected
   if (error) return <ErrorMessage message={error.message} />;
 
   return (
@@ -70,7 +68,7 @@ export default function CheckoutPage() {
 
           <ContactGrid
             className="shadow-700 bg-light p-5 md:p-8"
-            contact={user?.contact ? user.contact : ''}
+            contact={user?.contact}
             label={t('text-contact-number')}
             count={2}
           />

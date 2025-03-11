@@ -368,11 +368,10 @@ const ProductList = ({
       width: 180,
       render: (status: string, record: any) => (
         <div
-          className={`flex justify-start ${
-            record?.quantity > 0 && record?.quantity < 10
-              ? 'flex-col items-baseline space-y-3 3xl:flex-row 3xl:space-x-3 3xl:space-y-0 rtl:3xl:space-x-reverse'
-              : 'items-center space-x-3 rtl:space-x-reverse'
-          }`}
+          className={`flex justify-start ${record?.quantity > 0 && record?.quantity < 10
+            ? 'flex-col items-baseline space-y-3 3xl:flex-row 3xl:space-x-3 3xl:space-y-0 rtl:3xl:space-x-reverse'
+            : 'items-center space-x-3 rtl:space-x-reverse'
+            }`}
         >
           <Badge
             text={status}
@@ -415,12 +414,12 @@ const ProductList = ({
               record={record}
               deleteModalView="DELETE_PRODUCT"
               // routes={Routes?.product}
-            routes={{
-             edit: `/${Shop}/products/${slug}/edit?productId=${record.id}`,
-             editWithoutLang: (slug: string, shop: string) =>
-             `/${shop}/products/${slug}/edit?productId=${record.id}`,
-            }}
-             />
+              routes={{
+                edit: `/${Shop}/products/${slug}/edit?productId=${record.id}`,
+                editWithoutLang: (slug: string, shop: string) =>
+                  `/${shop}/products/${slug}/edit?productId=${record.id}`,
+              }}
+            />
           );
         },
       }),

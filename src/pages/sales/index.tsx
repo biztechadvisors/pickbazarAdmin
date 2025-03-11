@@ -11,136 +11,90 @@ import { adminOnly } from '@/utils/auth-utils';
 import { MoreIcon } from '@/components/icons/more-icon';
 import { useExportOrderQuery } from '@/data/export';
 import { useRouter } from 'next/router';
-import { useShopQuery } from '@/data/shop';
 import { Menu, Transition } from '@headlessui/react';
 import classNames from 'classnames';
 import { DownloadIcon } from '@/components/icons/download-icon';
-import {  useOrdersSalesQuery } from '@/data/stocks';
+import { useOrdersSalesQuery } from '@/data/stocks';
 import StockList from '@/components/stock/StockList';
 import { useOrdersQuery } from '@/data/order';
 import { useMeQuery } from '@/data/user';
 import OrderList from '@/components/order/order-list';
 import { Company, DEALER } from '@/utils/constants';
-import { GetStockSeals, useGetStockSeals } from '@/data/stock';
-
+import { useGetStockSales } from '@/data/stock';
 
 export default function Sales() {
-  const router = useRouter();
-  const { locale } = useRouter();
-  const {
-    query: { shop },
-  } = router;
+  const { locale, query } = useRouter();
+  const { shop } = query;
+  const { t } = useTranslation();
   const [searchTerm, setSearchTerm] = useState('');
   const [page, setPage] = useState(1);
-  const { t } = useTranslation();
   const [orderBy, setOrder] = useState('created_at');
   const [sortedBy, setColumn] = useState<SortOrder>(SortOrder.Desc);
-
   const [shopSlug, setShopSlug] = useState<string | null>(null);
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
-      const storedSlug = localStorage.getItem('shopSlug');
-      setShopSlug(storedSlug);
+      setShopSlug(localStorage.getItem('shopSlug'));
     }
   }, []);
 
-  function handleSearch({ searchText }: { searchText: string }) {
+  const handleSearch = ({ searchText }: { searchText: string }) => {
     setSearchTerm(searchText);
     setPage(1);
-  }
+  };
 
-  function handlePagination(current: any) {
+  const handlePagination = (current: number) => {
     setPage(current);
-  }
+  };
 
-  const { data: me } = useMeQuery(); 
+  const { data: me } = useMeQuery();
+  const userType = me?.permission?.type_name;
+  const isDealer = userType === DEALER;
+  const isCompany = userType === Company;
 
-
-
-  const DealerShow = me?.permission.type_name === DEALER;
-  const ShopShow = me?.permission.type_name === Company;
-
-  
-
-  const queryConfig = {
+  const queryConfig: any = {
     language: locale,
     limit: 20,
     page,
-    tracking_number: searchTerm,
-    
-};
+    ...(isDealer && { customer_id: me?.id }),
+    ...(isCompany && { shopSlug: me?.managed_shop?.slug, type: 'Dealer' }),
+  };
 
-if (DealerShow) {
-    queryConfig.shopSlug = me?.managed_shop?.slug;
-    queryConfig.customer_id = me?.id;
-} else if (ShopShow) {  
-    // queryConfig.shop_id = me?.managed_shop?.id;
-    queryConfig.shopSlug = me?.managed_shop?.slug;
-}
-
-
-const { orders, loading, paginatorInfo, error } = useOrdersQuery(queryConfig);
-
-  const customer_id = me?.id
-  const shop_id =  me?.createdBy?.shop_id
-
-
-  const { data: response } = useGetStockSeals(customer_id);
-  // http://localhost:5000/api/stocks/orders?customer_id=3
+  const { data: orders, loading: ordersLoading, paginatorInfo, error: ordersError } =
+    isCompany ? useOrdersQuery(queryConfig) : useGetStockSales(me?.id, me?.createdBy?.shop_id);
 
   const { refetch } = useExportOrderQuery(
-    {
-      ...(me?.createdBy?.managed_shop?.id && { shop_id: me?.createdBy.managed_shop?.id }),
-    },
+    { shop_id: me?.createdBy?.managed_shop?.id },
     { enabled: false }
   );
 
-  if (loading) return <Loader text={t('common:text-loading')} />;
+  if (ordersLoading) return <Loader text={t('common:text-loading')} />;
+  if (ordersError) return <ErrorMessage message={ordersError?.message || 'An error occurred'} />;
 
-  if (loading) return <Loader text={t('common:text-loading')} />;
-  if (error) return <ErrorMessage message={error.message} />;
-
-  
-
-  async function handleExportOrder() {
+  const handleExportOrder = async () => {
     try {
-      const ordersData = orders.filter(
-        (order) => order?.customer_id === order?.dealer?.id
-      );
-    
-      if (!ordersData.length) {
+      const ordersData = orders?.filter((order) => order?.customer_id === order?.dealer?.id);
+
+      if (!ordersData?.length) {
         console.error('No matching orders found for export.');
-        return; // Handle no data scenario (e.g., display message to user)
+        return;
       }
 
       const formattedData = transformForExcel(ordersData);
-
-      const contentType = 'text/csv;charset=utf-8'; // Consistent with CSV export
-      const filename = generateFilename(contentType);
-
-      const blob = new Blob([formattedData], { type: contentType });
-      const link = document.createElement('a');
-      link.href = URL.createObjectURL(blob);
-      link.download = filename;
-      link.click();
-
-      setTimeout(() => URL.revokeObjectURL(link.href), 10000); // Revoke after 10 seconds
+      downloadFile(formattedData, 'text/csv;charset=utf-8', 'export-orders.csv');
     } catch (error) {
       console.error('Error fetching or formatting data:', error);
-      // Handle error gracefully (e.g., display message to user)
     }
-  }
+  };
 
-  function transformForExcel(ordersData: any) {
-    // Create an array with column headers
-    const headerRow = [
+  const transformForExcel = (ordersData: any[]) => {
+    const headers = [
       'OrderId',
       'Email',
       'Order Date',
       'Delivery Time',
       'Order Status',
-      'Traking Nunmber',
+      'Tracking Number',
       'CouponId',
       'Amount',
       'Discount',
@@ -156,87 +110,44 @@ const { orders, loading, paginatorInfo, error } = useOrdersQuery(queryConfig);
       'Logistic Provider',
     ];
 
-    // Create an array of data rows with corresponding values
-    const dataRows = ordersData.map((order: any) => {
-      const billingAddress = order.billing_address
-        ? `${order.billing_address.street_address} ${order.billing_address.country} ${order.billing_address.city} ${order.billing_address.state} ${order.billing_address.zip}`
-        : '';
-      const shippingAddress = order.shipping_address
-        ? `${order.shipping_address.street_address} ${order.shipping_address.country} ${order.shipping_address.city} ${order.shipping_address.state} ${order.shipping_address.zip}`
-        : '';
+    const rows = ordersData.map((order) => [
+      order.payment_intent?.order_id || '',
+      order.customer?.email || '',
+      order.created_at || '',
+      order.delivery_time || '',
+      order.order_status || '',
+      order.tracking_number || '',
+      order.coupon_id || '',
+      order.amount || '',
+      order.discount || '',
+      order.paid_total || '',
+      order.total || '',
+      order.sales_tax || '',
+      order.delivery_fee || 0,
+      order.payment_intent?.payment_intent_info?.payment_id || '',
+      order.payment_gateway || '',
+      order.customer_contact || '',
+      formatAddress(order.billing_address),
+      formatAddress(order.shipping_address),
+      order.logistics_provider || '',
+    ]);
 
-      const escapedBillingAddress = billingAddress.replace(/,/g, '');
-      const escapedShippingAddress = shippingAddress.replace(/,/g, '');
+    return [headers.join(','), ...rows.map((row) => row.join(','))].join('\n');
+  };
 
-      // Extract and format contact number with country code (assuming country code is in a separate field)
-      const contactNumber = order.customer_contact
-        ? order.customer_contact // Remove non-digits
-        : '';
+  const formatAddress = (address: any) =>
+    address
+      ? `${address.street_address}, ${address.city}, ${address.state}, ${address.zip}, ${address.country}`
+      : '';
 
-      // Remove non-digits from tracking number
-      const trackingNumber = order.tracking_number ? order.tracking_number : '';
-
-
-  
-
-      return [
-        order.payment_intent?.order_id || null, // Handle potential missing values
-        order.customer?.email || null,
-        order.created_at,
-        order.delivery_time,
-        order.order_status,
-        trackingNumber,
-        order.coupon_id,
-        order.amount,
-        order.discount,
-        order.paid_total,
-        order.total,
-        order.sales_tax,
-        order.delivery_fee || 0,
-        order.payment_intent?.payment_intent_info.payment_id || null,
-        order.payment_gateway,
-        contactNumber,
-        escapedBillingAddress,
-        escapedShippingAddress,
-        order.logistics_provider,
-      ];
-    });
-
-    // Combine header row and data rows into a single string
-    const csvContent = [headerRow.join(',')].concat(dataRows.map((row: any) => row.join(','))).join('\n');
-
-    return csvContent;
-  }
-
-  function generateFilename(contentType: any) {
-    const dateString = new Date().toISOString().slice(0, 10); // YYYY-MM-DD format
-    let extension;
-    switch (contentType) {
-      case 'text/csv;charset=utf-8':
-        extension = '.csv';
-        break;
-      case 'application/pdf': // Add PDF case if PDF export is implemented
-        extension = '.pdf';
-        break;
-      default:
-        extension = '.csv';
-    }
-    return `export-data-${dateString}${extension}`;
-  }
-
-
-  const DealerSalesList = response?.data
-
- 
-
-  var ordersData = orders.filter(
-    (order) => order?.customer_id == order?.dealer?.id
-  );
-
-  // const ShopShow = me?.permission.type_name === Company;
-
- 
-
+  const downloadFile = (data: string, contentType: string, filename: string) => {
+    const blob = new Blob([data], { type: contentType });
+    const link = document.createElement('a');
+    link.href = URL.createObjectURL(blob);
+    link.download = filename;
+    link.click();
+    setTimeout(() => URL.revokeObjectURL(link.href), 10000);
+  };
 
   return (
     <>
@@ -249,10 +160,7 @@ const { orders, loading, paginatorInfo, error } = useOrdersQuery(queryConfig);
           <Search onSearch={handleSearch} />
         </div>
 
-        <Menu
-          as="div"
-          className="relative inline-block ltr:text-left rtl:text-right"
-        >
+        <Menu as="div" className="relative inline-block">
           <Menu.Button className="group p-2">
             <MoreIcon className="w-3.5 text-body" />
           </Menu.Button>
@@ -265,25 +173,18 @@ const { orders, loading, paginatorInfo, error } = useOrdersQuery(queryConfig);
             leaveFrom="transform opacity-100 scale-100"
             leaveTo="transform opacity-0 scale-95"
           >
-            <Menu.Items
-              as="ul"
-              className={classNames(
-                'shadow-700 absolute z-50 mt-2 w-52 overflow-hidden rounded border border-border-200 bg-light py-2 focus:outline-none ltr:right-0 ltr:origin-top-right rtl:left-0 rtl:origin-top-left'
-              )}
-            >
+            <Menu.Items className="absolute z-50 mt-2 w-52 rounded border bg-light py-2 shadow-lg">
               <Menu.Item>
                 {({ active }) => (
                   <button
                     onClick={handleExportOrder}
                     className={classNames(
-                      'flex w-full items-center space-x-3 px-5 py-2.5 text-sm font-semibold capitalize transition duration-200 hover:text-accent focus:outline-none rtl:space-x-reverse',
+                      'flex w-full items-center space-x-3 px-5 py-2.5 text-sm font-semibold capitalize transition duration-200 focus:outline-none',
                       active ? 'text-accent' : 'text-body'
                     )}
                   >
                     <DownloadIcon className="w-5 shrink-0" />
-                    <span className="whitespace-nowrap">
-                      {t('common:text-export-orders')}
-                    </span>
+                    <span>{t('common:text-export-orders')}</span>
                   </button>
                 )}
               </Menu.Item>
@@ -292,9 +193,9 @@ const { orders, loading, paginatorInfo, error } = useOrdersQuery(queryConfig);
         </Menu>
       </Card>
 
-      {ShopShow ? (
+      {isCompany ? (
         <StockList
-          orders={ordersData}
+          orders={orders}
           paginatorInfo={paginatorInfo}
           onPagination={handlePagination}
           onOrder={setOrder}
@@ -302,26 +203,21 @@ const { orders, loading, paginatorInfo, error } = useOrdersQuery(queryConfig);
         />
       ) : (
         <OrderList
-          orders={DealerSalesList}
+          orders={orders}
           paginatorInfo={paginatorInfo}
           onPagination={handlePagination}
           onOrder={setOrder}
           onSort={setColumn}
+          Shop={false}
         />
       )}
-
-   
     </>
   );
 }
 
-Sales.authenticate = {
-  permissions: adminOnly,
-};
+Sales.authenticate = { permissions: adminOnly };
 Sales.Layout = Layout;
 
 export const getStaticProps = async ({ locale }: any) => ({
-  props: {
-    ...(await serverSideTranslations(locale, ['table', 'common', 'form'])),
-  },
+  props: { ...(await serverSideTranslations(locale, ['table', 'common', 'form'])) },
 });

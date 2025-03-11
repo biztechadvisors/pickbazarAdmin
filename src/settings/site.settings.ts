@@ -1,6 +1,7 @@
 import {
   adminAndOwnerOnly,
   adminOwnerAndStaffOnly,
+  ownerAndStaffOnly,
   ownerOnly,
 } from '@/utils/auth-utils';
 import { Routes } from '@/config/routes';
@@ -76,6 +77,7 @@ export const siteSettings = {
         href: Routes.staff.list,
         label: 'sidebar-nav-item-staffs',
         icon: 'UsersIcon',
+        permissions: ownerAndStaffOnly,
       },
     ],
     admin: [
@@ -147,15 +149,15 @@ export const siteSettings = {
       {
         ...(permission && identify == matching
           ? {
-              href: Routes.createSales,
-              label: 'sidebar-nav-item-create-sales',
-              icon: 'OrderListIcon',
-            }
+            href: Routes.createSales,
+            label: 'sidebar-nav-item-create-sales',
+            icon: 'OrderListIcon',
+          }
           : {
-              href: Routes.coupon.list,
-              label: 'sidebar-nav-item-coupons',
-              icon: 'CouponsIcon',
-            }),
+            href: Routes.coupon.list,
+            label: 'sidebar-nav-item-coupons',
+            icon: 'CouponsIcon',
+          }),
       },
       {
         href: Routes.regions.list,
@@ -188,15 +190,15 @@ export const siteSettings = {
       {
         ...(permission && identify == matching
           ? {
-              href: Routes.sales,
-              label: 'sidebar-nav-item-sales',
-              icon: 'SalesIcon',
-            }
+            href: Routes.sales,
+            label: 'sidebar-nav-item-sales',
+            icon: 'SalesIcon',
+          }
           : {
-              href: Routes.tax.list,
-              label: 'sidebar-nav-item-taxes',
-              icon: 'TaxesIcon',
-            }),
+            href: Routes.tax.list,
+            label: 'sidebar-nav-item-taxes',
+            icon: 'TaxesIcon',
+          }),
       },
       {
         href: Routes.shipping.list,
@@ -208,18 +210,21 @@ export const siteSettings = {
         label: 'sidebar-nav-item-message',
         icon: 'ChatIcon',
       },
+
+      // Stock sidebar ------------------------
       {
-        ...(permission && identify == matching
-          ? {
-              href: `${Routes.stock.list}/dealer`,
-              label: 'sidebar-nav-item-stocks',
-              icon: 'ProductsIcon',
-            }
-          : {
-              href: Routes.stock.list,
-              label: 'sidebar-nav-item-stocks',
-              icon: 'ProductsIcon',
-            }),
+        ...(permission && identify == matching)
+        && {
+          href: `${Routes.stock.list}/dealer`,
+          label: 'sidebar-nav-item-stocks',
+          icon: 'ProductsIcon',
+        }
+        // : {
+        //   href: Routes.stock.list,
+        //   label: 'sidebar-nav-item-stocks',
+        //   icon: 'ProductsIcon',
+        // }
+        // ),
       },
       {
         href: Routes.refund.list,
@@ -237,56 +242,7 @@ export const siteSettings = {
         icon: 'SettingsIcon',
       },
     ],
-    shop: [
-      {
-        href: (shop: string) => `${Routes.dashboard}${shop}`,
-        label: 'sidebar-nav-item-inventory-dashboard',
-        icon: 'DashboardIcon',
-        permissions: adminOwnerAndStaffOnly,
-      },
-      {
-        href: (shop: string) => `/${shop}${Routes.attribute.list}`,
-        label: 'sidebar-nav-item-attributes',
-        icon: 'AttributeIcon',
-        permissions: adminOwnerAndStaffOnly,
-      },
-      {
-        href: (shop: string) => `/${shop}${Routes.type.list}`,
-        label: 'sidebar-nav-item-groups',
-        icon: 'TypesIcon',
-        permissions: adminOwnerAndStaffOnly,
-      },
-      {
-        href: (shop: string) => `/${shop}${Routes.category.list}`,
-        label: 'sidebar-nav-item-categories',
-        icon: 'CategoriesIcon',
-        permissions: adminOwnerAndStaffOnly,
-      },
-      {
-        href: (shop: string) => `/${shop}${Routes.product.list}`,
-        label: 'sidebar-nav-item-products',
-        icon: 'ProductsIcon',
-        permissions: adminOwnerAndStaffOnly,
-      },
-      {
-        href: (shop: string) => `/${shop}${Routes.reviews.list}`,
-        label: 'sidebar-nav-item-reviews',
-        icon: 'ReviewIcon',
-        permissions: adminOwnerAndStaffOnly,
-      },
-      {
-        href: (shop: string) => `/${shop}${Routes.subcategory.list}`,
-        label: 'sidebar-nav-item-sub-categories',
-        icon: 'CategoriesIcon',
-        permissions: adminOwnerAndStaffOnly,
-      },
-      {
-        href: (shop: string) => `/${shop}${Routes.tag.list}`,
-        label: 'sidebar-nav-item-tags',
-        icon: 'TagIcon',
-        permissions: adminOwnerAndStaffOnly,
-      },
-    ],
+
   },
   product: {
     placeholder: '/product-placeholder.svg',

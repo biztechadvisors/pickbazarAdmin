@@ -16,6 +16,7 @@ import { useRouter } from 'next/router';
 import { Config } from '@/config';
 import { StockProvider } from '@/contexts/quick-cart/stock.context';
 import dynamic from 'next/dynamic';
+import { FormProvider } from '@/contexts/formcontext/FormContext';
 
 const ErrorMessage = dynamic(() => import('@/components/ui/error-message'));
 const PageLoader = dynamic(
@@ -71,6 +72,7 @@ const CustomApp = ({ Component, pageProps }: AppPropsWithLayout) => {
       <QueryClientProvider client={queryClient}>
         <Hydrate state={pageProps?.dehydratedState}>
           <AppSettings>
+            <FormProvider>
             <UIProvider>
               <ModalProvider>
                 <StockProvider>
@@ -93,6 +95,7 @@ const CustomApp = ({ Component, pageProps }: AppPropsWithLayout) => {
                 </StockProvider>
               </ModalProvider>
             </UIProvider>
+            </FormProvider>
           </AppSettings>
           {/* <ReactQueryDevtools /> */}
         </Hydrate>

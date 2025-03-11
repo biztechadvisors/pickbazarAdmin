@@ -54,7 +54,11 @@ export const PlaceOrderActionStock: React.FC<{
   const [use_wallet_points] = useAtom(walletAtom);
 
   const { data: meData } = useMeQuery();
-  const dealerId = meData?.id;
+
+  let dealerId: any;
+  if (meData?.dealer?.id && meData?.permission?.permission?.type_name == "Dealer") {
+    dealerId = meData?.dealer && meData?.dealer?.id
+  }
 
   useEffect(() => {
     setErrorMessage(null);
@@ -117,12 +121,12 @@ export const PlaceOrderActionStock: React.FC<{
       use_wallet_points,
       isFullWalletPayment,
       billing_address: {
-        ...(billing_address?.address && billing_address.address),
+        ...(billing_address?.adds && billing_address.adds),
       },
       shipping_address: {
-        ...(shipping_address?.address && shipping_address.address),
+        ...(shipping_address?.adds && shipping_address.adds),
       },
-      saleBy: selectedAddress.address,
+      saleBy: selectedAddress.adds,
     };
     createOrderFromStock(input);
   };

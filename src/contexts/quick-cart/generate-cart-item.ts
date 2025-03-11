@@ -21,6 +21,7 @@ interface Variation {
   [key: string]: unknown;
 }
 export function generateCartItem(item: Item, variation: Variation) {
+
   const {
     id,
     name,
@@ -33,6 +34,7 @@ export function generateCartItem(item: Item, variation: Variation) {
     is_digital,
     margin,
   } = item;
+
   if (!isEmpty(variation)) {
     return {
       id: `${id}.${variation.id}`,

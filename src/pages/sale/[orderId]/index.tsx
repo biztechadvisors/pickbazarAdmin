@@ -10,18 +10,12 @@ import Loader from '@/components/ui/loader/loader';
 import SelectInput from '@/components/ui/select-input';
 import { Table } from '@/components/ui/table';
 import { clearCheckoutAtom } from '@/contexts/checkout';
-import { useCart } from '@/contexts/quick-cart/cart.context';
 import { useStock } from '@/contexts/quick-cart/stock.context';
 import {
   useDownloadInvoiceMutation,
-  useOrderQuery,
   useUpdateOrderMutation,
 } from '@/data/order';
-import {
-  useFetchStockOrderData,
-  useGetStockByOrder,
-  useOrderSalesQuery,
-} from '@/data/stocks';
+import { useFetchStockOrderData, useOrderSalesQuery } from '@/data/stocks';
 import { siteSettings } from '@/settings/site.settings';
 import { Attachment, OrderStatus, PaymentStatus } from '@/types';
 import { formatAddress } from '@/utils/format-address';
@@ -39,29 +33,26 @@ import { useForm } from 'react-hook-form';
 import DispatchModal from '@/components/ui/modal-component/dispatch-modal';
 import { useMeQuery } from '@/data/user';
 import { Company } from '@/utils/constants';
-// import { jsPDF } from 'jspdf';
-// import 'jspdf-autotable';
 
 type FormValues = {
   order_status: any;
 };
+
 export default function OrderDetailsPage() {
   const { t } = useTranslation();
   const { query, locale } = useRouter();
-  const { alignLeft, alignRight, isRTL } = useIsRTL();
+  const { alignLeft, alignRight } = useIsRTL();
   const { resetStock } = useStock();
   const [, resetCheckout] = useAtom(clearCheckoutAtom);
   const [isDispatchModalOpen, setDispatchModalOpen] = useState(false);
 
-
-
   const handleDispatchUpdate = (data: any) => {
     // Logic to update the dispatch product
+    console.log('Dispatch updated:', data);
   };
 
   useEffect(() => {
     resetStock();
-    // @ts-ignore
     resetCheckout();
   }, [resetStock, resetCheckout]);
 
@@ -74,7 +65,7 @@ export default function OrderDetailsPage() {
   const { refetch } = useDownloadInvoiceMutation(
     {
       order_id: query.orderId as string,
-      isRTL,
+      isRTL: alignLeft === 'left',
       language: locale!,
     },
     { enabled: false }
@@ -94,66 +85,37 @@ export default function OrderDetailsPage() {
       order_status: order_status?.status as string,
     });
   };
-  const { price: subtotal } = usePrice(
-    order && {
-      amount: order?.amount!,
-    }
-  );
 
-  const { price: total } = usePrice(
-    order && {
-      amount: order?.paid_total!,
-    }
-  );
-  const { price: discount } = usePrice(
-    order && {
-      amount: order?.discount! ?? 0,
-    }
-  );
-  const { price: delivery_fee } = usePrice(
-    order && {
-      amount: order?.delivery_fee!,
-    }
-  );
-  const { price: sales_tax } = usePrice(
-    order && {
-      amount: order?.sales_tax!,
-    }
-  );
+  const { price: subtotal } = usePrice(order && { amount: order?.amount! });
+  const { price: total } = usePrice(order && { amount: order?.paid_total! });
+  const { price: discount } = usePrice(order && { amount: order?.discount! ?? 0 });
+  const { price: delivery_fee } = usePrice(order && { amount: order?.delivery_fee! });
+  const { price: sales_tax } = usePrice(order && { amount: order?.sales_tax! });
   const { price: sub_total } = usePrice({ amount: order?.amount! });
-  const { price: shipping_charge } = usePrice({
-    amount: order?.delivery_fee ?? 0,
-  });
-  const { price: wallet_total } = usePrice({
-    // @ts-ignore
-    amount: order?.wallet_point?.amount!,
-  });
+  const { price: shipping_charge } = usePrice({ amount: order?.delivery_fee ?? 0 });
+  const { price: wallet_total } = usePrice({ amount: order?.wallet_point?.amount! });
 
   const totalItem = order?.products?.reduce(
-    // @ts-ignore
     (initial = 0, p) => initial + parseInt(p?.pivot?.order_quantity!),
     0
   );
 
-
   const { orderId } = query;
   const { data: meData } = useMeQuery();
+  const dealerId = order?.customer_id;
 
-
-  const dealerId = order?.customer_id
-
-  const { data, isLoading, isError } = useFetchStockOrderData({
+  const { data: stockOrderData } = useFetchStockOrderData({
     dealerId,
-    orderId,
+    orderId: orderId as string,
   });
 
+  console.log('Stock Order Data:', stockOrderData);
 
   if (loading) return <Loader text={t('common:text-loading')} />;
   if (error) return <ErrorMessage message={error.message} />;
 
   async function handleDownloadInvoice() {
     const { data } = await refetch();
-
     if (data) {
       const a = document.createElement('a');
       a.href = data;
@@ -199,16 +161,12 @@ export default function OrderDetailsPage() {
       dataIndex: 'price',
       key: 'price',
       align: alignRight,
-      render: function Render(_: any, item: any) {
-        const { price } = usePrice({
-          amount: parseFloat(item?.pivot?.subtotal),
-        });
+      render: (_: any, item: any) => {
+        const { price } = usePrice({ amount: parseFloat(item?.pivot?.subtotal) });
         return <span>{price}</span>;
       },
     },
   ];
-
-
 
   const DispatchButton = meData?.permission.type_name === Company;
 
@@ -273,25 +231,10 @@ export default function OrderDetailsPage() {
             </Button>
           ) : (
             <Button onClick={() => setDispatchModalOpen(true)}>
-              <span className="hidden sm:block">
-                {t('Received')}
-              </span>
-              <span className="block sm:hidden">
-                {t('Received')}
-              </span>
+              <span className="hidden sm:block">{t('Received')}</span>
+              <span className="block sm:hidden">{t('Received')}</span>
             </Button>
           )}
-          {/* {DispatchButton && (
-          <Button onClick={() => setDispatchModalOpen(true)}>
-            <span className="hidden sm:block">
-              {t('form:button-label-change-dispatch')}
-            </span>
-            <span className="block sm:hidden">
-              {t('form:button-label-change-dispatch')}
-            </span>
-          </Button>
-        )} */}
-
         </div>
 
         <div className="my-5 flex items-center justify-center lg:my-10">
@@ -304,7 +247,6 @@ export default function OrderDetailsPage() {
         <div className="mb-10">
           {order ? (
             <Table
-              //@ts-ignore
               columns={columns}
               emptyText={t('table:empty-table-data')}
               data={order?.products!}
@@ -334,11 +276,11 @@ export default function OrderDetailsPage() {
                   <span>{sub_total}</span>
                 </div>
                 <div className="flex items-center justify-between text-sm text-body">
-                  <span> {t('text-shipping-charge')}</span>
+                  <span>{t('text-shipping-charge')}</span>
                   <span>{shipping_charge}</span>
                 </div>
                 <div className="flex items-center justify-between text-sm text-body">
-                  <span> {t('text-tax')}</span>
+                  <span>{t('text-tax')}</span>
                   <span>{sales_tax}</span>
                 </div>
                 {order?.discount! > 0 && (
@@ -349,12 +291,12 @@ export default function OrderDetailsPage() {
                 )}
                 {wallet_total && (
                   <div className="flex items-center justify-between text-sm text-body">
-                    <span> {t('text-paid-from-wallet')}</span>
+                    <span>{t('text-paid-from-wallet')}</span>
                     <span>{wallet_total}</span>
                   </div>
                 )}
                 <div className="flex items-center justify-between text-base font-semibold text-heading">
-                  <span> {t('text-total')}</span>
+                  <span>{t('text-total')}</span>
                   <span>{total}</span>
                 </div>
               </div>
@@ -412,13 +354,14 @@ export default function OrderDetailsPage() {
       <DispatchModal
         isOpen={isDispatchModalOpen}
         onClose={() => setDispatchModalOpen(false)}
-        order={data}
+        order={stockOrderData}
         dealerId={dealerId}
         updateDispatch={handleDispatchUpdate}
       />
     </>
   );
 }
+
 OrderDetailsPage.Layout = Layout;
 
 export const getServerSideProps = async ({ locale }: any) => ({

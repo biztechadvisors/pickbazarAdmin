@@ -25,7 +25,6 @@ const CustomerEmail = ({ count }) => {
   );
 
   const { data: meData } = useMeQuery();
-  const { id: usrById } = meData || {};
 
   useEffect(() => {
     if (typeof window !== 'undefined') {

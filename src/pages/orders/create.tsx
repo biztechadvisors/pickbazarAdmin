@@ -27,6 +27,7 @@ import { toggleAtom } from '@/utils/atoms';
 import { useMeQuery } from '@/data/user';
 import { AllPermission } from '@/utils/AllPermission';
 import { useShopQuery } from '@/data/shop';
+import { DEALER } from '@/utils/constants';
 
 export default function ProductsPage() {
     const { locale } = useRouter();
@@ -40,6 +41,8 @@ export default function ProductsPage() {
     const toggleVisible = () => {
         setVisible((v) => !v);
     };
+
+    const [isChecked] = useAtom(toggleAtom);
 
     const { data: meData } = useMeQuery();
 
@@ -68,14 +71,16 @@ export default function ProductsPage() {
 
     const shop_id = meData?.shop_id;
 
-    const dealerId = meData?.dealer && meData?.dealer.id
-
-    const [isChecked] = useAtom(toggleAtom);
+    let dealerId;
+    if (meData?.dealer?.id && meData?.permission?.type_name === DEALER || meData?.permission?.createdBy?.permission?.type_name == DEALER) {
+        console.log("dealer cehck 75 ")
+        dealerId = meData?.dealer && meData?.dealer?.id
+    }
 
     const { products, loading, paginatorInfo, error } = useProductsQuery({
         limit: 18,
-        language: locale,       
-        status: ProductStatus.Publish,       
+        language: locale,
+        status: ProductStatus.Publish,
         name: searchTerm,
         page,
         type,
@@ -85,6 +90,7 @@ export default function ProductsPage() {
         shopName: shopSlug || shopData?.name,
         search: searchTerm,
     });
+
 
     const permissionTypes = AllPermission();
 

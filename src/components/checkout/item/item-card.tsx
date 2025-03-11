@@ -16,7 +16,12 @@ const ItemCard = ({ item, margin, notAvailable }: Props) => {
   });
 
   const { data } = useMeQuery()
-  const dealerId = data?.dealer?.id
+
+  let dealerId;
+  if (data?.dealer?.id && data?.permission?.permission?.type_name == "Dealer") {
+    dealerId = data?.dealer && data?.dealer.id
+  }
+
   return (
     <div className={cn('flex justify-between py-2')} key={item.id}>
       <p className="flex items-center justify-between text-base">

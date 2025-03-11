@@ -13,6 +13,7 @@ import { getAuthCredentials } from '@/utils/auth-utils';
 import { siteSettings } from '@/settings/site.settings';
 import { AddToStock } from '../stock/add-to-stock';
 import { AllPermission } from '@/utils/AllPermission';
+import { useMeQuery } from '@/data/user';
 
 interface Props {
   item: Product;
@@ -37,7 +38,11 @@ const StockCard = ({ item, isChecked, inStock }: Props) => {
     min_price,
     sale_price,
     margin,
-  } = item ?? {};
+  } = item.product ?? {};
+
+
+  const { data }: any = useMeQuery();
+  const { id, email, contact } = data || {};
 
   const {
     price: currentPrice,
@@ -47,29 +52,22 @@ const StockCard = ({ item, isChecked, inStock }: Props) => {
     amount: sale_price ? sale_price : price!,
     baseAmount: price ?? 0,
   });
+
   const { price: minPrice } = usePrice({
     amount: min_price ?? 0,
   });
+
   const { price: maxPrice } = usePrice({
     amount: max_price ?? 0,
   });
 
   const { openModal } = useModalAction();
 
-  // const [getPermission, _] = useAtom(newPermission);
-  // const { permissions } = getAuthCredentials();
-  // const canWrite = permissions.includes('super_admin')
-  //   ? siteSettings.sidebarLinks
-  //   : getPermission?.find(
-  //       (permission) => permission.type === 'sidebar-nav-item-create-order'
-  //     )?.write;
-
   const permissionTypes = AllPermission();
-
   const canWrite = permissionTypes.includes('sidebar-nav-item-create-order');
 
   function handleVariableProduct() {
-    return openModal('SELECT_PRODUCT_VARIATION', { slug, product_id, undefined });
+    return openModal('SELECT_STOCK_PRODUCT_VARIATION', { item });
   }
 
   return (
@@ -77,7 +75,7 @@ const StockCard = ({ item, isChecked, inStock }: Props) => {
       <div className="relative flex h-48 w-auto items-center justify-center sm:h-64">
         <span className="sr-only">{t('text-product-image')}</span>
         <Image
-          src={image?.thumbnail}
+          src={image?.thumbnail ?? productPlaceholder} // Fallback to placeholder if image is not available
           alt={name}
           fill
           sizes="(max-width: 768px) 100vw"
@@ -125,8 +123,8 @@ const StockCard = ({ item, isChecked, inStock }: Props) => {
 
         <h3 className="mb-4 truncate text-xs text-body md:text-sm">{name}</h3>
 
-        {inStock ? (
-          product_type === ProductType.Variable ? (
+        {item.inStock ? (
+          item.variation_options?.length > 0 ? (
             <>
               {Number(quantity) > 0 && (
                 <button
@@ -144,7 +142,12 @@ const StockCard = ({ item, isChecked, inStock }: Props) => {
             canWrite && (
               <>
                 {Number(quantity) > 0 && (
-                  <AddToStock variant="neon" data={item} />
+                  <AddToStock variant="neon"
+                    data={item.product}
+                    id={id}
+                    email={email}
+                    phone={contact}
+                  />
                 )}
               </>
             )

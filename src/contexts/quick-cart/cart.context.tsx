@@ -6,6 +6,7 @@ import { CART_KEY } from '@/utils/constants';
 import { useAtom } from 'jotai';
 import { verifiedResponseAtom } from '@/contexts/checkout';
 import { useCartsMutation } from '@/data/cart';
+
 interface CartProviderState extends State {
   addItemToCart: (
     item: Item,
@@ -23,15 +24,13 @@ interface CartProviderState extends State {
     phone: string
   ) => void;
   clearItemFromCart: (id: Item['id']) => void;
-  getItemFromCart: (id: Item['id']) => any | undefined;
-  isInCart: (id: Item['id']) => boolean;
-  isInStock: (id: Item['id']) => boolean;
+  getItemFromCart: (id: Item['id'], variation?: any) => any | undefined;
+  isInCart: (id: Item['id'], variation?: any) => boolean;
+  isInStock: (id: Item['id'], variation?: any) => boolean;
   resetCart: () => void;
 }
 
-export const cartContext = React.createContext<CartProviderState | undefined>(
-  undefined
-);
+export const cartContext = React.createContext<CartProviderState | undefined>(undefined);
 
 cartContext.displayName = 'CartContext';
 
@@ -43,19 +42,9 @@ export const useCart = () => {
   return context;
 };
 
-export const CartProvider: React.FC<{ children?: React.ReactNode }> = (
-  props
-) => {
-  const [savedCart, saveCart] = useLocalStorage(
-    CART_KEY,
-    JSON.stringify(initialState)
-  );
-
-  const [state, dispatch] = React.useReducer(
-    cartReducer,
-    JSON.parse(savedCart!)
-  );
-
+export const CartProvider: React.FC<{ children?: React.ReactNode }> = (props) => {
+  const [savedCart, saveCart] = useLocalStorage(CART_KEY, JSON.stringify(initialState));
+  const [state, dispatch] = React.useReducer(cartReducer, JSON.parse(savedCart!));
   const [, emptyVerifiedResponse] = useAtom(verifiedResponseAtom);
   const { mutate: createCart, isLoading: creating } = useCartsMutation();
 
@@ -65,7 +54,7 @@ export const CartProvider: React.FC<{ children?: React.ReactNode }> = (
 
   React.useEffect(() => {
     if (state.customerId) {
-      //  it will only proceed if customerId will present
+      // Only proceed if customerId is present
       saveCart(JSON.stringify(state));
       const data = {
         customerId: state.customerId,
@@ -85,7 +74,7 @@ export const CartProvider: React.FC<{ children?: React.ReactNode }> = (
     customerId: number,
     email: string,
     phone: string
-  ) =>
+  ) => {
     dispatch({
       type: 'ADD_ITEM_WITH_QUANTITY',
       item,
@@ -94,6 +83,7 @@ export const CartProvider: React.FC<{ children?: React.ReactNode }> = (
       email,
       phone,
     });
+  };
 
   const removeItemFromCart = (
     id: Item['id'],
@@ -102,7 +92,7 @@ export const CartProvider: React.FC<{ children?: React.ReactNode }> = (
     customerId: number,
     email: string,
     phone: string
-  ) =>
+  ) => {
     dispatch({
       type: 'REMOVE_ITEM_OR_QUANTITY',
       id,
@@ -112,24 +102,29 @@ export const CartProvider: React.FC<{ children?: React.ReactNode }> = (
       email,
       phone,
     });
+  };
 
-  const clearItemFromCart = (id: Item['id']) =>
+  const clearItemFromCart = (id: Item['id']) => {
     dispatch({ type: 'REMOVE_ITEM', id });
+  };
 
   const isInCart = useCallback(
-    (id: Item['id']) => !!getItem(state.items, id),
+    (id: Item['id'], variation?: any) => !!getItem(state.items, id, variation),
     [state.items]
   );
 
   const getItemFromCart = useCallback(
-    (id: Item['id']) => getItem(state.items, id),
+    (id: Item['id'], variation?: any) => getItem(state.items, id, variation),
     [state.items]
   );
+
   const isInStock = useCallback(
-    (id: Item['id']) => inStock(state.items, id),
+    (id: Item['id'], variation?: any) => inStock(state.items, id, variation),
     [state.items]
   );
+
   const resetCart = () => dispatch({ type: 'RESET_CART' });
+
   const value = React.useMemo(
     () => ({
       ...state,
@@ -143,5 +138,6 @@ export const CartProvider: React.FC<{ children?: React.ReactNode }> = (
     }),
     [getItemFromCart, isInCart, isInStock, state]
   );
+
   return <cartContext.Provider value={value} {...props} />;
 };

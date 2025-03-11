@@ -1,3 +1,4 @@
+import React from 'react';
 import type { NextPage } from 'next';
 
 export type NextPageWithLayout<P = {}> = NextPage<P> & {
@@ -1830,7 +1831,7 @@ export interface OrderQueryOptions extends QueryOptions {
   type: string;
   name: string;
   shop_id: string;
-  shop_slug: string;
+  shopSlug: string;
   tracking_number: string;
   customer_id: number;
   search: any;
@@ -1931,6 +1932,30 @@ export interface ItemProps {
 
 export interface DealerQueryOptions extends Omit<QueryOptions, 'language'> {
   shop_id: string;
+}
+
+export type CreatePermissionInput = {
+  permissionType?:permissionType;
+  defaultPermissions?: PermissionItem[] | [];
+}
+
+export enum permissionType {
+  COMPANY =  'Company',
+  DEALER = 'Dealer',
+  STAFF  = 'Staff',
+}
+
+export type PermissionsProps = {
+  id: number;
+  type_name: string;
+  permission_name: string;
+  additionalPermission: boolean;
+  permissions: PermissionItem[];
+}
+
+export type AddStaffFormProps = {
+  defaultVal?: string | undefined;
+  defaultPermissions?:PermissionItem[] | [];
 }
 
 export interface ShopPaginator extends PaginatorInfo<Shop> { }
