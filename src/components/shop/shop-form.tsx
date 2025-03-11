@@ -943,6 +943,7 @@ import {
   OWNER,
   E_COMMERCE,
   NON_E_COMMERCE,
+  STAFF,
 } from '@/utils/constants';
 import { useModalAction } from '../ui/modal/modal.context';
 import OpenAIButton from '../openAI/openAI.button';
@@ -968,6 +969,7 @@ import CreatePermission from '@/pages/permission/create';
 import CreatePerm from '../createPerm';
 import { useAtom } from 'jotai';
 import { addPermission, selectedOption, setUsrEmailState } from '@/utils/atoms';
+import ErrorMessage from '../ui/error-message';
 
 export const chatbotAutoSuggestion = ({ name }: { name: string }) => {
   return [
@@ -1074,6 +1076,9 @@ const ShopForm = ({ initialValues }: { initialValues?: any }) => {
   const { permissions } = getAuthCredentials();
   const [selectedPermissions, setSelectedPermissions] = useState([]);
   const [isChecked, setIsChecked] = useState(false);
+  const [isUserModalOpen, setUserModalOpen] = useState(false);
+  const [optionsUser, setUserOptions] = useState<any[]>([]);
+  const [selectedUser, setSelectedUser] = useState<any>(null);
 
   const handleCheckboxChange = () => {
     setIsChecked(!isChecked);
@@ -1138,6 +1143,7 @@ const ShopForm = ({ initialValues }: { initialValues?: any }) => {
   // const { openModal } = useModalAction();
   const { locale } = router;
   const { data, isLoading: loading, isError } = useMeQuery();
+ 
   const {
     // @ts-ignore
     settings: { options },
@@ -1156,7 +1162,7 @@ const ShopForm = ({ initialValues }: { initialValues?: any }) => {
     isLoading: permissionLoading,
     error,
     data: permissionData,
-  } = usePermissionData(userId);
+  } = usePermissionData(userId); 
 
   const filterdEcomm = permissionData?.filter((e: any) => {
     return e && e.type_name === Company;
@@ -1209,17 +1215,42 @@ const ShopForm = ({ initialValues }: { initialValues?: any }) => {
 
   // Created User SelectInput ------------
 
-  const { data: meData } = useMeQuery();
-  // const { permissions } = getAuthCredentials();
-  const isOwner = permissions?.includes(OWNER);
-  console.log("isOwner ", isOwner)
+  // const { data: meData } = useMeQuery();
+  // // const { permissions } = getAuthCredentials();
+  // const isOwner = permissions?.includes(OWNER);
+  // console.log("isOwner ", isOwner)
 
-  const shouldDisable = !isOwner;
+  // const shouldDisable = !isOwner;
+  // Customer and permission form conditional rendering 
+const { data: meData, isLoading: meLoading, error: meError } = useMeQuery();
+const createdById = meData?.createdBy?.id; // Get the createdBy user ID
 
-  console.log("shouldDisable ", shouldDisable)
-  const [isUserModalOpen, setUserModalOpen] = useState(false);
-  const [optionsUser, setUserOptions] = useState<any[]>([]);
-  const [selectedUser, setSelectedUser] = useState<any>(null);
+// Fetch the createdBy user's data
+const { data: createdByUser, isLoading: createdByLoading, error: createdByError } = useUserQuery(
+  { id: createdById },
+  { enabled: !!createdById }  
+);
+
+
+// Handle loading and error states
+if (meLoading || createdByLoading) {
+  return <Loader text={t('common:text-loading')} />;  
+}
+
+if (meError || createdByError) {
+  return <ErrorMessage message="Error loading user data" />; 
+}
+
+// Determine if the staff member is created by an owner
+const createdByRole = createdByUser?.permission?.type_name; 
+const isCreatedByOwner = createdByRole === OWNER; 
+
+// Check if the user is an owner
+const isOwner =  permissions?.includes(OWNER) || // Owners can write
+(permissions?.includes(STAFF) && isCreatedByOwner);
+
+// Determine if the action should be disabled
+const shouldDisable = !isOwner ;
 
   // Fetching users
   const { data: users, isLoading } = useVendorQuery(meData?.id, {
@@ -1293,8 +1324,7 @@ const ShopForm = ({ initialValues }: { initialValues?: any }) => {
 
   const formattedPermissions = additionalPerm?.map((perm) => perm.permission_name) || [];
 
-  async function onSubmit(values: FormValues) {
-    console.log("initialValues 390", initialValues)
+  async function onSubmit(values: FormValues) { 
     console.log("values 396 ", values)
 
     const settings = {

@@ -1,18 +1,173 @@
+// import Card from '@/components/common/card';
+// import ErrorMessage from '@/components/ui/error-message';
+// import Loader from '@/components/ui/loader/loader';
+// import { useTranslation } from 'next-i18next';
+// import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
+// import React, { useState } from 'react';
+// import Search from '@/components/common/search';
+// import LinkButton from '@/components/ui/link-button';
+// import { getAuthCredentials } from '@/utils/auth-utils';
+// import Link from 'next/link';
+// import { usePermissionData } from '@/data/permission';
+// import { useMeQuery } from '@/data/user';
+// import { AllPermission } from '@/utils/AllPermission';
+// import OwnerLayout from '@/components/layouts/owner';
+// import { OWNER } from '@/utils/constants';
+// import AdminLayout from '@/components/layouts/admin';
+
+// interface PermissionComponentProps {
+//   Layout: React.FC;
+// }
+
+// const PermissionComponent: React.FC & PermissionComponentProps = () => {
+//   const { t } = useTranslation();
+//   const { permissions } = getAuthCredentials();
+
+//   const permissionTypes = AllPermission();
+//   const canWrite =
+//     permissionTypes.includes('sidebar-nav-item-permissions') ||
+//     permissions?.[0] === OWNER;
+
+//   const { isLoading, error, data: permissionData } = usePermissionData();
+
+//   function handleSearch({ searchText }: { searchText: string }) {
+//     // Implement search functionality here
+//   }
+
+//   if (isLoading) return <Loader text={t('common:text-loading')} />;
+//   if (error) return <ErrorMessage message={error.message} />;
+//   if (!permissionData) {
+//     return <div>No permission data available</div>;
+//   }
+
+//   return (
+//     <>
+//       <Card className="mb-8 flex flex-col items-center justify-between md:flex-row">
+//         <div className="mb-4 md:mb-0 md:w-1/4">
+//           <h1 className="text-lg font-semibold text-heading">Permissions</h1>
+//         </div>
+
+//         <div className="flex w-full flex-col items-center gap-x-5 ms-auto md:w-1/2 md:flex-row">
+//           {canWrite ? (
+//             <LinkButton href="/permission/create">Create Permission</LinkButton>
+//           ) : (
+//             <LinkButton href="/permission/create">Create Permission</LinkButton>
+//           )}
+//         </div>
+//       </Card>
+
+//       <div className="order-2 col-span-12 sm:col-span-6 xl:order-1 xl:col-span-4 3xl:col-span-3">
+//         <div className="flex flex-col items-center rounded bg-white px-6 py-8">
+//           <table className="w-full">
+//             <thead>
+//               <tr>
+//                 <th className="border p-2">S.No</th>
+//                 <th className="border p-2">ROLE</th>
+//                 <th className="border p-2">NAME</th>
+//                 <th className="border p-2">PERMISSION-TYPE</th>
+//                 {canWrite ? <th className="border p-2">ACTIONS</th> : null}
+//               </tr>
+//             </thead>
+//             <tbody>
+//               {permissionData.map((e, index) => (
+//                 <tr key={index}>
+//                   <td className="border p-2">{index + 1}</td>
+//                   <td className="border p-2">{e.type_name}</td>
+//                   <td className="border p-2">{e.permission_name}</td>
+//                   <td className="border p-2">
+//                     {e.permissions.length > 0
+//                       ? e.permissions
+//                         .slice(0, 3)
+//                         .map(
+//                           (
+//                             permission: { type: string },
+//                             i: React.Key | null | undefined
+//                           ) => (
+//                             <React.Fragment key={i}>
+//                               <li>
+//                                 {permission.type
+//                                   .replace('sidebar-nav-item-', '')
+//                                   .charAt(0)
+//                                   .toUpperCase() +
+//                                   permission.type
+//                                     .replace('sidebar-nav-item-', '')
+//                                     .slice(1)}
+//                               </li>
+//                               {i !== e.permissions.length - 1 && ' '}
+//                             </React.Fragment>
+//                           )
+//                         )
+//                       : ''}
+//                   </td>
+//                   {canWrite ? (
+//                     <td className="border p-2">
+//                       <Link href={`/permission/create?id=${e.id}`}>
+//                         <button className="flex items-center space-x-1 text-blue-500 hover:underline">
+//                           <svg
+//                             xmlns="http://www.w3.org/2000/svg"
+//                             fill="none"
+//                             viewBox="0 0 24 24"
+//                             stroke="currentColor"
+//                             width="24"
+//                           >
+//                             <path
+//                               strokeLinecap="round"
+//                               strokeLinejoin="round"
+//                               strokeWidth={2}
+//                               d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
+//                             />
+//                             <path
+//                               strokeLinecap="round"
+//                               strokeLinejoin="round"
+//                               strokeWidth={2}
+//                               d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"
+//                             />
+//                           </svg>
+//                           <span>View</span>
+//                         </button>
+//                       </Link>
+//                     </td>
+//                   ) : null}
+//                 </tr>
+//               ))}
+//             </tbody>
+//           </table>
+//         </div>
+//       </div>
+//     </>
+//   );
+// };
+
+// // Determine layout conditionally based on permissions
+// PermissionComponent.Layout =
+//   getAuthCredentials().permissions?.[0] === OWNER
+//     ? OwnerLayout
+//     : AdminLayout;
+
+// export const getStaticProps = async ({ locale }: any) => ({
+//   props: {
+//     ...(await serverSideTranslations(locale, ['table', 'common', 'form'])),
+//   },
+// });
+
+// export default PermissionComponent;
+
+
 import Card from '@/components/common/card';
 import ErrorMessage from '@/components/ui/error-message';
 import Loader from '@/components/ui/loader/loader';
 import { useTranslation } from 'next-i18next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Search from '@/components/common/search';
 import LinkButton from '@/components/ui/link-button';
 import { getAuthCredentials } from '@/utils/auth-utils';
 import Link from 'next/link';
 import { usePermissionData } from '@/data/permission';
-import { useMeQuery } from '@/data/user';
+import { useMeQuery, useUserQuery } from '@/data/user';
 import { AllPermission } from '@/utils/AllPermission';
 import OwnerLayout from '@/components/layouts/owner';
-import { OWNER } from '@/utils/constants';
+import { Company, OWNER, STAFF } from '@/utils/constants';
 import AdminLayout from '@/components/layouts/admin';
 
 interface PermissionComponentProps {
@@ -28,17 +183,88 @@ const PermissionComponent: React.FC & PermissionComponentProps = () => {
     permissionTypes.includes('sidebar-nav-item-permissions') ||
     permissions?.[0] === OWNER;
 
-  const { isLoading, error, data: permissionData } = usePermissionData();
+  const { isLoading: isPermissionLoading,error, data: permissionData } = usePermissionData();
 
-  function handleSearch({ searchText }: { searchText: string }) {
-    // Implement search functionality here
-  }
+// Fetch the current user's data to check if they are a STAFF member created by an OWNER
+const { data: meData, isLoading: meLoading, error: meError } = useMeQuery();
+const createdById = meData?.createdBy?.id;
 
-  if (isLoading) return <Loader text={t('common:text-loading')} />;
-  if (error) return <ErrorMessage message={error.message} />;
-  if (!permissionData) {
-    return <div>No permission data available</div>;
-  }
+const {
+  data: createdByUser,
+  isLoading: createdByLoading,
+  error: createdByError,
+} = useUserQuery({ id: createdById }, { enabled: !!createdById });
+
+// Determine if the staff member is created by an owner
+const createdByRole = createdByUser?.permission?.type_name;
+const isCreatedByOwner = createdByRole === OWNER;
+
+// Check if the user is an owner or a staff member created by an owner
+const isOwner = permissions?.[0] === OWNER;
+const isStaffCreatedByOwner = permissions?.[0] === STAFF && isCreatedByOwner;
+const isCompany = permissions?.[0] === Company;
+
+
+// Filter permissions based on user role
+// const filteredPermissions = permissionData?.filter((permission) => {
+//   if (isOwner) {
+//     // OWNER can see all permissions
+//     return true;
+//   } else if (isStaffCreatedByOwner) {
+//     // STAFF created by OWNER can only see Company permissions
+//     return permission.type_name === Company;
+//   }else if (isCompany) {
+//     // If logged-in user is a company, show all permissions
+//     return true;
+//   } else {
+//     // Other users see no permissions
+//     return false;
+//   }
+// });
+
+  // State for filtered permissions
+  const [filteredPermissions, setFilteredPermissions] = useState([]);
+  const [isLocalLoading, setIsLocalLoading] = useState(true); // Add a loading state
+
+  useEffect(() => {
+    if (permissionData) {
+      const filtered = permissionData.filter((permission) => {
+        if (isOwner) {
+          // OWNER can see all permissions
+          return true;
+        } else if (isStaffCreatedByOwner) {
+          // STAFF created by OWNER can only see Company permissions
+          return permission.type_name === Company;
+        } else if (isCompany) {
+          // If logged-in user is a company, show all permissions
+          return true;
+        } else {
+          // Other users see no permissions
+          return false;
+        }
+      });
+      setFilteredPermissions(filtered);
+      setIsLocalLoading(false); // Set loading to false after data is filtered
+    }
+  }, [permissionData, isOwner, isStaffCreatedByOwner, isCompany]);
+
+function handleSearch({ searchText }: { searchText: string }) {
+  // Implement search functionality here
+}
+
+if (isPermissionLoading || meLoading || createdByLoading || isLocalLoading) {
+  return <Loader text={t('common:text-loading')} />;
+}
+
+if (error || meError || createdByError) {
+  return <ErrorMessage message={error?.message || meError?.message || createdByError?.message} />;
+}
+
+if (!permissionData) {
+  return <div>No permission data available</div>;
+}
+
+console.log("filteredPermissions**", filteredPermissions);
 
   return (
     <>
@@ -69,7 +295,7 @@ const PermissionComponent: React.FC & PermissionComponentProps = () => {
               </tr>
             </thead>
             <tbody>
-              {permissionData.map((e, index) => (
+              {filteredPermissions.map((e, index) => (
                 <tr key={index}>
                   <td className="border p-2">{index + 1}</td>
                   <td className="border p-2">{e.type_name}</td>
@@ -151,3 +377,4 @@ export const getStaticProps = async ({ locale }: any) => ({
 });
 
 export default PermissionComponent;
+

@@ -43,40 +43,44 @@ export default function AllShopPage() {
     sortedBy,
   });
   
-    // Fetch current user data
-    // const { data: meData, isLoading: meLoading, error: meError } = useMeQuery();
-    // const createdById = meData?.createdBy?.id; // Get the createdBy user ID
-  
-    // // Fetch the createdBy user's data
-    // const { data: createdByUser, isLoading: createdByLoading, error: createdByError } = useUserQuery(
-    //   { id: createdById },
-    //   { enabled: !!createdById } // Only fetch if createdById exists
-    // );
-  
-    // // Handle loading and error states
-    // if (meLoading || createdByLoading) {
-    //   return <Loader text={t('common:text-loading')} />; // Show loading state
-    // }
-  
-    // if (meError || createdByError) {
-    //   return <ErrorMessage message="Error loading user data" />; // Handle errors
-    // }
-  
-    // // Determine if the staff member is created by an owner
-    // const createdByRole = createdByUser?.permission?.type_name; // Assuming role is stored in permission.type_name
-    // const isCreatedByOwner = createdByRole === 'Owner'; // Replace 'Owner' with the actual role name
-  
-    // // Update canWrite logic
-    // const canWrite =
-    //   permissions?.includes(OWNER) || // Owners can write
-    //   permissions?.includes(STAFF) || // Staff members can write
-    //   (permissions?.includes(STAFF) && isCreatedByOwner); // Staff members created by an owner can write
+ // Constants for permissions
+const OWNER = "Owner"; // Replace with the actual value in your permissions array
+const STAFF = "Staff"; // Replace with the actual value in your permissions array
 
-  const canWrite = permissions?.includes(OWNER) || permissions?.includes(STAFF);
-  // const canWrite = permissions?.includes(OWNER); 
+// Fetch current user data
+const { data: meData, isLoading: meLoading, error: meError } = useMeQuery();
+const createdById = meData?.createdBy?.id; // Get the createdBy user ID
+
+// Fetch the createdBy user's data
+const { data: createdByUser, isLoading: createdByLoading, error: createdByError } = useUserQuery(
+  { id: createdById },
+  { enabled: !!createdById }  
+);
+
+console.log("createdByUser*****", createdByUser); 
+if (meLoading || createdByLoading) {
+  return <Loader text={t('common:text-loading')} />;  
+}
+
+if (meError || createdByError) {
+  return <ErrorMessage message="Error loading user data" />; 
+}
+
+// Determine if the staff member is created by an owner
+const createdByRole = createdByUser?.permission?.type_name; 
+const isCreatedByOwner = createdByRole === OWNER; 
+
+const canWrite =
+  permissions?.includes(OWNER) || // Owners can write
+  (permissions?.includes(STAFF) && isCreatedByOwner); // Staff members created by an owner can write
+
+console.log("canWrite****", canWrite);
+
+  // const canWrite = permissions?.includes(OWNER) || permissions?.includes(STAFF);
+  // // const canWrite = permissions?.includes(OWNER); 
   
-  if (loading) return <Loader text={t('common:text-loading')} />;
-  if (error) return <ErrorMessage message={error.message} />;
+  // if (loading) return <Loader text={t('common:text-loading')} />;
+  // if (error) return <ErrorMessage message={error.message} />;
 
   function handleSearch({ searchText }: { searchText: string }) {
     setSearchTerm(searchText);

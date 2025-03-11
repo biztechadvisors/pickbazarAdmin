@@ -8,7 +8,7 @@ import { useQuery } from 'react-query';
 import { permissionClient } from '@/data/client/permission';
 import PermissionJson from '../../public/static/permission.json';
 import { useSavePermissionData } from '@/data/permission';
-import { useMeQuery } from '@/data/user';
+import { useMeQuery, useUserQuery } from '@/data/user';
 import { getAuthCredentials } from '@/utils/auth-utils';
 import { newPermission } from '@/contexts/permission/storepermission';
 import { useAtom } from 'jotai';
@@ -34,7 +34,15 @@ const CreatePerm = ({ onPermissionCreate,PermissionDatas,selectedPermissions,set
 
   const permissionId = router.query.id;
 
-  const { data: meData } = useMeQuery();
+  // const { data: meData } = useMeQuery();
+  const { data: meData, isLoading: meLoading, error: meError } = useMeQuery();
+  const createdById = meData?.createdBy?.id;
+
+  const {
+    data: createdByUser,
+    isLoading: createdByLoading,
+    error: createdByError,
+  } = useUserQuery({ id: createdById }, { enabled: !!createdById });
 
   const { id } = meData || {};
 
@@ -63,7 +71,7 @@ const CreatePerm = ({ onPermissionCreate,PermissionDatas,selectedPermissions,set
   }, [singlePermissionData]);
 
   const handleChange = (e) => {
-    setSelectedType(e.target.value);
+    setSelectedType(e.target.value); 
     setTypeError(''); 
   };
 
@@ -151,9 +159,17 @@ const CreatePerm = ({ onPermissionCreate,PermissionDatas,selectedPermissions,set
       // toast.error('Error');
     }
   };
+    // Determine if the staff member is created by an owner
+    const createdByRole = createdByUser?.permission?.type_name;
+    const isCreatedByOwner = createdByRole === OWNER;
+      // Check if the user is an owner or a staff member created by an owner
+      const canWrite =
+      permissions?.includes(OWNER) || // Owners can write
+      (permissions?.includes(STAFF) && isCreatedByOwner); 
+  
 
   const filteredData = () => {
-    if (permissions?.includes(OWNER)) {
+    if (canWrite) {
       return Object.entries(menusData).map(([key, value], index) => ({
         [key]: value,
         id: index + 1,
@@ -176,11 +192,13 @@ const CreatePerm = ({ onPermissionCreate,PermissionDatas,selectedPermissions,set
   };
 
   useEffect(() => {
-    if (permissions.includes(OWNER)) {
+    // if (permissions.includes(OWNER)) {
+      if (canWrite) {
       setTypeName(PermissionDatas?.type_name);
     } else {
       const permList = permissions;
-      const newArray = Object.values(PermissionDatas.type_name);
+      // const newArray = Object.values(PermissionDatas?.type_name);
+      const newArray =PermissionDatas?.type_name ? Object.values(PermissionDatas.type_name) : [];
       const filteredArray = newArray.filter((e) => permList.includes(e));
 
       let updatedTypeName = [];
@@ -206,7 +224,7 @@ const CreatePerm = ({ onPermissionCreate,PermissionDatas,selectedPermissions,set
 
       setTypeName(updatedTypeName);
     }
-  }, []);
+  }, [permissions, PermissionDatas?.type_name]);
 
   return (
     <div style={{ backgroundColor: 'white' }} className="modal">
@@ -232,7 +250,7 @@ const CreatePerm = ({ onPermissionCreate,PermissionDatas,selectedPermissions,set
                 }`}
               onChange={handleChange}
               value={selectedType}
-                    disabled={isEditMode}
+                    // disabled={isEditMode}
             >
               <option>{typeName}</option>
             </select>
@@ -256,7 +274,7 @@ const CreatePerm = ({ onPermissionCreate,PermissionDatas,selectedPermissions,set
                 }`}
               placeholder={t('Enter permissions')}
               value={permissionName}
-              disabled={isEditMode} 
+              // disabled={isEditMode} 
               onChange={handlePermissionNameChange}
             />
             {permissionError && (
@@ -345,4 +363,4 @@ const CreatePerm = ({ onPermissionCreate,PermissionDatas,selectedPermissions,set
 
 CreatePerm.Layout = OwnerLayout;
 
-export default CreatePerm;
+export default CreatePerm;  

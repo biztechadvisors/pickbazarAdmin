@@ -60,7 +60,7 @@ const Navbar: React.FC = () => {
           <NotificationMenu />
           <div  className="flex flex-col items-center">
             <AuthorizedMenu />
-            <h1 className="text-sm text-muted">{data?.name}</h1>
+            {/* <h1 className="text-sm text-muted">{data?.name}</h1> */}
           </div>
         </div>
       </nav>
