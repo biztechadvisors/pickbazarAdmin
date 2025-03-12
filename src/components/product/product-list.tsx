@@ -195,112 +195,6 @@ const ProductList = ({
         );
       },
     },
-
-  
-    // {
-    //   title: (
-    //     <TitleWithSort
-    //       title={t('table:table-item-quantity')}
-    //       ascending={
-    //         sortingObj.sort === SortOrder.Asc && sortingObj.column === 'quantity'
-    //       }
-    //       isActive={sortingObj.column === 'quantity'}
-    //     />
-    //   ),
-    //   className: 'cursor-pointer',
-    //   dataIndex: 'quantity',
-    //   key: 'quantity',
-    //   align: 'center',
-    //   width: 150,
-    //   onHeaderCell: () => onHeaderClick('quantity'),
-    //   render: (quantity: number, record: Product) => {
-    //     const [editMode, setEditMode] = useState(false);
-    //     const [selectedVariation, setSelectedVariation] = useState(
-    //       record.variation_options.length > 0 ? record.variation_options[0] : null
-    //     );
-    //     const [editedQuantity, setEditedQuantity] = useState(0);
-    //     const [previousQuantity, setPreviousQuantity] = useState(0);
-    
-    //     useEffect(() => {
-    //       if (selectedVariation) {
-    //         setEditedQuantity(selectedVariation.quantity);
-    //         setPreviousQuantity(selectedVariation.quantity);
-    //       }
-    //     }, [selectedVariation]);
-    
-    //     const handleVariationChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    //       const variationId = Number(e.target.value);
-    //       const variation = record.variation_options.find(v => v.id === variationId);
-    //       if (variation) {
-    //         setSelectedVariation(variation);
-    //       }
-    //     };
-    
-    //     const handleEditQuantity = async () => {
-    //       if (!selectedVariation) {
-    //         alert('Please select a variation first.');
-    //         return;
-    //       }
-    
-    //       const data = {
-    //         id: record.id,
-    //         quantity: editedQuantity,
-    //         variationId: selectedVariation.id,
-    //         shopId: record.shop_id,
-    //       };
-    
-    //       updateQuantity(data, {
-    //         onSuccess: () => {
-    //           // Calculate the total quantity (previous + new)
-    //           const totalQuantity = previousQuantity + editedQuantity;
-    //           setSelectedVariation((prev) => prev ? { ...prev, quantity: totalQuantity } : null);
-    //           setEditMode(false);
-    //         },
-    //       });
-    //     };
-    
-    //     return (
-    //       <div>
-    //         {/* Variation Selection Dropdown */}
-    //         {record.variation_options.length > 0 && (
-    //           <select
-    //             className="border border-gray-300 rounded-md px-3 py-2 w-full text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-    //             value={selectedVariation?.id || ''}
-    //             onChange={handleVariationChange}
-    //           >
-    //             {record.variation_options.map((variation) => (
-    //               <option key={variation.id} value={variation.id}>
-    //                 {variation.title}
-    //               </option>
-    //             ))}
-    //           </select>
-    //         )}
-    
-    //         {/* Show Quantity Only for Selected Variation */}
-    //         {editMode ? (
-    //           <>
-    //             <Input
-    //               type="number"
-    //               value={editedQuantity}
-    //               onChange={(e) => setEditedQuantity(Number(e.target.value))}
-    //             />
-    //             <Button onClick={handleEditQuantity} size="small" className="mt-2">
-    //               Update
-    //             </Button>
-    //           </>
-    //         ) : (
-    //           <span
-    //             onClick={() => setEditMode(true)}
-    //             className="font-semibold text-accent underline transition-colors duration-200 ms-1 hover:text-accent-hover hover:no-underline focus:text-accent-700 focus:no-underline focus:outline-none"
-    //           >
-    //             {selectedVariation?.quantity ?? 'Add Quantity'}
-    //           </span>
-    //         )}
-    //       </div>
-    //     );
-    //   },
-    // },
-    
     
     {
       title: (
@@ -374,7 +268,7 @@ const ProductList = ({
               >
                 {record.variation_options.map((variation) => (
                   <option key={variation.id} value={variation.id}>
-                    {variation.title}
+                    {variation.title}                   
                   </option>
                 ))}
               </select>
@@ -382,7 +276,36 @@ const ProductList = ({
     
             {/* Show Quantity Only for Selected Variation */}
             {editMode ? (
-              <>
+            //   <>
+              
+            //     {/* Display quantity with a "+" sign */}
+            //     <div className="text-lg font-semibold">
+            //       {selectedVariation?.quantity ?? '0'}+
+            //     </div>
+                
+            //     {/* Input for editing quantity */}
+            //     <Input
+            //       type="number"
+            //       value={editedQuantity}
+            //       onChange={(e) => setEditedQuantity(Number(e.target.value))}
+            //       className="w-16 border border-gray-300 rounded-md p-2 text-sm"
+            //     />
+                
+            //     {/* Button to update quantity */}
+            //     <Button
+            //       onClick={handleEditQuantity}
+            //       size="small"
+            //       className="bg-blue-500 text-white hover:bg-blue-600 rounded-md px-4 py-2 text-sm"
+            //     >
+            //       Update
+            //     </Button>
+              
+            // </>
+            
+            
+              <>    <div className="text-lg font-semibold">
+              {selectedVariation?.quantity ?? '0'} +
+            </div>
                 <Input
                   type="number"
                   value={editedQuantity}
