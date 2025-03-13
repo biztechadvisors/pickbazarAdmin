@@ -138,8 +138,6 @@ export function useCreateOrderMutation() {
 //   });
 // };
 
-
-
 export const useUpdateOrderMutation = () => {
   const router = useRouter();
   const { t } = useTranslation();
@@ -172,7 +170,6 @@ export const useUpdateOrderMutation = () => {
     }
   );
 };
-
 
 export const useDealerStatusChange = () => {
   const { t } = useTranslation();
@@ -217,7 +214,6 @@ export const useDealerStatusChange = () => {
 //     },
 //   });
 // };
-
 
 
 export const useDownloadInvoiceMutation = (
