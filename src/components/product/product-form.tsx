@@ -398,7 +398,7 @@ export default function CreateOrUpdateProductForm({
                         type="button"
                         className="text-sm text-red-500 transition-colors duration-200 hover:text-red-700 focus:outline-none sm:col-span-1"
                       >
-                        {t('form:button-label-remove')}
+                        {/* {t('form:button-label-remove')} */}
                       </button>
                     </div>
                   </div>
