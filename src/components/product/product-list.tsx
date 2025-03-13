@@ -275,34 +275,8 @@ const ProductList = ({
             )}
     
             {/* Show Quantity Only for Selected Variation */}
-            {editMode ? (
-            //   <>
-              
-            //     {/* Display quantity with a "+" sign */}
-            //     <div className="text-lg font-semibold">
-            //       {selectedVariation?.quantity ?? '0'}+
-            //     </div>
-                
-            //     {/* Input for editing quantity */}
-            //     <Input
-            //       type="number"
-            //       value={editedQuantity}
-            //       onChange={(e) => setEditedQuantity(Number(e.target.value))}
-            //       className="w-16 border border-gray-300 rounded-md p-2 text-sm"
-            //     />
-                
-            //     {/* Button to update quantity */}
-            //     <Button
-            //       onClick={handleEditQuantity}
-            //       size="small"
-            //       className="bg-blue-500 text-white hover:bg-blue-600 rounded-md px-4 py-2 text-sm"
-            //     >
-            //       Update
-            //     </Button>
-              
-            // </>
-            
-            
+            {editMode ? (         
+                       
               <>    <div className="text-lg font-semibold">
               {selectedVariation?.quantity ?? '0'} +
             </div>
