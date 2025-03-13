@@ -173,6 +173,8 @@ function SelectProduct({
   const { t } = useTranslation();
   const { data: me } = useMeQuery();
   const [shopSlug, setShopSlug] = useState<string | null>(null);
+  const [selectAll, setSelectAll] = useState<string | null>(null);
+
 
   let dealerId;
   if (me?.dealer?.id && me?.permission?.permission?.type_name == "Dealer") {
@@ -201,8 +203,8 @@ function SelectProduct({
   const { products, loading, error } = useProductsQuery({
     dealerId,
     shop_id: shopData?.id,
-    shopName: shopSlug, 
-    limit:1000,
+    shopName: shopSlug,
+    limit: 1000,
   });
 
   const options: any = products || [];
