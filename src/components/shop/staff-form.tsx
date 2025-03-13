@@ -243,7 +243,6 @@
 
 // export default AddStaffForm;
 
-
 import React, { useEffect, useState } from 'react';
 import Button from '@/components/ui/button';
 import Input from '@/components/ui/input';
@@ -263,7 +262,7 @@ import Label from '../ui/label';
 import Select from '../ui/select/select';
 import { usePermissionData } from '@/data/permission';
 import { getAuthCredentials } from '@/utils/auth-utils';
-import { AddStaffFormProps, PermissionItem, PermissionsProps, permissionType } from '@/types';
+import { AddStaffFormProps, PermissionsProps, permissionType } from '@/types';
 import Loader from '@/components/ui/loader/loader';
 import CreatePermission from '@/pages/permission/create';
 import useFormValues from '@/lib/hooks/use-form-values';
@@ -275,15 +274,14 @@ type FormValues = {
   contact: string;
   type: { value: string; label: string } | null;
   createdBy: string;
-  numberOfDealers: number;
 };
+
 const defaultValues = {
   name: '',
   email: '',
   password: '',
   contact: '',
   type: null,
-  numberOfDealers: 0, // Added default value for new field
 };
 
 const staffFormSchema = yup.object().shape({
@@ -295,27 +293,25 @@ const staffFormSchema = yup.object().shape({
   password: yup.string().required('form:error-password-required'),
   contact: yup.string().required('form:error-contact-required'),
   type: yup
-  .object()
-  .shape({
-    value: yup.string().required('form:error-type-required'),
-    label: yup.string().required('form:error-type-required'),
-  })
-  .nullable()
-  .required('form:error-type-required'),
+    .object()
+    .shape({
+      value: yup.string().required('form:error-type-required'),
+      label: yup.string().required('form:error-type-required'),
+    })
+    .nullable()
+    .required('form:error-type-required'),
 });
 
-const AddStaffForm:React.FC<AddStaffFormProps> = ({defaultVal,defaultPermissions}) => {
+const AddStaffForm: React.FC<AddStaffFormProps> = ({ defaultVal, defaultPermissions }) => {
   const router = useRouter();
   const { data: meData } = useMeQuery();
   const { id } = meData || {};
-  // const { data: permissionData,isLoading } = usePermissionData();
-  const {isEqual,permissionData,permissionOptions:permissionOption,isLoading,permissionName,setPermissionName,permissionNameOptions} = useFormValues();
-  // const { mutate: registerUser, isLoading: loading } = useRegisterMutation();
+  const { isEqual, permissionData, permissionOptions: permissionOption, isLoading, permissionName, setPermissionName, permissionNameOptions } = useFormValues();
   const { mutate: addStaff, isLoading: loading } = useAddStaffMutation();
   const { t } = useTranslation();
   const { permissions } = getAuthCredentials();
-  const [defaultValue,setDefaultValue] = useState(defaultVal)
-  const [defaultPermission,setDefaultPermission] = useState(defaultPermissions)
+  const [defaultPermission, setDefaultPermission] = useState(defaultPermissions);
+  const [permissionOptions, setPermissionOptions] = useState(permissionOption(permissionType.STAFF));
 
   const {
     query: { shop },
@@ -327,20 +323,15 @@ const AddStaffForm:React.FC<AddStaffFormProps> = ({defaultVal,defaultPermissions
     slug: shopSlug as string,
   });
 
-  // let userId: any; 
-  // if (meData?.permission.permission_name == "Owner") {
-  //   userId = meData.id;
-  // } else {
-  //   userId = shopData?.owner_id;
-  // } 
   let userId: string | number | undefined;
   const userRole = meData?.permission?.type_name;
-  
+
   if (userRole === "Owner" || userRole === "Company") {
     userId = meData.id;
   } else {
     userId = shopData?.owner_id;
   }
+
   const {
     register,
     handleSubmit,
@@ -351,27 +342,51 @@ const AddStaffForm:React.FC<AddStaffFormProps> = ({defaultVal,defaultPermissions
   } = useForm<FormValues>({
     defaultValues,
     resolver: yupResolver(staffFormSchema),
-    mode:"onChange"
+    mode: "onChange"
   });
 
-  const permissionOptions = permissionOption(permissionType.STAFF)
-  const defaultOption = permissionOptions?.find((option) => option.id === 186);
+  const isOwner = permissions?.includes('Owner');
+  const isCompany = permissions?.includes('Company');
 
   useEffect(() => {
-    if(permissionName)
-      setValue("type",permissionNameOptions()[0])
-  }, [permissionName,setValue])
+    if ((isOwner || isCompany) && permissionOptions) {
+      if (isOwner) {
+        const ownerStaffPermission = permissionData?.find(
+          (permission: PermissionsProps) => permission.type_name === 'Staff' && permission.user === userId
+        );
+        if (ownerStaffPermission) {
+          setValue('type', { value: ownerStaffPermission.type_name, label: ownerStaffPermission.type_name });
+          setDefaultPermission(ownerStaffPermission.permissions ?? []);
+        }
+      }
 
-  function onSubmit({ name, email, password, contact, type, numberOfDealers }: FormValues) {
+      if (isCompany) {
+        const companyStaffPermission = permissionData?.find(
+          (permission: PermissionsProps) => permission.type_name === 'Staff' && permission.user === userId
+        );
+        if (companyStaffPermission) {
+          setValue('type', { value: companyStaffPermission.type_name, label: companyStaffPermission.type_name });
+          setDefaultPermission(companyStaffPermission.permissions ?? []);
+        }
+      }
+    }
+  }, [isOwner, isCompany, permissionOptions, permissionData, setValue, userId]);
+
+  const handlePermissionCreated = (newPermission: any) => {
+    const newPermissionOption = { value: newPermission.type_name, label: newPermission.permission_name };
+    setValue('type', newPermissionOption); // Update the form's `type` field with the new permission
+    setDefaultPermission(newPermission.permissions ?? []); // Update the default permissions
+    setPermissionOptions((prevOptions) => [...prevOptions, newPermissionOption]); // Update the permission options
+  };
+
+  function onSubmit({ name, email, password, contact, type }: FormValues) {
     addStaff(
       {
         name,
         email,
         password,
         contact,
-        permission: type?.value,
-        // numberOfDealers,
-        // managed_shop: shopData,
+        permission: type?.value, // Use the selected permission (new or default)
         shopSlug,
         createdBy: userId,
       },
@@ -443,7 +458,7 @@ const AddStaffForm:React.FC<AddStaffFormProps> = ({defaultVal,defaultPermissions
               />
             )}
           />
-          {isEqual && <Controller
+          <Controller
             name="type"
             control={control}
             render={({ field }) => (
@@ -453,13 +468,11 @@ const AddStaffForm:React.FC<AddStaffFormProps> = ({defaultVal,defaultPermissions
                   {...field}
                   getOptionLabel={(option: { label: string }) => option.label}
                   getOptionValue={(option: { value: string }) => option.value}
-                  // value={permissionOptions.find(option => option.id === 186)}
                   onChange={(value) => {
                     setValue("type", value);
-                    setDefaultPermission(permissionData?.filter((permission:PermissionsProps) => permission.permission_name === value?.value)[0]?.permissions ??  [])
+                    setDefaultPermission(permissionData?.filter((permission: PermissionsProps) => permission.type_name === value?.value)[0]?.permissions ?? []);
                   }}
                   required
-                  // defaultValue={defaultValue}
                   options={permissionOptions}
                   isClearable={true}
                   isLoading={loading && isLoading}
@@ -468,10 +481,10 @@ const AddStaffForm:React.FC<AddStaffFormProps> = ({defaultVal,defaultPermissions
               </>
             )}
           />
-          }
           <CreatePermission
             permissionType={permissionType.STAFF}
             defaultPermissions={defaultPermission}
+            onPermissionCreated={handlePermissionCreated} // Pass the callback
           />
         </Card>
       </div>

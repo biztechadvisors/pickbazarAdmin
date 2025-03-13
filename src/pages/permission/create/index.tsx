@@ -430,7 +430,11 @@ import AdminLayout from '@/components/layouts/admin';
 import { CreatePermissionInput, permissionType as PermissionType } from '@/types';
 import useFormValues from '@/lib/hooks/use-form-values';
 
-
+interface CreatePermissionInput {
+  permissionType?: string;
+  defaultPermissions?: any[];
+  onPermissionCreated?: (newPermission: any) => void; // Callback for new permission
+}
 function Loader() {
   return null;
 }
@@ -438,6 +442,7 @@ function Loader() {
 const CreatePermission = ({
   permissionType,
   defaultPermissions,
+  onPermissionCreated,
 }: CreatePermissionInput) => {
   const router = useRouter();
   const { t } = useTranslation();
@@ -560,7 +565,9 @@ const CreatePermission = ({
     });
   };
 
-  const handleSavePermission = async () => {
+  const handleSavePermission = async (e: React.MouseEvent) => {
+    e.preventDefault(); // Prevent form submission
+    e.stopPropagation(); // Stop event propagation
     if (!permissionName) {
       setPermissionError('Please enter a permission name.');
       return;
@@ -592,8 +599,13 @@ const CreatePermission = ({
         await mutateUpdate({ permissionId, dataToSend });
       } else {
         if (permissionType) setName(permissionName);
-        await mutatePost(dataToSend2);
+        const response = await mutatePost(dataToSend2);
+
+        // Notify parent about the new permission
+        if (onPermissionCreated && response) {
+          onPermissionCreated(response);
       }
+    }
     } catch (error) {
       console.error('Error saving/updating permission:', error);
       toast.error('Error');
