@@ -11,6 +11,7 @@ import {
 import { useAtom } from 'jotai';
 import {
   couponAtom,
+  customerAtom,
   discountAtom,
   payableAmountAtom,
   verifiedResponseAtom,
@@ -24,6 +25,8 @@ import Wallet from '@/components/checkout/wallet/wallet';
 import { CouponType } from '@/types';
 import { useSettingsQuery } from '@/data/settings';
 import { useRouter } from 'next/router';
+import { useUserQuery } from '@/data/user';
+
 interface Props {
   className?: string;
 }
@@ -36,6 +39,15 @@ const VerifiedItemList: React.FC<Props> = ({ className }) => {
   const [discount] = useAtom(discountAtom);
   const [payableAmount] = useAtom(payableAmountAtom);
   const [use_wallet] = useAtom(walletAtom);
+
+  const [customer] = useAtom(customerAtom);
+
+  const {
+    data: customerData,
+    isLoading: createdByLoading,
+    error: createdByError,
+  } = useUserQuery({ id: customer.id }, { enabled: !!customer });
+
   const {
     // @ts-ignore
     settings: { options },
@@ -92,19 +104,21 @@ const VerifiedItemList: React.FC<Props> = ({ className }) => {
     options?.freeShipping && Number(options?.freeShippingAmount) <= base_amount;
   const totalPrice = verifiedResponse
     ? calculatePaidTotal(
-        {
-          totalAmount: base_amount,
-          tax: verifiedResponse?.total_tax,
-          shipping_charge: verifiedResponse?.shipping_charge,
-        },
-        Number(calculateDiscount)
-      )
+      {
+        totalAmount: base_amount,
+        tax: verifiedResponse?.total_tax,
+        shipping_charge: verifiedResponse?.shipping_charge,
+      },
+      Number(calculateDiscount)
+    )
     : 0;
   const { price: total } = usePrice(
     verifiedResponse && {
       amount: totalPrice <= 0 ? 0 : totalPrice,
     }
   );
+
+  console.log("verifiedResponse ", verifiedResponse)
 
   return (
     <div className={className}>
