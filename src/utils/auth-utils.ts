@@ -15,7 +15,7 @@ import {
 
 export const allowedRoles = [SUPER_ADMIN, Company, STAFF, DEALER, ADMIN, OWNER];
 export const adminAndOwnerOnly = [SUPER_ADMIN, Company, ADMIN, DEALER, OWNER];
-export const adminOwnerAndStaffOnly = [SUPER_ADMIN, Company, STAFF, OWNER];
+export const adminOwnerAndStaffOnly = [SUPER_ADMIN, Company, STAFF, OWNER,DEALER];
 export const superAdminOnly = [SUPER_ADMIN];
 export const adminOnly = [OWNER, SUPER_ADMIN, ADMIN, DEALER, Company];
 export const ownerOnly = [SUPER_ADMIN, OWNER, DEALER, Company, STAFF];
@@ -55,7 +55,7 @@ export function getAuthCredentials(context?: any): AuthCredentials {
   }
   if (authCred) {
     const parsedData = JSON.parse(authCred);
-    const type_names = parsedData.type_name;
+    const type_names = parsedData.type_name; 
     return { ...parsedData, type_name: type_names };
   }
   return { token: null, permissions: null, type_name: null };
