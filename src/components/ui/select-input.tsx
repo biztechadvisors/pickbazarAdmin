@@ -1,51 +1,48 @@
 import Select from '@/components/ui/select/select';
-import { tree } from 'next/dist/build/templates/app-page';
 import { Controller } from 'react-hook-form';
 import { GetOptionLabel, GetOptionValue } from 'react-select';
-import { boolean } from 'yup';
 
 interface SelectInputProps {
   control: any;
-  rules?: any;
   name: string;
   options: object[];
   getOptionLabel?: GetOptionLabel<unknown>;
-  getOptionValue?: GetOptionLabel<unknown>;
+  getOptionValue?: GetOptionValue<unknown>;
   isMulti?: boolean;
   isClearable?: boolean;
   disabled?: boolean;
   isLoading?: boolean;
-  [key: string]: unknown;
   placeholder?: string;
-  defaultValue: object[];
+  defaultValue?: object[] | object | null;
   defValue?: string;
+  onChange?: (selectedOption: any) => void;
+  rules?: any;
+  [key: string]: unknown;
 }
 
 const SelectInput = ({
   control,
-  options,
+  options = [],
   name,
   rules,
-  getOptionLabel,
-  getOptionValue,
-  disabled,
-  isMulti,
-  isClearable,
-  isLoading,
-  placeholder,
-  defaultValue,
-  defValue,
+  getOptionLabel = (option: any) => (option && option.name ? option.name : 'Unknown'),
+  getOptionValue = (option: any) => (option && option.code ? option.code : ''),
+  disabled = false,
+  isMulti = false,
+  isClearable = false,
+  isLoading = false,
+  placeholder = 'Select...',
+  defaultValue = null,
+  defValue = '',
   onChange,
   ...rest
 }: SelectInputProps) => {
-
   return (
     <Controller
       control={control}
       name={name}
       defaultValue={defaultValue}
       rules={rules}
-      {...rest}
       render={({ field }) => (
         <Select
           {...field}
@@ -58,10 +55,11 @@ const SelectInput = ({
           isLoading={isLoading}
           hideSelectedOptions={true}
           options={options}
-          isDisabled={disabled as boolean}
+          isDisabled={disabled}
           onChange={(selectedOption) => {
-            field.onChange(selectedOption);
-            if (onChange) onChange(selectedOption);
+            const value = selectedOption || null;
+            field.onChange(value);
+            if (onChange) onChange(value);
           }}
         />
       )}
@@ -70,4 +68,3 @@ const SelectInput = ({
 };
 
 export default SelectInput;
-

@@ -796,13 +796,14 @@ export default function SettingsForm({
           <div className="mb-5">
             <Label>{`${t('form:input-label-currency-formations')} *`}</Label>
             <SelectInput
-              {...register('currencyOptions.formation')}
               control={control}
-              getOptionLabel={(option: any) => option.name}
-              getOptionValue={(option: any) => option.code}
-              options={COUNTRY_LOCALE}
+              name="currencyOptions.formation"
+              getOptionLabel={(option: any) => (option ? option.name : 'Unknown')}
+              getOptionValue={(option: any) => (option ? option.code : '')}
+              options={COUNTRY_LOCALE || []}
               disabled={isNotDefaultSettingsPage}
             />
+
           </div>
           <Input
             label={`${t('form:input-label-currency-number-of-decimal')} *`}
