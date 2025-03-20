@@ -15,7 +15,7 @@ const ShopLayout: React.FC<{ children?: React.ReactNode }> = ({ children }) => {
   } = useRouter();
 
   const { permissions: currentUserPermissions } = getAuthCredentials();
-
+console.log("siteSettings.sidebarLinks.shop+",siteSettings.sidebarLinks)
   const SidebarItemMap = () => (
     <Fragment>
       {siteSettings.sidebarLinks.shop.map(

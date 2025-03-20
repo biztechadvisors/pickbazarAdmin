@@ -77,10 +77,10 @@ const CustomerCreateForm = () => {
 
   const permissionOptions = permissionOption(permissionType.DEALER);
   if (permissions[0] === DEALER || permissions[0] === OWNER || permissions[0] === Company) {
-    permissionOptions.push(
-      { value: 'Customer', label: 'Customer', id: 'customer_id' },
-      { value: 'Staff', label: 'Staff', id: 'staff_id' }
-    );
+    // permissionOptions.push(
+    //   { value: 'Customer', label: 'Customer', id: 'customer_id' },
+    //   { value: 'Staff', label: 'Staff', id: 'staff_id' }
+    // );
   }
 
 
