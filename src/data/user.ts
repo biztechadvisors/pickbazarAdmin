@@ -183,7 +183,7 @@ export const useMeQuery = () => {
       isLoading: false,
       isError: false,
       error: null,
-      refetch: () => {},
+      refetch: () => { },
     };
   }
 
@@ -400,6 +400,7 @@ export const useUsersQuery = (params: Partial<QueryOptionsType>) => {
     () => userClient.fetchUsers(params),
     {
       keepPreviousData: true,
+      enabled: params.enabled,
     }
   );
   return {

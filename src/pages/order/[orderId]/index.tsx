@@ -194,15 +194,20 @@ export default function OrderDetailsPage() {
   return (
     <>
       <Card className="relative overflow-hidden">
+        {/* Invoice Header */}
         <div className="mb-6 -mt-5 -ml-5 -mr-5 md:-mr-8 md:-ml-8 md:-mt-8">
           <OrderViewHeader order={order} wrapperClassName="px-8 py-4" />
         </div>
+
+        {/* Download Invoice Button */}
         <div className="flex w-full">
           <Button onClick={handleDownloadInvoice} className="mb-5 bg-blue-500 ltr:ml-auto rtl:mr-auto">
             <DownloadIcon className="h-4 w-4 me-3" />
             {t('common:text-download')} {t('common:text-invoice')}
           </Button>
         </div>
+
+        {/* Order ID and Status */}
         <div className="flex flex-col items-center lg:flex-row">
           <h3 className="mb-8 w-full whitespace-nowrap text-center text-2xl font-semibold text-heading lg:mb-0 lg:w-1/3 lg:text-start">
             {t('form:input-label-order-id')} - {order?.tracking_number}
@@ -246,7 +251,10 @@ export default function OrderDetailsPage() {
             )
           )}
         </div>
+
+        {/* Invoice Body */}
         <div className="mt-10 flex flex-col lg:flex-row">
+          {/* Product List */}
           <div className="w-full shrink-0 items-center lg:w-2/3 lg:pe-5 xl:w-3/4">
             <Table
               //@ts-ignore
@@ -261,6 +269,7 @@ export default function OrderDetailsPage() {
             </div>
           </div>
 
+          {/* Totals and Order Summary */}
           <div className="mt-10 w-full shrink-0 lg:mt-0 lg:w-1/3 xl:w-1/4">
             <div className="space-y-5">
               <div className="flex w-full justify-between text-sm text-body">
@@ -286,7 +295,7 @@ export default function OrderDetailsPage() {
             </div>
             <div className="mt-10 flex w-full justify-center">
               <span className="w-64">
-                {formatString(t('common:text-ordered-on'), order?.created_at)}
+                {formatString(t('Order Date :'), order?.created_at)}
               </span>
             </div>
             <div className="mt-4 w-full justify-center">
@@ -299,14 +308,35 @@ export default function OrderDetailsPage() {
           </div>
         </div>
       </Card>
-      {order?.customer?.permission?.type_name === DEALER && (
-        <DispatchModal
-          isOpen={isDispatchModalOpen}
-          onClose={() => setDispatchModalOpen(false)}
-          order={stockOrderData}
-          dealerId={dealerId}
-          updateDispatch={handleDispatchUpdate}
-        />)}
+
+      {/* Customer Details Card */}
+      <Card className="mt-6">
+        <div className="p-6">
+          <h3 className="text-xl font-semibold text-heading mb-4">Customer Details</h3>
+          <div className="space-y-4">
+            <div className="flex justify-between">
+              <span className="text-sm text-body">Name:</span>
+              <span className="text-sm text-heading">{order?.customer?.name}</span>
+            </div>
+            <div className="flex justify-between">
+              <span className="text-sm text-body">Email:</span>
+              <span className="text-sm text-heading">{order?.customer?.email}</span>
+            </div>
+            <div className="flex justify-between">
+              <span className="text-sm text-body">Contact:</span>
+              <span className="text-sm text-heading">{order?.customer?.contact}</span>
+            </div>
+            <div className="flex justify-between">
+              <span className="text-sm text-body">Verified:</span>
+              <span className="text-sm text-heading">{order?.customer?.isVerified ? 'Yes' : 'No'}</span>
+            </div>
+            <div className="flex justify-between">
+              <span className="text-sm text-body">Role:</span>
+              <span className="text-sm text-heading">{order?.customer?.permission?.type_name}</span>
+            </div>
+          </div>
+        </div>
+      </Card>
     </>
   );
 }

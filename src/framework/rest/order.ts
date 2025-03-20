@@ -537,7 +537,7 @@ export function useGetPaymentIntent({
 }) {
   const router = useRouter();
   const { openModal, closeModal } = useModalAction();
-  console.log('540 ')
+
   const { data, isLoading, error, refetch, isFetching } = useQuery(
     [
       API_ENDPOINTS.PAYMENT_INTENT,

@@ -201,8 +201,8 @@ function SelectProduct({
   const { products, loading, error } = useProductsQuery({
     dealerId,
     shop_id: shopData?.id,
-    shopName: shopSlug, 
-    limit:1000,
+    shopName: shopSlug,
+    limit: 1000,
   });
 
   const options: any = products || [];
