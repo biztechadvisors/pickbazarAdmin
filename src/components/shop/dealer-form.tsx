@@ -17,7 +17,7 @@
 // import Select from '../ui/select/select';
 // import { usePermissionData } from '@/data/permission';
 // import { getAuthCredentials } from '@/utils/auth-utils';
-// import { AddStaffFormProps, PermissionItem, PermissionsProps, permissionType } from '@/types';
+// import { AddStaffFormProps, PermissionsProps, permissionType } from '@/types';
 // import Loader from '@/components/ui/loader/loader';
 // import CreatePermission from '@/pages/permission/create';
 // import useFormValues from '@/lib/hooks/use-form-values';
@@ -29,15 +29,14 @@
 //   contact: string;
 //   type: { value: string; label: string } | null;
 //   createdBy: string;
-//   numberOfDealers: number;
 // };
+
 // const defaultValues = {
 //   name: '',
 //   email: '',
 //   password: '',
 //   contact: '',
 //   type: null,
-//   numberOfDealers: 0, // Added default value for new field
 // };
 
 // const staffFormSchema = yup.object().shape({
@@ -48,20 +47,26 @@
 //     .required('form:error-email-required'),
 //   password: yup.string().required('form:error-password-required'),
 //   contact: yup.string().required('form:error-contact-required'),
+//   type: yup
+//     .object()
+//     .shape({
+//       value: yup.string().required('form:error-type-required'),
+//       label: yup.string().required('form:error-type-required'),
+//     })
+//     .nullable()
+//     .required('form:error-type-required'),
 // });
 
-// const AddStaffForm:React.FC<AddStaffFormProps> = ({defaultVal,defaultPermissions}) => {
+// const DealerAddForm: React.FC<AddStaffFormProps> = ({ defaultVal, defaultPermissions }) => {
 //   const router = useRouter();
 //   const { data: meData } = useMeQuery();
 //   const { id } = meData || {};
-//   // const { data: permissionData,isLoading } = usePermissionData();
-//   const {isEqual,permissionData,permissionOptions:permissionOption,isLoading,permissionName,setPermissionName,permissionNameOptions} = useFormValues();
-//   // const { mutate: registerUser, isLoading: loading } = useRegisterMutation();
+//   const { isEqual, permissionData, permissionOptions: permissionOption, isLoading, permissionName, setPermissionName, permissionNameOptions } = useFormValues();
 //   const { mutate: addStaff, isLoading: loading } = useAddStaffMutation();
 //   const { t } = useTranslation();
 //   const { permissions } = getAuthCredentials();
-//   const [defaultValue,setDefaultValue] = useState(defaultVal)
-//   const [defaultPermission,setDefaultPermission] = useState(defaultPermissions)
+//   const [defaultPermission, setDefaultPermission] = useState(defaultPermissions);
+//   const [permissionOptions, setPermissionOptions] = useState(permissionOption(permissionType.STAFF));
 
 //   const {
 //     query: { shop },
@@ -73,20 +78,15 @@
 //     slug: shopSlug as string,
 //   });
 
-//   // let userId: any; 
-//   // if (meData?.permission.permission_name == "Owner") {
-//   //   userId = meData.id;
-//   // } else {
-//   //   userId = shopData?.owner_id;
-//   // } 
 //   let userId: string | number | undefined;
 //   const userRole = meData?.permission?.type_name;
-  
-//   if (userRole === "Owner" || userRole === "Company") {
+
+//   if (userRole === "Owner" || userRole === "Company" || userRole === "Dealer") {
 //     userId = meData.id;
 //   } else {
 //     userId = shopData?.owner_id;
 //   }
+
 //   const {
 //     register,
 //     handleSubmit,
@@ -97,52 +97,90 @@
 //   } = useForm<FormValues>({
 //     defaultValues,
 //     resolver: yupResolver(staffFormSchema),
-//     mode:"onChange"
+//     mode: "onChange"
 //   });
 
-//   const permissionOptions = permissionOption(permissionType.STAFF)
-//   const defaultOption = permissionOptions?.find((option) => option.id === 186);
+//   const isCompany = permissions?.includes('Company'); 
 
+//   // Restrict access to Company users only
 //   useEffect(() => {
-//     if(permissionName)
-//       setValue("type",permissionNameOptions()[0])
-//   }, [permissionName,setValue])
-
-//   useEffect(() => {
-//     if (!control._formValues.type && defaultOption) {
-//       setValue("type", defaultOption);
+//     if (!isCompany) {
+//       router.replace(Routes.dashboard); // Redirect non-Company users
 //     }
-//   }, [control._formValues.type, defaultOption, setValue]);
+//   }, [isCompany, router]);
 
-//   if (isLoading) return <Loader/>
+//   console.log("permissionData+++",permissionData)
+//   useEffect(() => {
+//     if (isCompany && permissionOptions) { // Only for Company users
+//       const dealerPermission = permissionData?.find(
+//         (permission: PermissionsProps) => permission.type_name === 'Dealer' && permission.user === userId
+//       );
+//       if (dealerPermission) {
+//         // Use permission_name instead of type_name
+//         setValue('type', { value: dealerPermission.permission_name, label: dealerPermission.permission_name });
+//         setDefaultPermission(dealerPermission.permissions ?? []);
+//       }
+//     }
+//   }, [isCompany, permissionOptions, permissionData, setValue, userId]);
 
-//   function onSubmit(data) {
-//     console.log("form submitted",data);
-//     setPermissionName(null)
+//   const [selectedPermission, setSelectedPermission] = useState<any>(null);
 
-//     // addStaff(
-//     //   {
-//     //     name,
-//     //     email,
-//     //     password,
-//     //     contact,
-//     //     permission: type?.value,
-//     //     numberOfDealers,
-//     //     managed_shop: shopData,
-//     //     shopSlug,
-//     //     createdBy: userId,
-//     //   },
-//     //   {
-//     //     onError: (error: any) => {
-//     //       Object.keys(error?.response?.data).forEach((field: any) => {
-//     //         setError(field, {
-//     //           type: 'manual',
-//     //           message: error?.response?.data[field],
-//     //         });
-//     //       });
-//     //     },
-//     //   }
-//     // );
+//   const handlePermissionCreated = (newPermission: any) => { 
+//     const newPermissionOption = { value: newPermission.id, label: newPermission.permission_name };
+//     setSelectedPermission(newPermissionOption); // Update selected permission
+//     setValue("type", newPermissionOption, { shouldValidate: true }); // Update form field
+
+//     // Update the permission options list
+//     setPermissionOptions((prevOptions) => {
+//       const updatedOptions = [...prevOptions, newPermissionOption];
+//       return updatedOptions;
+//     });
+//   };
+
+//   // Sync selectedPermission with form
+//   useEffect(() => {
+//     if (selectedPermission) {
+//       setValue('type', selectedPermission, { shouldValidate: true });
+//     }
+//   }, [selectedPermission, setValue]);
+
+//   useEffect(() => {
+//   }, [permissionOptions]);
+
+//   function onSubmit({ name, email, password, contact, type }: FormValues) {
+//     let permissionToSubmit;
+
+//     if (isCompany) {
+//       // For Company users, filter only Dealer-specific permissions
+//       const dealerPermissions = permissionData?.filter(
+//         (permission: PermissionsProps) => permission.type_name === 'Dealer'
+//       );
+//       permissionToSubmit = dealerPermissions?.[0] || type; // Use the first Dealer-specific permission
+//     }
+
+//     console.log("permissionToSubmit", permissionToSubmit);
+
+//     addStaff(
+//       {
+//         name,
+//         email,
+//         password,
+//         contact,
+//         permission: permissionToSubmit?.label, // Send type name instead of ID
+//         shopSlug,
+//         createdBy: userId,
+//       },
+//       {
+//         onError: (error: any) => {
+//           Object.keys(error?.response?.data).forEach((field: any) => {
+//             setError(field, {
+//               type: "manual",
+//               message: error?.response?.data[field],
+//             });
+//           });
+//         },
+//       }
+//     );
 //   }
 
 //   return (
@@ -150,7 +188,7 @@
 //       <div className="my-5 flex flex-wrap sm:my-8">
 //         <Description
 //           title={t('form:form-title-information')}
-//           details={t('form:form-description-staff-info')}
+//           details={t('Add your dealer information and create a new dealer from here')}
 //           className="w-full px-0 pb-5 sm:w-4/12 sm:py-8 sm:pe-4 md:w-1/3 md:pe-5"
 //         />
 
@@ -200,34 +238,38 @@
 //               />
 //             )}
 //           />
-//           {isEqual && <Controller
+//           <Controller
 //             name="type"
 //             control={control}
-//             render={({ field }) => (
-//               <>
-//                 <Label className="mt-4">{t('form:input-label-type')}</Label>
-//                 <Select
-//                   {...field}
-//                   getOptionLabel={(option: { label: string }) => option.label}
-//                   getOptionValue={(option: { value: string }) => option.value}
-//                   // value={permissionOptions.find(option => option.id === 186)}
-//                   onChange={(value) => {
-//                     setValue("type", value);
-//                     setDefaultPermission(permissionData?.filter((permission:PermissionsProps) => permission.permission_name === value?.value)[0]?.permissions ??  [])
-//                   }}
-//                   // defaultValue={defaultValue}
-//                   options={permissionOptions}
-//                   isClearable={true}
-//                   isLoading={loading && isLoading}
-//                   className="mb-4"
-//                 />
-//               </>
-//             )}
+//             defaultValue={selectedPermission ?? null} // Ensure default value is selectedPermission
+//             render={({ field }) => { 
+//               return (
+//                 <>
+//                   <Label className="mt-4">{t("form:input-label-type")}</Label>
+//                   <Select
+//                     {...field}
+//                     value={selectedPermission || field.value} // Prioritize selectedPermission
+//                     getOptionLabel={(option) => option.label}
+//                     getOptionValue={(option) => option.value}
+//                     onChange={(value) => { 
+//                       setSelectedPermission(value); // Update selected permission
+//                       setValue("type", value, { shouldValidate: true });
+//                     }}
+//                     required
+//                     options={permissionOptions}
+//                     isClearable={true}
+//                     isLoading={loading && isLoading}
+//                     className="mb-4"
+//                   />
+//                 </>
+//               );
+//             }}
 //           />
-//           }
+
 //           <CreatePermission
 //             permissionType={permissionType.STAFF}
 //             defaultPermissions={defaultPermission}
+//             onPermissionCreated={handlePermissionCreated} // Ensure this is passed correctly
 //           />
 //         </Card>
 //       </div>
@@ -241,8 +283,7 @@
 //   );
 // };
 
-// export default AddStaffForm;
-
+// export default DealerAddForm;
 import React, { useEffect, useState } from 'react';
 import Button from '@/components/ui/button';
 import Input from '@/components/ui/input';
@@ -255,14 +296,13 @@ import { useTranslation } from 'next-i18next';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
 import { useShopQuery } from '@/data/shop';
-import { useAddStaffMutation } from '@/data/staff';
-import { useMeQuery } from '@/data/user';
+import { useMeQuery, useRegisterMutation } from '@/data/user'; // Import useRegisterMutation
 import PhoneInput from 'react-phone-input-2';
 import Label from '../ui/label';
 import Select from '../ui/select/select';
 import { usePermissionData } from '@/data/permission';
 import { getAuthCredentials } from '@/utils/auth-utils';
-import { AddStaffFormProps, PermissionsProps, permissionType } from '@/types';
+import { AddDealerFormProps, PermissionsProps, permissionType } from '@/types';
 import Loader from '@/components/ui/loader/loader';
 import CreatePermission from '@/pages/permission/create';
 import useFormValues from '@/lib/hooks/use-form-values';
@@ -284,7 +324,7 @@ const defaultValues = {
   type: null,
 };
 
-const staffFormSchema = yup.object().shape({
+const dealerFormSchema = yup.object().shape({
   name: yup.string().required('form:error-name-required'),
   email: yup
     .string()
@@ -302,12 +342,12 @@ const staffFormSchema = yup.object().shape({
     .required('form:error-type-required'),
 });
 
-const AddStaffForm: React.FC<AddStaffFormProps> = ({ defaultVal, defaultPermissions }) => {
+const DealerAddForm: React.FC<AddDealerFormProps> = ({ defaultVal, defaultPermissions }) => {
   const router = useRouter();
   const { data: meData } = useMeQuery();
   const { id } = meData || {};
   const { isEqual, permissionData, permissionOptions: permissionOption, isLoading, permissionName, setPermissionName, permissionNameOptions } = useFormValues();
-  const { mutate: addStaff, isLoading: loading } = useAddStaffMutation();
+  const { mutate: registerUser, isLoading: loading } = useRegisterMutation(); // Use useRegisterMutation
   const { t } = useTranslation();
   const { permissions } = getAuthCredentials();
   const [defaultPermission, setDefaultPermission] = useState(defaultPermissions);
@@ -341,93 +381,78 @@ const AddStaffForm: React.FC<AddStaffFormProps> = ({ defaultVal, defaultPermissi
     control,
   } = useForm<FormValues>({
     defaultValues,
-    resolver: yupResolver(staffFormSchema),
+    resolver: yupResolver(dealerFormSchema),
     mode: "onChange"
   });
 
-  const isOwner = permissions?.includes('Owner');
   const isCompany = permissions?.includes('Company'); 
-  const isDealer = permissions?.includes('Dealer'); 
- 
-console.log("isDealer",isDealer);
-console.log("PermissionData",permissionData);
+
+  // Restrict access to Company users only
   useEffect(() => {
-    if ((isOwner || isCompany || isDealer) && permissionOptions) { // ✅ Add isDealer to the condition
-      if (isOwner) {
-        const ownerStaffPermission = permissionData?.find(
-          (permission: PermissionsProps) => permission.type_name === 'Staff' && permission.user === userId
-        );
-        if (ownerStaffPermission) {
-          // Use permission_name instead of type_name
-          setValue('type', { value: ownerStaffPermission.permission_name, label: ownerStaffPermission.permission_name });
-          setDefaultPermission(ownerStaffPermission.permissions ?? []);
-        }
-      }
-  
-      if (isCompany) {
-        const companyStaffPermission = permissionData?.find(
-          (permission: PermissionsProps) => permission.type_name === 'Staff' && permission.user === userId
-        );
-        if (companyStaffPermission) {
-          // Use permission_name instead of type_name
-          setValue('type', { value: companyStaffPermission.permission_name, label: companyStaffPermission.permission_name });
-          setDefaultPermission(companyStaffPermission.permissions ?? []);
-        }
-      }
-  
-      if (isDealer) { // ✅ Add Dealer-specific logic
-        const dealerStaffPermission = permissionData?.find(
-          (permission: PermissionsProps) => permission.type_name === 'Staff' && permission.user === userId
-        );
-        if (dealerStaffPermission) {
-          // Use permission_name instead of type_name
-          setValue('type', { value: dealerStaffPermission.permission_name, label: dealerStaffPermission.permission_name });
-          setDefaultPermission(dealerStaffPermission.permissions ?? []);
-        }
+    if (!isCompany) {
+      router.replace(Routes.dashboard); // Redirect non-Company users
+    }
+  }, [isCompany, router]);
+
+  useEffect(() => {
+    if (isCompany && permissionOptions) { // Only for Company users
+      const dealerPermission = permissionData?.find(
+        (permission: PermissionsProps) => permission.type_name === 'Dealer' && permission.user === userId
+      );
+      if (dealerPermission) {
+        // Use permission_name instead of type_name
+        setValue('type', { value: dealerPermission.permission_name, label: dealerPermission.permission_name });
+        setDefaultPermission(dealerPermission.permissions ?? []);
       }
     }
-  }, [isOwner, isCompany, isDealer, permissionOptions, permissionData, setValue, userId]);
+  }, [isCompany, permissionOptions, permissionData, setValue, userId]);
+
   const [selectedPermission, setSelectedPermission] = useState<any>(null);
 
   const handlePermissionCreated = (newPermission: any) => { 
-  
     const newPermissionOption = { value: newPermission.id, label: newPermission.permission_name };
-  
-    setSelectedPermission(newPermissionOption); // 
-    setValue("type", newPermissionOption, { shouldValidate: true }); // ✅ Update form field
-  
+    setSelectedPermission(newPermissionOption); // Update selected permission
+    setValue("type", newPermissionOption, { shouldValidate: true }); // Update form field
+
     // Update the permission options list
     setPermissionOptions((prevOptions) => {
       const updatedOptions = [...prevOptions, newPermissionOption];
-       
       return updatedOptions;
     });
   };
-  
+
   // Sync selectedPermission with form
   useEffect(() => {
     if (selectedPermission) {
       setValue('type', selectedPermission, { shouldValidate: true });
-    } 
-
+    }
   }, [selectedPermission, setValue]);
-  useEffect(() => { // Debugging
-  }, [permissionOptions]); 
+
+  useEffect(() => {
+  }, [permissionOptions]);
 
   function onSubmit({ name, email, password, contact, type }: FormValues) {
-    // Always prefer selectedPermission if available
     const permissionToSubmit = selectedPermission || type;
-   console.log("permissionToSubmit",permissionToSubmit)
-  
-    addStaff(
+
+    if (isCompany) {
+      // For Company users, filter only Dealer-specific permissions
+      const dealerPermissions = permissionData?.filter(
+        (permission: PermissionsProps) => permission.type_name === 'Dealer'
+      );
+      // permissionToSubmit = dealerPermissions?.[0] || type; // Use the first Dealer-specific permission
+    }
+
+    console.log("permissionToSubmit", permissionToSubmit);
+
+    registerUser(
       {
         name,
         email,
         password,
         contact,
-        permission: permissionToSubmit?.label, // ✅ Send type name instead of ID
-        shopSlug,
         createdBy: userId,
+        permission: permissionToSubmit?.label, // Use the value instead of label
+        shopSlug,
       },
       {
         onError: (error: any) => {
@@ -441,14 +466,13 @@ console.log("PermissionData",permissionData);
       }
     );
   }
-  
-  
+
   return (
     <form onSubmit={handleSubmit(onSubmit)} noValidate>
       <div className="my-5 flex flex-wrap sm:my-8">
         <Description
           title={t('form:form-title-information')}
-          details={t('form:form-description-staff-info')}
+          details={t('Add your dealer information and create a new dealer from here')}
           className="w-full px-0 pb-5 sm:w-4/12 sm:py-8 sm:pe-4 md:w-1/3 md:pe-5"
         />
 
@@ -498,49 +522,49 @@ console.log("PermissionData",permissionData);
               />
             )}
           />
-  <Controller
-  name="type"
-  control={control}
-  defaultValue={selectedPermission ?? null} // ✅ Ensure default value is selectedPermission
-  render={({ field }) => { 
-    return (
-      <>
-        <Label className="mt-4">{t("form:input-label-type")}</Label>
-        <Select
-          {...field}
-          value={selectedPermission || field.value} // ✅ Prioritize selectedPermission
-          getOptionLabel={(option) => option.label}
-          getOptionValue={(option) => option.value}
-          onChange={(value) => { 
-            setSelectedPermission(value); // ✅ Update selected permission
-            setValue("type", value, { shouldValidate: true });
-          }}
-          required
-          options={permissionOptions}
-          isClearable={true}
-          isLoading={loading && isLoading}
-          className="mb-4"
-        />
-      </>
-    );
-  }}
-/>
+          <Controller
+            name="type"
+            control={control}
+            defaultValue={selectedPermission ?? null} // Ensure default value is selectedPermission
+            render={({ field }) => { 
+              return (
+                <>
+                  <Label className="mt-4">{t("form:input-label-type")}</Label>
+                  <Select
+                    {...field}
+                    value={selectedPermission || field.value} // Prioritize selectedPermission
+                    getOptionLabel={(option) => option.label}
+                    getOptionValue={(option) => option.value}
+                    onChange={(value) => { 
+                      setSelectedPermission(value); // Update selected permission
+                      setValue("type", value, { shouldValidate: true });
+                    }}
+                    required
+                    options={permissionOptions}
+                    isClearable={true}
+                    isLoading={loading && isLoading}
+                    className="mb-4"
+                  />
+                </>
+              );
+            }}
+          />
 
-<CreatePermission
-  permissionType={permissionType.STAFF}
-  defaultPermissions={defaultPermission}
-  onPermissionCreated={handlePermissionCreated} // Ensure this is passed correctly
-/>
+          <CreatePermission
+            permissionType={permissionType.STAFF}
+            defaultPermissions={defaultPermission}
+            onPermissionCreated={handlePermissionCreated} // Ensure this is passed correctly
+          />
         </Card>
       </div>
 
       <div className="mb-4 text-end">
         <Button loading={loading} disabled={loading}>
-          {t('form:button-label-add-staff')}
+          {t('form:button-label-add-dealer')} {/* Update the button label */}
         </Button>
       </div>
     </form>
   );
 };
 
-export default AddStaffForm;
+export default DealerAddForm;

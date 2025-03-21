@@ -78,7 +78,7 @@ export default function DealerPage() {
 
           {locale === Config.defaultLanguage && (
             <LinkButton
-              href={Routes.user.create}
+              href={Routes.dealerlist.create}
               className="h-12 w-full md:w-auto md:ms-6"
             >
               <span className="block md:hidden xl:block">

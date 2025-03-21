@@ -431,7 +431,11 @@ import { CreatePermissionInput, permissionType as PermissionType } from '@/types
 import useFormValues from '@/lib/hooks/use-form-values';
 import { randomStaffPermissions } from '@/utils/defaultValues';
 
-
+interface CreatePermissionInput {
+  permissionType?: string;
+  defaultPermissions?: any[];
+  onPermissionCreated?: (newPermission: any) => void; // Callback for new permission
+}
 function Loader() {
   return null;
 }
@@ -439,6 +443,7 @@ function Loader() {
 const CreatePermission = ({
   permissionType,
   defaultPermissions,
+  onPermissionCreated,
 }: CreatePermissionInput) => {
   const {data:me} = useMeQuery()
   const isDealer = me?.permission?.type_name === PermissionType.DEALER;
@@ -569,39 +574,93 @@ const CreatePermission = ({
     });
   };
 
-  const handleSavePermission = async () => {
+  // const handleSavePermission = async (e: React.MouseEvent) => {
+  //   e.preventDefault(); // Prevent form submission
+  //   e.stopPropagation(); // Stop event propagation
+  //   if (!permissionName) {
+  //     setPermissionError('Please enter a permission name.');
+  //     return;
+  //   }
+  //   let typeToSend = selectedType ? selectedType : permissionType;
+
+  //   if (!selectedType && !permissionType) {
+  //     const firstType = Object.values(typeName)[0];
+  //     typeToSend = firstType;
+  //     setSelectedType(firstType);
+  //   }
+
+  //   const dataToSend = {
+  //     type_name: typeToSend,
+  //     user: id,
+  //     permissionName: permissionName,
+  //     permissions: selectedPermissions,
+  //   };
+  //   const dataToSend2 = {
+  //     type_name: typeToSend,
+  //     user: id,
+  //     permission_name: permissionName,
+  //     permissions: selectedPermissions,
+  //   };
+
+  //   try {
+  //     if (router.query.id) {
+  //       const permissionId = router.query.id;
+  //       await mutateUpdate({ permissionId, dataToSend });
+  //     } else {
+  //       if (permissionType) setName(permissionName);
+  //       const response = await mutatePost(dataToSend2);
+
+  //       // Notify parent about the new permission
+  //       if (onPermissionCreated && response) {
+  //         onPermissionCreated(response);
+  //     }
+  //   }
+  //   } catch (error) {
+  //     console.error('Error saving/updating permission:', error);
+  //     toast.error('Error');
+  //   }
+  // };
+  
+  // Determine if the user is a Staff member created by an Owner
+  
+  const handleSavePermission = async (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+  
     if (!permissionName) {
       setPermissionError('Please enter a permission name.');
       return;
     }
-    let typeToSend = selectedType ? selectedType : permissionType;
-
+  
+    let typeToSend = selectedType || permissionType;
+  
     if (!selectedType && !permissionType) {
       const firstType = Object.values(typeName)[0];
       typeToSend = firstType;
       setSelectedType(firstType);
     }
-
+  
     const dataToSend = {
-      type_name: typeToSend,
-      user: id,
-      permissionName: permissionName,
-      permissions: selectedPermissions,
-    };
-    const dataToSend2 = {
       type_name: typeToSend,
       user: id,
       permission_name: permissionName,
       permissions: selectedPermissions,
     };
-
+  
     try {
       if (router.query.id) {
         const permissionId = router.query.id;
-        await mutateUpdate({ permissionId, dataToSend });
+        const response = await mutateUpdate({ permissionId, dataToSend }); // ✅ Await the response
+        console.log('Response from mutateUpdate:', response);
       } else {
         if (permissionType) setName(permissionName);
-        await mutatePost(dataToSend2);
+        const response = await mutatePost(dataToSend); // ✅ Await the response
+        console.log('Response from mutatePost:', response);
+  
+        if (onPermissionCreated && response) {
+          console.log('Calling onPermissionCreated with:', response);
+          onPermissionCreated(response);
+        }
       }
     } catch (error) {
       console.error('Error saving/updating permission:', error);
@@ -609,7 +668,6 @@ const CreatePermission = ({
     }
   };
   
-  // Determine if the user is a Staff member created by an Owner
   const createdByRole = createdByUser?.permission?.type_name;
   const isCreatedByOwner = createdByRole === OWNER;
 

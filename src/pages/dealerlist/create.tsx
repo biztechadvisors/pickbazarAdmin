@@ -1,0 +1,74 @@
+import { useTranslation } from 'next-i18next';
+import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
+
+import AddStaffForm from '@/components/shop/staff-form';
+import {
+  adminAndOwnerOnly,
+  adminOnly,
+  adminOwnerAndStaffOnly,
+  getAuthCredentials,
+  hasAccess,
+} from '@/utils/auth-utils';
+import { Routes } from '@/config/routes';
+import { useShopQuery } from '@/data/shop';
+import { useMeQuery } from '@/data/user';
+import { useRouter } from 'next/router';
+import AdminLayout from '@/components/layouts/admin';
+import OwnerLayout from '@/components/layouts/owner';
+import { OWNER } from '@/utils/constants';
+import { usePermissionData } from '@/data/permission';
+import { PermissionsProps } from '@/types';
+import Loader from '@/components/ui/loader/loader'; 
+import DealerAddForm from '@/components/shop/dealer-form';
+
+export default function AddDealerPage() {
+  const { t } = useTranslation();
+  const router = useRouter();
+  const {
+    query: { shop },
+  } = useRouter();
+  const { permissions } = getAuthCredentials();
+  const { data: me } = useMeQuery();
+  const { data: shopData } = useShopQuery({
+    slug: shop as string,
+  });
+  const { data: permissionData,isLoading } = usePermissionData();
+  const defaultValue = permissionData?.filter((permission:PermissionsProps) => permission.id === 186)[0]?.permission_name
+  const defaultPermission = permissionData?.filter((permission:PermissionsProps) => permission.id === 186)[0]?.permissions
+  if (isLoading) return <Loader />;
+
+  const shopId = shopData?.id!;
+  if (
+    !hasAccess(adminOnly, permissions) &&
+    !me?.shops?.map((shop) => shop.id).includes(shopId) &&
+    me?.managed_shop?.id != shopId
+  ) {
+    router.replace(Routes.dashboard);
+  }
+  return (
+    <>
+      <div className="flex border-b border-dashed border-border-base py-5 sm:py-8">
+        <h1 className="text-lg font-semibold text-heading">
+          {t('form:button-label-create-dealer')}
+        </h1>
+      </div>
+      <DealerAddForm defaultVal={defaultValue} defaultPermissions={defaultPermission}/>
+    </>
+  );
+}
+const { permissions } = getAuthCredentials();
+const resLayout = () => {
+  return permissions?.[0] === OWNER ? OwnerLayout : AdminLayout;
+};
+
+AddDealerPage.Layout = resLayout();
+
+AddDealerPage.authenticate = {
+  permissions: adminOwnerAndStaffOnly,
+};
+
+export const getServerSideProps = async ({ locale }: any) => ({
+  props: {
+    ...(await serverSideTranslations(locale, ['table', 'form', 'common'])),
+  },
+});

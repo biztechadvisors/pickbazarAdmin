@@ -72,13 +72,12 @@ export default function StaffsPage() {
   }
 
   if (
-    !hasAccess(adminOnly, permissions) &&
+    !hasAccess(adminOwnerAndStaffOnly, permissions) &&
     !me?.shops?.map((shop) => shop.id).includes(shopId) &&
     me?.managed_shop?.id != shopId
   ) {
     router.replace(Routes.dashboard);
-  }
-
+  } 
   console.log("staff-page 82 ")
   const filteredUsers = users?.filter(
     (user) => user.permission?.type_name === STAFF

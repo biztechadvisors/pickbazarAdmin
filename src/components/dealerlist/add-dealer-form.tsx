@@ -89,8 +89,7 @@ function SelectCategory({
   const { t } = useTranslation();
 
 
-  const { data: meData } = useMeQuery();
-
+  const { data: meData } = useMeQuery(); 
   const shop: string | undefined = meData?.managed_shop?.id;
   const [shopSlug, setShopSlug] = useState<string | undefined>(undefined);
 
@@ -174,8 +173,7 @@ function SelectProduct({
   const { data: me } = useMeQuery();
   const [shopSlug, setShopSlug] = useState<string | null>(null);
   const [selectAll, setSelectAll] = useState<string | null>(null);
-
-
+  const [globalMargin, setGlobalMargin] = useState<string | null>(null);
   let dealerId;
   if (me?.dealer?.id && me?.permission?.permission?.type_name == "Dealer") {
     dealerId = me?.dealer && me?.dealer?.id
