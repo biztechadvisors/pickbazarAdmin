@@ -429,6 +429,7 @@ import { ADMIN, Company, DEALER, OWNER, STAFF } from '@/utils/constants';
 import AdminLayout from '@/components/layouts/admin';
 import { CreatePermissionInput, permissionType as PermissionType } from '@/types';
 import useFormValues from '@/lib/hooks/use-form-values';
+import { randomStaffPermissions } from '@/utils/defaultValues';
 
 
 function Loader() {
@@ -439,10 +440,12 @@ const CreatePermission = ({
   permissionType,
   defaultPermissions,
 }: CreatePermissionInput) => {
+  const {data:me} = useMeQuery()
+  const isDealer = me?.permission?.type_name === PermissionType.DEALER;
   const router = useRouter();
   const { t } = useTranslation();
   // const [typeName, setTypeName] = useState(PermissionJson.type_name);
-  const [typeName, setTypeName] = useState([]); 
+  const [typeName, setTypeName] = useState([]);
   const [selectedType, setSelectedType] = useState('');
   const [menusData, setMenusData] = useState(PermissionJson.Menus);
   const [permissionName, setPermissionName] = useState('');
@@ -452,6 +455,12 @@ const CreatePermission = ({
   const [typeError, setTypeError] = useState('');
   const [permissionError, setPermissionError] = useState('');
   const [isLoading, setIsLoading] = useState(true);
+
+
+  useEffect(() => {
+    if (isDealer) setSelectedPermissions(randomStaffPermissions)
+  }, [isDealer]);
+  console.log("User",isDealer);
 
   const {
     // isLoading: loading,
@@ -699,7 +708,8 @@ const CreatePermission = ({
             typeError && 'border-red-500'
           }`}
           onChange={(e) => handleChange(e)}
-          value={permissionType}
+          value={permissionType ? permissionType : PermissionType.STAFF}
+          disabled={isDealer}
         >
           {Object.values(typeName).map((type, index) => (
             <option key={index} value={type}>
