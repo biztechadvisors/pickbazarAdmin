@@ -32,11 +32,7 @@ const ProductSubCategoryInput = ({ control, setValue }: Props) => {
     name: 'subcategories',
   });
 
-  console.log("control._defaultValues.subCategories ", control._defaultValues)
-
   defaultsubCategories = defaultsubCategories ? defaultsubCategories : control._defaultValues.subCategories;
-
-  console.log("defaultsubCategories ", defaultsubCategories)
 
   const { subcategories, loading } = useSubCategoriesQuery({
     limit: 999,

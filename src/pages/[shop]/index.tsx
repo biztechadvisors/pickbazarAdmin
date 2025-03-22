@@ -77,7 +77,6 @@ export default function ShopPage() {
 
   if (loading) return <Loader text={t('common:text-loading')} />;
   if (error) return <ErrorMessage message={error.message} />;
-  console.log("isActive ", is_active)
   return (
     <div className="grid grid-cols-12 gap-6">
       {!is_active && (

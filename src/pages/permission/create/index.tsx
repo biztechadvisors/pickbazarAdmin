@@ -60,8 +60,6 @@
 //     );
 //   const { permissions } = getAuthCredentials();
 
-//   console.log('permissions', selectedPermissions);
-//   console.log('Are array equal', isEqual);
 
 //   const [matched, _] = useAtom(newPermission);
 
@@ -185,7 +183,6 @@
 //         [key]: value,
 //         id: index + 1,
 //       }));
-//       // console.log('data 147 ', data);
 
 //       return data;
 //     } else {
@@ -202,7 +199,6 @@
 //         );
 //       });
 
-//       // console.log('last 168 ', last);
 
 //       return last;
 //     }
@@ -465,7 +461,6 @@ const CreatePermission = ({
   useEffect(() => {
     if (isDealer) setSelectedPermissions(randomStaffPermissions)
   }, [isDealer]);
-  console.log("User",isDealer);
 
   const {
     // isLoading: loading,
@@ -485,8 +480,6 @@ const CreatePermission = ({
     );
   const { permissions } = getAuthCredentials();
 
-  console.log('permissions', selectedPermissions);
-  console.log('Are array equal', isEqual);
 
   const [matched, _] = useAtom(newPermission);
 
@@ -651,14 +644,11 @@ const CreatePermission = ({
       if (router.query.id) {
         const permissionId = router.query.id;
         const response = await mutateUpdate({ permissionId, dataToSend }); // ✅ Await the response
-        console.log('Response from mutateUpdate:', response);
       } else {
         if (permissionType) setName(permissionName);
         const response = await mutatePost(dataToSend); // ✅ Await the response
-        console.log('Response from mutatePost:', response);
-  
+
         if (onPermissionCreated && response) {
-          console.log('Calling onPermissionCreated with:', response);
           onPermissionCreated(response);
         }
       }
@@ -681,7 +671,6 @@ const CreatePermission = ({
         [key]: value,
         id: index + 1,
       }));
-      // console.log('data 147 ', data);
 
       return data;
     } else {

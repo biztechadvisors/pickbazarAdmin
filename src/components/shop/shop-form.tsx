@@ -1218,7 +1218,6 @@ const ShopForm = ({ initialValues }: { initialValues?: any }) => {
   // const { data: meData } = useMeQuery();
   // // const { permissions } = getAuthCredentials();
   // const isOwner = permissions?.includes(OWNER);
-  // console.log("isOwner ", isOwner)
 
   // const shouldDisable = !isOwner;
   // Customer and permission form conditional rendering 
@@ -1231,15 +1230,6 @@ const { data: createdByUser, isLoading: createdByLoading, error: createdByError 
   { enabled: !!createdById }  
 );
 
-
-// Handle loading and error states
-if (meLoading || createdByLoading) {
-  return <Loader text={t('common:text-loading')} />;  
-}
-
-if (meError || createdByError) {
-  return <ErrorMessage message="Error loading user data" />; 
-}
 
 // Determine if the staff member is created by an owner
 const createdByRole = createdByUser?.permission?.type_name; 
@@ -1286,6 +1276,11 @@ const shouldDisable = !isOwner ;
     }
   }, [currentSelectedUser, setValue]);
 
+  // Handle loading and error states
+  if (meLoading || createdByLoading) return <Loader text={t('common:text-loading')} />;
+
+  if (meError || createdByError) return <ErrorMessage message="Error loading user data" />;
+
   // Handle the newly created user
   const handleUserCreated = (newUser: any) => {
     if (!newUser || !newUser.id) return; // Defensive check
@@ -1325,7 +1320,6 @@ const shouldDisable = !isOwner ;
   const formattedPermissions = additionalPerm?.map((perm) => perm.permission_name) || [];
 
   async function onSubmit(values: FormValues) { 
-    console.log("values 396 ", values)
 
     const settings = {
       ...values?.settings,

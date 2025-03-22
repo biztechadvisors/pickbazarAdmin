@@ -101,7 +101,6 @@ type ProductFormProps = {
 export default function CreateOrUpdateProductForm({
   initialValues,
 }: ProductFormProps) {
-  console.log("initialValues 104", initialValues)
   const router = useRouter();
   const { locale } = router;
   const [isSlugDisable, setIsSlugDisable] = useState<boolean>(true);

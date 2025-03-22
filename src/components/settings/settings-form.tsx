@@ -452,15 +452,9 @@ export default function SettingsForm({
 
     try {
 
-      if (!settings?.options) {
-        console.log('Calling createSettingsMutation:', mutationParams);
-        const data = createSettingsMutation({ shop_id, ...mutationParams });
-        console.log('Mutation success:', data);
-      } else {
-        console.log('Calling updateSettingsMutation:', mutationParams);
-        const data = updateSettingsMutation({ shop_id, ...mutationParams });
-        console.log('Mutation success:', data);
-      }
+      if (!settings?.options) createSettingsMutation({ shop_id, ...mutationParams });
+      else updateSettingsMutation({ shop_id, ...mutationParams });
+
     } catch (error) {
       console.error('Caught error:', error);
       const serverErrors = getErrorMessage(error);

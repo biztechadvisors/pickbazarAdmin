@@ -117,7 +117,6 @@
 //   if (isLoading) return <Loader/>
 
 //   function onSubmit(data) {
-//     console.log("form submitted",data);
 //     setPermissionName(null)
 
 //     // addStaff(
@@ -348,9 +347,7 @@ const AddStaffForm: React.FC<AddStaffFormProps> = ({ defaultVal, defaultPermissi
   const isOwner = permissions?.includes('Owner');
   const isCompany = permissions?.includes('Company'); 
   const isDealer = permissions?.includes('Dealer'); 
- 
-console.log("isDealer",isDealer);
-console.log("PermissionData",permissionData);
+
   useEffect(() => {
     if ((isOwner || isCompany || isDealer) && permissionOptions) { // ✅ Add isDealer to the condition
       if (isOwner) {
@@ -417,8 +414,7 @@ console.log("PermissionData",permissionData);
   function onSubmit({ name, email, password, contact, type }: FormValues) {
     // Always prefer selectedPermission if available
     const permissionToSubmit = selectedPermission || type;
-   console.log("permissionToSubmit",permissionToSubmit)
-  
+
     addStaff(
       {
         name,

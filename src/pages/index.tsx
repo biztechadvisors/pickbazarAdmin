@@ -20,7 +20,6 @@
 //                                   }: {
 //   userPermissions: string[];
 // }) {
-//   console.log("Permission",userPermissions);
 //   if (
 //     userPermissions.some((permission) =>
 //       [DEALER, STAFF, Company, SUPER_ADMIN, ADMIN].includes(permission)

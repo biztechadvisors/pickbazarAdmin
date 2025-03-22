@@ -185,7 +185,6 @@ export const useDealerStatusChange = () => {
       const url = `${API_ENDPOINTS.DEALER_STATUS_CHANGE}/${id}/status`;
       const data = { name: order_status };
 
-      console.log('Sending data to server:', data); // Log the data object
       return await HttpClient.patch(url, data);
     },
     {

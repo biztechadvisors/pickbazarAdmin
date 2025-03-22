@@ -109,7 +109,6 @@
 //     }
 //   }, [isCompany, router]);
 
-//   console.log("permissionData+++",permissionData)
 //   useEffect(() => {
 //     if (isCompany && permissionOptions) { // Only for Company users
 //       const dealerPermission = permissionData?.find(
@@ -158,7 +157,6 @@
 //       permissionToSubmit = dealerPermissions?.[0] || type; // Use the first Dealer-specific permission
 //     }
 
-//     console.log("permissionToSubmit", permissionToSubmit);
 
 //     addStaff(
 //       {
@@ -441,8 +439,6 @@ const DealerAddForm: React.FC<AddDealerFormProps> = ({ defaultVal, defaultPermis
       );
       // permissionToSubmit = dealerPermissions?.[0] || type; // Use the first Dealer-specific permission
     }
-
-    console.log("permissionToSubmit", permissionToSubmit);
 
     registerUser(
       {

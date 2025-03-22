@@ -57,7 +57,6 @@ const { data: createdByUser, isLoading: createdByLoading, error: createdByError 
   { enabled: !!createdById }  
 );
 
-console.log("createdByUser*****", createdByUser); 
 if (meLoading || createdByLoading) {
   return <Loader text={t('common:text-loading')} />;  
 }
@@ -74,7 +73,6 @@ const canWrite =
   permissions?.includes(OWNER) || // Owners can write
   (permissions?.includes(STAFF) && isCreatedByOwner); // Staff members created by an owner can write
 
-console.log("canWrite****", canWrite);
 
   // const canWrite = permissions?.includes(OWNER) || permissions?.includes(STAFF);
   // // const canWrite = permissions?.includes(OWNER); 

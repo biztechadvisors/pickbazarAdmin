@@ -264,8 +264,6 @@ if (!permissionData) {
   return <div>No permission data available</div>;
 }
 
-console.log("filteredPermissions**", filteredPermissions);
-
   return (
     <>
       <Card className="mb-8 flex flex-col items-center justify-between md:flex-row">

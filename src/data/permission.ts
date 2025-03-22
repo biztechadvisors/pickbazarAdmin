@@ -117,7 +117,6 @@ export const useSavePermissionData = () => {
   const mutation = useMutation(permissionClient.updatePermission, {
     onSuccess: (data) => {
       toast.success('Permission updated successfully');
-      console.log('Update response:', data); // Debugging response
     },
     onError: (error) => {
       console.error('Error updating permission:', error);
@@ -128,7 +127,6 @@ export const useSavePermissionData = () => {
   const mutationPost = useMutation(permissionClient.postPermission, {
     onSuccess: (data) => {
       toast.success('Permission saved successfully');
-      console.log('Post response:', data); // Debugging response
     },
     onError: (error) => {
       console.error('Error saving permission:', error);
