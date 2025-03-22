@@ -392,7 +392,7 @@
 //   }
 
 //   // Create-User-End ---------------------------------
- 
+
 // const formattedPermissions = additionalPerm?.map((perm) => perm.permission_name) || [];
 
 //   async function onSubmit(values: FormValues) {
@@ -406,7 +406,7 @@
 //           }))
 //         : [],
 //     };
- 
+
 //     // Remove companyType from values
 //     const { companyType, ...filteredValues } = values;
 //     try {
@@ -1143,7 +1143,7 @@ const ShopForm = ({ initialValues }: { initialValues?: any }) => {
   // const { openModal } = useModalAction();
   const { locale } = router;
   const { data, isLoading: loading, isError } = useMeQuery();
- 
+
   const {
     // @ts-ignore
     settings: { options },
@@ -1162,7 +1162,7 @@ const ShopForm = ({ initialValues }: { initialValues?: any }) => {
     isLoading: permissionLoading,
     error,
     data: permissionData,
-  } = usePermissionData(userId); 
+  } = usePermissionData(userId);
 
   const filterdEcomm = permissionData?.filter((e: any) => {
     return e && e.type_name === Company;
@@ -1222,35 +1222,35 @@ const ShopForm = ({ initialValues }: { initialValues?: any }) => {
 
   // const shouldDisable = !isOwner;
   // Customer and permission form conditional rendering 
-const { data: meData, isLoading: meLoading, error: meError } = useMeQuery();
-const createdById = meData?.createdBy?.id; // Get the createdBy user ID
+  const { data: meData, isLoading: meLoading, error: meError } = useMeQuery();
+  const createdById = meData?.createdBy?.id; // Get the createdBy user ID
 
-// Fetch the createdBy user's data
-const { data: createdByUser, isLoading: createdByLoading, error: createdByError } = useUserQuery(
-  { id: createdById },
-  { enabled: !!createdById }  
-);
+  // Fetch the createdBy user's data
+  const { data: createdByUser, isLoading: createdByLoading, error: createdByError } = useUserQuery(
+    { id: createdById },
+    { enabled: !!createdById }
+  );
 
 
-// Handle loading and error states
-if (meLoading || createdByLoading) {
-  return <Loader text={t('common:text-loading')} />;  
-}
+  // Handle loading and error states
+  if (meLoading || createdByLoading) {
+    return <Loader text={t('common:text-loading')} />;
+  }
 
-if (meError || createdByError) {
-  return <ErrorMessage message="Error loading user data" />; 
-}
+  if (meError || createdByError) {
+    return <ErrorMessage message="Error loading user data" />;
+  }
 
-// Determine if the staff member is created by an owner
-const createdByRole = createdByUser?.permission?.type_name; 
-const isCreatedByOwner = createdByRole === OWNER; 
+  // Determine if the staff member is created by an owner
+  const createdByRole = createdByUser?.permission?.type_name;
+  const isCreatedByOwner = createdByRole === OWNER;
 
-// Check if the user is an owner
-const isOwner =  permissions?.includes(OWNER) || // Owners can write
-(permissions?.includes(STAFF) && isCreatedByOwner);
+  // Check if the user is an owner
+  const isOwner = permissions?.includes(OWNER) || // Owners can write
+    (permissions?.includes(STAFF) && isCreatedByOwner);
 
-// Determine if the action should be disabled
-const shouldDisable = !isOwner ;
+  // Determine if the action should be disabled
+  const shouldDisable = !isOwner;
 
   // Fetching users
   const { data: users, isLoading } = useVendorQuery(meData?.id, {
@@ -1324,7 +1324,7 @@ const shouldDisable = !isOwner ;
 
   const formattedPermissions = additionalPerm?.map((perm) => perm.permission_name) || [];
 
-  async function onSubmit(values: FormValues) { 
+  async function onSubmit(values: FormValues) {
     console.log("values 396 ", values)
 
     const settings = {
@@ -1356,10 +1356,10 @@ const shouldDisable = !isOwner ;
           balance: {
             id: initialValues.balance?.id,
             ...filteredValues.balance,
-            admin_commission_rate: initialValues.balance.admin_commission_rate ?? 0, // Example value
-            current_balance: initialValues.balance.current_balance ?? 0, // Example value
-            total_earnings: initialValues.balance.total_earnings ?? 0, // Example value
-            withdrawn_amount: initialValues.balance.withdrawn_amount ?? 0, // Example value
+            admin_commission_rate: initialValues.balance?.admin_commission_rate ?? 0, // Example value
+            current_balance: initialValues.balance?.current_balance ?? 0, // Example value
+            total_earnings: initialValues.balance?.total_earnings ?? 0, // Example value
+            withdrawn_amount: initialValues.balance?.withdrawn_amount ?? 0, // Example value
           },
           dealerCount: values.dealerCount ?? initialValues.dealerCount,
         });

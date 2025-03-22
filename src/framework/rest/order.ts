@@ -537,7 +537,7 @@ export function useGetPaymentIntent({
 }) {
   const router = useRouter();
   const { openModal, closeModal } = useModalAction();
-
+  console.log("tracking 540 ", tracking_number)
   const { data, isLoading, error, refetch, isFetching } = useQuery(
     [
       API_ENDPOINTS.PAYMENT_INTENT,
@@ -574,7 +574,7 @@ export function useGetPaymentIntent({
       },
     }
   );
-
+  console.log("data 577 ", data)
   return {
     data,
     getPaymentIntentQuery: refetch,
