@@ -207,11 +207,11 @@ export const PlaceOrderAction: React.FC<PlaceOrderActionProps> = ({ className, c
           <ValidationError message={errorMessage} />
         </div>
       )}
-      {!isAllRequiredFieldSelected && (
+      {/* {!isAllRequiredFieldSelected && (
         <div className="mt-3">
           <ValidationError message={t('text-place-order-helper-text')} />
         </div>
-      )}
+      )} */}
     </>
   );
 };
