@@ -22,7 +22,7 @@ const PayNowButton: React.FC<Props> = ({
   const { isLoading, getPaymentIntentQuery } = useGetPaymentIntent({
     tracking_number: order?.tracking_number as string,
     payment_gateway: order?.payment_gateway as string,
-    recall_gateway: true as boolean,
+    recall_gateway: false as boolean,
   });
 
   async function handlePayNow() {

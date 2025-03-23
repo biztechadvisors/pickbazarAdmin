@@ -8,6 +8,8 @@ import { useSettings } from '@/framework/rest/settings';
 import { useOrder, useOrderPayment } from '@/framework/rest/order';
 import client from '@/framework/rest/client';
 import Spinner from '@/components/ui/loader/spinner/spinner';
+import { toast } from 'react-toastify';
+import { useRouter } from 'next/router';
 
 interface Props {
   paymentIntentInfo: PaymentIntentInfo;
@@ -21,25 +23,33 @@ const RazorpayPaymentModal: React.FC<Props> = ({
   paymentGateway,
 }) => {
   const { t } = useTranslation();
+  const { query } = useRouter();
+  const trackingNumberDef = query.tracking_number?.toString();
   const { closeModal } = useModalAction();
   const { loadRazorpayScript, checkScriptLoaded } = useRazorpay();
-  const shopSlug = typeof window !== 'undefined' ? localStorage.getItem("shopSlug") : null;
+  const shopSlug = typeof window !== 'undefined' ? localStorage.getItem('shopSlug') : null;
 
   const { settings, isLoading: isSettingsLoading } = useSettings(shopSlug);
+
+  if (!trackingNumber && !trackingNumberDef) {
+    throw new Error('Tracking number is required');
+  }
+
   const { order, isLoading, refetch } = useOrder({
-    tracking_number: trackingNumber,
+    tracking_number: trackingNumber ?? trackingNumberDef,
   });
   const { createOrderPayment } = useOrderPayment();
-  // @ts-ignore
-  const { customer_name, customer_contact, customer, billing_address } =
-    order ?? {};
+
+  const { customer_name, customer_contact, customer, billing_address } = order ?? {};
+
   const paymentHandle = useCallback(async () => {
     if (!checkScriptLoaded()) {
       await loadRazorpayScript();
     }
-    const __DEV__ = document.domain === "localhost";
+
+    const __DEV__ = document.domain === 'localhost';
     const options: RazorpayOptions = {
-      key: __DEV__ ? "rzp_test_5pZjAxubHkUaGo" : "m2eUDWAactAclyIvFABxZ1Kh",
+      key: __DEV__ ? 'rzp_test_5pZjAxubHkUaGo' : 'm2eUDWAactAclyIvFABxZ1Kh',
       amount: paymentIntentInfo?.amount!,
       currency: paymentIntentInfo?.currency!,
       name: customer_name!,
@@ -48,15 +58,18 @@ const RazorpayPaymentModal: React.FC<Props> = ({
       order_id: paymentIntentInfo?.order_id!,
       handler: async (response) => {
         closeModal();
-        client.orders.savePaymentId(response).then(paymentIntentInfo => {
+        try {
+          const paymentIntentInfo = await client.orders.savePaymentId(response);
           createOrderPayment({
-            tracking_number: trackingNumber!,
-            payment_gateway: 'razorpay' as string,
+            tracking_number: trackingNumber,
+            payment_gateway: paymentGateway,
             paymentIntentInfo: paymentIntentInfo,
           });
-        });
+        } catch (error) {
+          console.error('Error saving payment ID:', error);
+          toast.error(t('common:error-saving-payment'));
+        }
       },
-
       prefill: {
         ...(customer_name && { name: customer_name }),
         ...(customer_contact && { contact: `+${customer_contact}` }),
@@ -72,17 +85,31 @@ const RazorpayPaymentModal: React.FC<Props> = ({
         },
       },
     };
+
     const razorpay = (window as any).Razorpay(options);
-    return razorpay.open();
-  }, [isLoading, isSettingsLoading]);
+    razorpay.open();
+  }, [
+    checkScriptLoaded,
+    loadRazorpayScript,
+    paymentIntentInfo,
+    customer_name,
+    trackingNumber,
+    settings?.logo?.original,
+    t,
+    closeModal,
+    createOrderPayment,
+    paymentGateway,
+    customer_contact,
+    customer?.email,
+    billing_address,
+    refetch,
+  ]);
 
   useEffect(() => {
     if (!isLoading && !isSettingsLoading) {
-      (async () => {
-        await paymentHandle();
-      })();
+      paymentHandle();
     }
-  }, [isLoading, isSettingsLoading]);
+  }, [isLoading, isSettingsLoading, paymentHandle]);
 
   if (isLoading || isSettingsLoading) {
     return <Spinner showText={false} />;

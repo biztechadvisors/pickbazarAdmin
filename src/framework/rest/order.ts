@@ -74,6 +74,7 @@ export function useOrders(options?: Partial<OrderQueryOptions>) {
 }
 
 export function useOrder({ tracking_number }: { tracking_number: string }) {
+  console.log("Order tracking_number 77 ", tracking_number)
   const { data, isLoading, error, isFetching, refetch } = useQuery<
     Order,
     Error
@@ -230,7 +231,11 @@ export function useCreateOrder() {
     client.orders.create,
     {
       onSuccess: async (response) => {
-        const { id, payment_gateway, payment_intent } = response;
+        const { id, payment_gateway, payments: payment_intent } = response;
+
+        console.log("payment_intent 236 ", payment_intent);
+
+
         if (id) {
           let idStr = '';
           if (id) {
@@ -244,11 +249,13 @@ export function useCreateOrder() {
             ].includes(payment_gateway as PaymentGateway)
           ) {
             router.push(Routes.orders(idStr));
-          } else if (payment_intent?.payment_intent_info?.is_redirect) {
+          } else if (payment_intent[0]?.is_redirect) {
+            console.log("249 ")
             router.push(
-              payment_intent?.payment_intent_info?.redirect_url as string
+              payment_intent[0]?.redirect_url as string
             );
           } else {
+            console.log("254 ")
             router.push(`${Routes.orders(idStr)}/payment`);
           }
         }
@@ -342,9 +349,9 @@ export function useCreateOrderByStock() {
             ].includes(payment_gateway as PaymentGateway)
           ) {
             router.push(Routes.sale(idStr));
-          } else if (payment_intent?.payment_intent_info?.is_redirect) {
+          } else if (payment_intent[0]?.is_redirect) {
             router.push(
-              payment_intent?.payment_intent_info?.redirect_url as string
+              payment_intent[0]?.redirect_url as string
             );
           } else {
             router.push(`${Routes.sale(idStr)}/payment`);
@@ -503,12 +510,12 @@ export function useGetPaymentIntentOriginal({
     {
       enabled: false,
       onSuccess: (data) => {
-        if (data?.payment_intent_info?.is_redirect) {
-          return router.push(data?.payment_intent_info?.redirect_url as string);
+        if (data[0]?.is_redirect) {
+          return router.push(data[0]?.redirect_url as string);
         } else {
           openModal('PAYMENT_MODAL', {
             paymentGateway: data?.payment_gateway,
-            paymentIntentInfo: data?.payment_intent_info,
+            paymentIntentInfo: data[0],
             trackingNumber: data?.tracking_number,
           });
         }
@@ -537,7 +544,7 @@ export function useGetPaymentIntent({
 }) {
   const router = useRouter();
   const { openModal, closeModal } = useModalAction();
-  console.log("tracking 540 ", tracking_number)
+
   const { data, isLoading, error, refetch, isFetching } = useQuery(
     [
       API_ENDPOINTS.PAYMENT_INTENT,
@@ -561,20 +568,20 @@ export function useGetPaymentIntent({
         } else if (isObject(item)) {
           data = item;
         }
-        if (data?.payment_intent_info?.is_redirect) {
-          return router.push(data?.payment_intent_info?.redirect_url as string);
+        if (data[0]?.is_redirect) {
+          return router.push(data[0]?.redirect_url as string);
         } else {
           if (recall_gateway) window.location.reload();
           openModal('PAYMENT_MODAL', {
             paymentGateway: data?.payment_gateway,
-            paymentIntentInfo: data?.payment_intent_info,
+            paymentIntentInfo: data[0],
             trackingNumber: data?.tracking_number,
           });
         }
       },
     }
   );
-  console.log("data 577 ", data)
+
   return {
     data,
     getPaymentIntentQuery: refetch,

@@ -16,7 +16,7 @@ export function useSettings(shopSlug?: string | null) {
   const { locale } = useRouter();
   const formattedOptions = {
     language: locale,
-    shopSlug: shopSlug || undefined,  // Ensure it's undefined instead of null
+    shopSlug: shopSlug || undefined, // Ensure it's undefined instead of null
   };
 
   const { data, isLoading, error, isFetching } = useQuery<Settings, Error>(
@@ -25,8 +25,19 @@ export function useSettings(shopSlug?: string | null) {
       client.settings.all(Object.assign({}, queryKey[1], pageParam))
   );
 
+  // Provide a default settings object with currencyOptions initialized
+  const defaultSettings = {
+    options: {
+      currencyOptions: {
+        formation: 'en-US', // Default formation
+        fractions: 2, // Default fractions
+      },
+      // Add other default options here if needed
+    },
+  };
+
   return {
-    settings: data?.options ?? {},
+    settings: data?.options ?? defaultSettings.options, // Fallback to defaultSettings if data is undefined
     isLoading,
     error,
     isFetching,

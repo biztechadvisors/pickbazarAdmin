@@ -55,14 +55,8 @@ export default function OrderDetailsPage() {
   const mutationHooks = DealerShow ? dealerStatusChangeMutation : updateOrderMutation;
   const { mutate: updateOrder, isLoading: updating, isError, isSuccess } = mutationHooks;
 
-  console.log("query.orderId 58 ", query.orderId)
-  console.log("DealerShow 60 ", DealerShow)
-
   // const orderStocksQuery = useOrderStocksQuery({ id: query.orderId as string, language: locale! });
   const orderQuery = useOrderQuery({ id: query.orderId as string, language: locale! });
-
-  // console.log("orderStocksQuery ", orderStocksQuery)
-  console.log("orderQuery ", orderQuery)
 
   const { order: fetchedOrder, isLoading: loading, error } = orderQuery; //DealerShow ? orderStocksQuery :
 

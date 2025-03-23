@@ -25,9 +25,15 @@ const PAYMENTS_FORM_COMPONENTS: any = {
 const PaymentModal = () => {
   const {
     isOpen,
-    data: { paymentGateway, paymentIntentInfo, trackingNumber },
+    data: { paymentGateway, paymentIntentInfo, trackingNumber } = {},
   } = useModalState();
   const { closeModal } = useModalAction();
+
+  // Fallback if data is missing
+  if (!paymentGateway || !paymentIntentInfo || !trackingNumber) {
+    return <div>Missing payment data. Please try again.</div>;
+  }
+
   const PaymentMethod = PAYMENTS_FORM_COMPONENTS[paymentGateway?.toUpperCase()];
   const PaymentComponent = PaymentMethod?.component;
   const paymentModalType = PaymentMethod?.type;

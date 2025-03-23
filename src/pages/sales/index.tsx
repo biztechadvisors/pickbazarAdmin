@@ -124,7 +124,7 @@ export default function Sales() {
       order.total || '',
       order.sales_tax || '',
       order.delivery_fee || 0,
-      order.payment_intent?.payment_intent_info?.payment_id || '',
+      order.payment_intent[0]?.payment_id || '',
       order.payment_gateway || '',
       order.customer_contact || '',
       formatAddress(order.billing_address),

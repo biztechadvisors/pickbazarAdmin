@@ -788,6 +788,7 @@ export interface Order {
   payment_id?: string;
   parent_id: string | null;
   payment_gateway?: string;
+  payment_intent?: any;
   coupon?: Coupon;
   discount?: number;
   delivery_fee?: number;

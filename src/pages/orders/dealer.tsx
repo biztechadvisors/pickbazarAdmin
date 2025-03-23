@@ -144,7 +144,7 @@ export default function DealerOrders() {
                 order.total,
                 order.sales_tax,
                 order.delivery_fee || 0,
-                order.payment_intent?.payment_intent_info.payment_id || null,
+                order.payment_intent[0]?.payment_id || null,
                 order.payment_gateway,
                 contactNumber,
                 escapedBillingAddress,

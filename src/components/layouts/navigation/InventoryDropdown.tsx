@@ -207,7 +207,7 @@ const InventoryDropdown = () => {
               onMouseLeave={() => setHoveredItem(null)}
             >
               <Link
-                href={buildUrl(key === 'groups' ? 'collections' : key === 'accountDetails' ? '' : key)}
+                href={buildUrl(key === 'groups' ? 'groups' : key === 'accountDetails' ? '' : key)}
                 className="relative flex w-full cursor-pointer items-center rounded-lg py-2 px-5 text-sm text-body-dark text-start before:absolute before:-left-0.5 before:top-[18px] before:h-px before:w-3 before:border-t before:border-dashed before:border-gray-300 before:content-[''] hover:text-accent focus:text-accent"
                 onClick={() => handleSetNewShopSlug(newShopSlug)}
               >
@@ -219,7 +219,7 @@ const InventoryDropdown = () => {
               </Link>
               {hoveredItem === key && (
                 <div
-                 className="absolute left-full ml-2 p-2 bg-white border border-gray-200 rounded-md shadow-lg z-10"
+                  className="absolute left-full ml-2 p-2 bg-white border border-gray-200 rounded-md shadow-lg z-10"
                 >
                   <p className="text-sm text-gray-700">{tooltip}</p>
                 </div>

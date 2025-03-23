@@ -1325,7 +1325,6 @@ const ShopForm = ({ initialValues }: { initialValues?: any }) => {
   const formattedPermissions = additionalPerm?.map((perm) => perm.permission_name) || [];
 
   async function onSubmit(values: FormValues) {
-    console.log("values 396 ", values)
 
     const settings = {
       ...values?.settings,

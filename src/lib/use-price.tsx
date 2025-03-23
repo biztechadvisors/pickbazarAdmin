@@ -63,22 +63,26 @@ export default function usePrice(
   // Ensure localStorage is only accessed in the browser
   const shopSlug = typeof window !== 'undefined' ? localStorage.getItem("shopSlug") : null;
 
-  const {
-    settings: { currency, currencyOptions },
-  } = useSettings(shopSlug);  // ✅ Pass shopSlug correctly (not as an object)
+  // Fetch settings using the shopSlug
+  const { settings } = useSettings(shopSlug);
 
-  const { amount, baseAmount, currencyCode } = {
-    ...data,
-    currencyCode: currency ?? 'USD',
-  };
+  // Destructure currency and currencyOptions from settings with fallback values
+  const { currency = 'USD', currencyOptions = { formation: 'en', fractions: 2 } } = settings;
 
-  const { formation, fractions } = currencyOptions!;
+  // Destructure amount, baseAmount, and currencyCode from data with fallback values
+  const { amount, baseAmount, currencyCode = currency } = data || {};
+
+  // Destructure formation and fractions from currencyOptions with fallback values
+  const { formation = 'en', fractions = 2 } = currencyOptions;
 
   const { locale } = useRouter();
+
+  // Format the price using useMemo
   const value = useMemo(() => {
     if (typeof amount !== 'number' || !currencyCode) return '';
-    const fractionalDigit = fractions ? fractions : 2;
-    let currentLocale = formation ? formation : 'en';
+
+    const fractionalDigit = fractions ?? 2; // Use fractions if defined, otherwise default to 2
+    const currentLocale = formation ?? 'en'; // Use formation if defined, otherwise default to 'en'
 
     return baseAmount
       ? formatVariantPrice({
@@ -94,8 +98,9 @@ export default function usePrice(
         locale: currentLocale,
         fractions: fractionalDigit,
       });
-  }, [amount, baseAmount, currencyCode, locale]);
+  }, [amount, baseAmount, currencyCode, formation, fractions]);
 
+  // Return the formatted price
   return typeof value === 'string'
     ? { price: value, basePrice: null, discount: null }
     : value;
