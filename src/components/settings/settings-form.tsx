@@ -500,6 +500,58 @@ export default function SettingsForm({
 
   const isRazorpayActive = paymentGateway?.some(payment => payment?.name === "razorpay") ? paymentGateway?.some(payment => payment?.name === "razorpay") : true;
 
+
+  const [editingIndex, setEditingIndex] = useState<number | null>(null);
+  const [editedData, setEditedData] = useState<{ CLIENT_SECRET: string; CLIENT_ID: string }>({
+    CLIENT_SECRET: '',
+    CLIENT_ID: '',
+  });
+
+  const startEdit = (index: number, gateway: any) => {
+    setEditingIndex(index);
+    setEditedData({
+      CLIENT_SECRET: gateway.CLIENT_SECRET,
+      CLIENT_ID: gateway.CLIENT_ID,
+    });
+  };
+
+  const saveEdit = (index: number) => {
+    const updatedGateways = [...paymentGateway];
+    updatedGateways[index].CLIENT_SECRET = editedData.CLIENT_SECRET;
+    updatedGateways[index].CLIENT_ID = editedData.CLIENT_ID;
+
+    setValue('paymentGateway', updatedGateways);
+    setEditingIndex(null);
+  };
+
+  const hardcodedPaymentGateways = [
+    {
+      name: 'stripe',
+      title: 'Stripe',
+      icon: 'https://upload.wikimedia.org/wikipedia/commons/thumb/4/4d/Stripe_Logo.png/600px-Stripe_Logo.png',
+      url: 'https://www.stripe.com',
+      CLIENT_SECRET: 'secret123',
+      CLIENT_ID: 'client123',
+    },
+    {
+      name: 'paypal',
+      title: 'PayPal',
+      icon: 'https://upload.wikimedia.org/wikipedia/commons/thumb/1/1a/PayPal_logo_2014.png/800px-PayPal_logo_2014.png',
+      url: 'https://www.paypal.com',
+      CLIENT_SECRET: 'secret456',
+      CLIENT_ID: 'client456',
+    },
+    {
+      name: 'razorpay',
+      title: 'Razorpay',
+      icon: 'https://upload.wikimedia.org/wikipedia/commons/thumb/7/7b/Razorpay_logo.svg/800px-Razorpay_logo.svg.png',
+      url: 'https://www.razorpay.com',
+      CLIENT_SECRET: 'secret789',
+      CLIENT_ID: 'client789',
+    }
+  ];
+  
+
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
       <div className="my-5 flex flex-wrap border-b border-dashed border-border-base pb-8 sm:my-8">
@@ -684,7 +736,7 @@ export default function SettingsForm({
         </Card>
       </div>
 
-      <div className="my-5 flex flex-wrap border-b border-dashed border-border-base pb-8 sm:my-8">
+      {/* <div className="my-5 flex flex-wrap border-b border-dashed border-border-base pb-8 sm:my-8">
         <Description
           title={t('Payment')}
           details={t('Configure Payment Option')}
@@ -784,7 +836,329 @@ export default function SettingsForm({
           ) : null}
 
         </Card>
+      </div> */}
+
+
+
+      <div className="my-5 flex flex-wrap border-b border-dashed border-border-base pb-8 sm:my-8">
+        <Description
+          title={t('Payment')}
+          details={t('Configure Payment Option')}
+          className="w-full px-0 pb-5 sm:w-4/12 sm:py-8 sm:pe-4 md:w-1/3 md:pe-5"
+        />
+        <Card className="w-full sm:w-8/12 md:w-2/3">
+          <div className="mb-5">
+            <div className="flex items-center gap-x-4">
+              <SwitchInput
+                name="useCashOnDelivery"
+                control={control}
+                disabled={isNotDefaultSettingsPage}
+              />
+              <Label className="mb-0">{t('Enable Cash On Delivery')}</Label>
+            </div>
+          </div>
+          <div className="mb-5">
+            <Label>{t('form:input-label-currency')}</Label>
+            <SelectInput
+              name="currency"
+              control={control}
+              getOptionLabel={(option: any) => option.name}
+              getOptionValue={(option: any) => option.code}
+              options={CURRENCY}
+              disabled={isNotDefaultSettingsPage}
+            />
+            <ValidationError message={t(errors.currency?.message)} />
+          </div>
+          <div className="flex items-center gap-x-4">
+            <SwitchInput
+              control={control}
+              disabled={isNotDefaultSettingsPage}
+              {...register('useEnableGateway')}
+            />
+            <Label className="mb-0">{t('Enable Gateway')}</Label>
+          </div>
+          {useEnableGateway ? (
+            <>
+              <div className="mb-5 mt-5">
+                <Label>{t('text-select-payment-gateway')}</Label>
+                <PaymentSelect
+                  options={PAYMENT_GATEWAY}
+                  control={control}
+                  name="paymentGateway"
+                  defaultItem={checkAvailableDefaultGateway ? defaultPaymentGateway?.name : ''}
+                />
+              </div>
+
+              {isEmpty(paymentGateway) ? (
+                <div className="flex px-5 py-4">
+                  <Loader
+                    simple={false}
+                    showText={true}
+                    text="Please wait payment method is preparing..."
+                    className="mx-auto !h-20 w-6"
+                  />
+                </div>
+              ) : (
+                <>
+                  <div className="mb-5">
+                    <Label>{t('text-select-default-payment-gateway')}</Label>
+                    <SelectInput
+                      name="defaultPaymentGateway"
+                      control={control}
+                      getOptionLabel={(option: any) => option.title}
+                      getOptionValue={(option: any) => option.name}
+                      options={paymentGateway ?? []}
+                      disabled={isNotDefaultSettingsPage}
+                    />
+                  </div>
+                  {isRazorpayActive && (
+                    <div className="mb-5">
+                      <div className="flex items-center gap-x-4">
+                        <SwitchInput
+                          name="RazorpayCardOnly"
+                          control={control}
+                          disabled={isNotDefaultSettingsPage}
+                        />
+                        <Label className="!mb-0">{t('Enable Razorpay Element')}</Label>
+                      </div>
+                    </div>
+                  )}
+                  <Label>{t('text-webhook-url')}</Label>
+                  <div className="relative flex flex-col overflow-hidden rounded-md border border-solid border-[#D1D5DB]">
+                    <table className="w-full border-collapse border border-gray-300">
+                      <thead>
+                        <tr className="bg-gray-100">
+                          <th className="border p-2">{t('Icon')}</th>
+                          <th className="border p-2">{t('URL')}</th>
+                          <th className="border p-2">{t('CLIENT_SECRET')}</th>
+                          <th className="border p-2">{t('CLIENT_ID')}</th>
+                          <th className="border p-2">{t('Actions')}</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                      {hardcodedPaymentGateways.map((gateway: any, index: number) => (
+                          <tr key={index} className="border">
+                            <td className="border p-2">
+                              <img src={gateway.icon} alt={gateway.name} className="h-6 w-6" />
+                            </td>
+                            <td className="border p-2">{gateway.url}</td>
+                            <td className="border p-2">
+                              {editingIndex === index ? (
+                                <input
+                                  type="text"
+                                  value={editedData.CLIENT_SECRET}
+                                  onChange={(e) =>
+                                    setEditedData({ ...editedData, CLIENT_SECRET: e.target.value })
+                                  }
+                                  className="w-full border p-1"
+                                />
+                              ) : (
+                                gateway.CLIENT_SECRET
+                              )}
+                            </td>
+                            <td className="border p-2">
+                              {editingIndex === index ? (
+                                <input
+                                  type="text"
+                                  value={editedData.CLIENT_ID}
+                                  onChange={(e) =>
+                                    setEditedData({ ...editedData, CLIENT_ID: e.target.value })
+                                  }
+                                  className="w-full border p-1"
+                                />
+                              ) : (
+                                gateway.CLIENT_ID
+                              )}
+                            </td>
+                            <td className="border p-2">
+                              {editingIndex === index ? (
+                                <button
+                                  onClick={() => saveEdit(index)}
+                                  className="px-2 py-1 bg-green-500 text-white rounded"
+                                >
+                                  {t('Save')}
+                                </button>
+                              ) : (
+                                <button
+                                  onClick={() => startEdit(index, gateway)}
+                                  className="px-2 py-1 bg-blue-500 text-white rounded"
+                                >
+                                  {t('Edit')}
+                                </button>
+                              )}
+                            </td>
+                          </tr>
+                        ))}
+
+                      </tbody>
+                    </table>
+                  </div>
+                </>
+              )}
+            </>
+          ) : null}
+        </Card>
       </div>
+
+
+        {/* <div className="my-5 flex flex-wrap border-b border-dashed border-border-base pb-8 sm:my-8">
+          <Description
+            title={t('Payment')}
+            details={t('Configure Payment Option')}
+            className="w-full px-0 pb-5 sm:w-4/12 sm:py-8 sm:pe-4 md:w-1/3 md:pe-5"
+          />
+          <Card className="w-full sm:w-8/12 md:w-2/3">
+            <div className="mb-5">
+              <div className="flex items-center gap-x-4">
+                <SwitchInput
+                  name="useCashOnDelivery"
+                  control={control}
+                  disabled={isNotDefaultSettingsPage}
+                />
+                <Label className="mb-0">{t('Enable Cash On Delivery')}</Label>
+              </div>
+            </div>
+            <div className="mb-5">
+              <Label>{t('form:input-label-currency')}</Label>
+              <SelectInput
+                name="currency"
+                control={control}
+                getOptionLabel={(option: any) => option.name}
+                getOptionValue={(option: any) => option.code}
+                options={CURRENCY}
+                disabled={isNotDefaultSettingsPage}
+              />
+              <ValidationError message={t(errors.currency?.message)} />
+            </div>
+            <div className="flex items-center gap-x-4">
+              <SwitchInput
+                control={control}
+                disabled={isNotDefaultSettingsPage}
+                {...register('useEnableGateway')}
+              />
+              <Label className="mb-0">{t('Enable Gateway')}</Label>
+            </div>
+            {useEnableGateway ? (
+              <>
+                <div className="mb-5 mt-5">
+                  <Label>{t('text-select-payment-gateway')}</Label>
+                  <PaymentSelect
+                    options={PAYMENT_GATEWAY}
+                    control={control}
+                    name="paymentGateway"
+                    defaultItem={checkAvailableDefaultGateway ? defaultPaymentGateway?.name : ''}
+                  />
+                </div>
+
+                {isEmpty(paymentGateway) ? (
+                  <div className="flex px-5 py-4">
+                    <Loader
+                      simple={false}
+                      showText={true}
+                      text="Please wait payment method is preparing..."
+                      className="mx-auto !h-20 w-6"
+                    />
+                  </div>
+                ) : (
+                  <>
+                    <div className="mb-5">
+                      <Label>{t('text-select-default-payment-gateway')}</Label>
+                      <SelectInput
+                        name="defaultPaymentGateway"
+                        control={control}
+                        getOptionLabel={(option: any) => option.title}
+                        getOptionValue={(option: any) => option.name}
+                        options={paymentGateway ?? []}
+                        disabled={isNotDefaultSettingsPage}
+                      />
+                    </div>
+                    {isRazorpayActive && (
+                      <div className="mb-5">
+                        <div className="flex items-center gap-x-4">
+                          <SwitchInput
+                            name="RazorpayCardOnly"
+                            control={control}
+                            disabled={isNotDefaultSettingsPage}
+                          />
+                          <Label className="!mb-0">{t('Enable Razorpay Element')}</Label>
+                        </div>
+                      </div>
+                    )}
+                    <Label>{t('text-webhook-url')}</Label>
+                    <div className="relative flex flex-col overflow-hidden rounded-md border border-solid border-[#D1D5DB]">
+                      <table className="w-full border-collapse border border-gray-300">
+                        <thead>
+                          <tr className="bg-gray-100">
+                            <th className="border p-2">{t('Icon')}</th>
+                            <th className="border p-2">{t('URL')}</th>
+                            <th className="border p-2">{t('CLIENT_SECRET')}</th>
+                            <th className="border p-2">{t('CLIENT_ID')}</th>
+                            <th className="border p-2">{t('Actions')}</th>
+                          </tr>
+                        </thead>
+                        <tbody>                  
+                          {paymentGateway.map((gateway: any, index: number) => (
+                            <tr key={index} className="border">
+                              <td className="border p-2">
+                                <img src={gateway.icon} alt={gateway.name} className="h-6 w-6" />
+                              </td>
+                              <td className="border p-2">{gateway.url}</td>
+                              <td className="border p-2">
+                                {editingIndex === index ? (
+                                  <input
+                                    type="text"
+                                    value={editedData.CLIENT_SECRET}
+                                    onChange={(e) =>
+                                      setEditedData({ ...editedData, CLIENT_SECRET: e.target.value })
+                                    }
+                                    className="w-full border p-1"
+                                  />
+                                ) : (
+                                  gateway.CLIENT_SECRET
+                                )}
+                              </td>
+                              <td className="border p-2">
+                                {editingIndex === index ? (
+                                  <input
+                                    type="text"
+                                    value={editedData.CLIENT_ID}
+                                    onChange={(e) =>
+                                      setEditedData({ ...editedData, CLIENT_ID: e.target.value })
+                                    }
+                                    className="w-full border p-1"
+                                  />
+                                ) : (
+                                  gateway.CLIENT_ID
+                                )}
+                              </td>
+                              <td className="border p-2">
+                                {editingIndex === index ? (
+                                  <button
+                                    onClick={() => saveEdit(index)}
+                                    className="px-2 py-1 bg-green-500 text-white rounded"
+                                  >
+                                    {t('Save')}
+                                  </button>
+                                ) : (
+                                  <button
+                                    onClick={() => startEdit(index, gateway)}
+                                    className="px-2 py-1 bg-blue-500 text-white rounded"
+                                  >
+                                    {t('Edit')}
+                                  </button>
+                                )}
+                              </td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+                  </>
+                )}
+              </>
+            ) : null}
+          </Card>
+        </div> */}
       <div className="my-5 flex flex-wrap border-b border-dashed border-border-base pb-8 sm:my-8">
         <Description
           title="Currency Options"
