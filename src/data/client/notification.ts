@@ -17,14 +17,3 @@ import {
       });
     },
 };
-  
-//   export const Notification = {
-//     ...crudFactory<Notification, QueryOptions>(API_ENDPOINTS.NOTIFICATION),
-  
-//     post: ({ userId, language }: { userId: number; language: string }) => {
-//       return HttpClient.post<Notification>(`${API_ENDPOINTS.NOTIFICATION}`, {
-//         language,
-//       });
-//     },  
-  
- 

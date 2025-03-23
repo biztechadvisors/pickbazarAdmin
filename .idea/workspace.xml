@@ -4,45 +4,25 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="e932910c-fccb-4b9a-ba5e-1c84c6d838e9" name="Changes" comment="dealer can create permission for the staff only(add default staff permission set)">
-      <change beforePath="$PROJECT_DIR$/src/components/cart/cartApi.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/cart/cartApi.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/checkout/item/verified-item-list.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/checkout/item/verified-item-list.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/dashboard/admin.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/dashboard/admin.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/dealerlist/dealer-list.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/dealerlist/dealer-list.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/layouts/admin/index.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/layouts/admin/index.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/layouts/owner/index.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/layouts/owner/index.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/layouts/shop/index.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/layouts/shop/index.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/order/order-view.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/order/order-view.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/product/product-form.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/product/product-form.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/product/product-subcategory-input.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/product/product-subcategory-input.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/settings/settings-form.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/settings/settings-form.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/shipping/shipping-form.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/shipping/shipping-form.tsx" afterDir="false" />
+    <list default="true" id="e932910c-fccb-4b9a-ba5e-1c84c6d838e9" name="Changes" comment="removed commented-out code">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/qna/qna-form.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/qna/qna-form.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/components/shop/dealer-form.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/shop/dealer-form.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/shop/shop-form.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/shop/shop-form.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/components/shop/staff-form.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/shop/staff-form.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/subcategory/subcategory-form.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/subcategory/subcategory-form.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/contexts/quick-cart/stock.reducer.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/contexts/quick-cart/stock.reducer.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/data/client/user.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/data/client/user.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/data/order.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/data/order.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/contexts/formcontext/FormContext.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/contexts/formcontext/FormContext.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/data/client/notification.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/data/client/notification.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/data/client/order.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/data/client/order.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/data/client/product.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/data/client/product.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/data/permission.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/data/permission.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/pages/[shop]/attributes/index.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/pages/[shop]/attributes/index.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/pages/[shop]/index.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/pages/[shop]/index.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/pages/[shop]/orders/index.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/pages/[shop]/orders/index.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/pages/dealerlist/index.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/pages/dealerlist/index.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/data/qna.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/data/qna.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/data/total-sale.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/data/total-sale.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/pages/index.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/pages/index.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/pages/order/[orderId]/index.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/pages/order/[orderId]/index.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/pages/orders/[tracking_number]/index.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/pages/orders/[tracking_number]/index.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/pages/orders/create.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/pages/orders/create.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/pages/orders/[tracking_number]/payment.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/pages/orders/[tracking_number]/payment.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/pages/orders/index.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/pages/orders/index.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/pages/permission/create/index.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/pages/permission/create/index.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/pages/permission/index.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/pages/permission/index.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/pages/sale/[orderId]/index.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/pages/sale/[orderId]/index.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/pages/sales/checkout.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/pages/sales/checkout.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/pages/sales/create.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/pages/sales/create.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/pages/shops/index.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/pages/shops/index.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/pages/staff/index.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/pages/staff/index.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/pages/stocks/data.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/pages/stocks/data.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/pages/taxes/index.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/pages/taxes/index.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/utils/defaultValues.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/utils/defaultValues.ts" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -241,6 +221,8 @@
       <workItem from="1742456563324" duration="2164000" />
       <workItem from="1742537232671" duration="1843000" />
       <workItem from="1742547853284" duration="4436000" />
+      <workItem from="1742628842620" duration="1915000" />
+      <workItem from="1742634488132" duration="954000" />
     </task>
     <task id="LOCAL-00001" summary="fix: pagination in /tags and changing ordering status">
       <option name="closed" value="true" />
@@ -402,7 +384,23 @@
       <option name="project" value="LOCAL" />
       <updated>1742538764278</updated>
     </task>
-    <option name="localTasksCounter" value="21" />
+    <task id="LOCAL-00021" summary="changes from latest-admin">
+      <option name="closed" value="true" />
+      <created>1742629171231</created>
+      <option name="number" value="00021" />
+      <option name="presentableId" value="LOCAL-00021" />
+      <option name="project" value="LOCAL" />
+      <updated>1742629171231</updated>
+    </task>
+    <task id="LOCAL-00022" summary="removed commented-out code">
+      <option name="closed" value="true" />
+      <created>1742630160424</created>
+      <option name="number" value="00022" />
+      <option name="presentableId" value="LOCAL-00022" />
+      <option name="project" value="LOCAL" />
+      <updated>1742630160424</updated>
+    </task>
+    <option name="localTasksCounter" value="23" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -459,6 +457,8 @@
     <MESSAGE value="made staff and dealer list changes" />
     <MESSAGE value="latest changes" />
     <MESSAGE value="dealer can create permission for the staff only(add default staff permission set)" />
-    <option name="LAST_COMMIT_MESSAGE" value="dealer can create permission for the staff only(add default staff permission set)" />
+    <MESSAGE value="changes from latest-admin" />
+    <MESSAGE value="removed commented-out code" />
+    <option name="LAST_COMMIT_MESSAGE" value="removed commented-out code" />
   </component>
 </project>

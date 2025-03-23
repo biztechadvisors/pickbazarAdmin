@@ -57,12 +57,10 @@ export default function OrderDetailsPage() {
   const mutationHooks = DealerShow ? dealerStatusChangeMutation : updateOrderMutation;
   const { mutate: updateOrder, isLoading: updating, isError, isSuccess } = mutationHooks;
 
-  // const orderStocksQuery = useOrderStocksQuery({ id: query.orderId as string, language: locale! });
   const orderQuery = useOrderQuery({ id: query.orderId as string, language: locale! });
 
   const { order: fetchedOrder, isLoading: loading, error } = orderQuery; //DealerShow ? orderStocksQuery :
 
-  // State to store order only once when fetched
   const [order, setOrder] = useState(fetchedOrder ?? null);
 
   useEffect(() => {

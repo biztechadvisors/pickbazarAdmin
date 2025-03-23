@@ -1,6 +1,4 @@
-// import { getLayout } from '@/components/layouts/layout';
-// import Order from '@/components/order/order-view-header';
-// import Seo from '@/components/seo/seo';
+
 import { Component, useEffect } from 'react';
 import { PaymentStatus } from '@/types';
 import { useOrder } from '@/framework/rest/order';
