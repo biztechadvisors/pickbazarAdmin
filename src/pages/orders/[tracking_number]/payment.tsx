@@ -1,6 +1,4 @@
-// import { getLayout } from '@/components/layouts/layout';
-// import Order from '@/components/order/order-view-header';
-// import Seo from '@/components/seo/seo';
+
 import { Component, useEffect } from 'react';
 import { PaymentStatus } from '@/types';
 import { useOrder } from '@/framework/rest/order';
@@ -8,10 +6,9 @@ import { useRouter } from 'next/router';
 import { useModalAction } from '@/components/ui/modal/modal.context';
 import Spinner from '@/components/ui/loader/spinner/spinner';
 import Order from '@/components/order/order-view';
+import AdminLayout from '@/components/layouts/admin';
 
 export { getServerSideProps } from '@/framework/rest/order.ssr';
-
-const getLayout = Component.getLayout ?? ((page: any) => page);
 
 export default function OrderPage() {
     const { openModal } = useModalAction();
@@ -50,4 +47,4 @@ export default function OrderPage() {
     );
 }
 
-OrderPage.getLayout = getLayout;
+OrderPage.getLayout = AdminLayout;

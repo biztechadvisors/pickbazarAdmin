@@ -52,8 +52,6 @@ export default function TaxesPage() {
     limit: 10,
   });
 
-  console.log("paginatorInfo", paginatorInfo);
-
   const totalPages = Math.ceil((paginatorInfo?.total || 0) / (paginatorInfo?.perPage || 10));
   useEffect(() => {
     if (page > totalPages) setPage(1);

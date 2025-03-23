@@ -128,6 +128,7 @@ export type QueryOptionsType = {
   name?: string;
   orderBy?: string;
   sortedBy?: SortOrder;
+  enabled?: any
 };
 
 export enum OrderStatus {
@@ -1935,14 +1936,14 @@ export interface DealerQueryOptions extends Omit<QueryOptions, 'language'> {
 }
 
 export type CreatePermissionInput = {
-  permissionType?:permissionType;
+  permissionType?: permissionType;
   defaultPermissions?: PermissionItem[] | [];
 }
 
 export enum permissionType {
-  COMPANY =  'Company',
+  COMPANY = 'Company',
   DEALER = 'Dealer',
-  STAFF  = 'Staff',
+  STAFF = 'Staff',
 }
 
 export type PermissionsProps = {
@@ -1954,6 +1955,10 @@ export type PermissionsProps = {
 }
 
 export type AddStaffFormProps = {
+  defaultVal?: string | undefined;
+  defaultPermissions?: PermissionItem[] | [];
+}
+export type AddDealerFormProps = {
   defaultVal?: string | undefined;
   defaultPermissions?:PermissionItem[] | [];
 }

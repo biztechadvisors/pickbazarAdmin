@@ -18,14 +18,11 @@ const PayNowButton: React.FC<Props> = ({
   isFetching,
 }) => {
   const { t } = useTranslation();
-  // const { isLoading, getPaymentIntentQueryOriginal } = useGetPaymentIntentOriginal({
-  //   tracking_number: trackingNumber,
-  // });
 
   const { isLoading, getPaymentIntentQuery } = useGetPaymentIntent({
     tracking_number: order?.tracking_number as string,
     payment_gateway: order?.payment_gateway as string,
-    recall_gateway: false as boolean,
+    recall_gateway: true as boolean,
   });
 
   async function handlePayNow() {

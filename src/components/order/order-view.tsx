@@ -29,6 +29,7 @@ function OrderView({ order, language, loadingStatus }: any) {
     //@ts-ignore
     resetCheckout();
   }, [resetCart, resetCheckout]);
+  // Error
 
   const { price: total } = usePrice({ amount: order?.paid_total! });
   const { price: wallet_total } = usePrice({

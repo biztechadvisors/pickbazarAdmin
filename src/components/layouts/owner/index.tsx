@@ -41,7 +41,6 @@ const OwnerLayout: React.FC<{ children?: React.ReactNode }> = ({
     ? siteSettings.sidebarLinks.owner
     : siteSettings.sidebarLinks.admin; 
     
-    console.log("OwnerMAtch++",matchedLinks);
   const SidebarItemMap = () => (
     <Fragment>
       {matchedLinks.map(({ href, label, icon }) => (

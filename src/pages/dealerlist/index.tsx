@@ -32,19 +32,19 @@ export default function DealerPage() {
   const [searchTerm, setSearchTerm] = useState('');
   const { data } = useMeQuery();
   const [page, setPage] = useState(1);
+
   const { users, paginatorInfo, loading, error } = useUsersQuery({
     type: DEALER,
     usrById: data?.id,
     name: searchTerm,
-    // language: locale,
     orderBy,
     sortedBy,
     limit: 10,
     page,
+    enabled: !!data?.id && !isNaN(Number(data.id)), // Only enable the query if data.id is a valid number
   });
 
   const userdealer = users.filter((user) => user?.permission?.type_name === DEALER)
-console.log("userDealer",userdealer);
   const permissionTypes = AllPermission();
 
   const canWrite = permissionTypes.includes('sidebar-nav-item-dealerlist');
@@ -77,7 +77,7 @@ console.log("userDealer",userdealer);
 
           {locale === Config.defaultLanguage && (
             <LinkButton
-              href={Routes.user.create}
+              href={Routes.dealerlist.create}
               className="h-12 w-full md:w-auto md:ms-6"
             >
               <span className="block md:hidden xl:block">
@@ -91,11 +91,11 @@ console.log("userDealer",userdealer);
         </div>
       </Card>
       <DealerTypeList
-            paginatorInfo={paginatorInfo}
-            onPagination={handlePagination}
-      users={userdealer} 
-      onOrder={setOrder} 
-      onSort={setColumn} />
+        paginatorInfo={paginatorInfo}
+        onPagination={handlePagination}
+        users={userdealer}
+        onOrder={setOrder}
+        onSort={setColumn} />
     </>
   );
 }

@@ -3,7 +3,7 @@ import { useQuery, useMutation, useQueryClient } from 'react-query';
 import { toast } from 'react-toastify';
 import { useTranslation } from 'next-i18next';
 import { mapPaginatorData } from '@/utils/data-mappers';
-import { qnaClient } from './client/qna'; // Import your QnA client
+import { qnaClient } from './client/qna';
 import { Qna, QnaFormValues, QnaPaginator, QnaQueryOptions } from '@/types';
 import { Routes } from '@/config/routes';
 import { API_ENDPOINTS } from './client/api-endpoints';
@@ -53,21 +53,6 @@ export const useQnaQuery = (
   };
 };
 
-// Hook to update an existing QnA item
-// export const useUpdateQnaMutation = (shop_id) => {
-//   const { t } = useTranslation();
-//   const queryClient = useQueryClient();
-
-//   return useMutation(({ id, ...data }) => qnaClient.updateQna(data, id), {
-//     // Pass `id` (qnaId) separately
-//     onSuccess: () => {
-//       toast.success(t('common:successfully-updated'));
-//     },
-    // onSettled: () => {
-    //   queryClient.invalidateQueries(API_ENDPOINTS.QNA); // Invalidate QnA queries on success
-    // },
-//   });
-// };
 export const useUpdateQnaMutation = () => {
   const queryClient = useQueryClient();
   const { t } = useTranslation();

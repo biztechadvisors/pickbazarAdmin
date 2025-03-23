@@ -47,7 +47,6 @@ export default function CheckoutPage() {
     }
   }, [customer?.id]);
 
-  console.log("user 50 ", user)
 
   if (loading) return <Loader text={t('common:text-loading')} />;
 

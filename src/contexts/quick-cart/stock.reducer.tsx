@@ -51,7 +51,6 @@ export function stockReducer(state: State, action: Action): State {
 
   switch (action.type) {
     case 'ADD_ITEM_WITH_QUANT': {
-      console.log("ADD_ITEM_WITH_QUANT 54 ")
       const items = addItemWithQuant(
         state.items,
         action.item.cartData,

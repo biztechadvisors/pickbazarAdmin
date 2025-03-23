@@ -72,8 +72,6 @@ export default function usePrice(
     currencyCode: currency ?? 'USD',
   };
 
-  console.log("70 ", currencyOptions);
-
   const { formation, fractions } = currencyOptions!;
 
   const { locale } = useRouter();

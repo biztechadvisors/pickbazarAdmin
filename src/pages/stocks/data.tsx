@@ -27,7 +27,6 @@ export default function DealerStockData() {
   const { data, isLoading, isError } = useDealerStocks(id);
 
   const stocks = data?.[0]?.stocks || [];
-  console.log(stocks);
 
   const { mutate: updateStockData } = useUpdateStockData(id);
 
@@ -60,7 +59,6 @@ export default function DealerStockData() {
       product,
     } = stocksData;
 
-    console.log("stocksData 58 ", stocksData)
     const quantity = parseInt(quantityStr, 10);
     const ordPendQuant = parseInt(ordPendQuantStr, 10);
     const dispatchedQuantity = parseInt(dispatchedQuantityStr, 10);

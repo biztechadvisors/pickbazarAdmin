@@ -73,7 +73,6 @@ export default function ProductsPage() {
 
     let dealerId;
     if (meData?.dealer?.id && meData?.permission?.type_name === DEALER || meData?.permission?.createdBy?.permission?.type_name == DEALER) {
-        console.log("dealer cehck 75 ")
         dealerId = meData?.dealer && meData?.dealer?.id
     }
 

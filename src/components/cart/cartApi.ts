@@ -9,7 +9,6 @@ interface CustomerData {
 
 export const addItemToCartApi = async (customerData: CustomerData): Promise<any> => {
   try {
-    console.log("customerData 12 ", customerData)
     // Make a POST request to the API endpoint
     const response = await axios.post('https://codenoxserver.codenox.tech/api/carts', customerData);
     // Return the response data

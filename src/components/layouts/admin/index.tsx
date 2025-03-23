@@ -476,7 +476,6 @@ const AdminLayout: React.FC<{ children?: React.ReactNode }> = ({
         ].includes(link.href)
     );
   }
-console.log("matchedLinks++++++++++++",matchedLinks)
   // matchedLinks.push({
   //   href: Routes.helpInventory,
   //   label: 'sidebar-nav-item-help',

@@ -452,15 +452,9 @@ export default function SettingsForm({
 
     try {
 
-      if (!settings?.options) {
-        console.log('Calling createSettingsMutation:', mutationParams);
-        const data = createSettingsMutation({ shop_id, ...mutationParams });
-        console.log('Mutation success:', data);
-      } else {
-        console.log('Calling updateSettingsMutation:', mutationParams);
-        const data = updateSettingsMutation({ shop_id, ...mutationParams });
-        console.log('Mutation success:', data);
-      }
+      if (!settings?.options) createSettingsMutation({ shop_id, ...mutationParams });
+      else updateSettingsMutation({ shop_id, ...mutationParams });
+
     } catch (error) {
       console.error('Caught error:', error);
       const serverErrors = getErrorMessage(error);
@@ -1170,13 +1164,14 @@ export default function SettingsForm({
           <div className="mb-5">
             <Label>{`${t('form:input-label-currency-formations')} *`}</Label>
             <SelectInput
-              {...register('currencyOptions.formation')}
               control={control}
-              getOptionLabel={(option: any) => option.name}
-              getOptionValue={(option: any) => option.code}
-              options={COUNTRY_LOCALE}
+              name="currencyOptions.formation"
+              getOptionLabel={(option: any) => (option ? option.name : 'Unknown')}
+              getOptionValue={(option: any) => (option ? option.code : '')}
+              options={COUNTRY_LOCALE || []}
               disabled={isNotDefaultSettingsPage}
             />
+
           </div>
           <Input
             label={`${t('form:input-label-currency-number-of-decimal')} *`}
