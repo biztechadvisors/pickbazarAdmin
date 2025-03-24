@@ -46,6 +46,7 @@ export default function OrderDetailsPage() {
         // @ts-ignore
         resetCheckout();
     }, [resetCart, resetCheckout]);
+    // Error
 
     const { mutate: updateOrder, isLoading: updating } = useUpdateOrderMutation();
 

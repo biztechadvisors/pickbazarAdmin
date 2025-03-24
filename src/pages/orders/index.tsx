@@ -24,7 +24,6 @@ export default function Orders() {
     const { locale, query } = router;
     const { shop: shopSlug, dealerId } = query;
 
-    console.log("dealerId ", dealerId)
     const { t } = useTranslation();
     const [searchTerm, setSearchTerm] = useState('');
     const [page, setPage] = useState(1);

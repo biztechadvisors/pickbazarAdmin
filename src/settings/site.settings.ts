@@ -118,7 +118,7 @@ export const siteSettings = {
       // },
       {
         href: Routes.user.list,
-        label: 'sidebar-nav-item-customer',
+        label: 'sidebar-nav-item-users',
         icon: 'UsersIcon',
       },
       {

@@ -48,13 +48,13 @@ export default function OrderDetailsPage() {
 
   const handleDispatchUpdate = (data: any) => {
     // Logic to update the dispatch product
-    console.log('Dispatch updated:', data);
   };
 
   useEffect(() => {
     resetStock();
     resetCheckout();
   }, [resetStock, resetCheckout]);
+  // Error
 
   const { mutate: updateOrder, isLoading: updating } = useUpdateOrderMutation();
   const {
@@ -108,8 +108,6 @@ export default function OrderDetailsPage() {
     dealerId,
     orderId: orderId as string,
   });
-
-  console.log('Stock Order Data:', stockOrderData);
 
   if (loading) return <Loader text={t('common:text-loading')} />;
   if (error) return <ErrorMessage message={error.message} />;

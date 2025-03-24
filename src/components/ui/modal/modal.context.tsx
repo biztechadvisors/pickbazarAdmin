@@ -115,7 +115,6 @@ export const ModalProvider: React.FC<{ children?: React.ReactNode }> = ({
 
 export function useModalState() {
   const context = React.useContext(ModalStateContext);
-  console.log("context ", context)
   if (context === undefined) {
     throw new Error(`useModalState must be used within a ModalProvider`);
   }

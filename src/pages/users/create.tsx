@@ -2,6 +2,8 @@ import AdminLayout from '@/components/layouts/admin';
 import Layout from '@/components/layouts/admin';
 import OwnerLayout from '@/components/layouts/owner';
 import CustomerCreateForm from '@/components/user/user-form';
+import { getAuthCredentials } from '@/utils/auth-utils';
+import { OWNER } from '@/utils/constants';
 import { useTranslation } from 'next-i18next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 
@@ -18,8 +20,9 @@ export default function CreateCustomerPage() {
     </>
   );
 }
-CreateCustomerPage.Layout = OwnerLayout;
-
+// CreateCustomerPage.Layout = OwnerLayout;
+CreateCustomerPage.Layout =
+  getAuthCredentials().permissions?.[0] === OWNER ? OwnerLayout : AdminLayout;
 export const getStaticProps = async ({ locale }: any) => ({
   props: {
     ...(await serverSideTranslations(locale, ['table', 'form', 'common'])),

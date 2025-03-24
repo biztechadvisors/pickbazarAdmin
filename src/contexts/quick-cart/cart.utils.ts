@@ -6,7 +6,7 @@ export interface Item {
   [key: string]: any;
 }
 
-export interface UpdateItemInput extends Partial<Omit<Item, 'id'>> {}
+export interface UpdateItemInput extends Partial<Omit<Item, 'id'>> { }
 
 export function addItemWithQuantity(
   items: Item[],
@@ -82,7 +82,6 @@ export const calculateItemTotals = (items: Item[]) =>
 
 export const calculateTotal = (items: Item[]) =>
   items.reduce((total, item) => total + item.quantity! * item.price, 0);
-// items.reduce((total, item) => total + item.quantity! * item.price, 0);
 
 export const calculateTotalItems = (items: Item[]) =>
   items.reduce((sum, item) => sum + item.quantity!, 0);

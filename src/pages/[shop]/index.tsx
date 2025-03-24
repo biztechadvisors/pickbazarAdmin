@@ -75,9 +75,9 @@ export default function ShopPage() {
     id: shop_id,
   } = data ?? {};
 
+  console.log("data  78 ", data)
   if (loading) return <Loader text={t('common:text-loading')} />;
   if (error) return <ErrorMessage message={error.message} />;
-  console.log("isActive ", is_active)
   return (
     <div className="grid grid-cols-12 gap-6">
       {!is_active && (
@@ -155,7 +155,7 @@ export default function ShopPage() {
       {/* Cover Photo */}
       <div className="relative order-1 col-span-12 h-full min-h-[400px] overflow-hidden rounded bg-light xl:order-2 xl:col-span-8 3xl:col-span-9">
         <Image
-          src={`${cover_image[0]?.original ?? '/product-placeholder-borderless.svg'
+          src={`${cover_image?.[0]?.original ?? '/product-placeholder-borderless.svg'
             }`}
           fill
           sizes="(max-width: 768px) 100vw"

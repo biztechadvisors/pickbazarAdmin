@@ -21,6 +21,7 @@ import { AllPermission } from '@/utils/AllPermission';
 import OwnerLayout from '@/components/layouts/owner';
 import AppLayout from '@/components/layouts/app';
 import AdminLayout from '@/components/layouts/admin';
+import { OWNER } from '@/utils/constants';
 
 export default function Customers() {
   const [searchTerm, setSearchTerm] = useState('');
@@ -91,8 +92,9 @@ export default function Customers() {
 Customers.authenticate = {
   permissions: adminAndOwnerOnly,
 };
-Customers.Layout = OwnerLayout;
-
+Customers.Layout =
+  getAuthCredentials().permissions?.[0] === OWNER ? OwnerLayout : AdminLayout;
+  // Customers.Layout = OwnerLayout;
 export const getStaticProps = async ({ locale }: any) => ({
   props: {
     ...(await serverSideTranslations(locale, ['table', 'common', 'form'])),

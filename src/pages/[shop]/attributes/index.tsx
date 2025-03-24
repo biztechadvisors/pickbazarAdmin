@@ -42,14 +42,11 @@ export default function AttributePage() {
   // });
 
   
-  // console.log("first===shopData",shopData)
 
   const { data: shopData, isLoading: fetchingShop } = useShopQuery({
     slug: query.shop as string,
   });
-  
-  console.log("Cached shopData:", shopData);
-  
+
 
   const shopId = shopData?.id;
   const shopSlug = shopData?.slug;

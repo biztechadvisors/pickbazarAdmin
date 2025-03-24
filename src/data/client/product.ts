@@ -49,12 +49,6 @@ export const productClient = {
       with: ' type',
       ...params,
       filter,
-      // search: HttpClient.formatSearchParams({
-      //   type,
-      //   name,
-      //   slug,
-      //   categories,
-      // }),
     });
   },
   popular({ shop_id, ...params }: Partial<ProductQueryOptions>) {
@@ -72,10 +66,3 @@ export const productClient = {
     return HttpClient.post<any>(`${API_ENDPOINTS.PRODUCTS}/${data.id}`, data);
   },
 };
-
-// HttpClient.formatFilterParams = (filters: any) => {
-//   return Object.entries(filters)
-//     .filter(([key, value]) => value)
-//     .map(([key, value]) => `${key}:${value}`)
-//     .join(';');
-// };

@@ -277,6 +277,7 @@
   "button-label-add-staff": "Add Staff",
   "form-title-create-staff": "Create Staff",
   "form-description-staff-info": "Add your staff information and create a new staff from here",
+  "form-description-dealer-info": "Add your dealer information and create a new dealer from here",
   "link-register-shop-owner": "Register as Shop Owner",
   "button-label-submit": "Submit",
   "error-token-required": "Token is Required!",

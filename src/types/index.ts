@@ -1959,6 +1959,10 @@ export type AddStaffFormProps = {
   defaultVal?: string | undefined;
   defaultPermissions?: PermissionItem[] | [];
 }
+export type AddDealerFormProps = {
+  defaultVal?: string | undefined;
+  defaultPermissions?:PermissionItem[] | [];
+}
 
 export interface ShopPaginator extends PaginatorInfo<Shop> { }
 

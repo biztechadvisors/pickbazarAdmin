@@ -45,7 +45,6 @@ export default function CreateOrUpdateShippingForm({ initialValues }: IProps) {
     useUpdateShippingMutation();
 
   const onSubmit = async (values: ShippingInput) => {
-    console.log("values",initialValues,values);
 
     if (initialValues) {
       updateShippingClass({ id: initialValues.id!, ...values });

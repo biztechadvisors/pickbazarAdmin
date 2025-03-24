@@ -54,7 +54,6 @@ export default function SalesPage() {
   const [isChecked] = useAtom(toggleAtom);
 
   const shouldFetchStock = meData?.id && meData?.permission?.type_name === DEALER || meData?.createdBy?.permission?.type_name === DEALER;
-  console.log("shouldFetchStock 57 ", shouldFetchStock)
   const { data: stockData, isLoading, error } = useGetStock(meData?.id, {
     enabled: shouldFetchStock, // Prevent API call when shouldFetchStock is false
   });

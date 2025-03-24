@@ -71,10 +71,6 @@ export default function Orders() {
     console.error('Error fetching orders:', error);
   }
 
-  if (loading) {
-    console.log('Loading orders...');
-  }
-
   const { refetch } = useExportOrderQuery(
     {
       ...(shopId && { shop_id: shopId }),

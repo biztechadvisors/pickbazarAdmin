@@ -35,8 +35,8 @@ const StaffList = ({
 }: IProps) => {
   const { t } = useTranslation();
   const { alignLeft } = useIsRTL();
- 
-  const permissionTypes = AllPermission(); 
+
+  const permissionTypes = AllPermission();
 
   const canWrite = permissionTypes.includes('sidebar-nav-item-users');
 
@@ -95,13 +95,13 @@ const StaffList = ({
     },
     {
       title: t('table:table-item-permissions'),
-      dataIndex: 'permissions',
-      key: 'permissions',
+      dataIndex: 'permission',
+      key: 'permission',
       align: 'center',
-      render: (permissions: any, record: any) => {
+      render: (permission: any, record: any) => {
         return (
           <div>
-            {permissions?.map(({ name }: { name: string }) => name).join(', ')}
+            {permission?.permission_name}
           </div>
         );
       },
@@ -125,32 +125,32 @@ const StaffList = ({
       render: (is_active: boolean) => (is_active ? 'Active' : 'Inactive'),
     },
     {
-      ...(canWrite?
+      ...(canWrite ?
         {
-        title: t('table:table-item-actions'),
-        dataIndex: 'id',
-        key: 'actions',
-        align: 'right',
-        render: function Render(id: string, { is_active }: any) {
-          const { data } = useMeQuery();
-          return (
-            <>
-              {data?.id != id && (
-                <ActionButtons
-                  id={id}
-                  userStatus={true}
-                  isUserActive={is_active}
-                  // showAddWalletPoints={true}
-                  showMakeAdminButton={true}
-                />
-              )}
-            </>
-          );
-        },
-      }      
-      : null),
-      },
-    
+          title: t('table:table-item-actions'),
+          dataIndex: 'id',
+          key: 'actions',
+          align: 'right',
+          render: function Render(id: string, { is_active }: any) {
+            const { data } = useMeQuery();
+            return (
+              <>
+                {data?.id != id && (
+                  <ActionButtons
+                    id={id}
+                    userStatus={true}
+                    isUserActive={is_active}
+                    // showAddWalletPoints={true}
+                    showMakeAdminButton={true}
+                  />
+                )}
+              </>
+            );
+          },
+        }
+        : null),
+    },
+
   ];
 
   return (

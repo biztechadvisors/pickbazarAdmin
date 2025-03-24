@@ -49,18 +49,18 @@ export default function OrderDetailsPage() {
     resetCart();
     resetCheckout();
   }, [resetCart, resetCheckout]);
+  // Error
+
 
   const updateOrderMutation = useUpdateOrderMutation();
   const dealerStatusChangeMutation = useDealerStatusChange();
   const mutationHooks = DealerShow ? dealerStatusChangeMutation : updateOrderMutation;
   const { mutate: updateOrder, isLoading: updating, isError, isSuccess } = mutationHooks;
 
-  // const orderStocksQuery = useOrderStocksQuery({ id: query.orderId as string, language: locale! });
   const orderQuery = useOrderQuery({ id: query.orderId as string, language: locale! });
 
   const { order: fetchedOrder, isLoading: loading, error } = orderQuery; //DealerShow ? orderStocksQuery :
 
-  // State to store order only once when fetched
   const [order, setOrder] = useState(fetchedOrder ?? null);
 
   useEffect(() => {
@@ -68,8 +68,6 @@ export default function OrderDetailsPage() {
       setOrder(fetchedOrder);
     }
   }, [fetchedOrder, order]);
-
-  console.log("order 62 ", order);
 
   const dealerId = order?.customer?.permission?.type_name === DEALER ? order?.customer_id ?? null : null;
 
@@ -79,10 +77,6 @@ export default function OrderDetailsPage() {
       orderId: query.orderId as string,
     }
   );
-
-  const handleDispatchUpdate = (data: any) => {
-    console.log('Dispatch updated:', data);
-  };
 
   const DispatchButton = me?.permission.type_name === Company;
 

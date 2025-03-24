@@ -28,15 +28,16 @@ import { Routes } from '@/config/routes';
 import { mapPaginatorData } from '@/framework/rest/utils/data-mappers';
 import { isArray, isObject, isEmpty } from 'lodash';
 import { UserService } from './user';
-import { useEffect } from 'react';
 
+// Orders List Hook
 export function useOrders(options?: Partial<OrderQueryOptions>) {
   const { locale } = useRouter();
 
   const formattedOptions = {
     ...options,
-    // language: locale
+    language: locale,
   };
+
   const {
     data,
     isLoading,
@@ -56,9 +57,12 @@ export function useOrders(options?: Partial<OrderQueryOptions>) {
     }
   );
 
-  function handleLoadMore() {
-    fetchNextPage();
-  }
+  const handleLoadMore = () => {
+    if (hasNextPage) {
+      fetchNextPage();
+    }
+  };
+
   return {
     orders: data?.pages?.flatMap((page) => page.data) ?? [],
     paginatorInfo: Array.isArray(data?.pages)
@@ -73,16 +77,20 @@ export function useOrders(options?: Partial<OrderQueryOptions>) {
   };
 }
 
+// Single Order Hook
 export function useOrder({ tracking_number }: { tracking_number: string }) {
-  console.log("Order tracking_number 77 ", tracking_number)
   const { data, isLoading, error, isFetching, refetch } = useQuery<
     Order,
     Error
   >(
     [API_ENDPOINTS.ORDERS, tracking_number],
     () => client.orders.get(tracking_number),
-    { refetchOnWindowFocus: false }
+    {
+      refetchOnWindowFocus: false,
+      enabled: !!tracking_number,
+    }
   );
+
   return {
     order: data,
     isFetching,
@@ -92,12 +100,13 @@ export function useOrder({ tracking_number }: { tracking_number: string }) {
   };
 }
 
+// Refunds Hook
 export function useRefunds(options: Pick<QueryOptions, 'limit'>) {
   const { locale } = useRouter();
 
   const formattedOptions = {
     ...options,
-    // language: locale
+    language: locale,
   };
 
   const {
@@ -117,9 +126,11 @@ export function useRefunds(options: Pick<QueryOptions, 'limit'>) {
     }
   );
 
-  function handleLoadMore() {
-    fetchNextPage();
-  }
+  const handleLoadMore = () => {
+    if (hasNextPage) {
+      fetchNextPage();
+    }
+  };
 
   return {
     refunds: data?.pages?.flatMap((page) => page.data) ?? [],
@@ -134,6 +145,7 @@ export function useRefunds(options: Pick<QueryOptions, 'limit'>) {
   };
 }
 
+// Downloadable Products Hook
 export const useDownloadableProducts = (
   options: Pick<QueryOptions, 'limit'>
 ) => {
@@ -141,7 +153,7 @@ export const useDownloadableProducts = (
 
   const formattedOptions = {
     ...options,
-    // language: locale
+    language: locale,
   };
 
   const {
@@ -163,9 +175,11 @@ export const useDownloadableProducts = (
     }
   );
 
-  function handleLoadMore() {
-    fetchNextPage();
-  }
+  const handleLoadMore = () => {
+    if (hasNextPage) {
+      fetchNextPage();
+    }
+  };
 
   return {
     downloads: data?.pages?.flatMap((page) => page.data) ?? [],
@@ -181,23 +195,21 @@ export const useDownloadableProducts = (
   };
 };
 
+// Create Refund Hook
 export function useCreateRefund() {
   const { t } = useTranslation();
   const { locale } = useRouter();
   const { closeModal } = useModalAction();
   const queryClient = useQueryClient();
+
   const { mutate: createRefundRequest, isLoading } = useMutation(
     client.orders.createRefund,
     {
       onSuccess: () => {
-        toast.success(`${t('text-refund-request-submitted')}`);
+        toast.success(t('text-refund-request-submitted'));
       },
-      onError: (error) => {
-        const {
-          response: { data },
-        }: any = error ?? {};
-
-        toast.error(`${t(data?.message)}`);
+      onError: (error: any) => {
+        toast.error(error?.response?.data?.message || t('error-something-went-wrong'));
       },
       onSettled: () => {
         queryClient.invalidateQueries(API_ENDPOINTS.ORDERS);
@@ -206,13 +218,12 @@ export function useCreateRefund() {
     }
   );
 
-  function formatRefundInput(input: CreateRefundInput) {
-    const formattedInputs = {
+  const formatRefundInput = (input: CreateRefundInput) => {
+    createRefundRequest({
       ...input,
-      // language: locale
-    };
-    createRefundRequest(formattedInputs);
-  }
+      language: locale,
+    });
+  };
 
   return {
     createRefundRequest: formatRefundInput,
@@ -220,83 +231,81 @@ export function useCreateRefund() {
   };
 }
 
+// Order Creation Hooks
 export function useCreateOrder() {
   const router = useRouter();
   const { locale } = router;
   const { t } = useTranslation();
-  // Get user details from UserService
-  const { username, sub } = UserService.getUserDetails();
+  const { username } = UserService.getUserDetails();
+  const queryClient = useQueryClient();
 
-  const { mutate: createOrder, isLoading: orderLoading } = useMutation(
+  const { mutate: createOrder, isLoading } = useMutation(
     client.orders.create,
     {
       onSuccess: async (response) => {
-        const { id, payment_gateway, payments: payment_intent } = response;
+        try {
+          const { id, payment_gateway, payments } = response;
 
-        console.log("payment_intent 236 ", payment_intent);
-
-
-        if (id) {
-          let idStr = '';
-          if (id) {
-            idStr = id.toString();
+          if (!id) {
+            throw new Error('Order ID not received');
           }
-          if (
-            [
-              PaymentGateway.COD,
-              PaymentGateway.CASH,
-              PaymentGateway.FULL_WALLET_PAYMENT,
-            ].includes(payment_gateway as PaymentGateway)
-          ) {
-            router.push(Routes.orders(idStr));
-          } else if (payment_intent[0]?.is_redirect) {
-            console.log("249 ")
-            router.push(
-              payment_intent[0]?.redirect_url as string
-            );
-          } else {
-            console.log("254 ")
-            router.push(`${Routes.orders(idStr)}/payment`);
+
+          queryClient.invalidateQueries(API_ENDPOINTS.ORDERS);
+
+          const idStr = id.toString();
+
+          // Handle different payment gateways
+          if ([
+            PaymentGateway.COD,
+            PaymentGateway.CASH,
+            PaymentGateway.FULL_WALLET_PAYMENT,
+          ].includes(payment_gateway as PaymentGateway)) {
+            return router.push(Routes.orders(idStr));
           }
+
+          // Check for redirect payment
+          const paymentIntent = payments?.[0];
+          if (paymentIntent?.is_redirect && paymentIntent?.redirect_url) {
+            return router.push(paymentIntent.redirect_url);
+          }
+
+          // Default case - go to payment page
+          router.push(`${Routes.orders(idStr)}/payment`);
+        } catch (error) {
+          console.error('Order creation success handling failed:', error);
+          toast.error(t('error-something-went-wrong'));
         }
       },
-      onError: (error) => {
-        const {
-          response: { data },
-        }: any = error ?? {};
-        toast.error(data?.message);
+      onError: (error: any) => {
+        console.error('Order creation failed:', error);
+        const errorMessage = error?.response?.data?.message || t('error-something-went-wrong');
+        toast.error(errorMessage);
       },
     }
   );
 
-  const { mutate: createStock, isLoading: stockLoading } = useMutation(
-    client.stocks.create,
-    {
-      onSuccess: (response) => {
-        const { id } = response;
-      },
-      onError: (error) => {
-        const {
-          response: { data },
-        }: any = error ?? {};
-        toast.error(data?.message);
-      },
-    }
-  );
+  const { mutate: createStock } = useMutation(client.stocks.create, {
+    onError: (error: any) => {
+      console.error('Stock creation failed:', error);
+      toast.error(error?.response?.data?.message || t('error-stock-creation-failed'));
+    },
+  });
 
-  async function checkAndCreateStocks(input: CreateOrderInput) {
-    // Check if sub and input.customer_id are equal
-    if (input.dealerId === input.customer_id) {
-      const stockInput: CreateStockInput = {
-        user_id: parseInt(input.dealerId),
-        products: input.products,
-      };
-      await createStock(stockInput);
+  const checkAndCreateStocks = async (input: CreateOrderInput) => {
+    if (input.dealerId && input.dealerId === input.customer_id) {
+      try {
+        await createStock({
+          user_id: parseInt(input.dealerId),
+          products: input.products,
+        });
+      } catch (error) {
+        console.error('Stock creation failed:', error);
+      }
     }
-  }
+  };
 
-  function formatOrderInput(input: CreateOrderInput) {
-    const formattedInputs = {
+  const formatOrderInput = (input: CreateOrderInput) => {
+    const formattedInput: CreateOrderInput = {
       ...input,
       language: locale,
       dealer: input.dealerId,
@@ -314,62 +323,72 @@ export function useCreateOrder() {
       },
     };
 
-    createOrder(formattedInputs);
+    // Create stocks if needed (fire and forget)
+    if (input.dealerId && input.dealerId === input.customer_id) {
+      checkAndCreateStocks(input);
+    }
 
-  }
+    // Create the order
+    createOrder(formattedInput);
+  };
 
   return {
     createOrder: formatOrderInput,
-    isLoading: orderLoading,
+    isLoading,
   };
 }
 
+// Stock Order Creation Hook
 export function useCreateOrderByStock() {
   const router = useRouter();
   const { locale } = router;
   const { t } = useTranslation();
-  // Get user details from UserService
-  const { username, sub } = UserService.getUserDetails();
+  const { username } = UserService.getUserDetails();
+  const queryClient = useQueryClient();
 
-  const { mutate: createOrderFromStock, isLoading: orderLoading } = useMutation(
+  const { mutate: createOrderFromStock, isLoading } = useMutation(
     client.stocks.orderByStock,
     {
-      onSuccess: async (response) => {
-        const { id, payment_gateway, payment_intent } = response;
-        if (id) {
-          let idStr = '';
-          if (id) {
-            idStr = id.toString();
+      onSuccess: (response) => {
+        try {
+          const { id, payment_gateway, payment_intent } = response;
+
+          if (!id) {
+            throw new Error('Order ID not received');
           }
-          if (
-            [
-              PaymentGateway.COD,
-              PaymentGateway.CASH,
-              PaymentGateway.FULL_WALLET_PAYMENT,
-            ].includes(payment_gateway as PaymentGateway)
-          ) {
-            router.push(Routes.sale(idStr));
-          } else if (payment_intent[0]?.is_redirect) {
-            router.push(
-              payment_intent[0]?.redirect_url as string
-            );
-          } else {
-            router.push(`${Routes.sale(idStr)}/payment`);
+
+          queryClient.invalidateQueries(API_ENDPOINTS.ORDERS);
+
+          const idStr = id.toString();
+
+          if ([
+            PaymentGateway.COD,
+            PaymentGateway.CASH,
+            PaymentGateway.FULL_WALLET_PAYMENT,
+          ].includes(payment_gateway as PaymentGateway)) {
+            return router.push(Routes.sale(idStr));
           }
+
+          if (payment_intent?.[0]?.is_redirect && payment_intent?.[0]?.redirect_url) {
+            return router.push(payment_intent[0].redirect_url);
+          }
+
+          router.push(`${Routes.sale(idStr)}/payment`);
+        } catch (error) {
+          console.error('Order from stock success handling failed:', error);
+          toast.error(t('error-something-went-wrong'));
         }
       },
-      onError: (error) => {
-        const {
-          response: { data },
-        }: any = error ?? {};
-        toast.error(data?.message);
+      onError: (error: any) => {
+        console.error('Order from stock creation failed:', error);
+        const errorMessage = error?.response?.data?.message || t('error-something-went-wrong');
+        toast.error(errorMessage);
       },
     }
   );
 
-
-  function formatOrderInput(input: CreateOrderInput) {
-    const formattedInputs = {
+  const formatOrderInput = (input: CreateOrderInput) => {
+    const formattedInput = {
       ...input,
       language: locale,
       dealer: input.dealerId,
@@ -386,92 +405,89 @@ export function useCreateOrderByStock() {
         date: t('text-date'),
       },
     };
-    createOrderFromStock(formattedInputs);
-  }
+
+    createOrderFromStock(formattedInput);
+  };
 
   return {
     createOrderFromStock: formatOrderInput,
-    isLoading: orderLoading,
+    isLoading,
   };
 }
 
+// Downloadable URL Generation Hook
 export function useGenerateDownloadableUrl() {
   const { mutate: getDownloadableUrl } = useMutation(
     client.orders.generateDownloadLink,
     {
       onSuccess: (data) => {
-        function download(fileUrl: string, fileName: string) {
-          var a = document.createElement('a');
+        const downloadFile = (fileUrl: string, fileName: string) => {
+          const a = document.createElement('a');
           a.href = fileUrl;
           a.setAttribute('download', fileName);
           a.click();
-        }
+        };
 
-        download(data, 'record.name');
+        downloadFile(data, 'download.pdf');
+      },
+      onError: () => {
+        toast.error('Failed to generate download link');
       },
     }
   );
 
-  function generateDownloadableUrl(digital_file_id: string) {
-    getDownloadableUrl({
-      digital_file_id,
-    });
-  }
+  const generateDownloadableUrl = (digital_file_id: string) => {
+    getDownloadableUrl({ digital_file_id });
+  };
 
   return {
     generateDownloadableUrl,
   };
 }
 
+// Order Verification Hook
 export function useVerifyOrder() {
-  const [_, setVerifiedResponse] = useAtom(verifiedResponseAtom);
+  const [, setVerifiedResponse] = useAtom(verifiedResponseAtom);
+  const { t } = useTranslation();
 
   return useMutation(client.orders.verify, {
     onSuccess: (data) => {
-      //@ts-ignore
-      if (data?.errors as string) {
-        //@ts-ignore
-        toast.error(data?.errors[0]?.message);
+      if (data?.errors) {
+        toast.error(data.errors[0]?.message || t('error-verification-failed'));
       } else if (data) {
-        // FIXME
-        //@ts-ignore
         setVerifiedResponse(data);
       }
     },
-    onError: (error) => {
-      const {
-        response: { data },
-      }: any = error ?? {};
-      toast.error(data?.message);
+    onError: (error: any) => {
+      toast.error(error?.response?.data?.message || t('error-verification-failed'));
     },
   });
 }
 
+// Order Payment Hook
 export function useOrderPayment() {
   const queryClient = useQueryClient();
+  const { t } = useTranslation();
 
   const { mutate: createOrderPayment, isLoading } = useMutation(
     client.orders.payment,
     {
-      onSettled: (data) => {
-        queryClient.refetchQueries(API_ENDPOINTS.ORDERS);
-        queryClient.refetchQueries(API_ENDPOINTS.ORDERS_DOWNLOADS);
+      onSuccess: () => {
+        toast.success(t('payment-successful'));
       },
-      onError: (error) => {
-        const {
-          response: { data },
-        }: any = error ?? {};
-        toast.error(data?.message);
+      onSettled: () => {
+        queryClient.invalidateQueries(API_ENDPOINTS.ORDERS);
+        queryClient.invalidateQueries(API_ENDPOINTS.ORDERS_DOWNLOADS);
+      },
+      onError: (error: any) => {
+        toast.error(error?.response?.data?.message || t('payment-failed'));
       },
     }
   );
 
-  function formatOrderInput(input: CreateOrderPaymentInput) {
-    const formattedInputs = {
-      ...input,
-    };
-    createOrderPayment(formattedInputs);
-  }
+  const formatOrderInput = (input: CreateOrderPaymentInput) => {
+    createOrderPayment(input);
+  };
 
   return {
     createOrderPayment: formatOrderInput,
@@ -479,13 +495,20 @@ export function useOrderPayment() {
   };
 }
 
+// Payment Method Saving Hook
 export function useSavePaymentMethod() {
+  const { t } = useTranslation();
+
   const {
     mutate: savePaymentMethod,
     isLoading,
     error,
     data,
-  } = useMutation(client.orders.savePaymentMethod);
+  } = useMutation(client.orders.savePaymentMethod, {
+    onError: (error: any) => {
+      toast.error(error?.response?.data?.message || t('error-saving-payment-method'));
+    },
+  });
 
   return {
     savePaymentMethod,
@@ -495,6 +518,7 @@ export function useSavePaymentMethod() {
   };
 }
 
+// Payment Intent Hooks
 export function useGetPaymentIntentOriginal({
   tracking_number,
 }: {
@@ -502,23 +526,25 @@ export function useGetPaymentIntentOriginal({
 }) {
   const router = useRouter();
   const { openModal } = useModalAction();
+  const { t } = useTranslation();
 
   const { data, isLoading, error, refetch } = useQuery(
     [API_ENDPOINTS.PAYMENT_INTENT, { tracking_number }],
     () => client.orders.getPaymentIntent({ tracking_number }),
-    // Make it dynamic for both gql and rest
     {
       enabled: false,
       onSuccess: (data) => {
-        if (data[0]?.is_redirect) {
-          return router.push(data[0]?.redirect_url as string);
-        } else {
-          openModal('PAYMENT_MODAL', {
-            paymentGateway: data?.payment_gateway,
-            paymentIntentInfo: data[0],
-            trackingNumber: data?.tracking_number,
-          });
+        if (data?.[0]?.is_redirect && data?.[0]?.redirect_url) {
+          return router.push(data[0].redirect_url);
         }
+        openModal('PAYMENT_MODAL', {
+          paymentGateway: data?.payment_gateway,
+          paymentIntentInfo: data?.[0],
+          trackingNumber: data?.tracking_number,
+        });
+      },
+      onError: () => {
+        toast.error(t('error-fetching-payment-intent'));
       },
     }
   );
@@ -535,49 +561,51 @@ export function useGetPaymentIntent({
   tracking_number,
   payment_gateway,
   recall_gateway,
-  form_change_gateway,
 }: {
   tracking_number: string;
   payment_gateway: string;
   recall_gateway?: boolean;
-  form_change_gateway?: boolean;
 }) {
   const router = useRouter();
-  const { openModal, closeModal } = useModalAction();
+  const { openModal } = useModalAction();
+  const { t } = useTranslation();
 
   const { data, isLoading, error, refetch, isFetching } = useQuery(
     [
       API_ENDPOINTS.PAYMENT_INTENT,
       { tracking_number, payment_gateway, recall_gateway },
     ],
-    () => {
-      return client.orders.getPaymentIntent({
-        tracking_number,
-        payment_gateway,
-        recall_gateway,
-      });
-    },
-    // Make it dynamic for both gql and rest
+    () => client.orders.getPaymentIntent({
+      tracking_number,
+      payment_gateway,
+      recall_gateway,
+    }),
     {
       enabled: false,
-      onSuccess: (item) => {
-        let data: any = '';
-        if (isArray(item)) {
-          data = { ...item };
-          data = isEmpty(data) ? [] : data[0];
-        } else if (isObject(item)) {
-          data = item;
+      onSuccess: (data) => {
+        const paymentData = isArray(data) ? data[0] : isObject(data) ? data : null;
+
+        if (!paymentData) {
+          throw new Error('Invalid payment data received');
         }
-        if (data[0]?.is_redirect) {
-          return router.push(data[0]?.redirect_url as string);
-        } else {
-          if (recall_gateway) window.location.reload();
-          openModal('PAYMENT_MODAL', {
-            paymentGateway: data?.payment_gateway,
-            paymentIntentInfo: data[0],
-            trackingNumber: data?.tracking_number,
-          });
+
+        if (paymentData.is_redirect && paymentData.redirect_url) {
+          return router.push(paymentData.redirect_url);
         }
+
+        if (recall_gateway) {
+          window.location.reload();
+          return;
+        }
+
+        openModal('PAYMENT_MODAL', {
+          paymentGateway: paymentData.payment_gateway,
+          paymentIntentInfo: paymentData,
+          trackingNumber: tracking_number,
+        });
+      },
+      onError: () => {
+        toast.error(t('error-fetching-payment-intent'));
       },
     }
   );

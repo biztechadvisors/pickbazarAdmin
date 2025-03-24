@@ -75,6 +75,7 @@ type IProps = {
   id?: any | null
 };
 
+
 function SelectCategory({
   register,
   defaultValue,
@@ -90,7 +91,6 @@ function SelectCategory({
 
 
   const { data: meData } = useMeQuery();
-
   const shop: string | undefined = meData?.managed_shop?.id;
   const [shopSlug, setShopSlug] = useState<string | undefined>(undefined);
 
@@ -113,22 +113,37 @@ function SelectCategory({
     name: 'dealerCategoryMargins',
   });
 
+  const { setValue } = useForm<FormValues>();  // ✅ Ensure setValue is extracted
+
+
   return (
     <div className="mt-5">
       <Label>{t('form:input-label-categories')}</Label>
 
       {fields.map((item, index) => (
         <div key={item.id} className="flex items-center">
+          {/* Log each item in the fields array */}
+          {console.log('Field Item:', item)}
+
           <SelectInput
             name={`dealerCategoryMargins[${index}].category`}
             control={control}
             defaultValue={dbValues[index]?.category || null}
             getOptionLabel={(option: any) => `${option.name}`}
-            getOptionValue={(option: any) => option.name}
+            getOptionValue={(option: any) => option.id}
             options={options}
             isLoading={loading}
             isSearchable={true}
+            onChange={(selectedOption) => {             
+
+              if (setValue) {
+                setValue(`dealerCategoryMargins[${index}].category`, selectedOption ? selectedOption.id : null);
+              } else {
+                console.error("setValue is undefined");
+              }
+            }}
           />
+
 
           <Input
             {...register(`dealerCategoryMargins.${index}.margin` as const)}
@@ -174,8 +189,7 @@ function SelectProduct({
   const { data: me } = useMeQuery();
   const [shopSlug, setShopSlug] = useState<string | null>(null);
   const [selectAll, setSelectAll] = useState<string | null>(null);
-
-
+  const [globalMargin, setGlobalMargin] = useState<string | null>(null);
   let dealerId;
   if (me?.dealer?.id && me?.permission?.permission?.type_name == "Dealer") {
     dealerId = me?.dealer && me?.dealer?.id
@@ -216,15 +230,30 @@ function SelectProduct({
   });
 
   // Handle "Select All" Toggle
+
   const handleSelectAll = () => {
     if (!selectAll) {
-      // If selecting all, populate all products with a default margin
-      replace(options.map((product: any) => ({ product, margin: globalMargin })));
+      setSelectAll(true);
+      // When "Select All" is checked, populate all products with the global margin
+      const updatedFields = options.map((product: any) => ({
+        product: product, // Use product.id instead of the entire product object
+        margin: globalMargin || '',
+      }));     
+      replace(updatedFields); // This ensures all product margins are updated in the form
     } else {
-      // If deselecting, clear all selections
-      replace([]);
+      setSelectAll(false);
+       replace(dbValues.length > 0 ? dbValues : []); // Clear the selections when unchecking "Select All"
     }
-    setSelectAll(!selectAll);
+  };
+
+
+  const handleGlobalMarginChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const newMargin = e.target.value;
+    setGlobalMargin(newMargin);
+
+    if (selectAll) {
+      replace(options.map((product: any) => ({ product: product, margin: newMargin })));
+    }
   };
 
   return (
@@ -242,51 +271,100 @@ function SelectProduct({
         <span>{t('Select All Products')}</span>
       </div>
 
-      {/* If "Select All" is checked, show only one margin input */}
+      {/* Show Editable Products List */}
       {selectAll ? (
-        <div className="flex items-center">
-          <Input
-            value={globalMargin}
-            onChange={(e) => {
-              setGlobalMargin(e.target.value);
-              replace(options.map((product: any) => ({ product, margin: e.target.value })));
-            }}
-            variant="outline"
-            className="mb-3"
-            placeholder={t('Margin % for all')}
-          />
+        <div>
+          {/* "Select All" is checked: Show one global margin input */}
+          <div className="flex items-center">
+            <Input
+              value={globalMargin}
+              onChange={handleGlobalMarginChange}
+              variant="outline"
+              className="mb-3"
+              placeholder={t('Margin % for all')}
+            />
+          </div>
+
+          {/* Show only one dropdown for the first product */}
+          {globalMargin && (
+            <div className="flex items-center">
+              <SelectInput
+                name={`dealerProductMargins[0].product`} // Show only one dropdown
+                control={control}
+                defaultValue={dbValues[0]?.product || null} // Default value for first product
+                getOptionLabel={(option: any) => `${option.name}`}
+                getOptionValue={(option: any) => option.name}
+                options={options}
+                isLoading={loading}
+                isSearchable={true}
+              />
+
+              <Input
+                {...register(`dealerProductMargins[0].margin` as const)} // Only for first product
+                value={fields[0]?.margin || ""}
+                onChange={(e) => {
+                  const updatedMargin = e.target.value;
+                  const updatedFields = [...fields];
+                  updatedFields[0].margin = updatedMargin;
+                  replace(updatedFields);
+                }}
+                variant="outline"
+                className="ml-5 mb-3"
+                placeholder={t('Margin %')}
+              />
+
+              <button
+                onClick={() => remove(0)} // Remove only the first product
+                type="button"
+                className="text-sm text-red-500 transition-colors duration-200 hover:text-red-700 focus:outline-none sm:col-span-1 sm:mt-4 ml-3"
+              >
+                {t('form:button-label-remove')}
+              </button>
+            </div>
+          )}
         </div>
       ) : (
-        fields.map((item, index) => (
-          <div key={item.id} className="flex items-center">
-            <SelectInput
-              name={`dealerProductMargins[${index}].product`}
-              control={control}
-              defaultValue={dbValues[index]?.product || null}
-              getOptionLabel={(option: any) => `${option.name}`}
-              getOptionValue={(option: any) => option.name}
-              options={options}
-              isLoading={loading}
-              isSearchable={true}
-            />
+        // If "Select All" is unchecked, show individual product dropdowns
+        fields.length > 0 && (
+          <div>
+            {fields.map((item, index) => (
+              <div key={item.id} className="flex items-center">
+                <SelectInput
+                  name={`dealerProductMargins[${index}].product`}
+                  control={control}
+                  defaultValue={dbValues[index]?.product || null}
+                  getOptionLabel={(option: any) => `${option.name}`}
+                  getOptionValue={(option: any) => option.name}
+                  options={options}
+                  isLoading={loading}
+                  isSearchable={true}
+                />
 
-            <Input
-              {...register(`dealerProductMargins.${index}.margin` as const)}
-              defaultValue={dbValues[index]?.margin || ''}
-              variant="outline"
-              className="ml-5 mb-3"
-              placeholder={t('Margin %')}
-            />
+                <Input
+                  {...register(`dealerProductMargins.${index}.margin` as const)}
+                  value={fields[index]?.margin || ""}
+                  onChange={(e) => {
+                    const updatedMargin = e.target.value;
+                    const updatedFields = [...fields];
+                    updatedFields[index].margin = updatedMargin;
+                    replace(updatedFields);
+                  }}
+                  variant="outline"
+                  className="ml-5 mb-3"
+                  placeholder={t('Margin %')}
+                />
 
-            <button
-              onClick={() => remove(index)}
-              type="button"
-              className="text-sm text-red-500 transition-colors duration-200 hover:text-red-700 focus:outline-none sm:col-span-1 sm:mt-4 ml-3"
-            >
-              {t('form:button-label-remove')}
-            </button>
+                <button
+                  onClick={() => remove(index)}
+                  type="button"
+                  className="text-sm text-red-500 transition-colors duration-200 hover:text-red-700 focus:outline-none sm:col-span-1 sm:mt-4 ml-3"
+                >
+                  {t('form:button-label-remove')}
+                </button>
+              </div>
+            ))}
           </div>
-        ))
+        )
       )}
 
       {!selectAll && (
@@ -394,26 +472,33 @@ export default function CreateOrUpdateDealerForm({ initialValues, id }: IProps) 
   const billingAddresses = useAtomValue(billingAddressAtom);
   const shippingAddresses = useAtomValue(shippingAddressAtom);
 
-  const onSubmit = (values: FormValues) => {
+  const onSubmit = (values: FormValues) => {    
+
     const isActiveVal: any = values.isActive;
+    const transformedCatData = values.dealerCategoryMargins.map(item => ({
+      margin: item.margin,
+      category: item.category.id // Extract only category.id
+    }));
+
+    const transformedProdData = values.dealerProductMargins.map(item => ({
+      margin: item.margin,
+      product: item.product.id // Extract only category.id
+    }));
 
     const input = {
       language: router.locale!,
       name: values.name!,
       email: values.email!,
       phone: values.phone!,
-      isActive: isActiveVal.value!,
-      subscriptionType: values.subscriptionType.name!,
-      discount: values.discount!,
       walletBalance: values.walletBalance!,
-      user: user!,
-      dealerCategoryMargins: values.dealerCategoryMargins,
-      dealerProductMargins: values.dealerProductMargins,
+      user: user.id,
+      dealerCategoryMargins: transformedCatData,
+      dealerProductMargins: transformedProdData,
       gst: values.gst,
       pan: values.pan,
       billingAddresses: billingAddresses,
       shippingAddresses: shippingAddresses,
-    };
+    };    
 
     if (!initialValues) {
       createDealer({

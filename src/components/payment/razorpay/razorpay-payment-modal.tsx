@@ -1,4 +1,4 @@
-import { useCallback, useEffect } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import useRazorpay, { RazorpayOptions } from '@/lib/use-razorpay';
 import { formatAddress } from '@/lib/format-address';
 import { PaymentGateway, PaymentIntentInfo } from '@/types';
@@ -28,8 +28,8 @@ const RazorpayPaymentModal: React.FC<Props> = ({
   const { closeModal } = useModalAction();
   const { loadRazorpayScript, checkScriptLoaded } = useRazorpay();
   const shopSlug = typeof window !== 'undefined' ? localStorage.getItem('shopSlug') : null;
-
   const { settings, isLoading: isSettingsLoading } = useSettings(shopSlug);
+  const [isScriptLoaded, setIsScriptLoaded] = useState(false);
 
   if (!trackingNumber && !trackingNumberDef) {
     throw new Error('Tracking number is required');
@@ -38,6 +38,7 @@ const RazorpayPaymentModal: React.FC<Props> = ({
   const { order, isLoading, refetch } = useOrder({
     tracking_number: trackingNumber ?? trackingNumberDef,
   });
+
   const { createOrderPayment } = useOrderPayment();
 
   const { customer_name, customer_contact, customer, billing_address } = order ?? {};
@@ -45,6 +46,7 @@ const RazorpayPaymentModal: React.FC<Props> = ({
   const paymentHandle = useCallback(async () => {
     if (!checkScriptLoaded()) {
       await loadRazorpayScript();
+      setIsScriptLoaded(true);
     }
 
     const __DEV__ = document.domain === 'localhost';
@@ -60,11 +62,12 @@ const RazorpayPaymentModal: React.FC<Props> = ({
         closeModal();
         try {
           const paymentIntentInfo = await client.orders.savePaymentId(response);
-          createOrderPayment({
+          await createOrderPayment({
             tracking_number: trackingNumber,
             payment_gateway: paymentGateway,
             paymentIntentInfo: paymentIntentInfo,
           });
+          toast.success(t('common:payment-successful'));
         } catch (error) {
           console.error('Error saving payment ID:', error);
           toast.error(t('common:error-saving-payment'));
@@ -86,7 +89,7 @@ const RazorpayPaymentModal: React.FC<Props> = ({
       },
     };
 
-    const razorpay = (window as any).Razorpay(options);
+    const razorpay = new (window as any).Razorpay(options);
     razorpay.open();
   }, [
     checkScriptLoaded,
@@ -106,12 +109,12 @@ const RazorpayPaymentModal: React.FC<Props> = ({
   ]);
 
   useEffect(() => {
-    if (!isLoading && !isSettingsLoading) {
+    if (!isLoading && !isSettingsLoading && isScriptLoaded) {
       paymentHandle();
     }
-  }, [isLoading, isSettingsLoading, paymentHandle]);
+  }, [isLoading, isSettingsLoading, isScriptLoaded, paymentHandle]);
 
-  if (isLoading || isSettingsLoading) {
+  if (isLoading || isSettingsLoading || !isScriptLoaded) {
     return <Spinner showText={false} />;
   }
 

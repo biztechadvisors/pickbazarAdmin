@@ -103,24 +103,24 @@ const CustomerList = ({
       key: 'email',
       align: alignLeft,
     },
-    {
-      title: t('table:table-item-permissions'),
-      dataIndex: 'type',
-      key: 'type',
-      align: 'center',
-      render: (type: any, record: any) => {
-        return <div>{type?.type_name}</div>;
-      },
-    },
-    {
-      title: t('table:table-item-available_wallet_points'),
-      dataIndex: 'walletPoints',
-      key: 'walletPoints',
-      align: 'center',
-      render: (walletPoints: any, record: any) => {
-        return <div>{walletPoints}</div>;
-      },
-    },
+    // {
+    //   title: t('table:table-item-permissions'),
+    //   dataIndex: 'type',
+    //   key: 'type',
+    //   align: 'center',
+    //   render: (type: any, record: any) => {
+    //     return <div>{type?.type_name}</div>;
+    //   },
+    // },
+    // {
+    //   title: t('table:table-item-available_wallet_points'),
+    //   dataIndex: 'walletPoints',
+    //   key: 'walletPoints',
+    //   align: 'center',
+    //   render: (walletPoints: any, record: any) => {
+    //     return <div>{walletPoints}</div>;
+    //   },
+    // },
     {
       title: (
         <TitleWithSort

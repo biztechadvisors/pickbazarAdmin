@@ -96,9 +96,6 @@ export default function Dashboard() {
     console.error('Error fetching orders:', orderError);
   }
 
-  if (orderLoading) {
-    console.log('Loading orders...');
-  }
 
   const {
     data: popularProductData,
@@ -113,6 +110,8 @@ export default function Dashboard() {
   if (analyticsLoading || orderLoading || popularProductLoading) {
     return <Loader text={t('common:text-loading')} />;
   }
+
+  if (orderLoading) return <Loader text={t('common:text-loading')} />;
 
   const salesByYear =
     analyticsData?.totalYearSaleByMonth?.map((item) =>

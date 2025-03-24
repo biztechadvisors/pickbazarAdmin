@@ -7,8 +7,8 @@ import ValidationError from '@/components/ui/validation-error';
 import Button from '@/components/ui/button';
 import { formatOrderedProduct } from '@/lib/format-ordered-product';
 import { useCart } from '@/contexts/quick-cart/cart.context';
+import { calculateTotal } from '@/contexts/quick-cart/cart.utils';
 import { checkoutAtom, discountAtom, walletAtom } from '@/contexts/checkout';
-import { calculatePaidTotal, calculateTotal } from '@/contexts/quick-cart/cart.utils';
 import { useTranslation } from 'next-i18next';
 import { PaymentGateway } from '@/types';
 import { useMeQuery } from '@/data/user';
@@ -24,12 +24,11 @@ interface PlaceOrderActionProps {
 
 interface OrderInput {
   products: any[];
-  amount: number;
+  amount: number; // Net amount (without tax)
   discount: number;
-  paid_total: number;
   sales_tax: number;
   delivery_fee: number;
-  total: number;
+  total: number; // Gross amount (with tax)
   dealerId?: number;
   delivery_time?: string;
   customerId?: number;
@@ -70,7 +69,6 @@ export const PlaceOrderAction: React.FC<PlaceOrderActionProps> = ({ className, c
       shipping_address,
       delivery_time,
       coupon,
-      verified_response,
       customer_contact,
       customer_name,
       customer,
@@ -112,22 +110,32 @@ export const PlaceOrderAction: React.FC<PlaceOrderActionProps> = ({ className, c
     setErrorMessage(null);
   }, [payment_gateway]);
 
-  const available_items = items?.filter(
-    (item) => !verified_response?.unavailable_products?.includes(item.id)
-  );
+  // Calculate totals with proper number handling
+  const grossTotal = calculateTotal(items) || 0;
 
-  const subtotal = calculateTotal(available_items);
+  // Calculate tax with proper number handling
+  const taxAmount = items.reduce((sum, item) => {
+    const itemTaxRate = Number(item.tax_rate) || 0;
+    const itemPrice = Number(item.price) || 0;
+    const itemQuantity = Number(item.quantity) || 0;
+    const itemTax = (itemPrice * itemQuantity * itemTaxRate) / (100 + itemTaxRate);
+    return sum + (isNaN(itemTax) ? 0 : itemTax);
+  }, 0);
+
+  console.log('taxAmount ', taxAmount)
+
+  const netAmount = Math.max(0, grossTotal - taxAmount);
+
   const shopSlug = typeof window !== 'undefined' ? localStorage.getItem('shopSlug') : null;
   const { settings: option } = useSettings(shopSlug);
-  const freeShippings = option?.freeShipping && Number(option?.freeShippingAmount) <= subtotal;
+  const freeShippings = option?.freeShipping &&
+    (Number(option?.freeShippingAmount) || 0) <= grossTotal;
 
-  const total = calculatePaidTotal(
-    {
-      totalAmount: subtotal,
-      tax: verified_response?.total_tax!,
-      shipping_charge: verified_response?.shipping_charge!,
-    },
-    Number(discount)
+  const shipping_charge = 0;
+  const effectiveShippingCharge = freeShippings ? 0 : shipping_charge;
+
+  const total = Math.max(0,
+    grossTotal + effectiveShippingCharge - (Number(discount) || 0)
   );
 
   const isFullWalletPayment = use_wallet_points && payable_amount === 0;
@@ -144,13 +152,12 @@ export const PlaceOrderAction: React.FC<PlaceOrderActionProps> = ({ className, c
     }
 
     const orderInput: OrderInput = {
-      products: available_items?.map((item) => formatOrderedProduct(item)),
-      amount: subtotal,
+      products: items?.map((item) => formatOrderedProduct(item)),
+      amount: netAmount, // Net amount without tax
       discount: discount ?? 0,
-      paid_total: total,
-      sales_tax: verified_response?.total_tax!,
-      delivery_fee: freeShippings ? 0 : verified_response?.shipping_charge!,
-      total,
+      sales_tax: taxAmount,
+      delivery_fee: effectiveShippingCharge,
+      total: total, // Gross total with tax
       dealerId,
       delivery_time: delivery_time?.title,
       customerId: customer?.id,
@@ -178,16 +185,16 @@ export const PlaceOrderAction: React.FC<PlaceOrderActionProps> = ({ className, c
     createOrder(orderInput);
   };
 
-  const isDigitalCheckout = available_items.some((item) => item.is_digital);
+  const isDigitalCheckout = items.some((item) => item.is_digital);
   const formatRequiredFields = isDigitalCheckout
-    ? [customer_contact, payment_gateway, available_items]
+    ? [customer_contact, payment_gateway, items]
     : [
       customer_contact,
       payment_gateway,
       billing_address,
       shipping_address,
       delivery_time,
-      available_items,
+      items,
     ];
 
   const isAllRequiredFieldSelected = formatRequiredFields.every((item) => !isEmpty(item));
@@ -205,11 +212,6 @@ export const PlaceOrderAction: React.FC<PlaceOrderActionProps> = ({ className, c
       {errorMessage && (
         <div className="mt-3">
           <ValidationError message={errorMessage} />
-        </div>
-      )}
-      {!isAllRequiredFieldSelected && (
-        <div className="mt-3">
-          <ValidationError message={t('text-place-order-helper-text')} />
         </div>
       )}
     </>

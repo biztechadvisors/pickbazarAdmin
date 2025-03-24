@@ -259,7 +259,6 @@ export default function CreateOrUpdateSubCategoriesForm({
     useUpdateSubCategoryMutation();
 
   const onSubmit = async (values: FormValues) => {
-    console.log("values 261 ", values)
     const transformedRegions = Array.isArray(values.regions) ? [values.regions[0].name] : [values.regions.name];
     const input = {
       language: router.locale,
