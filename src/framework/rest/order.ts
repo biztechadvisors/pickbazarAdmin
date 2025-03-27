@@ -263,12 +263,14 @@ export function useCreateOrder() {
             return router.push(Routes.orders(idStr));
           }
 
+          console.log("266 --------- ")
           // Check for redirect payment
           const paymentIntent = payments?.[0];
           if (paymentIntent?.is_redirect && paymentIntent?.redirect_url) {
-            return router.push(paymentIntent.redirect_url);
+            console.log("269 -- ")
+            router.push(paymentIntent.redirect_url);
           }
-
+          console.log("273 -------- ")
           // Default case - go to payment page
           router.push(`${Routes.orders(idStr)}/payment`);
         } catch (error) {
