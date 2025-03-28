@@ -179,6 +179,10 @@ export default function OrderDetailsPage() {
     },
   ];
 
+  function handleDispatchUpdate(data: any): void {
+    throw new Error('Function not implemented.');
+  }
+
   return (
     <>
       <Card className="relative overflow-hidden">
@@ -296,7 +300,14 @@ export default function OrderDetailsPage() {
           </div>
         </div>
       </Card>
-
+      {order?.customer?.permission?.type_name === DEALER && (
+        <DispatchModal
+          isOpen={isDispatchModalOpen}
+          onClose={() => setDispatchModalOpen(false)}
+          order={stockOrderData}
+          dealerId={dealerId}
+          updateDispatch={handleDispatchUpdate}
+        />)}
       {/* Customer Details Card */}
       <Card className="mt-6">
         <div className="p-6">

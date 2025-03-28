@@ -36,6 +36,7 @@ const RazorpayPaymentModal: React.FC<Props> = ({
     if (!checkScriptLoaded()) {
       await loadRazorpayScript();
     }
+
     // const __DEV__ = document.domain === "localhost";
     const options: RazorpayOptions = {
       key: "rzp_test_DQxrmRqdxPeqaw",
@@ -45,7 +46,7 @@ const RazorpayPaymentModal: React.FC<Props> = ({
       name: customer_name!,
       description: `${t('text-order')}#${trackingNumber}`,
       image: settings?.logo?.original!,
-      order_id: paymentIntentInfo?.payment_id!,
+      order_id: paymentIntentInfo?.order_id!,
       handler: async (response) => {
         closeModal();
         client.orders.savePaymentId(response).then(paymentIntentInfo => {

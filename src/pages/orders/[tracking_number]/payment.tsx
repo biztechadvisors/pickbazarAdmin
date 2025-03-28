@@ -24,14 +24,11 @@ export default function OrderPage() {
     const isPaymentModalEnabled =
         payment_status === PaymentStatus.PENDING &&
         payment_intent?.[0] &&
-        payment_intent[0].is_redirect;
-
-    console.log("payment isPaymentModalEnabled ", isPaymentModalEnabled)
+        !payment_intent[0].is_redirect;
 
     useEffect(() => {
         if (isPaymentModalEnabled && payment_intent?.[0]) {
 
-            console.log("inner 34 ")
             const paymentIntentInfo = payment_intent[0];
             const trackingNumberToUse = orderTrackingNumber || paymentIntentInfo.order_id;
 
@@ -39,8 +36,6 @@ export default function OrderPage() {
                 console.error('Tracking number is missing');
                 return;
             }
-
-            console.log("PAYMENT 39 ")
 
             openModal('PAYMENT_MODAL', {
                 paymentGateway: paymentIntentInfo.payment_gateway,
@@ -50,11 +45,9 @@ export default function OrderPage() {
         }
     }, [isPaymentModalEnabled, payment_intent, orderTrackingNumber, openModal]);
 
-    console.log("payment 49 ")
     if (isLoading) {
         return <Spinner showText={false} />;
     }
-    console.log("payment 53 ")
 
     if (!order) {
         return <div>Order not found</div>;
