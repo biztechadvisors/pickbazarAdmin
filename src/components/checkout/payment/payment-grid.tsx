@@ -32,11 +32,11 @@ interface PaymentGroupOptionProps {
   theme?: string;
 }
 
-const PAYMENT_GATEWAYS = [
-  { name: 'stripe', title: 'Stripe' },
-  { name: 'paypal', title: 'Paypal' },
-  { name: 'razorpay', title: 'RazorPay' },
-];
+// const PAYMENT_GATEWAYS = [
+//   { name: 'stripe', title: 'Stripe' },
+//   { name: 'paypal', title: 'Paypal' },
+//   { name: 'razorpay', title: 'RazorPay' },
+// ];
 
 const PaymentGroupOption: React.FC<PaymentGroupOptionProps> = ({
   payment: { name, value, icon },
@@ -81,6 +81,8 @@ const PaymentGrid: React.FC<{ className?: string; theme?: 'bw' }> = ({
     language: locale!,
   });
 
+
+  console.log('options-PAYMENT-GRID',options)
   // If no payment gateway is set and cash on delivery also disable then cash on delivery will be on by default
   const isEnableCashOnDelivery =
     (!options?.useCashOnDelivery && !options?.paymentGateway) ||
@@ -99,7 +101,7 @@ const PaymentGrid: React.FC<{ className?: string; theme?: 'bw' }> = ({
   const [availableGateway, setAvailableGateway] = useState(
     options?.paymentGateway || []
   );
-
+   console.log("paymentride",availableGateway)
   // FixME
   // @ts-ignore
   const AVAILABLE_PAYMENT_METHODS_MAP: Record<

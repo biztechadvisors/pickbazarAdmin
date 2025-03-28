@@ -81,6 +81,16 @@ export enum PaymentGateway {
   RAZORPAY = 'RAZORPAY',
 }
 
+export interface paymentGatewayOption {
+  name: string;
+  title: string;
+  options: {
+    client_id: string;
+    client_secret: string;
+    url: string;
+  }
+};
+
 export interface PaymentIntentInfo {
   order_id: string;
   client_secret: string;
@@ -1235,7 +1245,7 @@ export interface SettingsOptions {
   seo?: SeoSettings;
   google?: GoogleSettings;
   facebook?: FacebookSettings;
-  paymentGateway?: any;
+  paymentGateway?: paymentGatewayOption[];
   defaultPaymentGateway?: string;
   guestCheckout: boolean;
   smsEvent?: SmsEvent;
@@ -1408,7 +1418,7 @@ export interface SettingsOptions {
   siteTitle?: string;
   siteSubtitle?: string;
   currency?: string;
-  paymentGateway?: any;
+  paymentGateway?: paymentGatewayOption[];
   defaultPaymentGateway?: string;
   useOtp?: boolean;
   useAi?: boolean;
@@ -1450,7 +1460,7 @@ export interface SettingsOptionsInput {
   defaultAi?: any;
   freeShipping?: boolean;
   useCashOnDelivery?: boolean;
-  paymentGateway?: any;
+  paymentGateway?: paymentGatewayOption[];
   defaultPaymentGateway?: string;
   contactDetails?: ContactDetailsInput;
   minimumOrderAmount?: number;
@@ -1960,7 +1970,7 @@ export type AddStaffFormProps = {
 }
 export type AddDealerFormProps = {
   defaultVal?: string | undefined;
-  defaultPermissions?:PermissionItem[] | [];
+  defaultPermissions?: PermissionItem[] | [];
 }
 
 export interface ShopPaginator extends PaginatorInfo<Shop> { }

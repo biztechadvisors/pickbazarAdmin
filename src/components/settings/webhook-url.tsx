@@ -1,3 +1,4 @@
+
 import { useEffect, useState } from 'react';
 import { useCopyToClipboard } from 'react-use';
 import { ClipboardIcon } from '@/components/icons/clipboard';
@@ -5,61 +6,121 @@ import { PayPalIcon } from '@/components/icons/payment-gateways/paypal';
 import { RazorPayIcon } from '@/components/icons/payment-gateways/razorpay';
 import { StripeIcon } from '@/components/icons/payment-gateways/stripe';
 import Badge from '@/components/ui/badge/badge';
-import Image from 'next/image';
 
 interface WebHookURLProps {
-  gateway: gatewayType;
+  gateway: GatewayType;
 }
 
-type gatewayType = {
+type GatewayType = {
   name: string;
   title: string;
+  options: {
+    client_id: string;
+    client_secret: string;
+    url: string;
+  }
 };
 
-const WebHookURL = ({ gateway }: WebHookURLProps) => {
+interface WebHookURLProps {
+  gateway: GatewayType;
+  onChange?: (updatedGateway: GatewayType) => void; // Make it optional
+}
+
+const WebHookURL = ({ gateway, onChange }: WebHookURLProps) => {
   const [_, copyToClipboard] = useCopyToClipboard();
   const [isCopied, setCopied] = useState(false);
 
-  const icon: any = {
-    stripe: <StripeIcon className="h-4 w-auto" />,
-    paypal: <PayPalIcon className="h-4 w-auto" />,
-    razorpay: <RazorPayIcon className="h-4 w-auto" />,
-
+  const handleChange = (field: keyof typeof gateway.options, value: string) => {
+    const updatedGateway = {
+      ...gateway,
+      options: {
+        ...gateway.options,
+        [field]: value
+      }
+    };
+    // Only call onChange if it exists
+    onChange?.(updatedGateway);
   };
-  const url = `${process.env.NEXT_PUBLIC_REST_API_ENDPOINT
-    }/webhooks/${gateway?.name?.toLowerCase()}`;
 
-  setTimeout(() => {
-    setCopied(false);
-  }, 5000);
+  const icon: Record<string, JSX.Element> = {
+    stripe: <StripeIcon className="h-5 w-auto" />,
+    paypal: <PayPalIcon className="h-5 w-auto" />,
+    razorpay: <RazorPayIcon className="h-5 w-auto" />,
+  };
+
+  useEffect(() => {
+    const timer = setTimeout(() => setCopied(false), 5000);
+    return () => clearTimeout(timer);
+  }, [isCopied]);
 
   return (
-    <div className="flex items-center border-t border-t-[#D1D5DB] px-5 py-4 transition-all first:border-t-0 hover:bg-gray-100">
-      <span className="relative h-5 min-w-[80px] sm:min-w-[100px] lg:min-w-[120px]">
-        {icon[gateway?.name] ? icon[gateway?.name] : ''}
-      </span>
-      <span className="ml-5 flex-grow truncate pr-2 text-xs text-gray-500">
-        {url}
-      </span>
-      <div className="relative flex items-center">
-        {isCopied && (
-          <span className="absolute right-full top-1/2 z-10 -translate-y-1/2 px-2">
-            <Badge text="Copied!" className="inline-flex" />
-          </span>
-        )}
-        <button
-          type="button"
-          onClick={() => {
-            copyToClipboard(url);
-            setCopied(true);
-          }}
-          className="text-accent-500 transition hover:text-accent-400"
-        >
-          <ClipboardIcon />
-        </button>
+    <div className="border border-gray-300 rounded-lg p-4 shadow-md">
+      <div className="flex items-center gap-3 pb-4">
+        {icon[gateway.name]}
+        <h3 className="text-lg font-semibold">{gateway.title}</h3>
       </div>
+      <table className="w-full border-collapse border border-gray-200">
+        <thead>
+          <tr className="bg-gray-100">
+            <th className="border border-gray-300 p-2 text-left">Field</th>
+            <th className="border border-gray-300 p-2 text-left">Value</th>
+          </tr>
+        </thead>
+        <tbody>
+          {/* Webhook URL */}
+          <tr>
+            <td className="border border-gray-300 p-2">Webhook URL</td>
+            <td className="border border-gray-300 p-2 flex items-center gap-2">
+              <input
+                type="text"
+                value={gateway.options.url}
+                onChange={(e) => handleChange('url', e.target.value)}
+                className="w-full px-2 py-1 border rounded-md"
+              />
+              <button
+                type="button"
+                onClick={() => {
+                  copyToClipboard(gateway.options.url);
+                  setCopied(true);
+                }}
+                className="text-blue-500 hover:text-blue-700"
+              >
+                <ClipboardIcon />
+              </button>
+              {isCopied && <Badge text="Copied!" className="ml-2" />}
+            </td>
+          </tr>
+
+          {/* Client ID */}
+          <tr>
+            <td className="border border-gray-300 p-2">Client ID</td>
+            <td className="border border-gray-300 p-2">
+              <input
+                type="text"
+                value={gateway.options.client_id}
+                onChange={(e) => handleChange('client_id', e.target.value)}
+                className="w-full px-2 py-1 border rounded-md"
+              />
+            </td>
+          </tr>
+
+          {/* Client Secret */}
+          <tr>
+            <td className="border border-gray-300 p-2">Client Secret</td>
+            <td className="border border-gray-300 p-2">
+              <input
+                type="text"
+                value={gateway.options.client_secret}
+                onChange={(e) => handleChange('client_secret', e.target.value)}
+                className="w-full px-2 py-1 border rounded-md"
+              />
+            </td>
+          </tr>
+        </tbody>
+      </table>
     </div>
   );
 };
 
 export default WebHookURL;
+

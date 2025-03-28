@@ -20,6 +20,7 @@ const SwitchInput = ({
   disabled,
   ...rest
 }: Props) => {
+
   const { t } = useTranslation();
   return (
     <div>

@@ -7,6 +7,7 @@ import { RazorPayIcon } from '@/components/icons/payment-gateways/razorpay';
 import { StarIcon } from '@/components/icons/star-icon';
 import cn from 'classnames';
 import Image from 'next/image';
+
 interface PaymentSelectProps {
   options: OptionType[];
   control: any;
@@ -19,6 +20,11 @@ interface PaymentSelectProps {
 type OptionType = {
   name: string;
   title: string;
+  options: {
+    client_id: string;
+    client_secret: string;
+    url: string;
+  };
 };
 
 const PaymentMethodCard = ({
@@ -87,14 +93,27 @@ const PaymentSelect = ({
       render={({ field: { onChange, value } }) => {
         return (
           <div className="grid grid-cols-2 gap-4 md:grid-cols-3 xl:grid-cols-4 3xl:grid-cols-5">
-            <CheckboxGroup
-              values={value.map((value: any) => value?.name)}
-              onChange={(value) => {
-                const obj = value.map((value) => ({
-                  name: value,
-                  title: capitalize(value),
-                }));
-                onChange(obj);
+          <CheckboxGroup
+              values={value?.map((val: any) => val?.name) || []}
+              onChange={(selectedValues) => {
+                // Merge existing gateways with new selections
+                const selectedOptions = options
+                  .filter(option => selectedValues.includes(option.name))
+                  .map(option => {
+                    // Find existing gateway data if it exists
+                    const existingGateway = value?.find((g: any) => g.name === option.name);
+                    
+                    return {
+                      name: option.name,
+                      title: capitalize(option.name),
+                      options: {
+                        client_id: existingGateway?.options?.client_id || option.options.client_id,
+                        client_secret: existingGateway?.options?.client_secret || option.options.client_secret,
+                        url: existingGateway?.options?.url || option.options.url,
+                      },
+                    };
+                  });
+                onChange(selectedOptions);
               }}
             >
               {options?.map((option) => (
