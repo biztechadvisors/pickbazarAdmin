@@ -3,7 +3,6 @@ import GooglePlacesAutocomplete from '@/components/form/google-places-autocomple
 import * as socialIcons from '@/components/icons/social';
 import { CURRENCY } from '@/components/settings/currency';
 import { AI } from '@/components/settings/ai';
-import { PAYMENT_GATEWAY } from '@/components/settings/payment';
 import WebHookURL from '@/components/settings/webhook-url';
 import Alert from '@/components/ui/alert';
 import Button from '@/components/ui/button';
@@ -158,7 +157,7 @@ type FormValues = {
   freeShipping: boolean;
   freeShippingAmount: number;
   useCashOnDelivery: boolean;
-  defaultPaymentGateway: paymentGatewayOption;
+  defaultPaymentGateway: defaultPaymentGateway;
   useEnableGateway: boolean;
   paymentGateway: paymentGatewayOption[];
   taxClass: Tax;
@@ -199,9 +198,24 @@ type FormValues = {
   server_info: ServerInfo;
 };
 
+type defaultPaymentGateway = {
+  name: string;
+  title: string;
+  options: {
+    client_id: string;
+    client_secret: string;
+    url: string;
+  }
+};
+
 type paymentGatewayOption = {
   name: string;
   title: string;
+  options: {
+    client_id: string;
+    client_secret: string;
+    url: string;
+  }
 };
 
 const socialIcon = [
@@ -266,6 +280,31 @@ export default function SettingsForm({
 
   const [serverInfo, SetSeverInfo] = useState(options?.server_info);
 
+  const PAYMENT_GATEWAY = [
+    {
+      name: 'stripe', title: 'Stripe', options: {
+        client_id: '',
+        client_secret: '',
+        url: '',
+      }
+    },
+    {
+      name: 'paypal', title: 'Paypal', options: {
+        client_id: '',
+        client_secret: '',
+        url: '',
+      }
+    },
+    {
+      name: 'razorpay', title: 'RazorPay', options: {
+        client_id: '',
+        client_secret: '',
+        url: '',
+      }
+    },
+
+  ];
+
   const {
     register,
     handleSubmit,
@@ -326,6 +365,11 @@ export default function SettingsForm({
         ? options?.paymentGateway?.map((gateway: any) => ({
           name: gateway?.name,
           title: gateway?.title,
+          options: {
+            client_id: gateway.options.client_id,
+            client_secret: gateway.options.client_secret,
+            url: gateway.options.url,
+          }
         }))
         : [],
 
@@ -346,7 +390,8 @@ export default function SettingsForm({
         ? formatEventAPIData(options?.emailEvent)
         : null,
     },
-  });
+  });  
+
   const { openModal } = useModalAction();
 
   const generateName = watch('siteTitle');
@@ -399,6 +444,7 @@ export default function SettingsForm({
   const isNotDefaultSettingsPage = Config.defaultLanguage !== locale;
 
   async function onSubmit(values: FormValues) {
+    
     const contactDetails = {
       ...values?.contactDetails,
       location: { ...omit(values?.contactDetails?.location, "__typename") },
@@ -426,10 +472,15 @@ export default function SettingsForm({
         freeShippingAmount: Number(values.freeShippingAmount),
         currency: values.currency?.code,
         defaultAi: values.defaultAi?.value,
-        defaultPaymentGateway: values.defaultPaymentGateway?.name,
+        defaultPaymentGateway: values.defaultPaymentGateway,//?.name,
         paymentGateway: values.paymentGateway?.map((gateway: any) => ({
           name: gateway.name,
           title: gateway.title,
+          options: {
+            client_id: gateway.options.client_id,
+            client_secret: gateway.options.client_secret,
+            url: gateway.options.url,
+          }
         })) || PAYMENT_GATEWAY.slice(0, 2),
         useEnableGateway: values.useEnableGateway || true,
         guestCheckout: values.guestCheckout,
@@ -450,11 +501,18 @@ export default function SettingsForm({
       },
     };
 
+   
     try {
 
-      if (!settings?.options) createSettingsMutation({ shop_id, ...mutationParams });
-      else updateSettingsMutation({ shop_id, ...mutationParams });
-
+      if (!settings?.options) {
+        console.log('Calling createSettingsMutation:', mutationParams);
+        const data = createSettingsMutation({ shop_id, ...mutationParams });
+        console.log('Mutation success:', data);
+      } else {
+        console.log('Calling updateSettingsMutation:', mutationParams);
+        const data = updateSettingsMutation({ shop_id, ...mutationParams });
+        console.log('Mutation success:', data);
+      }
     } catch (error) {
       console.error('Caught error:', error);
       const serverErrors = getErrorMessage(error);
@@ -467,10 +525,9 @@ export default function SettingsForm({
     }
   }
 
-  let paymentGateway = watch('paymentGateway');
-  let defaultPaymentGateway = watch('defaultPaymentGateway');
+  let paymentGateway = watch('paymentGateway'); //options.paymentGateway
+  let defaultPaymentGateway = watch('defaultPaymentGateway');  //options.defaultPaymentGateway
   let useEnableGateway = watch('useEnableGateway');
-  // let enableAi = watch('useAi');
 
   const upload_max_filesize = options?.server_info?.upload_max_filesize! / 1024;
   const max_fileSize = options?.server_info?.upload_max_filesize! * 1000;
@@ -489,10 +546,10 @@ export default function SettingsForm({
   );
 
   let checkAvailableDefaultGateway = paymentGateway?.some(
-    (item: any) => item?.name === defaultPaymentGateway?.name
+    (item: any) => item?.name === defaultPaymentGateway //?.name
   );
 
-  const isRazorpayActive = paymentGateway?.some(payment => payment?.name === "razorpay") ? paymentGateway?.some(payment => payment?.name === "razorpay") : true;
+  const isRazorpayActive = paymentGateway?.some((payment: { name: string; }) => payment?.name === "razorpay") ? paymentGateway?.some((payment: { name: string; }) => payment?.name === "razorpay") : true;
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
@@ -725,10 +782,9 @@ export default function SettingsForm({
                   name="paymentGateway"
                   defaultItem={
                     checkAvailableDefaultGateway
-                      ? defaultPaymentGateway?.name
+                      ? defaultPaymentGateway
                       : ''
                   }
-                // disable={isEmpty(paymentGateway)}
                 />
               </div>
 
@@ -766,19 +822,30 @@ export default function SettingsForm({
                       </div>
                     </div>
                   )}
+
                   <Label>{t('text-webhook-url')}</Label>
                   <div className="relative flex flex-col overflow-hidden rounded-md border border-solid border-[#D1D5DB]">
-                    {paymentGateway.map((gateway: any, index: any) => (
-                      <WebHookURL gateway={gateway} key={index} />
+                    {paymentGateway?.map((gateway: any) => (
+                      <WebHookURL
+                        key={gateway.name}
+                        gateway={gateway}
+                        onChange={(updatedGateway) => {
+                          const updatedGateways = paymentGateway.map(gw =>
+                            gw.name === updatedGateway.name ? updatedGateway : gw
+                          );
+                          setValue('paymentGateway', updatedGateways);
+                        }}
+                      />
                     ))}
                   </div>
                 </>
               )}
             </>
           ) : null}
-
         </Card>
       </div>
+
+
       <div className="my-5 flex flex-wrap border-b border-dashed border-border-base pb-8 sm:my-8">
         <Description
           title="Currency Options"
@@ -790,14 +857,13 @@ export default function SettingsForm({
           <div className="mb-5">
             <Label>{`${t('form:input-label-currency-formations')} *`}</Label>
             <SelectInput
+              {...register('currencyOptions.formation')}
               control={control}
-              name="currencyOptions.formation"
-              getOptionLabel={(option: any) => (option ? option.name : 'Unknown')}
-              getOptionValue={(option: any) => (option ? option.code : '')}
-              options={COUNTRY_LOCALE || []}
+              getOptionLabel={(option: any) => option.name}
+              getOptionValue={(option: any) => option.code}
+              options={COUNTRY_LOCALE}
               disabled={isNotDefaultSettingsPage}
             />
-
           </div>
           <Input
             label={`${t('form:input-label-currency-number-of-decimal')} *`}
