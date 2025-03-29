@@ -23,6 +23,7 @@ import CreatePermission from '@/pages/permission/create';
 import useFormValues from '@/lib/hooks/use-form-values';
 import { Routes } from '@/config/routes';
 import { toast } from 'react-toastify';
+import { STAFF } from '@/utils/constants';
 
 type FormValues = {
   name: string;
@@ -207,7 +208,6 @@ const AddStaffForm: React.FC<AddStaffFormProps> = ({
   }, [isOwner, isCompany, isDealer, permissionOptions, permissionData, setValue, userId, isEditMode]);
 
 
-
   const handlePermissionCreated = (newPermission: any) => {
     const newPermissionOption = { value: newPermission.id, label: newPermission.permission_name };
     console.log("HandlePermissionCreates%%%%%", newPermissionOption)
@@ -288,6 +288,12 @@ const AddStaffForm: React.FC<AddStaffFormProps> = ({
   }
   if (loadingUser) return <Loader />;
 
+  const [dataFromChild, setDataFromChild] = useState('');
+
+  const handleDataFromChild = (data) => {
+    setDataFromChild(data);
+  };
+
   return (
     <form onSubmit={handleSubmit(onSubmit)} noValidate>
       <div className="my-5 flex flex-wrap sm:my-8">
@@ -351,40 +357,58 @@ const AddStaffForm: React.FC<AddStaffFormProps> = ({
             )}
           />
 
-          <Controller
-            name="type"
-            control={control}
-            defaultValue={initialValues?.permission?.permission_name
-              ? { value: initialValues.permission.permission_name, label: initialValues.permission.permission_name }
-              : null}
-            render={({ field }) => (
-              <>
-                <Label className="mt-4">{t("Permission Name")}</Label>
-                <Select
-                  {...field}
-                  value={field.value}
-                  getOptionLabel={(option) => option.label}
-                  getOptionValue={(option) => option.value}
-                  onChange={(value) => {
-                    setSelectedPermission(value);
-                    field.onChange(value);
-                  }}
-                  required
-                  options={permissionOptions}
-                  isClearable={true}
-                  isLoading={loading || isLoading}
-                  className="mb-4"
-                />
-              </>
-            )}
-          />
+          {
+            !dataFromChild ?
+              <Controller
+                name="type"
+                control={control}
+                defaultValue={initialValues?.permission?.permission_name
+                  ? { value: initialValues.permission.permission_name, label: initialValues.permission.permission_name }
+                  : null}
+                render={({ field }) => (
+                  <>
+                    <Label className="mt-4">{t("form:input-label-permission-name")}</Label>
+                    <Select
+                      {...field}
+                      value={field.value}
+                      getOptionLabel={(option) => option.label}
+                      getOptionValue={(option) => option.value}
+                      onChange={(value) => {
+                        setSelectedPermission(value);
+
+                        console.log("field --- 369 ", field)
+                        console.log("value --- 369 ", value)
+
+                        field.onChange(value);
+                      }}
+                      required
+                      options={permissionOptions}
+                      isClearable={true}
+                      isLoading={loading || isLoading}
+                      className="mb-4"
+                    />
+                  </>
+                )}
+              />
+              :
+              <Input
+                label={t('form:input-label-type')}
+                variant="outline"
+                className="mb-4 mt-4"
+                defaultValue={STAFF}
+                readOnly
+                error={t(errors.email?.message!)}
+              />
+          }
 
           <CreatePermission
             permissionType={permissionType.STAFF}
             defaultPermissions={selectedPermission ? getPermissionsForSelectedType(selectedPermission) : defaultPermission}
             onPermissionCreated={handlePermissionCreated}
             selectedPermission={selectedPermission}
+            onData={handleDataFromChild}
           />
+
         </Card>
       </div>
 

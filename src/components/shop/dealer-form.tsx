@@ -14,12 +14,12 @@ import { useMeQuery, useRegisterMutation } from '@/data/user'; // Import useRegi
 import PhoneInput from 'react-phone-input-2';
 import Label from '../ui/label';
 import Select from '../ui/select/select';
-import { usePermissionData } from '@/data/permission';
 import { getAuthCredentials } from '@/utils/auth-utils';
 import { AddDealerFormProps, PermissionsProps, permissionType } from '@/types';
 import Loader from '@/components/ui/loader/loader';
 import CreatePermission from '@/pages/permission/create';
 import useFormValues from '@/lib/hooks/use-form-values';
+import { DEALER } from '@/utils/constants';
 
 type FormValues = {
   name: string;
@@ -65,7 +65,7 @@ const DealerAddForm: React.FC<AddDealerFormProps> = ({ defaultVal, defaultPermis
   const { t } = useTranslation();
   const { permissions } = getAuthCredentials();
   const [defaultPermission, setDefaultPermission] = useState(defaultPermissions);
-  const [permissionOptions, setPermissionOptions] = useState(permissionOption(permissionType.STAFF));
+  const [permissionOptions, setPermissionOptions] = useState(permissionOption(permissionType.DEALER));
 
   const {
     query: { shop },
@@ -99,7 +99,7 @@ const DealerAddForm: React.FC<AddDealerFormProps> = ({ defaultVal, defaultPermis
     mode: "onChange"
   });
 
-  const isCompany = permissions?.includes('Company'); 
+  const isCompany = permissions?.includes('Company');
 
   // Restrict access to Company users only
   useEffect(() => {
@@ -111,7 +111,7 @@ const DealerAddForm: React.FC<AddDealerFormProps> = ({ defaultVal, defaultPermis
   useEffect(() => {
     if (isCompany && permissionOptions) { // Only for Company users
       const dealerPermission = permissionData?.find(
-        (permission: PermissionsProps) => permission.type_name === 'Dealer' && permission.user === userId
+        (permission: PermissionsProps) => permission.type_name === DEALER && permission.user === userId
       );
       if (dealerPermission) {
         // Use permission_name instead of type_name
@@ -123,7 +123,7 @@ const DealerAddForm: React.FC<AddDealerFormProps> = ({ defaultVal, defaultPermis
 
   const [selectedPermission, setSelectedPermission] = useState<any>(null);
 
-  const handlePermissionCreated = (newPermission: any) => { 
+  const handlePermissionCreated = (newPermission: any) => {
     const newPermissionOption = { value: newPermission.id, label: newPermission.permission_name };
     setSelectedPermission(newPermissionOption); // Update selected permission
     setValue("type", newPermissionOption, { shouldValidate: true }); // Update form field
@@ -140,10 +140,10 @@ const DealerAddForm: React.FC<AddDealerFormProps> = ({ defaultVal, defaultPermis
     if (selectedPermission) {
       setValue('type', selectedPermission, { shouldValidate: true });
     }
-  }, [selectedPermission, setValue]);
 
-  useEffect(() => {
-  }, [permissionOptions]);
+    console.log('selectedPermission ', selectedPermission)
+
+  }, [selectedPermission, setValue]);
 
   function onSubmit({ name, email, password, contact, type }: FormValues) {
     const permissionToSubmit = selectedPermission || type;
@@ -151,10 +151,12 @@ const DealerAddForm: React.FC<AddDealerFormProps> = ({ defaultVal, defaultPermis
     if (isCompany) {
       // For Company users, filter only Dealer-specific permissions
       const dealerPermissions = permissionData?.filter(
-        (permission: PermissionsProps) => permission.type_name === 'Dealer'
+        (permission: PermissionsProps) => permission.type_name === DEALER
       );
       // permissionToSubmit = dealerPermissions?.[0] || type; // Use the first Dealer-specific permission
     }
+
+    console.log("permissionToSubmit", permissionToSubmit);
 
     registerUser(
       {
@@ -178,6 +180,23 @@ const DealerAddForm: React.FC<AddDealerFormProps> = ({ defaultVal, defaultPermis
       }
     );
   }
+
+  const getPermissionsForSelectedType = (permission) => {
+    const permData = permissionData?.find(
+      (p) => p.permission_name === permission.value
+    );
+    return permData?.permissions || [];
+  };
+
+  console.log("permissionOptions : ", permissionOptions);
+
+  const [dataFromChild, setDataFromChild] = useState('');
+
+  const handleDataFromChild = (data) => {
+    setDataFromChild(data);
+  };
+
+  console.log("control 199 : ", control)
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} noValidate>
@@ -234,45 +253,59 @@ const DealerAddForm: React.FC<AddDealerFormProps> = ({ defaultVal, defaultPermis
               />
             )}
           />
-          <Controller
-            name="type"
-            control={control}
-            defaultValue={selectedPermission ?? null} // Ensure default value is selectedPermission
-            render={({ field }) => { 
-              return (
-                <>
-                  <Label className="mt-4">{t("form:input-label-type")}</Label>
-                  <Select
-                    {...field}
-                    value={selectedPermission || field.value} // Prioritize selectedPermission
-                    getOptionLabel={(option) => option.label}
-                    getOptionValue={(option) => option.value}
-                    onChange={(value) => { 
-                      setSelectedPermission(value); // Update selected permission
-                      setValue("type", value, { shouldValidate: true });
-                    }}
-                    required
-                    options={permissionOptions}
-                    isClearable={true}
-                    isLoading={loading && isLoading}
-                    className="mb-4"
-                  />
-                </>
-              );
-            }}
-          />
+
+          {!dataFromChild ?
+            <Controller
+              name="type"
+              control={control}
+              defaultValue={selectedPermission ?? null} // Ensure default value is selectedPermission
+              render={({ field }) => {
+                return (
+                  <>
+                    <Label className="mt-4">{t("form:input-label-permission-name")}</Label>
+                    <Select
+                      {...field}
+                      value={selectedPermission || field.value} // Prioritize selectedPermission
+                      getOptionLabel={(option) => option.label}
+                      getOptionValue={(option) => option.value}
+                      onChange={(value) => {
+                        setSelectedPermission(value); // Update selected permission
+                        setValue("type", value, { shouldValidate: true });
+                      }}
+                      required
+                      options={permissionOptions}
+                      isClearable={true}
+                      isLoading={loading && isLoading}
+                      className="mb-4"
+                    />
+                  </>
+                );
+              }}
+            />
+            :
+            <Input
+              label={t('form:input-label-type')}
+              variant="outline"
+              className="mb-4 mt-4"
+              defaultValue={DEALER}
+              readOnly
+              error={t(errors.email?.message!)}
+            />
+          }
 
           <CreatePermission
-            permissionType={permissionType.STAFF}
-            defaultPermissions={defaultPermission}
-            onPermissionCreated={handlePermissionCreated} // Ensure this is passed correctly
+            permissionType={permissionType.DEALER}
+            defaultPermissions={selectedPermission ? getPermissionsForSelectedType(selectedPermission) : defaultPermission}
+            onPermissionCreated={handlePermissionCreated}
+            selectedPermission={selectedPermission}
+            onData={handleDataFromChild}
           />
         </Card>
       </div>
 
       <div className="mb-4 text-end">
         <Button loading={loading} disabled={loading}>
-          {t('form:button-label-add-dealer')} {/* Update the button label */}
+          {t('form:button-label-add-dealerlist')} {/* Update the button label */}
         </Button>
       </div>
     </form>

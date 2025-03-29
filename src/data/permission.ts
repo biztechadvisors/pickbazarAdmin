@@ -30,6 +30,7 @@ export const usePermissionData = () => {
   );
   return { data, isLoading, error, refetch };
 };
+
 export const useSavePermissionData = () => {
   const router = useRouter();
 
