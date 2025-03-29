@@ -243,6 +243,7 @@
 
 // export default AddStaffForm;
 
+
 import React, { useEffect, useState } from 'react';
 import Button from '@/components/ui/button';
 import Input from '@/components/ui/input';
@@ -255,8 +256,8 @@ import { useTranslation } from 'next-i18next';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
 import { useShopQuery } from '@/data/shop';
-import { useAddStaffMutation } from '@/data/staff';
-import { useMeQuery } from '@/data/user';
+import { useAddStaffMutation  } from '@/data/staff';
+import { useMeQuery, useUserQuery ,useUpdateUserMutation } from '@/data/user'; // Added useUserQuery
 import PhoneInput from 'react-phone-input-2';
 import Label from '../ui/label';
 import Select from '../ui/select/select';
@@ -266,6 +267,8 @@ import { AddStaffFormProps, PermissionsProps, permissionType } from '@/types';
 import Loader from '@/components/ui/loader/loader';
 import CreatePermission from '@/pages/permission/create';
 import useFormValues from '@/lib/hooks/use-form-values';
+import { Routes } from '@/config/routes';
+import { toast } from 'react-toastify';
 
 type FormValues = {
   name: string;
@@ -290,7 +293,11 @@ const staffFormSchema = yup.object().shape({
     .string()
     .email('form:error-email-format')
     .required('form:error-email-required'),
-  password: yup.string().required('form:error-password-required'),
+  password: yup.string().when('$isEditMode', {
+    is: false,
+    then: yup.string().required('form:error-password-required'),
+    otherwise: yup.string(),
+  }),
   contact: yup.string().required('form:error-contact-required'),
   type: yup
     .object()
@@ -302,24 +309,45 @@ const staffFormSchema = yup.object().shape({
     .required('form:error-type-required'),
 });
 
-const AddStaffForm: React.FC<AddStaffFormProps> = ({ defaultVal, defaultPermissions }) => {
+const AddStaffForm: React.FC<AddStaffFormProps> = ({ 
+  defaultVal, 
+  defaultPermissions,
+  initialValues // Added initialValues prop
+}) => {
   const router = useRouter();
+  const { query } = router;
+  const isEditMode = !!query.id; // Check if we're in edit mode
   const { data: meData } = useMeQuery();
   const { id } = meData || {};
-  const { isEqual, permissionData, permissionOptions: permissionOption, isLoading, permissionName, setPermissionName, permissionNameOptions } = useFormValues();
+  const { 
+    isEqual, 
+    permissionData, 
+    permissionOptions: permissionOption, 
+    isLoading, 
+    permissionName, 
+    setPermissionName, 
+    permissionNameOptions 
+  } = useFormValues();
+  
   const { mutate: addStaff, isLoading: loading } = useAddStaffMutation();
+  const { mutate: updateUser, isLoading: updating } = useUpdateUserMutation();
   const { t } = useTranslation();
   const { permissions } = getAuthCredentials();
   const [defaultPermission, setDefaultPermission] = useState(defaultPermissions);
   const [permissionOptions, setPermissionOptions] = useState(permissionOption(permissionType.STAFF));
+  const [selectedPermission, setSelectedPermission] = useState<any>(null);
+ 
 
-  const {
-    query: { shop },
-  } = router;
+  // Fetch user data if in edit mode
+  const { data: userData, isLoading: loadingUser } = useUserQuery(
+    { id: query.id as string },
+    { enabled: isEditMode }
+  );
+
   const shopSlug =
     typeof window !== 'undefined' ? localStorage.getItem('shopSlug') : null;
 
-  const { data: shopData, isLoading: fetchingShopId } = useShopQuery({
+  const { data: shopData } = useShopQuery({
     slug: shopSlug as string,
   });
 
@@ -337,29 +365,61 @@ const AddStaffForm: React.FC<AddStaffFormProps> = ({ defaultVal, defaultPermissi
     handleSubmit,
     setValue,
     setError,
+    reset,
     formState: { errors },
     control,
+    watch,
   } = useForm<FormValues>({
-    defaultValues,
+    defaultValues: initialValues ? {
+      name: initialValues.name,
+      email: initialValues.email,
+      contact: initialValues.contact || '',
+      type: initialValues.permission?.permission_name 
+        ? { value: initialValues.permission.permission_name, label: initialValues.permission.permission_name }
+        : null,
+    } : defaultValues,
     resolver: yupResolver(staffFormSchema),
+    context: { isEditMode },
     mode: "onChange"
-  });
+  });;
+  const contactValue = watch('contact');
+  // Set initial values when in edit mode
+  useEffect(() => {
+    if (isEditMode && (initialValues || userData)) {
+      const data = initialValues || userData;
+      console.log('Initial data for form:', data);
+      const formValues = {
+        name: data.name,
+        email: data.email,
+        contact: data.contact || data.contact || '',
+        type: data.permission?.permission_name 
+          ? { value: data.permission.permission_name, label: data.permission.permission_name }
+          : null,
+      };
+      
+      console.log('Setting form values:', formValues);
+      reset(formValues);
+      
+      // Explicitly set contact value to ensure it's captured
+      setValue('contact', formValues.contact, { shouldValidate: true });
+    }
+  }, [isEditMode, initialValues, userData, reset, setValue]);
 
   const isOwner = permissions?.includes('Owner');
   const isCompany = permissions?.includes('Company'); 
   const isDealer = permissions?.includes('Dealer'); 
- 
-console.log("isDealer",isDealer);
-console.log("PermissionData",permissionData);
+
   useEffect(() => {
-    if ((isOwner || isCompany || isDealer) && permissionOptions) { // ✅ Add isDealer to the condition
+    if ((isOwner || isCompany || isDealer) && permissionOptions) {
       if (isOwner) {
         const ownerStaffPermission = permissionData?.find(
           (permission: PermissionsProps) => permission.type_name === 'Staff' && permission.user === userId
         );
-        if (ownerStaffPermission) {
-          // Use permission_name instead of type_name
-          setValue('type', { value: ownerStaffPermission.permission_name, label: ownerStaffPermission.permission_name });
+        if (ownerStaffPermission && !isEditMode) {
+          setValue('type', { 
+            value: ownerStaffPermission.permission_name, 
+            label: ownerStaffPermission.permission_name 
+          });
           setDefaultPermission(ownerStaffPermission.permissions ?? []);
         }
       }
@@ -368,80 +428,111 @@ console.log("PermissionData",permissionData);
         const companyStaffPermission = permissionData?.find(
           (permission: PermissionsProps) => permission.type_name === 'Staff' && permission.user === userId
         );
-        if (companyStaffPermission) {
-          // Use permission_name instead of type_name
-          setValue('type', { value: companyStaffPermission.permission_name, label: companyStaffPermission.permission_name });
+        if (companyStaffPermission && !isEditMode) {
+          setValue('type', { 
+            value: companyStaffPermission.permission_name, 
+            label: companyStaffPermission.permission_name 
+          });
           setDefaultPermission(companyStaffPermission.permissions ?? []);
         }
       }
   
-      if (isDealer) { // ✅ Add Dealer-specific logic
+      if (isDealer) {
         const dealerStaffPermission = permissionData?.find(
           (permission: PermissionsProps) => permission.type_name === 'Staff' && permission.user === userId
         );
-        if (dealerStaffPermission) {
-          // Use permission_name instead of type_name
-          setValue('type', { value: dealerStaffPermission.permission_name, label: dealerStaffPermission.permission_name });
+        if (dealerStaffPermission && !isEditMode) {
+          setValue('type', { 
+            value: dealerStaffPermission.permission_name, 
+            label: dealerStaffPermission.permission_name 
+          });
           setDefaultPermission(dealerStaffPermission.permissions ?? []);
         }
       }
     }
-  }, [isOwner, isCompany, isDealer, permissionOptions, permissionData, setValue, userId]);
-  const [selectedPermission, setSelectedPermission] = useState<any>(null);
+  }, [isOwner, isCompany, isDealer, permissionOptions, permissionData, setValue, userId, isEditMode]);
+
+ 
 
   const handlePermissionCreated = (newPermission: any) => { 
-  
     const newPermissionOption = { value: newPermission.id, label: newPermission.permission_name };
-  
-    setSelectedPermission(newPermissionOption); // 
-    setValue("type", newPermissionOption, { shouldValidate: true }); // ✅ Update form field
-  
-    // Update the permission options list
-    setPermissionOptions((prevOptions) => {
-      const updatedOptions = [...prevOptions, newPermissionOption];
-       
-      return updatedOptions;
-    });
+    console.log("HandlePermissionCreates%%%%%",newPermissionOption)
+    setSelectedPermission(newPermissionOption);
+    setValue("type", newPermissionOption, { shouldValidate: true });
+    setPermissionOptions((prevOptions) => [...prevOptions, newPermissionOption]);
   };
-  
-  // Sync selectedPermission with form
+ 
   useEffect(() => {
     if (selectedPermission) {
       setValue('type', selectedPermission, { shouldValidate: true });
-    } 
-
+    }
   }, [selectedPermission, setValue]);
-  useEffect(() => { // Debugging
-  }, [permissionOptions]); 
-
-  function onSubmit({ name, email, password, contact, type }: FormValues) {
-    // Always prefer selectedPermission if available
-    const permissionToSubmit = selectedPermission || type;
-   console.log("permissionToSubmit",permissionToSubmit)
+   
+  const getPermissionsForSelectedType = (permission) => {
+    const permData = permissionData?.find(
+      (p) => p.permission_name === permission.value
+    );
+    return permData?.permissions || [];
+  };
   
-    addStaff(
-      {
+  const handlePermissionSelection = (value) => {
+    setSelectedPermission(value);
+    const permissions = getPermissionsForSelectedType(value);
+    setDefaultPermission(permissions);
+    setValue('type', value, { shouldValidate: true });
+  };
+  
+  function onSubmit({ name, email, password, contact, type }: FormValues) {
+    const permissionToSubmit = selectedPermission || type;
+  
+    if (isEditMode) {
+      const updatePayload = {
+        name,
+        email,
+        ...(password && { password }),
+      
+          contact, // This updates the contact in profile
+    
+        permission: {
+          id: permissionToSubmit?.id || initialValues?.permission?.id, 
+          type_name: permissionToSubmit?.value || permissionToSubmit?.label,
+          permission_name: permissionToSubmit?.value || permissionToSubmit?.label,
+        },
+        shopSlug,
+      };
+  
+      console.log('Final Update Payload:', JSON.stringify(updatePayload, null, 2));
+  
+      updateUser(
+        {
+          id: query.id as string,
+          input: updatePayload
+        },
+        {
+          onError: (error) => {
+            console.error('Update error:', error.response?.data);
+            toast.error('Failed to update staff');
+          },
+          onSuccess: () => {
+            toast.success('Staff updated successfully');
+            router.push(Routes.staff.list);
+          }
+        }
+      );
+    } else {
+      // Create operation remains the same
+      addStaff({
         name,
         email,
         password,
         contact,
-        permission: permissionToSubmit?.label, // ✅ Send type name instead of ID
+        permission: permissionToSubmit?.label,
         shopSlug,
         createdBy: userId,
-      },
-      {
-        onError: (error: any) => {
-          Object.keys(error?.response?.data).forEach((field: any) => {
-            setError(field, {
-              type: "manual",
-              message: error?.response?.data[field],
-            });
-          });
-        },
-      }
-    );
+      });
+    }
   }
-  
+  if (loadingUser) return <Loader />;
   
   return (
     <form onSubmit={handleSubmit(onSubmit)} noValidate>
@@ -469,22 +560,29 @@ console.log("PermissionData",permissionData);
             className="mb-4"
             error={t(errors.email?.message!)}
           />
-          <PasswordInput
-            label={t('form:input-label-password')}
-            {...register('password')}
-            error={t(errors.password?.message!)}
-            variant="outline"
-            className="mb-4"
-          />
+          
+          {!isEditMode && (
+            <PasswordInput
+              label={t('form:input-label-password')}
+              {...register('password')}
+              error={t(errors.password?.message!)}
+              variant="outline"
+              className="mb-4"
+            />
+          )}
 
           <Controller
             name="contact"
             control={control}
+            defaultValue={initialValues?.contact || initialValues?.contact || ''}
             render={({ field: { onChange, value } }) => (
               <PhoneInput
                 country="in"
                 value={value}
-                onChange={onChange}
+                onChange={(phone) => {
+                  console.log('Phone input changed:', phone);
+                  onChange(phone);
+                }}
                 inputStyle={{
                   width: '100%',
                   height: '40px',
@@ -498,45 +596,47 @@ console.log("PermissionData",permissionData);
               />
             )}
           />
-  <Controller
-  name="type"
-  control={control}
-  defaultValue={selectedPermission ?? null} // ✅ Ensure default value is selectedPermission
-  render={({ field }) => { 
-    return (
-      <>
-        <Label className="mt-4">{t("form:input-label-type")}</Label>
-        <Select
-          {...field}
-          value={selectedPermission || field.value} // ✅ Prioritize selectedPermission
-          getOptionLabel={(option) => option.label}
-          getOptionValue={(option) => option.value}
-          onChange={(value) => { 
-            setSelectedPermission(value); // ✅ Update selected permission
-            setValue("type", value, { shouldValidate: true });
-          }}
-          required
-          options={permissionOptions}
-          isClearable={true}
-          isLoading={loading && isLoading}
-          className="mb-4"
-        />
-      </>
-    );
-  }}
-/>
+          
+          <Controller
+            name="type"
+            control={control}
+            defaultValue={initialValues?.permission?.permission_name 
+              ? { value: initialValues.permission.permission_name, label: initialValues.permission.permission_name }
+              : null}
+            render={({ field }) => (
+              <>
+                <Label className="mt-4">{t("Permission Name")}</Label>
+                <Select
+                  {...field}
+                  value={field.value}
+                  getOptionLabel={(option) => option.label}
+                  getOptionValue={(option) => option.value}
+                  onChange={(value) => {
+                    setSelectedPermission(value);
+                    field.onChange(value);
+                  }}
+                  required
+                  options={permissionOptions}
+                  isClearable={true}
+                  isLoading={loading || isLoading}
+                  className="mb-4"
+                />
+              </>
+            )}
+          />
 
 <CreatePermission
   permissionType={permissionType.STAFF}
-  defaultPermissions={defaultPermission}
-  onPermissionCreated={handlePermissionCreated} // Ensure this is passed correctly
+  defaultPermissions={selectedPermission ? getPermissionsForSelectedType(selectedPermission) : defaultPermission}
+  onPermissionCreated={handlePermissionCreated}
+  selectedPermission={selectedPermission}
 />
         </Card>
       </div>
 
       <div className="mb-4 text-end">
-        <Button loading={loading} disabled={loading}>
-          {t('form:button-label-add-staff')}
+        <Button loading={loading || updating} disabled={loading || updating}>
+          {isEditMode ? t('form:button-label-update') : t('form:button-label-add-staff')}
         </Button>
       </div>
     </form>

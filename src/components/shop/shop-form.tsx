@@ -970,6 +970,7 @@ import CreatePerm from '../createPerm';
 import { useAtom } from 'jotai';
 import { addPermission, selectedOption, setUsrEmailState } from '@/utils/atoms';
 import ErrorMessage from '../ui/error-message';
+import Select from '../ui/select/select';
 
 export const chatbotAutoSuggestion = ({ name }: { name: string }) => {
   return [
@@ -1061,24 +1062,25 @@ type FormValues = {
   balance: BalanceInput;
   address: UserAddressInput;
   settings: ShopSettings;
+  permission: any;
+  additionalPermissions: any[];
+  user: any;
 };
 
 const ShopForm = ({ initialValues }: { initialValues?: any }) => {
-  const { mutate: createShop, isLoading: creating } = useCreateShopMutation();
-  const { mutate: updateShop, isLoading: updating } = useUpdateShopMutation();
+
   const [createdUser, setCreatedUser] = useState<any>(null); // State to store the created user
-
-
   const [modalIsOpen, setIsOpen] = useState(false);
   const [permissionSelectedOption, setPermissionSelectedOption] =
     useAtom(selectedOption);
   const [additionalPerm, setAdditionalPerm] = useAtom(addPermission);
-  const { permissions } = getAuthCredentials();
   const [selectedPermissions, setSelectedPermissions] = useState([]);
   const [isChecked, setIsChecked] = useState(false);
   const [isUserModalOpen, setUserModalOpen] = useState(false);
   const [optionsUser, setUserOptions] = useState<any[]>([]);
   const [selectedUser, setSelectedUser] = useState<any>(null);
+  const [viewPermissionModalOpen, setViewPermissionModalOpen] = useState(false);
+  const [viewPermissionData, setViewPermissionData] = useState<any>(null);
 
   const handleCheckboxChange = () => {
     setIsChecked(!isChecked);
@@ -1103,45 +1105,29 @@ const ShopForm = ({ initialValues }: { initialValues?: any }) => {
     setIsOpen(false);
   }
 
+  function openViewPermissionModal(permissionData: any) {
+    setViewPermissionData(permissionData);
+    setViewPermissionModalOpen(true);
+  }
+
+  function closeViewPermissionModal() {
+    setViewPermissionModalOpen(false);
+    setViewPermissionData(null);
+  }
+
   const permissionId = permissionSelectedOption?.e?.id;
 
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-    getValues,
-    watch,
-    setValue,
-    control,
-  } = useForm<FormValues>({
-    shouldUnregister: true,
-    ...(initialValues
-      ? {
-        defaultValues: {
-          ...initialValues,
-          logo: getFormattedImage(initialValues.logo),
-          cover_image: getFormattedImage(initialValues.cover_image),
-          settings: {
-            ...initialValues?.settings,
-            socials: initialValues?.settings?.socials
-              ? initialValues?.settings?.socials.map((social: any) => ({
-                icon: updatedIcons?.find(
-                  (icon) => icon?.value === social?.icon
-                ),
-                url: social?.url,
-              }))
-              : [],
-          },
-        },
-      }
-      : {}),
-    resolver: yupResolver(shopValidationSchema),
-  });
-
   const router = useRouter();
-
-  // const { openModal } = useModalAction();
   const { locale } = router;
+  const { t } = useTranslation();
+  
+  const { permissions } = getAuthCredentials();
+  const { data: meData, isLoading: meLoading, error: meError } = useMeQuery();
+  const { data: users, isLoading } = useVendorQuery(meData?.id, {
+      enabled: !!meData?.id,
+    });
+  // const { openModal } = useModalAction();
+ 
   const { data, isLoading: loading, isError } = useMeQuery();
  
   const {
@@ -1151,23 +1137,70 @@ const ShopForm = ({ initialValues }: { initialValues?: any }) => {
     language: locale!,
   });
 
+  const createdById = meData?.createdBy?.id; // Get the createdBy user ID
+
+// Fetch the createdBy user's data
+const { data: createdByUser, isLoading: createdByLoading, error: createdByError } = useUserQuery(
+  { id: createdById },
+  { enabled: !!createdById }  
+);
+const userId = data?.id;
+
+const {
+  isLoading: permissionLoading,
+  error,
+  data: permissionData,
+} = usePermissionData(userId); 
+
+
+const { mutate: createShop, isLoading: creating } = useCreateShopMutation();
+const { mutate: updateShop, isLoading: updating } = useUpdateShopMutation();
+const {
+  register,
+  handleSubmit,
+  formState: { errors },
+  getValues,
+  watch,
+  setValue,
+  control,
+} = useForm<FormValues>({
+  shouldUnregister: true,
+  ...(initialValues
+    ? {
+      defaultValues: {
+        ...initialValues,
+        logo: getFormattedImage(initialValues.logo),
+        cover_image: getFormattedImage(initialValues.cover_image),
+        settings: {
+          ...initialValues?.settings,
+          socials: initialValues?.settings?.socials
+            ? initialValues?.settings?.socials.map((social: any) => ({
+              icon: updatedIcons?.find(
+                (icon) => icon?.value === social?.icon
+              ),
+              url: social?.url,
+            }))
+            : [],
+        },
+      },
+    }
+    : {}),
+  resolver: yupResolver(shopValidationSchema),
+});
+const { fields, append, remove } = useFieldArray({
+  control,
+  name: 'settings.socials',
+});
+
   const generateName = watch('name');
   const autoSuggestionList = useMemo(() => {
     return chatbotAutoSuggestion({ name: generateName ?? '' });
   }, [generateName]);
 
-  const userId = data?.id;
-
-  const {
-    isLoading: permissionLoading,
-    error,
-    data: permissionData,
-  } = usePermissionData(userId); 
-
   const filterdEcomm = permissionData?.filter((e: any) => {
     return e && e.type_name === Company;
   });
-
+console.log("filterdEcomm&&&&",filterdEcomm);
   // Separate permissions based on additionalPermission
   const additionalPermissionTrue = filterdEcomm?.filter((e: any) => {
     return e?.additionalPermission === true;
@@ -1185,11 +1218,22 @@ const ShopForm = ({ initialValues }: { initialValues?: any }) => {
       e,
     })
   );
-  const permissionOptions = additionalPermissionFalse?.map((e: any) => ({
+  const permissionOptions = useMemo(() => additionalPermissionFalse?.map((e: any) => ({
     permission_name: e?.permission_name,
     type_name: e?.type_name,
+    view: (
+      <button
+        className="px-2 py-1 text-sm text-white bg-blue-500 rounded hover:bg-blue-600"
+        onClick={(event) => {
+          event.stopPropagation();
+          openViewPermissionModal(e);
+        }}
+      >
+        View
+      </button>
+    ),
     e,
-  }));
+  })), [additionalPermissionFalse]);
 
   const permissionProps = permissionSelectedOption?.e;
 
@@ -1207,11 +1251,35 @@ const ShopForm = ({ initialValues }: { initialValues?: any }) => {
     });
   }, [generateName]);
 
-  const { t } = useTranslation();
-  const { fields, append, remove } = useFieldArray({
-    control,
-    name: 'settings.socials',
-  });
+  
+  // Initial value of the watch field
+  const currentSelectedUser = watch ? watch('user') : selectedUser;
+
+  // Set initial options from fetched data
+  useEffect(() => {
+    if (users?.data) {
+      setUserOptions(users.data);
+    }
+  }, [users?.data]);
+
+  // If there's a created user, add it to the options and select it
+  useEffect(() => {
+    if (
+      createdUser &&
+      !optionsUser.some((option) => option.id === createdUser.id)
+    ) {
+      setUserOptions((prevOptions) => [...prevOptions, createdUser]);
+      setSelectedUser(createdUser);
+      setValue && setValue('user', createdUser, { shouldValidate: true });
+    }
+  }, [createdUser, optionsUser, setValue]);
+
+  // Sync selected user to `watch` when it changes
+  useEffect(() => {
+    if (currentSelectedUser && setValue) {
+      setSelectedUser(currentSelectedUser); // Update local state to reflect form value
+    }
+  }, [currentSelectedUser, setValue]);
 
   // Created User SelectInput ------------
 
@@ -1222,15 +1290,6 @@ const ShopForm = ({ initialValues }: { initialValues?: any }) => {
 
   // const shouldDisable = !isOwner;
   // Customer and permission form conditional rendering 
-const { data: meData, isLoading: meLoading, error: meError } = useMeQuery();
-const createdById = meData?.createdBy?.id; // Get the createdBy user ID
-
-// Fetch the createdBy user's data
-const { data: createdByUser, isLoading: createdByLoading, error: createdByError } = useUserQuery(
-  { id: createdById },
-  { enabled: !!createdById }  
-);
-
 
 // Handle loading and error states
 if (meLoading || createdByLoading) {
@@ -1251,40 +1310,6 @@ const isOwner =  permissions?.includes(OWNER) || // Owners can write
 
 // Determine if the action should be disabled
 const shouldDisable = !isOwner ;
-
-  // Fetching users
-  const { data: users, isLoading } = useVendorQuery(meData?.id, {
-    enabled: !!meData?.id,
-  });
-
-  // Initial value of the watch field
-  const currentSelectedUser = watch ? watch('user') : selectedUser;
-
-  // Set initial options from fetched data
-  useEffect(() => {
-    if (users?.data) {
-      setUserOptions(users.data);
-    }
-  }, [users]);
-
-  // If there's a created user, add it to the options and select it
-  useEffect(() => {
-    if (
-      createdUser &&
-      !optionsUser.some((option) => option.id === createdUser.id)
-    ) {
-      setUserOptions((prevOptions) => [...prevOptions, createdUser]);
-      setSelectedUser(createdUser);
-      setValue && setValue('user', createdUser, { shouldValidate: true });
-    }
-  }, [createdUser, optionsUser, setValue]);
-
-  // Sync selected user to `watch` when it changes
-  useEffect(() => {
-    if (currentSelectedUser && setValue) {
-      setSelectedUser(currentSelectedUser); // Update local state to reflect form value
-    }
-  }, [currentSelectedUser, setValue]);
 
   // Handle the newly created user
   const handleUserCreated = (newUser: any) => {
@@ -1417,22 +1442,50 @@ const shouldDisable = !isOwner ;
               className="w-full px-0 pb-5 sm:w-4/12 sm:py-8 sm:pe-4 md:w-1/3 md:pe-5"
             />
             <Card className="w-full sm:w-8/12 md:w-2/3">
-              <div className="relative mb-5">
-                <Label>{t('form:input-label-select-company')}</Label>
-                <SelectInput
-                  name="permission"
-                  placeholder="Select permissions"
-                  control={control}
-                  getOptionLabel={(option: any) =>
-                    `${option.type_name} - ${option.permission_name}`
-                  }
-                  getOptionValue={(option: any) => option.id}
-                  options={permissionOptions}
-                  isSearchable={true}
-                  onChange={handleSelectChange}
-                  defaultValue={control._defaultValues?.permission || watch('permission')}
-                />
-              </div>
+            <div className="relative mb-5">
+  <Label>{t('form:input-label-select-company')}</Label>
+  <Controller
+    name="permission"
+    control={control}
+    render={({ field }) => (
+      <Select
+        {...field}
+        options={permissionOptions}
+        placeholder="Select permissions"
+        isSearchable={true}
+        components={{
+          Option: (props) => (
+            <div 
+              {...props.innerProps} 
+              className={`flex items-center justify-between p-2 ${props.isSelected ? 'bg-gray-100' : 'hover:bg-gray-50'}`}
+            >
+              <span>{`${props.data.type_name} - ${props.data.permission_name}`}</span>
+              <button
+                className="px-2 py-1 text-sm text-white bg-blue-500 rounded hover:bg-blue-600 ml-2"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  openViewPermissionModal(props.data.e);
+                }}
+              >
+                View
+              </button>
+            </div>
+          ),
+        }}
+        getOptionLabel={(option: any) => (
+          <div className="flex justify-between items-center w-full">
+            <span>{`${option.type_name} - ${option.permission_name}`}</span>
+          </div>
+        )}
+        getOptionValue={(option: any) => option.id}
+        onChange={(selectedOption) => {
+          field.onChange(selectedOption);
+          setPermissionSelectedOption(selectedOption);
+        }}
+      />
+    )}
+  />
+</div>
 
               <div className="relative mb-5">
                 <Label>{t('form:button-label-more-permission')}</Label>
@@ -1482,6 +1535,20 @@ const shouldDisable = !isOwner ;
                     onSaveSuccess={closeModal}
                     onPermissionCreate={handlePermissionUpdate}
                   />
+                </Modal>
+                  {/* View Permission Modal */}
+                  <Modal open={viewPermissionModalOpen} onClose={closeViewPermissionModal}>
+                  {viewPermissionData && (
+                    <CreatePerm
+                      PermissionDatas={viewPermissionData}
+                      selectedPermissions={selectedPermissions}
+                      setSelectedPermissions={setSelectedPermissions}
+                      permissionId={viewPermissionData.id}
+                      onSaveSuccess={closeViewPermissionModal}
+                      onPermissionCreate={handlePermissionUpdate}
+                      viewMode={true}
+                    />
+                  )}
                 </Modal>
               </div>
             </Card>

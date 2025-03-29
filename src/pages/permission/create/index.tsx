@@ -433,7 +433,8 @@ import useFormValues from '@/lib/hooks/use-form-values';
 interface CreatePermissionInput {
   permissionType?: string;
   defaultPermissions?: any[];
-  onPermissionCreated?: (newPermission: any) => void; // Callback for new permission
+  onPermissionCreated?: (newPermission: any) => void;// Callback for new permission
+  selectedPermission?: any; 
 }
 function Loader() {
   return null;
@@ -505,7 +506,7 @@ const CreatePermission = ({
   const { mutateUpdate, mutatePost } = useSavePermissionData();
 
   useEffect(() => {
-    if (singlePermissionData) {
+    if (singlePermissionData && singlePermissionData.length > 0) {
       setTypeName([singlePermissionData?.[0].type_name]);
       setPermissionName(singlePermissionData?.[0].permissionName);
       const formattedPermissions = singlePermissionData?.[0]?.permission?.map(

@@ -4,7 +4,7 @@ import PasswordInput from '@/components/ui/password-input';
 import { Controller, useForm } from 'react-hook-form';
 import Card from '@/components/common/card';
 import Description from '@/components/ui/description';
-import { useMeQuery, useRegisterMutation } from '@/data/user';
+import { useMeQuery, useRegisterMutation, useUpdateUserMutation } from '@/data/user';
 import { useTranslation } from 'next-i18next';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { customerValidationSchema } from './user-validation-schema';
@@ -15,13 +15,15 @@ import { usePermissionData } from '@/data/permission';
 import { getAuthCredentials } from '@/utils/auth-utils';
 import Loader from '../ui/loader/loader';
 import { Company, DEALER, OWNER } from '@/utils/constants';
+import { toast } from 'react-toastify';
 // import InputMask from 'react-input-mask';
 import { useShopQuery } from '@/data/shop';
 import PhoneInput from 'react-phone-input-2';
 import 'react-phone-input-2/lib/style.css';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { PermissionsProps, permissionType } from '@/types';
 import useFormValues from '@/lib/hooks/use-form-values';
+import { Routes } from '@/config/routes';
 
 type FormValues = {
   name: string;
@@ -42,11 +44,12 @@ const defaultValues = {
   numberOfDealers: 0, // Added default value for new field
 };
 
-const CustomerCreateForm = () => {
+const CustomerCreateForm = ({ initialValues }: { initialValues?: any }) => {
   const { t } = useTranslation();
   const router = useRouter();
   const { data: meData, isLoading: meLoading } = useMeQuery();
   const { mutate: registerUser, isLoading: loading } = useRegisterMutation();
+  const { mutate: updateUser, isLoading: updating } = useUpdateUserMutation();
   const { id } = meData || {};
   const {permissionData,permissionOptions:permissionOption} = useFormValues()
   const { permissions } = getAuthCredentials();
@@ -67,9 +70,29 @@ const CustomerCreateForm = () => {
     formState: { errors },
     control,
   } = useForm<FormValues>({
-    defaultValues,
+    defaultValues: initialValues ? {
+      name: initialValues.name,
+      email: initialValues.email,
+      contact: initialValues.contact,
+      type: { 
+        value: initialValues.permission?.type_name,
+        label: initialValues.permission?.type_name 
+      },
+      // Don't prefill password for security
+    } : defaultValues,
     resolver: yupResolver(customerValidationSchema),
   });
+  useEffect(() => {
+    if (initialValues) {
+      setValue('name', initialValues.name);
+      setValue('email', initialValues.email);
+      setValue('contact', initialValues.contact);
+      setValue('type', { 
+        value: initialValues.permission?.type_name,
+        label: initialValues.permission?.type_name 
+      });
+    }
+  }, [initialValues, setValue]);
 
   if (meLoading || !permissionData) {
     return <Loader />;
@@ -92,13 +115,64 @@ const CustomerCreateForm = () => {
     type,
     numberOfDealers, // Added new field to destructure
   }: FormValues) {
+    const { id } = router.query;
+  
+     
+    if (id) {
+      // Prepare the update payload according to your API expectations
+      const updatePayload = {
+        name,
+        email,
+        // profile: {
+          contact,
+        // },
+        // Only include password if it's provided and not empty
+        ...(password && password.trim() !== '' && { password }),
+        // Send permission as an object with type_name
+        permission: {
+          id:  type?.id || initialValues?.permission?.id, 
+          type_name: type?.value || initialValues?.permission?.type_name,
+          permission_name: type?.label || initialValues?.permission?.permission_name,
+        },
+      };
+  
+      console.log('Update payload:', { id, input: updatePayload });
+  
+      updateUser(
+        {
+          id: id as string,
+          input: updatePayload // Match the expected { id, input } structure
+        },
+        {
+          onError: (error) => {
+            console.error('Update error:', error.response?.data);
+            // Handle field-specific errors if they exist
+            if (error?.response?.data?.errors) {
+              Object.entries(error.response.data.errors).forEach(([field, messages]) => {
+                setError(field as keyof FormValues, {
+                  type: 'manual',
+                  message: (messages as string[]).join(', '),
+                });
+              });
+            } else {
+              // Generic error message
+              toast.error(t('common:update-failed'));
+            }
+          },
+          onSuccess: () => {
+            // toast.success(t('common:successfully-updated'));
+            router.push(Routes.user.list);
+          }
+        }
+      );
+    }else {
     registerUser(
       {
         name,
         email,
-        password,
-        contact,
-        createdBy: id,
+        password, 
+          contact, 
+        createdBy: meData?.id,
         permission: type?.value,
         // numberOfDealers,
         // managed_shop: shopData,
@@ -115,6 +189,7 @@ const CustomerCreateForm = () => {
         },
       }
     );
+  }
   }
   return (
     <form onSubmit={handleSubmit(onSubmit)} noValidate>
@@ -219,8 +294,8 @@ const CustomerCreateForm = () => {
           {t('form:button-label-back')}
         </Button>
 
-        <Button loading={loading} disabled={loading}>
-          {t('form:button-label-create-customer')}
+        <Button loading={loading || updating} disabled={loading  || updating}>
+        {initialValues ? t('form:button-label-update-customer') : t('form:button-label-create-customer')}
         </Button>
       </div>
     </form>
