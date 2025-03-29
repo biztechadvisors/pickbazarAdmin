@@ -295,7 +295,7 @@ const VerifiedItemList: React.FC<Props> = ({ className }) => {
     amount: isNaN(totalPrice) ? 0 : totalPrice
   });
 
-  const { price: total } = usePrice({ amount: totalPrice });
+  // const { price: total } = usePrice({ amount: totalPrice });
 
   return (
     <div className={className}>

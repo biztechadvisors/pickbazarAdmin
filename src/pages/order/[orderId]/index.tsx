@@ -183,123 +183,174 @@ export default function OrderDetailsPage() {
     throw new Error('Function not implemented.');
   }
 
+
   return (
     <>
       <Card className="relative overflow-hidden">
-        {/* Invoice Header */}
+        {/* Invoice Header - Made responsive */}
         <div className="mb-6 -mt-5 -ml-5 -mr-5 md:-mr-8 md:-ml-8 md:-mt-8">
-          <OrderViewHeader order={order} wrapperClassName="px-8 py-4" />
+          <OrderViewHeader order={order} wrapperClassName="px-4 py-4 sm:px-8" />
         </div>
 
-        {/* Download Invoice Button */}
-        <div className="flex w-full">
-          <Button onClick={handleDownloadInvoice} className="mb-5 bg-blue-500 ltr:ml-auto rtl:mr-auto">
-            <DownloadIcon className="h-4 w-4 me-3" />
-            {t('common:text-download')} {t('common:text-invoice')}
+        {/* Download Invoice Button - Adjusted for mobile */}
+        <div className="flex w-full justify-center sm:justify-start">
+          <Button 
+            onClick={handleDownloadInvoice} 
+            className="mb-5 bg-blue-500 sm:ml-auto"
+            size="small"
+          >
+            <DownloadIcon className="h-4 w-4 me-2 sm:me-3" />
+            <span className="text-xs sm:text-sm">
+              {t('common:text-download')} {t('common:text-invoice')}
+            </span>
           </Button>
         </div>
 
-        {/* Order ID and Status */}
+        {/* Order ID and Status - Made responsive */}
         <div className="flex flex-col items-center lg:flex-row">
-          <h3 className="mb-8 w-full whitespace-nowrap text-center text-2xl font-semibold text-heading lg:mb-0 lg:w-1/3 lg:text-start">
+          <h3 className="mb-4 w-full whitespace-nowrap text-center text-xl font-semibold text-heading lg:mb-0 lg:w-1/3 lg:text-start sm:text-2xl">
             {t('form:input-label-order-id')} - {order?.tracking_number}
           </h3>
 
-          {order?.order_status !== OrderStatus.FAILED &&
-            order?.order_status !== OrderStatus.CANCELLED && (
-              <form onSubmit={handleSubmit(ChangeStatus)} className="flex w-full items-start ms-auto lg:w-2/4">
-                <div className="z-20 w-full me-5">
-                  <SelectInput
-                    name="order_status"
-                    control={control}
-                    getOptionLabel={(option: any) => t(option.name)}
-                    getOptionValue={(option: any) => option.status}
-                    options={ORDER_STATUS.slice(0, 6)}
-                    placeholder={t('form:input-placeholder-order-status')}
-                  />
-                  <ValidationError message={t(errors?.order_status?.message)} />
-                </div>
-                <Button loading={updating}>
-                  <span className="hidden sm:block">{t('form:button-label-change-status')}</span>
-                  <span className="block sm:hidden">{t('form:form:button-label-change')}</span>
-                </Button>
-              </form>
+          <div className="flex w-full flex-col items-center gap-4 sm:flex-row sm:items-start sm:justify-end lg:w-2/3">
+            {order?.order_status !== OrderStatus.FAILED &&
+              order?.order_status !== OrderStatus.CANCELLED && (
+                <form 
+                  onSubmit={handleSubmit(ChangeStatus)} 
+                  className="flex w-full flex-col items-center gap-4 sm:w-auto sm:flex-row sm:items-start"
+                >
+                  <div className="z-20 w-full sm:me-5 sm:w-48 md:w-56">
+                    <SelectInput
+                      name="order_status"
+                      control={control}
+                      getOptionLabel={(option: any) => t(option.name)}
+                      getOptionValue={(option: any) => option.status}
+                      options={ORDER_STATUS.slice(0, 6)}
+                      placeholder={t('form:input-placeholder-order-status')}
+                    />
+                    <ValidationError message={t(errors?.order_status?.message)} />
+                  </div>
+                  <Button loading={updating} className="w-full sm:w-auto">
+                    <span className="text-xs sm:text-sm">
+                      {t('form:button-label-change-status')}
+                    </span>
+                  </Button>
+                </form>
+              )}
+
+            {order?.customer?.permission?.type_name === DEALER && (
+              <Button 
+                onClick={() => setDispatchModalOpen(true)}
+                className="w-full sm:w-auto"
+              >
+                <span className="text-xs sm:text-sm">
+                  {DispatchButton 
+                    ? t('form:button-label-change-dispatch') 
+                    : t('Received')}
+                </span>
+              </Button>
             )}
-          {order?.customer?.permission?.type_name === DEALER && (
-            DispatchButton ? (
-              <Button onClick={() => setDispatchModalOpen(true)}>
-                <span className="hidden sm:block">
-                  {t('form:button-label-change-dispatch')}
-                </span>
-                <span className="block sm:hidden">
-                  {t('form:button-label-change-dispatch')}
-                </span>
-              </Button>
-            ) : (
-              <Button onClick={() => setDispatchModalOpen(true)}>
-                <span className="hidden sm:block">{t('Received')}</span>
-                <span className="block sm:hidden">{t('Received')}</span>
-              </Button>
-            )
-          )}
+          </div>
         </div>
 
-        {/* Invoice Body */}
-        <div className="mt-10 flex flex-col lg:flex-row">
-          {/* Product List */}
-          <div className="w-full shrink-0 items-center lg:w-2/3 lg:pe-5 xl:w-3/4">
-            <Table
-              //@ts-ignore
-              columns={columns}
-              emptyText={t('table:empty-table-data')}
-              data={order?.products}
-              rowKey="id"
-              scroll={{ x: 300 }}
-            />
+        {/* Invoice Body - Made responsive */}
+        <div className="mt-6 flex flex-col lg:flex-row lg:gap-8">
+          {/* Product List - Adjusted for mobile */}
+          <div className="w-full shrink-0 lg:w-2/3 lg:pe-5 xl:w-3/4">
+            <div className="overflow-x-auto">
+              <Table
+                //@ts-ignore
+                columns={columns}
+                emptyText={t('table:empty-table-data')}
+                data={order?.products}
+                rowKey="id"
+                scroll={{ x: 300 }}
+                className="min-w-[600px] sm:min-w-0"
+              />
+            </div>
             <div className="my-5 flex w-full flex-col items-center">
               <OrderStatusProgressBox status={order?.status?.serial} />
             </div>
           </div>
 
-          {/* Totals and Order Summary */}
-          <div className="mt-10 w-full shrink-0 lg:mt-0 lg:w-1/3 xl:w-1/4">
-            <div className="space-y-5">
-              <div className="flex w-full justify-between text-sm text-body">
-                <span>{t('common:subtotal')}</span>
-                <span>{subtotal}</span>
-              </div>
-              <div className="flex w-full justify-between text-sm text-body">
-                <span>{t('common:text-discount')}</span>
-                <span>{discount}</span>
-              </div>
-              <div className="flex w-full justify-between text-sm text-body">
-                <span>{t('common:text-delivery-fee')}</span>
-                <span>{delivery_fee}</span>
-              </div>
-              <div className="flex w-full justify-between text-sm text-body">
-                <span>{t('common:text-tax')}</span>
-                <span>{sales_tax}</span>
-              </div>
-              <div className="flex w-full justify-between text-sm font-semibold text-heading">
-                <span>{t('common:text-total')}</span>
-                <span>{total}</span>
+          {/* Totals and Order Summary - Adjusted for mobile */}
+          <div className="mt-6 w-full shrink-0 lg:mt-0 lg:w-1/3 xl:w-1/4">
+            <div className="rounded-lg border border-gray-200 p-4">
+              <h3 className="mb-4 text-lg font-semibold">{t('Order Summary')}</h3>
+              <div className="space-y-3">
+                <div className="flex justify-between text-sm text-body">
+                  <span>{t('common:subtotal')}</span>
+                  <span>{subtotal}</span>
+                </div>
+                <div className="flex justify-between text-sm text-body">
+                  <span>{t('common:text-discount')}</span>
+                  <span>{discount}</span>
+                </div>
+                <div className="flex justify-between text-sm text-body">
+                  <span>{t('common:text-delivery-fee')}</span>
+                  <span>{delivery_fee}</span>
+                </div>
+                <div className="flex justify-between text-sm text-body">
+                  <span>{t('common:text-tax')}</span>
+                  <span>{sales_tax}</span>
+                </div>
+                <div className="border-t border-gray-200 pt-3">
+                  <div className="flex justify-between font-semibold text-heading">
+                    <span>{t('common:text-total')}</span>
+                    <span>{total}</span>
+                  </div>
+                </div>
               </div>
             </div>
-            <div className="mt-10 flex w-full justify-center">
-              <span className="w-64">
-                {formatString(t('Order Date :'), order?.created_at)}
-              </span>
-            </div>
-            <div className="mt-4 w-full justify-center">
+            
+            <div className="mt-6 rounded-lg border border-gray-200 p-4">
+              <div className="flex w-full justify-center">
+                <span className="text-sm">
+                  {formatString(t('Order Date :'), order?.created_at)}
+                </span>
+              </div>
               {order?.shipping_address && (
-                <address className="text-sm not-italic text-body">
-                  {formatAddress(order?.shipping_address)}
-                </address>
+                <div className="mt-3">
+                  <h4 className="mb-2 text-sm font-medium">{t('Shipping Address')}</h4>
+                  <address className="text-xs not-italic text-body sm:text-sm">
+                    {formatAddress(order?.shipping_address)}
+                  </address>
+                </div>
               )}
             </div>
           </div>
         </div>
       </Card>
+
+      {/* Customer Details Card - Made responsive */}
+      <Card className="mt-6">
+        <div className="p-4 sm:p-6">
+          <h3 className="text-lg font-semibold text-heading mb-3 sm:text-xl sm:mb-4">Customer Details</h3>
+          <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5">
+            <div className="flex flex-col">
+              <span className="text-xs text-body sm:text-sm">Name:</span>
+              <span className="text-sm font-medium text-heading sm:text-base">{order?.customer?.name}</span>
+            </div>
+            <div className="flex flex-col">
+              <span className="text-xs text-body sm:text-sm">Email:</span>
+              <span className="text-sm font-medium text-heading sm:text-base">{order?.customer?.email}</span>
+            </div>
+            <div className="flex flex-col">
+              <span className="text-xs text-body sm:text-sm">Contact:</span>
+              <span className="text-sm font-medium text-heading sm:text-base">{order?.customer?.contact}</span>
+            </div>
+            <div className="flex flex-col">
+              <span className="text-xs text-body sm:text-sm">Verified:</span>
+              <span className="text-sm font-medium text-heading sm:text-base">{order?.customer?.isVerified ? 'Yes' : 'No'}</span>
+            </div>
+            <div className="flex flex-col">
+              <span className="text-xs text-body sm:text-sm">Role:</span>
+              <span className="text-sm font-medium text-heading sm:text-base">{order?.customer?.permission?.type_name}</span>
+            </div>
+          </div>
+        </div>
+      </Card>
+
       {order?.customer?.permission?.type_name === DEALER && (
         <DispatchModal
           isOpen={isDispatchModalOpen}
@@ -307,35 +358,8 @@ export default function OrderDetailsPage() {
           order={stockOrderData}
           dealerId={dealerId}
           updateDispatch={handleDispatchUpdate}
-        />)}
-      {/* Customer Details Card */}
-      <Card className="mt-6">
-        <div className="p-6">
-          <h3 className="text-xl font-semibold text-heading mb-4">Customer Details</h3>
-          <div className="space-y-4">
-            <div className="flex justify-between">
-              <span className="text-sm text-body">Name:</span>
-              <span className="text-sm text-heading">{order?.customer?.name}</span>
-            </div>
-            <div className="flex justify-between">
-              <span className="text-sm text-body">Email:</span>
-              <span className="text-sm text-heading">{order?.customer?.email}</span>
-            </div>
-            <div className="flex justify-between">
-              <span className="text-sm text-body">Contact:</span>
-              <span className="text-sm text-heading">{order?.customer?.contact}</span>
-            </div>
-            <div className="flex justify-between">
-              <span className="text-sm text-body">Verified:</span>
-              <span className="text-sm text-heading">{order?.customer?.isVerified ? 'Yes' : 'No'}</span>
-            </div>
-            <div className="flex justify-between">
-              <span className="text-sm text-body">Role:</span>
-              <span className="text-sm text-heading">{order?.customer?.permission?.type_name}</span>
-            </div>
-          </div>
-        </div>
-      </Card>
+        />
+      )}
     </>
   );
 }
