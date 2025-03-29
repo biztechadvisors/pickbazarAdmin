@@ -16,6 +16,7 @@ import { useIsRTL } from '@/utils/locals';
 import { useState } from 'react';
 import TitleWithSort from '@/components/ui/title-with-sort';
 import { AllPermission } from '@/utils/AllPermission';
+import { Routes } from '@/config/routes';
 
 type IProps = {
   // customers: User[] | undefined;
@@ -140,6 +141,7 @@ const StaffList = ({
                     id={id}
                     userStatus={true}
                     isUserActive={is_active}
+                    editUrl={`${Routes.staff.create}?id=${id}`}
                     // showAddWalletPoints={true}
                     showMakeAdminButton={true}
                   />

@@ -46,7 +46,23 @@ export const useAddStaffMutation = () => {
     },
   });
 };
+export const useUpdateStaffMutation = () => {
+  const queryClient = useQueryClient();
+  const router = useRouter();
+  const { t } = useTranslation();
 
+  return useMutation(staffClient.addStaff, {
+    onSuccess: () => {
+      router.push('/staff')
+      // router.push(`/${router?.query?.shop}${Routes.staff.list}`);
+      toast.success(t('common:successfully-created'));
+    },
+    // Always refetch after error or success:
+    onSettled: () => {
+      queryClient.invalidateQueries(API_ENDPOINTS.STAFFS);
+    },
+  });
+};
 export const useRemoveStaffMutation = () => {
   const queryClient = useQueryClient();
   const { t } = useTranslation();

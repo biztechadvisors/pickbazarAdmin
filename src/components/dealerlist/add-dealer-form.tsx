@@ -134,7 +134,7 @@ function SelectCategory({
             options={options}
             isLoading={loading}
             isSearchable={true}
-            onChange={(selectedOption) => {             
+            onChange={(selectedOption) => {
 
               if (setValue) {
                 setValue(`dealerCategoryMargins[${index}].category`, selectedOption ? selectedOption.id : null);
@@ -238,11 +238,11 @@ function SelectProduct({
       const updatedFields = options.map((product: any) => ({
         product: product, // Use product.id instead of the entire product object
         margin: globalMargin || '',
-      }));     
+      }));
       replace(updatedFields); // This ensures all product margins are updated in the form
     } else {
       setSelectAll(false);
-       replace(dbValues.length > 0 ? dbValues : []); // Clear the selections when unchecking "Select All"
+      replace(dbValues.length > 0 ? dbValues : []); // Clear the selections when unchecking "Select All"
     }
   };
 
@@ -472,8 +472,7 @@ export default function CreateOrUpdateDealerForm({ initialValues, id }: IProps) 
   const billingAddresses = useAtomValue(billingAddressAtom);
   const shippingAddresses = useAtomValue(shippingAddressAtom);
 
-  const onSubmit = (values: FormValues) => {    
-
+  const onSubmit = (values: FormValues) => {
     const isActiveVal: any = values.isActive;
     const transformedCatData = values.dealerCategoryMargins.map(item => ({
       margin: item.margin,
@@ -498,7 +497,7 @@ export default function CreateOrUpdateDealerForm({ initialValues, id }: IProps) 
       pan: values.pan,
       billingAddresses: billingAddresses,
       shippingAddresses: shippingAddresses,
-    };    
+    };
 
     if (!initialValues) {
       createDealer({

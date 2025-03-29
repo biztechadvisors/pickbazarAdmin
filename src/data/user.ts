@@ -257,6 +257,30 @@ export const useUpdateUserMutation = () => {
     },
   });
 };
+
+// export const useUpdateUserMutation = () => {
+//   const { t } = useTranslation();
+//   const queryClient = useQueryClient();
+  
+//   return useMutation(
+//     ({ id, input }: { id: string; input: any }) => userClient.update({ id, input }),
+//     {
+//       onSuccess: () => {
+//         toast.success(t('common:successfully-updated'));
+//       },
+//       onError: (error: any) => {
+//         console.error('Mutation error:', error);
+//         // Errors are handled in the component, don't show duplicate toasts here
+//       },
+//       onSettled: (data, error, variables) => {
+//         // Invalidate queries to refresh data
+//         queryClient.invalidateQueries([API_ENDPOINTS.USERS, variables.id]);
+//         queryClient.invalidateQueries(API_ENDPOINTS.USERS);
+//       },
+//     }
+//   );
+// };
+
 export const useUpdateUserEmailMutation = () => {
   const { t } = useTranslation();
   const queryClient = useQueryClient();
