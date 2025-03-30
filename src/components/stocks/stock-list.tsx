@@ -223,6 +223,8 @@ const StockList = ({ me, onSort, onOrder }: IProps) => {
     },
   ];
 
+  console.log("stocks ", stocks)
+
   return (
     <div className="mb-6 overflow-hidden rounded shadow">
       <Table

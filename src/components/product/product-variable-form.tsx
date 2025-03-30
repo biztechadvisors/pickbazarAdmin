@@ -93,6 +93,9 @@ export default function ProductVariableForm({
 
     const attributes = watch(`variation_options[${fieldIndex}].attributes`);
 
+    // const allVariations = watch('variations') || [];
+    console.log("attributes ", attributes)
+
     const attributeValues = attributes.reduce((acc: any[], attr: any) => {
       // Check if attr.value is an array before calling .map
       if (Array.isArray(attr.value)) {
@@ -106,6 +109,7 @@ export default function ProductVariableForm({
     }, []);
 
     setValue('variations', attributeValues);
+    console.log("variations ", variations)
 
     const options = attributes.map((attr: any) => ({
       name: attr.attribute.name,
@@ -218,7 +222,7 @@ export default function ProductVariableForm({
                           error={t(errors.variation_options?.[fieldIndex]?.name?.message)}
                           variant="outline"
                           className="mb-2"
-                          style={{ width: '70px', height: '40px' }}
+                          style={{ width: '100%', height: '40px' }}
                         />
                       </div>
 

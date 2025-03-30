@@ -188,8 +188,6 @@ const DealerAddForm: React.FC<AddDealerFormProps> = ({ defaultVal, defaultPermis
     return permData?.permissions || [];
   };
 
-  console.log("permissionOptions : ", permissionOptions);
-
   const [dataFromChild, setDataFromChild] = useState('');
 
   const handleDataFromChild = (data) => {
