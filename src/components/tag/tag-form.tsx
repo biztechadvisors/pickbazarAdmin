@@ -5,12 +5,12 @@ import TextArea from '@/components/ui/text-area';
 import Label from '@/components/ui/label';
 import Card from '@/components/common/card';
 import Description from '@/components/ui/description';
-import * as categoriesIcon from '@/components/icons/category';
+// import * as categoriesIcon from '@/components/icons/category';
 import { getIcon } from '@/utils/get-icon';
 import { useRouter } from 'next/router';
 import { getErrorMessage } from '@/utils/form-error';
 import ValidationError from '@/components/ui/form-validation-error';
-import { tagIcons } from './tag-icons';
+// import { tagIcons } from './tag-icons';
 import { useTranslation } from 'next-i18next';
 import FileInput from '@/components/ui/file-input';
 import SelectInput from '@/components/ui/select-input';
@@ -146,21 +146,21 @@ function SelectTypes({
   );
 }
 
-export const updatedIcons = tagIcons.map((item: any) => {
-  item.label = (
-    <div className="flex items-center space-s-5">
-      <span className="flex h-5 w-5 items-center justify-center">
-        {getIcon({
-          iconList: categoriesIcon,
-          iconName: item.value,
-          className: 'max-h-full max-w-full',
-        })}
-      </span>
-      <span>{item.label}</span>
-    </div>
-  );
-  return item;
-});
+// export const updatedIcons = tagIcons.map((item: any) => {
+//   item.label = (
+//     <div className="flex items-center space-s-5">
+//       <span className="flex h-5 w-5 items-center justify-center">
+//         {getIcon({
+//           iconList: categoriesIcon,
+//           iconName: item.value,
+//           className: 'max-h-full max-w-full',
+//         })}
+//       </span>
+//       <span>{item.label}</span>
+//     </div>
+//   );
+//   return item;
+// });
 
 type FormValues = {
   regions: any;
@@ -214,11 +214,11 @@ export default function CreateOrUpdateTagForm({ initialValues }: IProps) {
     defaultValues: initialValues
       ? {
         ...initialValues,
-        icon: initialValues?.icon
-          ? tagIcons.find(
-            (singleIcon) => singleIcon.value === initialValues?.icon!
-          )
-          : '',
+        // icon: initialValues?.icon
+        //   ? tagIcons.find(
+        //     (singleIcon) => singleIcon.value === initialValues?.icon!
+        //   )
+        //   : '',
         ...(isNewTranslation && {
           type: null,
         }),
@@ -336,7 +336,7 @@ export default function CreateOrUpdateTagForm({ initialValues }: IProps) {
             />
           </div>
 
-          <div className="mb-5">
+          {/* <div className="mb-5">
             <Label>{t('form:input-label-select-icon')}</Label>
             <SelectInput
               name="icon"
@@ -344,7 +344,7 @@ export default function CreateOrUpdateTagForm({ initialValues }: IProps) {
               options={updatedIcons}
               isClearable={true}
             />
-          </div>
+          </div> */}
           <SelectRegion control={control} errors={errors} />
           <SelectTypes control={control} errors={errors} />
         </Card>

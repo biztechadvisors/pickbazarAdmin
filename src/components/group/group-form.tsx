@@ -6,9 +6,9 @@ import Card from '@/components/common/card';
 import { useRouter } from 'next/router';
 import { getIcon } from '@/utils/get-icon';
 import Label from '@/components/ui/label';
-import * as typeIcons from '@/components/icons/type';
+// import * as typeIcons from '@/components/icons/type';
 import { AttachmentInput, Type, TypeSettingsInput } from '@/types';
-import { typeIconList } from './group-icons';
+// import { typeIconList } from './group-icons';
 import { useTranslation } from 'next-i18next';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { typeValidationSchema } from './group-validation-schema';
@@ -24,21 +24,21 @@ import { useMeQuery } from '@/data/user';
 import { useRegionsQuery } from '@/data/regions';
 import ValidationError from '@/components/ui/form-validation-error';
 
-export const updatedIcons = typeIconList.map((item: any) => {
-  item.label = (
-    <div className="flex items-center space-s-5">
-      <span className="flex h-5 w-5 items-center justify-center">
-        {getIcon({
-          iconList: typeIcons,
-          iconName: item.value,
-          className: 'max-h-full max-w-full',
-        })}
-      </span>
-      <span>{item.label}</span>
-    </div>
-  );
-  return item;
-});
+// export const updatedIcons = typeIconList.map((item: any) => {
+//   item.label = (
+//     <div className="flex items-center space-s-5">
+//       <span className="flex h-5 w-5 items-center justify-center">
+//         {getIcon({
+//           iconList: typeIcons,
+//           iconName: item.value,
+//           className: 'max-h-full max-w-full',
+//         })}
+//       </span>
+//       <span>{item.label}</span>
+//     </div>
+//   );
+//   return item;
+// });
 
 const layoutTypes = [
   {
@@ -178,11 +178,11 @@ export default function CreateOrUpdateTypeForm({ initialValues }: IProps) {
           ? initialValues?.settings?.productCard
           : productCards[0].value,
       },
-      icon: initialValues?.icon
-        ? typeIconList.find(
-          (singleIcon) => singleIcon.value === initialValues?.icon
-        )
-        : '',
+      // icon: initialValues?.icon
+      //   ? typeIconList.find(
+      //     (singleIcon) => singleIcon.value === initialValues?.icon
+      //   )
+      //   : '',
       // region: initialValues?.region || [],
     },
   });
@@ -201,7 +201,7 @@ export default function CreateOrUpdateTypeForm({ initialValues }: IProps) {
     const input = {
       language: router.locale,
       name: values.name!,
-      icon: values.icon?.value,
+      // icon: values.icon?.value,
       region_name: transformedRegions,
       shop_id: meData?.managed_shop?.id || initialValues?.shop_id,
       settings: {
@@ -257,7 +257,7 @@ export default function CreateOrUpdateTypeForm({ initialValues }: IProps) {
           // disabled={[].includes(Config.defaultLanguage)}
           />
 
-          <div className="mb-5">
+          {/* <div className="mb-5">
             <Label>{t('form:input-label-select-icon')}</Label>
             <SelectInput
               name="icon"
@@ -266,7 +266,7 @@ export default function CreateOrUpdateTypeForm({ initialValues }: IProps) {
               isClearable={true}
               placeholder="Select Icon"
             />
-          </div>
+          </div> */}
           <SelectRegion control={control} errors={errors} />
         </Card>
       </div>

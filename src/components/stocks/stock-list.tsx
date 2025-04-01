@@ -11,8 +11,10 @@ import Input from '../ui/input';
 import Button from '../ui/button';
 import { AllPermission } from '@/utils/AllPermission';
 import { SortOrder } from '@/types';
+import { DEALER } from '@/utils/constants';
 
 export type IProps = {
+  data: any[];
   me: any;
   onPagination: (current: number) => void;
   onSort: (current: any) => void;
@@ -24,14 +26,24 @@ type SortingObjType = {
   column: string | null;
 };
 
-const StockList = ({ me, onSort, onOrder }: IProps) => {
+const StockList = ({ data, me, onSort, onOrder }: IProps) => {
   const router = useRouter();
   const { t } = useTranslation();
   const { alignLeft, alignRight } = useIsRTL();
   const { mutate: updateQuantity, isLoading: updating } =
     useUpdateStockQuantity();
 
-  const { data: stocks, isLoading: loading, error } = useGetStock(me.id);
+  let tableData;
+
+  if (me?.permission?.type_name !== DEALER) {
+    tableData = Array.isArray(data)
+      ? data.flatMap(item => item.stocks || [])
+      : [];
+  } else {
+    tableData = Array.isArray(data)
+      ? data.flatMap(item => item || [])
+      : [];
+  }
 
   const permissionTypes = AllPermission();
   const canWrite = permissionTypes.includes('sidebar-nav-item-products');
@@ -107,11 +119,29 @@ const StockList = ({ me, onSort, onOrder }: IProps) => {
       key: 'variation_options',
       align: alignLeft,
       width: 300,
-      render: (variationOptions: any[]) => (
-        <span>
-          {variationOptions.map((option) => option.title).join(', ')}
-        </span>
-      ),
+      render: (variationOptions: any) => {
+        // Handle all possible case
+        if (!variationOptions) {
+          return <span>N/A</span>;
+        }
+
+        if (Array.isArray(variationOptions)) {
+          // If it's an array with items that have title property
+          if (variationOptions.length > 0 && variationOptions[0].title) {
+            return <span>{variationOptions.map((option) => option.title).join(', ')}</span>;
+          }
+          // If it's an array but items don't have expected structure
+          return <span>{variationOptions.join(', ')}</span>;
+        }
+
+        // If it's an object but not an array
+        if (typeof variationOptions === 'object') {
+          return <span>{variationOptions.title || 'N/A'}</span>;
+        }
+
+        // Fallback for any other case
+        return <span>N/A</span>;
+      },
     },
     {
       title: 'In Stock',
@@ -182,6 +212,7 @@ const StockList = ({ me, onSort, onOrder }: IProps) => {
       align: 'center' as const,
       width: 150,
       render: (quantity: number, record: any) => {
+
         const isEditMode = editMode[record.id] || false;
         const editedQuantity = editedQuantities[record.id] || quantity;
 
@@ -223,7 +254,7 @@ const StockList = ({ me, onSort, onOrder }: IProps) => {
     },
   ];
 
-  console.log("stocks ", stocks)
+  // console.log("stocks ", stocks)
 
   return (
     <div className="mb-6 overflow-hidden rounded shadow">
@@ -231,7 +262,7 @@ const StockList = ({ me, onSort, onOrder }: IProps) => {
         /* @ts-ignore */
         columns={columns}
         emptyText={t('table:empty-table-data')}
-        data={stocks}
+        data={tableData}
         rowKey="id"
         scroll={{ x: 900 }}
       />

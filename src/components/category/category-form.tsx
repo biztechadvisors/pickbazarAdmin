@@ -11,13 +11,13 @@ import TextArea from '@/components/ui/text-area';
 import Label from '@/components/ui/label';
 import Card from '@/components/common/card';
 import Description from '@/components/ui/description';
-import * as categoriesIcon from '@/components/icons/category';
+// import * as categoriesIcon from '@/components/icons/category';
 import { getIcon } from '@/utils/get-icon';
 import { useRouter } from 'next/router';
 import ValidationError from '@/components/ui/form-validation-error';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { Category, ItemProps } from '@/types';
-import { categoryIcons } from './category-icons';
+// import { categoryIcons } from './category-icons';
 import { useTranslation } from 'next-i18next';
 import FileInput from '@/components/ui/file-input';
 import SelectInput from '@/components/ui/select-input';
@@ -81,21 +81,21 @@ export const chatbotAutoSuggestion = ({ name }: { name: string }) => {
   ];
 };
 
-export const updatedIcons = categoryIcons.map((item: any) => {
-  item.label = (
-    <div className="flex items-center space-s-5">
-      <span className="flex h-5 w-5 items-center justify-center">
-        {getIcon({
-          iconList: categoriesIcon,
-          iconName: item.value,
-          className: 'max-h-full max-w-full',
-        })}
-      </span>
-      <span>{item.label}</span>
-    </div>
-  );
-  return item;
-});
+// export const updatedIcons = categoryIcons.map((item: any) => {
+//   item.label = (
+//     <div className="flex items-center space-s-5">
+//       <span className="flex h-5 w-5 items-center justify-center">
+//         {getIcon({
+//           iconList: categoriesIcon,
+//           iconName: item.value,
+//           className: 'max-h-full max-w-full',
+//         })}
+//       </span>
+//       <span>{item.label}</span>
+//     </div>
+//   );
+//   return item;
+// });
 
 function SelectRegion({
   control,
@@ -262,11 +262,11 @@ export default function CreateOrUpdateCategoriesForm({
     defaultValues: initialValues
       ? {
         ...initialValues,
-        icon: initialValues?.icon
-          ? categoryIcons.find(
-            (singleIcon) => singleIcon.value === initialValues?.icon!
-          )
-          : '',
+        // icon: initialValues?.icon
+        //   ? categoryIcons.find(
+        //     (singleIcon) => singleIcon.value === initialValues?.icon!
+        //   )
+        //   : '',
         // region: initialValues.regions?.length > 0 ? initialValues.regions[0]?.name : '', 
         ...(isNewTranslation && {
           type: null,
@@ -396,7 +396,7 @@ export default function CreateOrUpdateCategoriesForm({
             />
           </div>
 
-          <div className="mb-5">
+          {/* <div className="mb-5">
             <Label>{t('form:input-label-select-icon')}</Label>
             <SelectInput
               name="icon"
@@ -405,7 +405,7 @@ export default function CreateOrUpdateCategoriesForm({
               isClearable={true}
               defaultValue={[]}
             />
-          </div>
+          </div> */}
 
           <SelectRegion control={control} errors={errors} />
           <SelectTypes control={control} errors={errors} />
