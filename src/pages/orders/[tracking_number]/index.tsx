@@ -75,6 +75,7 @@ export default function OrderDetailsPage() {
     });
 
     const ChangeStatus = ({ order_status }: FormValues) => {
+        console.log("status update-order ", order_status)
         updateOrder({
             id: order?.id as string,
             order_status: order_status?.status as string,
