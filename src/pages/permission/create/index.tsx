@@ -288,8 +288,6 @@ const CreatePermission = ({
     return <Loader />; // Render a loading state
   }
 
-  console.log("permissionType 284 : ", permissionType)
-
   const content = (
     <>
       <div

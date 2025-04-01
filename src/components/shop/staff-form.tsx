@@ -274,6 +274,8 @@ const AddStaffForm: React.FC<AddStaffFormProps> = ({
         }
       );
     } else {
+
+      console.log("add staff 278 ")
       // Create operation remains the same
       addStaff({
         name,
@@ -290,6 +292,7 @@ const AddStaffForm: React.FC<AddStaffFormProps> = ({
 
   const [dataFromChild, setDataFromChild] = useState('');
 
+  console.log("dataFromChild ", dataFromChild)
   const handleDataFromChild = (data) => {
     setDataFromChild(data);
   };
@@ -375,10 +378,6 @@ const AddStaffForm: React.FC<AddStaffFormProps> = ({
                       getOptionValue={(option) => option.value}
                       onChange={(value) => {
                         setSelectedPermission(value);
-
-                        console.log("field --- 369 ", field)
-                        console.log("value --- 369 ", value)
-
                         field.onChange(value);
                       }}
                       required
