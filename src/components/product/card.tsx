@@ -57,8 +57,6 @@ const ProductCard = ({ item, isChecked, id, email, phone }: Props) => {
 
   const canWrite =  permissionTypes.includes('sidebar-nav-item-create-order');
 
-  console.log(canWrite)
-
   function handleVariableProduct() {
     return openModal('SELECT_PRODUCT_VARIATION', { slug, product_id, shop_id });
   }

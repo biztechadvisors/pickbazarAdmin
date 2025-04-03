@@ -104,9 +104,7 @@ export default function ProductsPage() {
 
     function handlePagination(current: any) {
         setPage(current);
-    }
-
-    console.log("products-109", products)
+    }   
 
     return (
         <>
