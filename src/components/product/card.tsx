@@ -32,7 +32,8 @@ const ProductCard = ({ item, isChecked, id, email, phone }: Props) => {
     sale_price,
     margin,
   } = item ?? {};
-  const {
+
+   const {
     price: currentPrice,
     basePrice,
     discount,
@@ -49,11 +50,14 @@ const ProductCard = ({ item, isChecked, id, email, phone }: Props) => {
 
   const { openModal } = useModalAction();
 
+ 
   const { shop_id } = item;
 
   const permissionTypes = AllPermission();
 
-  const canWrite = permissionTypes.includes('sidebar-nav-item-create-order');
+  const canWrite =  permissionTypes.includes('sidebar-nav-item-create-order');
+
+  console.log(canWrite)
 
   function handleVariableProduct() {
     return openModal('SELECT_PRODUCT_VARIATION', { slug, product_id, shop_id });

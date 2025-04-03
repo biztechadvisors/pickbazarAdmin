@@ -257,7 +257,7 @@ export default function CreateOrUpdateTypeForm({ initialValues }: IProps) {
           // disabled={[].includes(Config.defaultLanguage)}
           />
 
-          <div className="mb-5">
+          {/* <div className="mb-5">
             <Label>{t('form:input-label-select-icon')}</Label>
             <SelectInput
               name="icon"
@@ -266,7 +266,7 @@ export default function CreateOrUpdateTypeForm({ initialValues }: IProps) {
               isClearable={true}
               placeholder="Select Icon"
             />
-          </div>
+          </div> */}
           <SelectRegion control={control} errors={errors} />
         </Card>
       </div>

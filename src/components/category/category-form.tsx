@@ -396,7 +396,7 @@ export default function CreateOrUpdateCategoriesForm({
             />
           </div>
 
-          <div className="mb-5">
+          {/* <div className="mb-5">
             <Label>{t('form:input-label-select-icon')}</Label>
             <SelectInput
               name="icon"
@@ -405,7 +405,7 @@ export default function CreateOrUpdateCategoriesForm({
               isClearable={true}
               defaultValue={[]}
             />
-          </div>
+          </div> */}
 
           <SelectRegion control={control} errors={errors} />
           <SelectTypes control={control} errors={errors} />

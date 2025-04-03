@@ -336,7 +336,7 @@ export default function CreateOrUpdateTagForm({ initialValues }: IProps) {
             />
           </div>
 
-          <div className="mb-5">
+          {/* <div className="mb-5">
             <Label>{t('form:input-label-select-icon')}</Label>
             <SelectInput
               name="icon"
@@ -344,7 +344,7 @@ export default function CreateOrUpdateTagForm({ initialValues }: IProps) {
               options={updatedIcons}
               isClearable={true}
             />
-          </div>
+          </div> */}
           <SelectRegion control={control} errors={errors} />
           <SelectTypes control={control} errors={errors} />
         </Card>
