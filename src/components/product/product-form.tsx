@@ -590,7 +590,7 @@ export default function CreateOrUpdateProductForm({
             </Button>
           </div>
         </form>
-      </FormProvider>
+      </FormProvider >
     </>
   );
 }

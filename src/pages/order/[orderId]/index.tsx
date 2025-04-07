@@ -119,6 +119,7 @@ export default function OrderDetailsPage() {
   async function handleDownloadInvoice() {
     try {
       const response = await refetch();
+      console.log("response ", response)
       if (!response || !response.data) {
         throw new Error('Invalid response received from backend');
       }
@@ -194,8 +195,8 @@ export default function OrderDetailsPage() {
 
         {/* Download Invoice Button - Adjusted for mobile */}
         <div className="flex w-full justify-center sm:justify-start">
-          <Button 
-            onClick={handleDownloadInvoice} 
+          <Button
+            onClick={handleDownloadInvoice}
             className="mb-5 bg-blue-500 sm:ml-auto"
             size="small"
           >
@@ -215,8 +216,8 @@ export default function OrderDetailsPage() {
           <div className="flex w-full flex-col items-center gap-4 sm:flex-row sm:items-start sm:justify-end lg:w-2/3">
             {order?.order_status !== OrderStatus.FAILED &&
               order?.order_status !== OrderStatus.CANCELLED && (
-                <form 
-                  onSubmit={handleSubmit(ChangeStatus)} 
+                <form
+                  onSubmit={handleSubmit(ChangeStatus)}
                   className="flex w-full flex-col items-center gap-4 sm:w-auto sm:flex-row sm:items-start"
                 >
                   <div className="z-20 w-full sm:me-5 sm:w-48 md:w-56">
@@ -239,13 +240,13 @@ export default function OrderDetailsPage() {
               )}
 
             {order?.customer?.permission?.type_name === DEALER && (
-              <Button 
+              <Button
                 onClick={() => setDispatchModalOpen(true)}
                 className="w-full sm:w-auto"
               >
                 <span className="text-xs sm:text-sm">
-                  {DispatchButton 
-                    ? t('form:button-label-change-dispatch') 
+                  {DispatchButton
+                    ? t('form:button-label-change-dispatch')
                     : t('Received')}
                 </span>
               </Button>
@@ -302,7 +303,7 @@ export default function OrderDetailsPage() {
                 </div>
               </div>
             </div>
-            
+
             <div className="mt-6 rounded-lg border border-gray-200 p-4">
               <div className="flex w-full justify-center">
                 <span className="text-sm">
