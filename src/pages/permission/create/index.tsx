@@ -24,7 +24,8 @@ import { randomStaffPermissions } from '@/utils/defaultValues';
 interface CreatePermissionInput {
   permissionType?: string;
   defaultPermissions?: any[];
-  onPermissionCreated?: (newPermission: any) => void; // Callback for new permission
+  onPermissionCreated?: (newPermission: any) => void;// Callback for new permission
+  selectedPermission?: any;
 }
 function Loader() {
   return null;
@@ -34,8 +35,9 @@ const CreatePermission = ({
   permissionType,
   defaultPermissions,
   onPermissionCreated,
+  onData,
 }: CreatePermissionInput) => {
-  const {data:me} = useMeQuery()
+  const { data: me } = useMeQuery()
   const isDealer = me?.permission?.type_name === PermissionType.DEALER;
   const router = useRouter();
   const { t } = useTranslation();
@@ -61,7 +63,7 @@ const CreatePermission = ({
     isEqual,
     setIsEqual,
     doesPermissionMatch,
-    setPermissionName:setName
+    setPermissionName: setName
   } = useFormValues();
 
 
@@ -101,7 +103,7 @@ const CreatePermission = ({
   const { mutateUpdate, mutatePost } = useSavePermissionData();
 
   useEffect(() => {
-    if (singlePermissionData) {
+    if (singlePermissionData && singlePermissionData.length > 0) {
       setTypeName([singlePermissionData?.[0].type_name]);
       setPermissionName(singlePermissionData?.[0].permissionName);
       const formattedPermissions = singlePermissionData?.[0]?.permission?.map(
@@ -114,7 +116,7 @@ const CreatePermission = ({
       );
       setSelectedPermissions(formattedPermissions);
     }
-    setIsLoading(false); 
+    setIsLoading(false);
   }, [singlePermissionData]);
 
   const handleChange = (e: any) => {
@@ -127,8 +129,17 @@ const CreatePermission = ({
     setPermissionError('');
   };
 
-  const handleCheckboxChange = (menuItem: any, type: any, isChecked: any) => {
+  const handleCheckboxChange = (menuItem: any, type: any, isChecked: boolean) => {
+
+    console.log(onData); // Should log the function or undefined
+    if (typeof onData === 'function') {
+      onData(true);
+    } else {
+      console.error('onData is not a function');
+    }
+
     setSelectedPermissions((prevPermissions) => {
+
       const permissionIndex = prevPermissions.findIndex(
         (p) => p.type === menuItem
       );
@@ -161,79 +172,31 @@ const CreatePermission = ({
     });
   };
 
-  // const handleSavePermission = async (e: React.MouseEvent) => {
-  //   e.preventDefault(); // Prevent form submission
-  //   e.stopPropagation(); // Stop event propagation
-  //   if (!permissionName) {
-  //     setPermissionError('Please enter a permission name.');
-  //     return;
-  //   }
-  //   let typeToSend = selectedType ? selectedType : permissionType;
 
-  //   if (!selectedType && !permissionType) {
-  //     const firstType = Object.values(typeName)[0];
-  //     typeToSend = firstType;
-  //     setSelectedType(firstType);
-  //   }
-
-  //   const dataToSend = {
-  //     type_name: typeToSend,
-  //     user: id,
-  //     permissionName: permissionName,
-  //     permissions: selectedPermissions,
-  //   };
-  //   const dataToSend2 = {
-  //     type_name: typeToSend,
-  //     user: id,
-  //     permission_name: permissionName,
-  //     permissions: selectedPermissions,
-  //   };
-
-  //   try {
-  //     if (router.query.id) {
-  //       const permissionId = router.query.id;
-  //       await mutateUpdate({ permissionId, dataToSend });
-  //     } else {
-  //       if (permissionType) setName(permissionName);
-  //       const response = await mutatePost(dataToSend2);
-
-  //       // Notify parent about the new permission
-  //       if (onPermissionCreated && response) {
-  //         onPermissionCreated(response);
-  //     }
-  //   }
-  //   } catch (error) {
-  //     console.error('Error saving/updating permission:', error);
-  //     toast.error('Error');
-  //   }
-  // };
-  
-  // Determine if the user is a Staff member created by an Owner
-  
   const handleSavePermission = async (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
-  
+
     if (!permissionName) {
       setPermissionError('Please enter a permission name.');
       return;
     }
-  
+
     let typeToSend = selectedType || permissionType;
-  
+
     if (!selectedType && !permissionType) {
       const firstType = Object.values(typeName)[0];
       typeToSend = firstType;
       setSelectedType(firstType);
     }
-  
+
     const dataToSend = {
       type_name: typeToSend,
       user: id,
       permission_name: permissionName,
       permissions: selectedPermissions,
     };
-  
+
     try {
       if (router.query.id) {
         const permissionId = router.query.id;
@@ -251,7 +214,7 @@ const CreatePermission = ({
       toast.error('Error');
     }
   };
-  
+
   const createdByRole = createdByUser?.permission?.type_name;
   const isCreatedByOwner = createdByRole === OWNER;
 
@@ -309,9 +272,9 @@ const CreatePermission = ({
           case DEALER:
             updatedTypeName.push(DEALER, STAFF);
             break;
-            case STAFF:
-              updatedTypeName.push(Company);
-              break;
+          case STAFF:
+            updatedTypeName.push(Company);
+            break;
           default:
             updatedTypeName = [];
         }
@@ -345,9 +308,8 @@ const CreatePermission = ({
         <select
           id="typename"
           name="typename"
-          className={`mt-1 block w-full rounded-md border bg-gray-100 p-2 ${
-            typeError && 'border-red-500'
-          }`}
+          className={`mt-1 block w-full rounded-md border bg-gray-100 p-2 ${typeError && 'border-red-500'
+            }`}
           onChange={(e) => handleChange(e)}
           value={permissionType ? permissionType : PermissionType.STAFF}
           disabled={isDealer}
@@ -372,9 +334,8 @@ const CreatePermission = ({
           type="text"
           id="permission"
           name="permission"
-          className={`mt-1 block w-full rounded-md border bg-gray-100 p-2 ${
-            permissionError && 'border-red-500'
-          }`}
+          className={`mt-1 block w-full rounded-md border bg-gray-100 p-2 ${permissionError && 'border-red-500'
+            }`}
           placeholder="Enter permissions"
           value={permissionName}
           onChange={(e) => handlePermissionNameChange(e)}

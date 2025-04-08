@@ -25,14 +25,14 @@ export type IProps = {
   onOrder: (current: string) => void;
 };
 
-const TypeList = ({ types, 
+const TypeList = ({ types,
   paginatorInfo,
   onPagination,
   onSort,
   onOrder }: IProps) => {
   const { t } = useTranslation();
   const { alignLeft, alignRight } = useIsRTL();
-   
+
   // const [getPermission, _] = useAtom(newPermission);
   // const { permissions } = getAuthCredentials();
   // const canWrite = permissions.includes('super_admin')
@@ -41,7 +41,7 @@ const TypeList = ({ types,
   //       (permission) => permission.type === 'sidebar-nav-item-groups'
   //     )?.write;
   const rowExpandable = (record: any) => record.children?.length;
-  const permissionTypes = AllPermission(); 
+  const permissionTypes = AllPermission();
 
   const canWrite = permissionTypes.includes('sidebar-nav-item-groups');
 
@@ -93,62 +93,62 @@ const TypeList = ({ types,
       onHeaderCell: () => onHeaderClick('name'),
       render: (name: any) => <span className="whitespace-nowrap">{name}</span>,
     },
-    {
-      title: t('table:table-item-icon'),
-      dataIndex: 'icon',
-      key: 'slug',
-      align: 'center',
-      render: (icon: string) => {
-        if (!icon) return null;
-        return (
-          <span className="flex items-center justify-center">
-            {getIcon({
-              iconList: typeIcons,
-              iconName: icon,
-              className: 'w-5 h-5 max-h-full max-w-full',
-            })}
-          </span>
-        );
-      },
-    },
+    // {
+    //   title: t('table:table-item-icon'),
+    //   dataIndex: 'icon',
+    //   key: 'slug',
+    //   align: 'center',
+    //   render: (icon: string) => {
+    //     if (!icon) return null;
+    //     return (
+    //       <span className="flex items-center justify-center">
+    //         {getIcon({
+    //           iconList: typeIcons,
+    //           iconName: icon,
+    //           className: 'w-5 h-5 max-h-full max-w-full',
+    //         })}
+    //       </span>
+    //     );
+    //   },
+    // },
     {
       ...(canWrite
         ? {
-            title: t('table:table-item-actions'),
-            dataIndex: 'slug',
-            key: 'actions',
-            align: alignRight,
-            render: (slug: string, record: Type) => (
-              <LanguageSwitcher
-                slug={slug}
-                record={record}
-                deleteModalView="DELETE_TYPE"
-                routes={Routes?.type}
-              />
-            ),
-          }
+          title: t('table:table-item-actions'),
+          dataIndex: 'slug',
+          key: 'actions',
+          align: alignRight,
+          render: (slug: string, record: Type) => (
+            <LanguageSwitcher
+              slug={slug}
+              record={record}
+              deleteModalView="DELETE_TYPE"
+              routes={Routes?.type}
+            />
+          ),
+        }
         : null),
     },
   ];
 
   return (
     <>
-    <div className="mb-8 overflow-hidden rounded shadow">
-      <Table
-        //@ts-ignore
-        columns={columns}
-        emptyText={t('table:empty-table-data')}
-        // data={types}
-        data={types?.items || []} 
-        rowKey="id"
-        scroll={{ x: 380 }}
-        expandable={{
-          expandedRowRender: () => ' ',
-          rowExpandable: rowExpandable,
-        }}
-      />
-    </div>
-       {!!paginatorInfo?.total && (
+      <div className="mb-8 overflow-hidden rounded shadow">
+        <Table
+          //@ts-ignore
+          columns={columns}
+          emptyText={t('table:empty-table-data')}
+          // data={types}
+          data={types?.items || []}
+          rowKey="id"
+          scroll={{ x: 380 }}
+          expandable={{
+            expandedRowRender: () => ' ',
+            rowExpandable: rowExpandable,
+          }}
+        />
+      </div>
+      {!!paginatorInfo?.total && (
         <div className="flex items-center justify-end">
           <Pagination
             total={paginatorInfo.total}
@@ -158,7 +158,7 @@ const TypeList = ({ types,
           />
         </div>
       )}
-      </>
+    </>
   );
 };
 

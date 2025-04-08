@@ -121,16 +121,16 @@ const DealerList = ({
       render: (dealer: any) => <span className="whitespace-nowrap">{dealer ? dealer.walletBalance : 0}</span>,
     },
 
-    {
-      title: t('table:table-item-permissions'),
-      dataIndex: 'type',
-      key: 'type',
-      align: 'center',
-      render: (type: any, record: any) => {
-        return <div>{type?.type_name}</div>;
-      },
+    // {
+    //   title: t('table:table-item-permissions'),
+    //   dataIndex: 'type',
+    //   key: 'type',
+    //   align: 'center',
+    //   render: (type: any, record: any) => {
+    //     return <div>{type?.type_name}</div>;
+    //   },
 
-    },
+    // },
 
     {
       title: (

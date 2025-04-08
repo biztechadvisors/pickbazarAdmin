@@ -17,7 +17,8 @@ import { adminOnly } from '@/utils/auth-utils';
 import StockList from '@/components/stocks/stock-list';
 import { useGetStock } from '@/data/stock';
 import { useMeQuery } from '@/data/user';
-import { useDealerByIdStocks } from '@/data/stocks';
+import { useDealerByIdStocks, useDealerStocks } from '@/data/stocks';
+import { DEALER } from '@/utils/constants';
 
 export default function StockPage() {
   const [searchTerm, setSearchTerm] = useState('');
@@ -33,6 +34,17 @@ export default function StockPage() {
   };
 
   const { data: user, isLoading, error } = useMeQuery();
+  const { id } = user || {};
+
+  let stocks, loading, stocksError;
+
+  if (user?.permission?.type_name === DEALER) {
+    ({ data: stocks, isLoading: loading, error: stocksError } = useGetStock(id));
+  } else {
+    ({ data: stocks, isLoading: loading, error: stocksError } = useDealerStocks(id));
+  }
+
+  const stockData = Array.isArray(stocks?.result) ? stocks?.result : [];
 
   if (isLoading) return <Loader text={t('common:text-loading')} />;
   if (error) return <ErrorMessage message={error.message} />;
@@ -64,6 +76,7 @@ export default function StockPage() {
       <StockList
         // products={data}
         // paginatorInfo={paginatorInfo}
+        data={stockData}
         me={user}
         onPagination={handlePagination}
         onOrder={setOrder}

@@ -16,7 +16,7 @@ import OwnerLayout from '@/components/layouts/owner';
 import { ADMIN, DEALER, OWNER, STAFF, Company } from '@/utils/constants';
 import { addPermission } from '@/utils/atoms';
 
-const CreatePerm = ({ onPermissionCreate,PermissionDatas,selectedPermissions,setSelectedPermissions,onSaveSuccess}) => {
+const CreatePerm = ({ onPermissionCreate,PermissionDatas,selectedPermissions,setSelectedPermissions,onSaveSuccess,viewMode=false}) => {
   const router = useRouter();
   const { t } = useTranslation();
   const [typeName, setTypeName] = useState(PermissionDatas?.type_name);
@@ -70,6 +70,21 @@ const CreatePerm = ({ onPermissionCreate,PermissionDatas,selectedPermissions,set
     }
   }, [singlePermissionData]);
 
+    // Auto-fill permissions when in view mode and PermissionDatas is provided
+    useEffect(() => {
+      if (viewMode && PermissionDatas?.permissions) {
+        const formattedPermissions = PermissionDatas.permissions.map((perm) => ({
+          id: perm.id,
+          type: perm.type,
+          read: perm.read,
+          write: perm.write,
+        }));
+        setSelectedPermissions(formattedPermissions);
+        setPermissionName(PermissionDatas.permission_name);
+        setTypeName(PermissionDatas.type_name);
+      }
+    }, [viewMode, PermissionDatas]);
+
   const handleChange = (e) => {
     setSelectedType(e.target.value); 
     setTypeError(''); 
@@ -81,6 +96,8 @@ const CreatePerm = ({ onPermissionCreate,PermissionDatas,selectedPermissions,set
   };
 
   const handleCheckboxChange = (menuItem, type, isChecked) => {
+    if (viewMode) return;
+
     const permissionIndex = selectedPermissions.findIndex(
       (p) => p.type === menuItem
     );
@@ -250,6 +267,7 @@ const CreatePerm = ({ onPermissionCreate,PermissionDatas,selectedPermissions,set
                 }`}
               onChange={handleChange}
               value={selectedType}
+              disabled={viewMode}
                     // disabled={isEditMode}
             >
               <option>{typeName}</option>
@@ -274,6 +292,7 @@ const CreatePerm = ({ onPermissionCreate,PermissionDatas,selectedPermissions,set
                 }`}
               placeholder={t('Enter permissions')}
               value={permissionName}
+              disabled={viewMode}
               // disabled={isEditMode} 
               onChange={handlePermissionNameChange}
             />
@@ -316,6 +335,7 @@ const CreatePerm = ({ onPermissionCreate,PermissionDatas,selectedPermissions,set
                             (p) => p.type === Object.values(item)[0]
                           )?.read || false
                         }
+                        disabled={viewMode}
                       />
                     </td>
                     <td className="items-center justify-center border p-2">
@@ -335,6 +355,7 @@ const CreatePerm = ({ onPermissionCreate,PermissionDatas,selectedPermissions,set
                             (p) => p.type === Object.values(item)[0]
                           )?.write || false
                         }
+                        disabled={viewMode}
                       />
                     </td>
                   </tr>

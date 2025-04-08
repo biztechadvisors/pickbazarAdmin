@@ -136,7 +136,7 @@ const PermissionComponent: React.FC & PermissionComponentProps = () => {
                 <th className="border p-2">S.No</th>
                 <th className="border p-2">ROLE</th>
                 <th className="border p-2">NAME</th>
-                <th className="border p-2">PERMISSION-TYPE</th>
+                {meData?.permission == OWNER && <th className="border p-2">PERMISSION-TYPE</th>}
                 <th className="border p-2">PRIVILEGE</th>
                 {canWrite && <th className="border p-2">ACTIONS</th>}
               </tr>
@@ -147,7 +147,9 @@ const PermissionComponent: React.FC & PermissionComponentProps = () => {
                   <td className="border p-2">{index + 1}</td>
                   <td className="border p-2">{e.type_name}</td>
                   <td className="border p-2">{e.permission_name}</td>
-                  <td className="border p-2">{e.additionalPermission ? "Advance Permission" : " "}</td>
+                  {e.additionalPermission && meData?.permission === OWNER && (
+                    <td className="border p-2">Advance Permission</td>
+                  )}
                   <td className="border p-2">
                     {e.permissions.length > 0
                       ? e.permissions

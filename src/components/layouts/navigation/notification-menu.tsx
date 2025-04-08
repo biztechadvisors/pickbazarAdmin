@@ -21,7 +21,7 @@ const NotificationMenu = () => {
     }
 
     if (userId) {
-      const socket = io('http://localhost:5000/notifications', {
+      const socket = io(`${process.env.NEXT_PUBLIC_REST_API_ENDPOINT}/notifications`, {
         query: { userId },
         transports: ['websocket'], // Ensure using websocket transport
       });
@@ -58,7 +58,7 @@ const NotificationMenu = () => {
   };
 
   const markNotificationAsSeen = async (notificationId) => {
-    fetch(`http://localhost:5000/api/notifications/seen/${notificationId}`, {
+    fetch(`${process.env.NEXT_PUBLIC_REST_API_ENDPOINT}/notifications/seen/${notificationId}`, {
       method: 'PATCH',
     });
   };

@@ -21,7 +21,7 @@ import { AllPermission } from '@/utils/AllPermission';
 import OwnerLayout from '@/components/layouts/owner';
 import AppLayout from '@/components/layouts/app';
 import AdminLayout from '@/components/layouts/admin';
-import { OWNER } from '@/utils/constants';
+import { DEALER, OWNER, STAFF } from '@/utils/constants';
 
 export default function Customers() {
   const [searchTerm, setSearchTerm] = useState('');
@@ -45,6 +45,12 @@ export default function Customers() {
 
   if (loading) return <Loader text={t('common:text-loading')} />;
   if (error) return <ErrorMessage message={error.message} />;
+ 
+  const filteredUsers = users?.filter(user => 
+    user.permission?.type_name !== STAFF && 
+    user.permission?.type_name !== DEALER
+  );
+console.log("filteredUsers",filteredUsers)
 
   function handleSearch({ searchText }: { searchText: string }) {
     setSearchTerm(searchText);
@@ -78,7 +84,7 @@ export default function Customers() {
 
       {loading ? null : (
         <CustomerList
-          customers={users}
+          customers={filteredUsers}
           paginatorInfo={paginatorInfo}
           onPagination={handlePagination}
           onOrder={setOrder}

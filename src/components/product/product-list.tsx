@@ -28,6 +28,8 @@ import { useUpdateQuantity } from '@/data/product';
 import Input from '../ui/input';
 import Button from '../ui/button';
 import { AllPermission } from '@/utils/AllPermission';
+import printBarcode from '@/hocFunctions/printBarcode';
+import BarcodeCell from '@/hocFunctions/barcodeCell';
 
 
 export type IProps = {
@@ -195,7 +197,6 @@ const ProductList = ({
         );
       },
     },
-    
     {
       title: (
         <TitleWithSort
@@ -219,13 +220,13 @@ const ProductList = ({
         );
         const [editedQuantity, setEditedQuantity] = useState(0);  // Always start with 0
         const [previousQuantity, setPreviousQuantity] = useState(0);
-    
+
         useEffect(() => {
           if (selectedVariation) {
             setPreviousQuantity(selectedVariation.quantity); // Save the previous quantity
           }
         }, [selectedVariation]);
-    
+
         const handleVariationChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
           const variationId = Number(e.target.value);
           const variation = record.variation_options.find(v => v.id === variationId);
@@ -233,20 +234,20 @@ const ProductList = ({
             setSelectedVariation(variation);
           }
         };
-    
+
         const handleEditQuantity = async () => {
           if (!selectedVariation) {
             alert('Please select a variation first.');
             return;
           }
-    
+
           const data = {
             id: record.id,
             quantity: editedQuantity,
             variationId: selectedVariation.id,
             shopId: record.shop_id,
           };
-    
+
           updateQuantity(data, {
             onSuccess: () => {
               // Calculate the total quantity (previous + new)
@@ -256,7 +257,7 @@ const ProductList = ({
             },
           });
         };
-    
+
         return (
           <div>
             {/* Variation Selection Dropdown */}
@@ -268,18 +269,18 @@ const ProductList = ({
               >
                 {record.variation_options.map((variation) => (
                   <option key={variation.id} value={variation.id}>
-                    {variation.title}                   
+                    {variation.title}
                   </option>
                 ))}
               </select>
             )}
-    
+
             {/* Show Quantity Only for Selected Variation */}
-            {editMode ? (         
-                       
+            {editMode ? (
+
               <>    <div className="text-lg font-semibold">
-              {selectedVariation?.quantity ?? '0'} +
-            </div>
+                {selectedVariation?.quantity ?? '0'} +
+              </div>
                 <Input
                   type="number"
                   value={editedQuantity}
@@ -304,7 +305,7 @@ const ProductList = ({
         );
       },
     },
-    
+
     {
       title: t('table:table-item-status'),
       dataIndex: 'status',
@@ -336,6 +337,21 @@ const ProductList = ({
         </div>
       ),
     },
+
+    {
+      ...(canWrite && {
+        title: t('table:Barcode'),
+        dataIndex: 'slug',
+        key: 'actions',
+        align: 'right',
+        width: 180,
+        render: (_slug: string, record: Product) => (
+          <BarcodeCell product={record} printBarcode={printBarcode} />
+        ),
+      }),
+    }
+    ,
+
     {
       ...(canWrite && {
         title: t('table:table-item-actions'),
@@ -347,13 +363,6 @@ const ProductList = ({
         render: (slug: string, record: Product) => {
           const Shop = record.shop;
           return (
-            // <LanguageSwitcher
-            //   slug={slug}
-            //   record={record}
-            //   deleteModalView="DELETE_PRODUCT"
-            //   routes={Routes?.product}
-            // />
-
             <LanguageSwitcher
               slug={slug}
               record={record}

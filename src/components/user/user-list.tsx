@@ -20,6 +20,7 @@ import { getAuthCredentials } from '@/utils/auth-utils';
 import { OWNER } from '@/utils/constants';
 import { filter } from 'lodash';
 import { CUSTOMER } from '@/lib/constants';
+import { Routes } from '@/config/routes';
 
 type IProps = {
   customers: User[] | undefined;
@@ -103,15 +104,15 @@ const CustomerList = ({
       key: 'email',
       align: alignLeft,
     },
-    // {
-    //   title: t('table:table-item-permissions'),
-    //   dataIndex: 'type',
-    //   key: 'type',
-    //   align: 'center',
-    //   render: (type: any, record: any) => {
-    //     return <div>{type?.type_name}</div>;
-    //   },
-    // },
+    {
+      title: t('table:table-item-permissions'),
+      dataIndex: 'permission',
+      key: 'permission',
+      align: 'center',
+      render: (type: any, record: any) => {
+        return <div>{type?.type_name}</div>;
+      },
+    },
     // {
     //   title: t('table:table-item-available_wallet_points'),
     //   dataIndex: 'walletPoints',
@@ -146,7 +147,7 @@ const CustomerList = ({
           dataIndex: 'id',
           key: 'actions',
           align: 'right',
-          render: function Render(id: string, { is_active }: any) {
+          render: function Render(id: string, record: any, { is_active }: any) {
             const { data } = useMeQuery();
             return (
               <>
@@ -154,9 +155,10 @@ const CustomerList = ({
                   <ActionButtons
                     id={id}
                     userStatus={true}
-                    isUserActive={is_active}
-                    // editModalView={true}
-                    editUrl='/user-details'
+                    isUserActive={record.is_active}
+                    editUrl={`${Routes.user.create}?id=${id}`}
+                  // editModalView={true}
+                  // editUrl='/user-form'
                   // showAddWalletPoints={true}
                   // showMakeAdminButton={true}
                   />

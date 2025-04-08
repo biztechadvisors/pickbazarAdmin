@@ -161,7 +161,7 @@ export const useUpdateOrderMutation = () => {
     {
       onSuccess: () => {
         toast.success(t('common:successfully-updated'));
-        return router.push('/orders')
+        window.location.reload();
       },
       // Always refetch after error or success:
       onSettled: () => {

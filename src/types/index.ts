@@ -1949,6 +1949,7 @@ export interface DealerQueryOptions extends Omit<QueryOptions, 'language'> {
 export type CreatePermissionInput = {
   permissionType?: permissionType;
   defaultPermissions?: PermissionItem[] | [];
+  onData?: void | undefined;
 }
 
 export enum permissionType {
