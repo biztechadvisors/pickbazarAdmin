@@ -1,5 +1,6 @@
 import { CloseIcon } from '@/components/icons/close-icon';
 import { SearchIcon } from '@/components/icons/search-icon';
+import { BarcodeIcon } from '@/components/icons/scanbarcode'; // You need to create or import this
 import cn from 'classnames';
 import { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
@@ -21,6 +22,7 @@ type SearchProps = {
   variant?: 'normal' | 'solid' | 'outline';
   inputClassName?: string;
   onSearch: (data: SearchValue) => void;
+  barcode?: string; // 👈 Optional prop for scanned barcode
 };
 
 type SearchValue = {
@@ -33,6 +35,7 @@ const Search: React.FC<SearchProps> = ({
   variant = 'outline',
   shadow = false,
   inputClassName,
+  barcode,
   ...rest
 }) => {
   const {
@@ -40,16 +43,26 @@ const Search: React.FC<SearchProps> = ({
     handleSubmit,
     watch,
     reset,
-
+    setValue,
     formState: { errors },
   } = useForm<SearchValue>({
     defaultValues: {
       searchText: '',
     },
   });
+
   const searchText = watch('searchText');
   const { t } = useTranslation();
 
+  // Auto-set barcode if passed
+  useEffect(() => {
+    if (barcode) {
+      setValue('searchText', barcode);
+      onSearch({ searchText: barcode });
+    }
+  }, [barcode]);
+
+  // Trigger empty search if input cleared
   useEffect(() => {
     if (!searchText) {
       onSearch({ searchText: '' });
@@ -73,6 +86,12 @@ const Search: React.FC<SearchProps> = ({
     reset();
     onSearch({ searchText: '' });
   }
+
+  const isBarcode =
+    !!barcode ||
+    /^\d{8,}$/.test(searchText) ||
+    /^\d+-\d+-\d+-[a-zA-Z0-9]+$/.test(searchText);
+
   return (
     <form
       noValidate
@@ -83,9 +102,23 @@ const Search: React.FC<SearchProps> = ({
       <label htmlFor="search" className="sr-only">
         {t('form:input-label-search')}
       </label>
+
+      {/* Instructional Text */}
+      <span className="absolute -top-6 start-1 text-sm font-semibold text-orange-500">
+        {'⚠️ If using a barcode scanner, please click the input field first.'}
+      </span>
+
+
+      {/* Icon */}
       <button className="start-1 absolute p-2 text-body outline-none focus:outline-none active:outline-none">
-        <SearchIcon className="h-5 w-5" />
+        {isBarcode ? (
+          <BarcodeIcon className="h-5 w-5 text-accent" />
+        ) : (
+          <SearchIcon className="h-5 w-5" />
+        )}
       </button>
+
+      {/* Input */}
       <input
         type="text"
         id="search"
@@ -96,7 +129,11 @@ const Search: React.FC<SearchProps> = ({
         autoComplete="off"
         {...rest}
       />
+
+      {/* Error Message */}
       {errors.searchText && <p>{errors.searchText.message}</p>}
+
+      {/* Clear Button */}
       {!!searchText && (
         <button
           type="button"
@@ -107,7 +144,7 @@ const Search: React.FC<SearchProps> = ({
         </button>
       )}
     </form>
+
   );
 };
-
 export default Search;

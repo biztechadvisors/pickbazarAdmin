@@ -27,6 +27,7 @@ module.exports = withPWA({
       'images.pexels.com',
       'server.codenoxx.com',
       's3.ap-south-1.amazonaws.com',
+      'admin-bakend.codenoxtech.com'
     ],
   },
   ...(process.env.APPLICATION_MODE === 'production' && {
