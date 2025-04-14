@@ -67,69 +67,6 @@ export class UserService {
   }
 }
 
-
-
-
-
-// export const useMeQuery = () => {
-//   const router = useRouter();
-//   const queryClient = useQueryClient();
-//   const [userDetails, setUserDetails] = useState(() =>
-//     UserService.getUserDetails()
-//   );
-
-//   useEffect(() => {
-//     const fetchUserData = async () => {
-//       const user = await UserService.getUserDetails();
-//       setUserDetails(user);
-//     };
-
-//     fetchUserData();
-//   }, []);
-
-//   const { username, sub } = userDetails;
-
-//   const userDataQuery = useQuery<User, Error>(
-//     [API_ENDPOINTS.ME, { username, sub }],
-//     () => userClient.me({ username, sub }),
-//     {
-//       enabled: !!username && !!sub,
-//       initialData: () => {
-//         const cachedData = queryClient.getQueryData<User>([
-//           API_ENDPOINTS.ME,
-//           { username, sub },
-//         ]);
-//         return cachedData;
-//       },
-//       retry: false,
-//       onError: (err) => {
-//         if (axios.isAxiosError(err)) {
-//           if (err.response?.status === 409) {
-//             setEmailVerified(false);
-//             router.replace(Routes.verifyEmail);
-//           } else {
-//             toast.error('Error fetching user data');
-//           }
-//         }
-//       },
-//     }
-//   );
-
-//   const memoizedUserDataQuery = useMemo(() => userDataQuery, [userDataQuery]);
-
-//   if (!username || !sub) {
-//     return {
-//       data: null,
-//       isLoading: false,
-//       isError: false,
-//       error: null,
-//       refetch: () => { },
-//     };
-//   }
-
-//   return memoizedUserDataQuery;
-// };
-
 export const useMeQuery = () => {
   const router = useRouter();
   const queryClient = useQueryClient();
@@ -258,28 +195,6 @@ export const useUpdateUserMutation = () => {
   });
 };
 
-// export const useUpdateUserMutation = () => {
-//   const { t } = useTranslation();
-//   const queryClient = useQueryClient();
-  
-//   return useMutation(
-//     ({ id, input }: { id: string; input: any }) => userClient.update({ id, input }),
-//     {
-//       onSuccess: () => {
-//         toast.success(t('common:successfully-updated'));
-//       },
-//       onError: (error: any) => {
-//         console.error('Mutation error:', error);
-//         // Errors are handled in the component, don't show duplicate toasts here
-//       },
-//       onSettled: (data, error, variables) => {
-//         // Invalidate queries to refresh data
-//         queryClient.invalidateQueries([API_ENDPOINTS.USERS, variables.id]);
-//         queryClient.invalidateQueries(API_ENDPOINTS.USERS);
-//       },
-//     }
-//   );
-// };
 
 export const useUpdateUserEmailMutation = () => {
   const { t } = useTranslation();
@@ -391,7 +306,7 @@ export const useAddWalletPointsMutation = () => {
   });
 };
 
-export const useUserQuery = ({ id }: { id: string }) => {
+export const useUserQuery = ({ id }: { id: string; }, p0: { enabled: boolean; }) => {
   return useQuery<User, Error>(
     [API_ENDPOINTS.USERS, id],
     () => userClient.fetchUser({ id }),

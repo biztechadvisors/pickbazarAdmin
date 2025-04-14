@@ -47,7 +47,7 @@ const LoginForm = () => {
                 data?.permissions,
                 data?.type_name
               );
-              Router.push(Routes.dashboard); // Navigate to dashboard
+              // Router.push(Routes.dashboard); // Navigate to dashboard
               return;
             }
             setErrorMessage('form:error-enough-permission');

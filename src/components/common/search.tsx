@@ -5,6 +5,7 @@ import cn from 'classnames';
 import { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { useTranslation } from 'next-i18next';
+import { useRouter } from 'next/router';
 
 const classes = {
   root: 'ps-10 pe-4 h-12 flex items-center w-full rounded appearance-none transition duration-300 ease-in-out text-heading text-sm focus:outline-none focus:ring-0',
@@ -87,6 +88,12 @@ const Search: React.FC<SearchProps> = ({
     onSearch({ searchText: '' });
   }
 
+  const router = useRouter();
+  const currentPath = router.pathname;
+
+  const barcodeLablePaths = ['/orders/create', '/sales/create', '/products',]
+  const isShowbarcodeLable = barcodeLablePaths.includes(currentPath)
+
   const isBarcode =
     !!barcode ||
     /^\d{8,}$/.test(searchText) ||
@@ -104,10 +111,12 @@ const Search: React.FC<SearchProps> = ({
       </label>
 
       {/* Instructional Text */}
-      <span className="absolute -top-6 start-1 text-sm font-semibold text-orange-500">
-        {'⚠️ If using a barcode scanner, please click the input field first.'}
-      </span>
-
+      {
+        isShowbarcodeLable &&
+        < span className="absolute -top-6 start-1 text-sm font-semibold text-orange-500">
+          {'⚠️ If using a barcode scanner, please click the input field first.'}
+        </span>
+      }
 
       {/* Icon */}
       <button className="start-1 absolute p-2 text-body outline-none focus:outline-none active:outline-none">
@@ -134,16 +143,18 @@ const Search: React.FC<SearchProps> = ({
       {errors.searchText && <p>{errors.searchText.message}</p>}
 
       {/* Clear Button */}
-      {!!searchText && (
-        <button
-          type="button"
-          onClick={clear}
-          className="end-1 absolute p-2 text-body outline-none focus:outline-none active:outline-none"
-        >
-          <CloseIcon className="h-5 w-5" />
-        </button>
-      )}
-    </form>
+      {
+        !!searchText && (
+          <button
+            type="button"
+            onClick={clear}
+            className="end-1 absolute p-2 text-body outline-none focus:outline-none active:outline-none"
+          >
+            <CloseIcon className="h-5 w-5" />
+          </button>
+        )
+      }
+    </form >
 
   );
 };

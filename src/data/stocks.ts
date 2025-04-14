@@ -65,15 +65,32 @@ export const useOrderSaleQuery = ({
 
 export const useOrderSalesQuery = ({
   id,
+  soldBy,
   language,
 }: {
   id: string;
+  soldBy: string;
   language: string;
 }) => {
-  const { data, error, isLoading } = useQuery<Order, Error>(
-    [API_ENDPOINTS.STOCKBYID, { id, language }],
-    () => stockClient.get({ id, language })
-  );
+  let data, error;
+  let isLoading = true;
+
+  try {
+    const queryResult = useQuery<Order, Error>(
+      [API_ENDPOINTS.DEALER_SEALS_STOCK_BY_ID, { id, soldBy, language }],
+      () => stockClient.get({ id, soldBy, language })
+    );
+
+    data = queryResult.data;
+    error = queryResult.error;
+    isLoading = queryResult.isLoading;
+  } catch (err: any) {
+    console.error('Failed to fetch stock by ID:', err);
+    error = err;
+    isLoading = false;
+  }
+
+  console.log('STOCKBYID ', data);
 
   return {
     order: data,

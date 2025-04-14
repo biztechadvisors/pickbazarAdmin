@@ -15,7 +15,6 @@ import { useMeQuery, useUserQuery, useUpdateUserMutation } from '@/data/user'; /
 import PhoneInput from 'react-phone-input-2';
 import Label from '../ui/label';
 import Select from '../ui/select/select';
-import { usePermissionData } from '@/data/permission';
 import { getAuthCredentials } from '@/utils/auth-utils';
 import { AddStaffFormProps, PermissionsProps, permissionType } from '@/types';
 import Loader from '@/components/ui/loader/loader';

@@ -19,7 +19,6 @@ import { useFetchStockOrderData, useOrderSalesQuery } from '@/data/stocks';
 import { siteSettings } from '@/settings/site.settings';
 import { Attachment, OrderStatus, PaymentStatus } from '@/types';
 import { formatAddress } from '@/utils/format-address';
-import { formatString } from '@/utils/format-string';
 import { useIsRTL } from '@/utils/locals';
 import { ORDER_STATUS } from '@/utils/order-status';
 import usePrice from '@/utils/use-price';
@@ -34,10 +33,6 @@ import DispatchModal from '@/components/ui/modal-component/dispatch-modal';
 import { useMeQuery } from '@/data/user';
 import { Company } from '@/utils/constants';
 
-type FormValues = {
-  order_status: any;
-};
-
 export default function OrderDetailsPage() {
   const { t } = useTranslation();
   const { query, locale } = useRouter();
@@ -46,22 +41,22 @@ export default function OrderDetailsPage() {
   const [, resetCheckout] = useAtom(clearCheckoutAtom);
   const [isDispatchModalOpen, setDispatchModalOpen] = useState(false);
 
-  const handleDispatchUpdate = (data: any) => {
-    // Logic to update the dispatch product
-  };
-
   useEffect(() => {
     resetStock();
     resetCheckout();
   }, [resetStock, resetCheckout]);
-  // Error
+
+  const { orderId } = query;
+  const { data: meData } = useMeQuery();
 
   const { mutate: updateOrder, isLoading: updating } = useUpdateOrderMutation();
+
   const {
     order,
     isLoading: loading,
     error,
-  } = useOrderSalesQuery({ id: query.orderId as string, language: locale! });
+  } = useOrderSalesQuery({ id: query.orderId as string, soldBy: meData?.id, language: locale! });
+
   const { refetch } = useDownloadInvoiceMutation(
     {
       order_id: query.orderId as string,
@@ -75,39 +70,19 @@ export default function OrderDetailsPage() {
     handleSubmit,
     control,
     formState: { errors },
-  } = useForm<FormValues>({
+  } = useForm({
     defaultValues: { order_status: order?.order_status ?? '' },
   });
 
-  const ChangeStatus = ({ order_status }: FormValues) => {
+  const ChangeStatus = ({ order_status }: { order_status: any }) => {
     updateOrder({
       id: order?.id as string,
       order_status: order_status?.status as string,
     });
   };
 
-  const { price: subtotal } = usePrice(order && { amount: order?.amount! });
-  const { price: total } = usePrice(order && { amount: order?.paid_total! });
-  const { price: discount } = usePrice(order && { amount: order?.discount! ?? 0 });
-  const { price: delivery_fee } = usePrice(order && { amount: order?.delivery_fee! });
-  const { price: sales_tax } = usePrice(order && { amount: order?.sales_tax! });
   const { price: sub_total } = usePrice({ amount: order?.amount! });
-  const { price: shipping_charge } = usePrice({ amount: order?.delivery_fee ?? 0 });
-  const { price: wallet_total } = usePrice({ amount: order?.wallet_point?.amount! });
-
-  const totalItem = order?.products?.reduce(
-    (initial = 0, p) => initial + parseInt(p?.pivot?.order_quantity!),
-    0
-  );
-
-  const { orderId } = query;
-  const { data: meData } = useMeQuery();
-  const dealerId = order?.customer_id;
-
-  const { data: stockOrderData } = useFetchStockOrderData({
-    dealerId,
-    orderId: orderId as string,
-  });
+  const { price: total } = usePrice({ amount: order?.paid_total! });
 
   if (loading) return <Loader text={t('common:text-loading')} />;
   if (error) return <ErrorMessage message={error.message} />;
@@ -131,7 +106,7 @@ export default function OrderDetailsPage() {
         <div className="relative h-[50px] w-[50px]">
           <Image
             src={image?.thumbnail ?? siteSettings.product.placeholder}
-            alt="alt text"
+            alt="Product"
             fill
             sizes="(max-width: 768px) 100vw"
             className="object-fill"
@@ -166,204 +141,105 @@ export default function OrderDetailsPage() {
     },
   ];
 
-  const DispatchButton = meData?.permission.type_name === Company;
+  // const DispatchButton = meData?.permission.type_name === Company;
 
   return (
     <>
-      <Card className="relative overflow-hidden">
-        <div className="mb-6 -mt-5 -ml-5 -mr-5 md:-mr-8 md:-ml-8 md:-mt-8">
-          <OrderViewHeader order={order} wrapperClassName="px-8 py-4" />
-        </div>
-        <div className="flex w-full">
-          <Button
-            onClick={handleDownloadInvoice}
-            className="mb-5 bg-blue-500 ltr:ml-auto rtl:mr-auto"
-          >
-            <DownloadIcon className="h-4 w-4 me-3" />
+      <Card>
+        <OrderViewHeader order={order} wrapperClassName="px-8 py-4" />
+
+        <div className="flex justify-between items-center my-4">
+          <Button onClick={handleDownloadInvoice} className="bg-blue-500">
+            <DownloadIcon className="h-4 w-4 me-2" />
             {t('common:text-download')} {t('common:text-invoice')}
           </Button>
-        </div>
 
-        <div className="flex flex-col items-center lg:flex-row">
-          <h3 className="mb-8 w-full whitespace-nowrap text-center text-2xl font-semibold text-heading lg:mb-0 lg:w-1/3 lg:text-start">
-            {t('form:input-label-order-id')} - {order?.tracking_number}
-          </h3>
-
-          {order?.order_status !== OrderStatus.FAILED &&
-            order?.order_status !== OrderStatus.CANCELLED && (
-              <form
-                onSubmit={handleSubmit(ChangeStatus)}
-                className="flex w-full items-start ms-auto lg:w-2/4"
-              >
-                <div className="z-20 w-full me-5">
-                  <SelectInput
-                    name="order_status"
-                    control={control}
-                    getOptionLabel={(option: any) => t(option.name)}
-                    getOptionValue={(option: any) => option.status}
-                    options={ORDER_STATUS.slice(0, 6)}
-                    placeholder={t('form:input-placeholder-order-status')}
-                  />
-                  <ValidationError message={t(errors?.order_status?.message)} />
-                </div>
-                <div className="flex w-full gap-x-1 max-sm:flex-col-reverse max-sm:gap-y-1">
-                  <Button loading={updating}>
-                    <span className="hidden sm:block">
-                      {t('form:button-label-change-status')}
-                    </span>
-                    <span className="block sm:hidden">
-                      {t('form:button-label-change-status')}
-                    </span>
-                  </Button>
-                </div>
-              </form>
-            )}
-          {DispatchButton ? (
-            <Button onClick={() => setDispatchModalOpen(true)}>
-              <span className="hidden sm:block">
-                {t('form:button-label-change-dispatch')}
-              </span>
-              <span className="block sm:hidden">
-                {t('form:button-label-change-dispatch')}
-              </span>
-            </Button>
-          ) : (
-            <Button onClick={() => setDispatchModalOpen(true)}>
-              <span className="hidden sm:block">{t('Received')}</span>
-              <span className="block sm:hidden">{t('Received')}</span>
-            </Button>
-          )}
-        </div>
-
-        <div className="my-5 flex items-center justify-center lg:my-10">
-          <OrderStatusProgressBox
-            orderStatus={order?.order_status as OrderStatus}
-            paymentStatus={order?.payment_status as PaymentStatus}
-          />
-        </div>
-
-        <div className="mb-10">
-          {order ? (
-            <Table
-              columns={columns}
-              emptyText={t('table:empty-table-data')}
-              data={order?.products!}
-              rowKey="id"
-              scroll={{ x: 300 }}
-            />
-          ) : (
-            <span>{t('common:no-order-found')}</span>
+          {order?.order_status !== OrderStatus.FAILED && order?.order_status !== OrderStatus.CANCELLED && (
+            <form onSubmit={handleSubmit(ChangeStatus)} className="flex gap-2 items-center">
+              <SelectInput
+                name="order_status"
+                control={control}
+                getOptionLabel={(option: any) => t(option.name)}
+                getOptionValue={(option: any) => option.status}
+                options={ORDER_STATUS.slice(0, 6)}
+                placeholder={t('form:input-placeholder-order-status')}
+              />
+              <Button loading={updating} type="submit">
+                {t('form:button-label-change-status')}
+              </Button>
+            </form>
           )}
 
-          {order?.parent_id! ? (
-            <div className="flex w-full flex-col space-y-2 border-t-4 border-double border-border-200 px-4 py-4 ms-auto sm:w-1/2 md:w-1/3">
-              <div className="flex items-center justify-between text-sm text-body">
-                <span>{t('common:order-sub-total')}</span>
-                <span>{subtotal}</span>
-              </div>
-              <div className="flex items-center justify-between text-base font-semibold text-heading">
-                <span>{t('common:order-total')}</span>
-                <span>{total}</span>
-              </div>
-            </div>
-          ) : (
-            <>
-              <div className="flex w-full flex-col space-y-2 border-t-4 border-double border-border-200 px-4 py-4 ms-auto sm:w-1/2 md:w-1/3">
-                <div className="flex items-center justify-between text-sm text-body">
-                  <span>{t('common:order-sub-total')}</span>
-                  <span>{sub_total}</span>
-                </div>
-                <div className="flex items-center justify-between text-sm text-body">
-                  <span>{t('text-shipping-charge')}</span>
-                  <span>{shipping_charge}</span>
-                </div>
-                <div className="flex items-center justify-between text-sm text-body">
-                  <span>{t('text-tax')}</span>
-                  <span>{sales_tax}</span>
-                </div>
-                {order?.discount! > 0 && (
-                  <div className="flex items-center justify-between text-sm text-body">
-                    <span>{t('text-discount')}</span>
-                    <span>{discount}</span>
-                  </div>
-                )}
-                {wallet_total && (
-                  <div className="flex items-center justify-between text-sm text-body">
-                    <span>{t('text-paid-from-wallet')}</span>
-                    <span>{wallet_total}</span>
-                  </div>
-                )}
-                <div className="flex items-center justify-between text-base font-semibold text-heading">
-                  <span>{t('text-total')}</span>
-                  <span>{total}</span>
-                </div>
-              </div>
-            </>
-          )}
+          {/* <Button onClick={() => setDispatchModalOpen(true)}>
+            {DispatchButton ? t('form:button-label-change-dispatch') : t('Received')}
+          </Button> */}
         </div>
 
-        <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between">
-          <div className="mb-10 w-full sm:mb-0 sm:w-1/2 sm:pe-8">
-            <h3 className="mb-3 border-b border-border-200 pb-2 font-semibold text-heading">
-              {t('text-order-details')}
-            </h3>
+        <OrderStatusProgressBox
+          orderStatus={order?.order_status as OrderStatus}
+          paymentStatus={order?.payment_status as PaymentStatus}
+        />
 
-            <div className="flex flex-col items-start space-y-1 text-sm text-body">
-              <span>
-                {formatString(order?.products?.length, t('text-item'))}
-              </span>
-              <span>{order?.delivery_time}</span>
-            </div>
+        <Table
+          columns={columns}
+          emptyText={t('table:empty-table-data')}
+          data={order?.products!}
+          rowKey="id"
+          scroll={{ x: 300 }}
+        />
+
+        <div className="mt-6 w-full sm:w-1/2 md:w-1/3 border-t-4 border-double border-border-200 px-4 py-4">
+          <div className="flex justify-between text-sm">
+            <span>{t('common:order-sub-total')}</span>
+            <span>{sub_total}</span>
           </div>
-
-          <div className="mb-10 w-full sm:mb-0 sm:w-1/2 sm:pe-8">
-            <h3 className="mb-3 border-b border-border-200 pb-2 font-semibold text-heading">
-              {t('common:billing-address')}
-            </h3>
-
-            <div className="flex flex-col items-start space-y-1 text-sm text-body">
-              <span>{order?.customer_name}</span>
-              {order?.billing_address && (
-                <span>{formatAddress(order.billing_address)}</span>
-              )}
-              {order?.customer_contact && (
-                <span>{order?.customer_contact}</span>
-              )}
-            </div>
+          <div className="flex justify-between text-base font-semibold">
+            <span>{t('common:order-total')}</span>
+            <span>{total}</span>
           </div>
+        </div>
+      </Card>
 
-          <div className="w-full sm:w-1/2 sm:ps-8">
-            <h3 className="mb-3 border-b border-border-200 pb-2 font-semibold text-heading text-start sm:text-end">
-              {t('common:shipping-address')}
-            </h3>
-
-            <div className="flex flex-col items-start space-y-1 text-sm text-body text-start sm:items-end sm:text-end">
-              <span>{order?.customer_name}</span>
-              {order?.shipping_address && (
-                <span>{formatAddress(order.shipping_address)}</span>
-              )}
-              {order?.customer_contact && (
-                <span>{order?.customer_contact}</span>
-              )}
+      {/* Customer Details Card - Made responsive */}
+      <Card className="mt-6">
+        <div className="p-4 sm:p-6">
+          <h3 className="text-lg font-semibold text-heading mb-3 sm:text-xl sm:mb-4">Customer Details</h3>
+          <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5">
+            <div className="flex flex-col">
+              <span className="text-xs text-body sm:text-sm">Name:</span>
+              <span className="text-sm font-medium text-heading sm:text-base">{order?.customer?.name}</span>
+            </div>
+            <div className="flex flex-col">
+              <span className="text-xs text-body sm:text-sm">Email:</span>
+              <span className="text-sm font-medium text-heading sm:text-base">{order?.customer?.email}</span>
+            </div>
+            <div className="flex flex-col">
+              <span className="text-xs text-body sm:text-sm">Contact:</span>
+              <span className="text-sm font-medium text-heading sm:text-base">{order?.customer?.contact}</span>
+            </div>
+            <div className="flex flex-col">
+              <span className="text-xs text-body sm:text-sm">Verified:</span>
+              <span className="text-sm font-medium text-heading sm:text-base">{order?.customer?.isVerified ? 'Yes' : 'No'}</span>
+            </div>
+            <div className="flex flex-col">
+              <span className="text-xs text-body sm:text-sm">Role:</span>
+              <span className="text-sm font-medium text-heading sm:text-base">{order?.customer?.permission?.type_name}</span>
             </div>
           </div>
         </div>
       </Card>
-      <DispatchModal
-        isOpen={isDispatchModalOpen}
-        onClose={() => setDispatchModalOpen(false)}
-        order={stockOrderData}
-        dealerId={dealerId}
-        updateDispatch={handleDispatchUpdate}
-      />
+
     </>
   );
 }
 
+// OrderDetailsPage.authenticate = true;
 OrderDetailsPage.Layout = Layout;
 
-export const getServerSideProps = async ({ locale }: any) => ({
-  props: {
-    ...(await serverSideTranslations(locale, ['common', 'form', 'table'])),
-  },
-});
+export async function getServerSideProps({ locale }: { locale: string }) {
+  return {
+    props: {
+      ...(await serverSideTranslations(locale, ['table', 'common', 'form'])),
+    },
+  };
+}

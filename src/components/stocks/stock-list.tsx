@@ -27,6 +27,7 @@ type SortingObjType = {
 };
 
 const StockList = ({ data, me, onSort, onOrder }: IProps) => {
+
   const router = useRouter();
   const { t } = useTranslation();
   const { alignLeft, alignRight } = useIsRTL();
@@ -97,6 +98,7 @@ const StockList = ({ data, me, onSort, onOrder }: IProps) => {
     updateQuantity(data);
   };
 
+  // console.log("product 100 ", product)
   const columns = [
     {
       title: 'ID',
@@ -111,7 +113,7 @@ const StockList = ({ data, me, onSort, onOrder }: IProps) => {
       key: 'name',
       align: alignLeft,
       width: 300,
-      render: (product: any) => <span>{product.name}</span>,
+      render: (product: any) => <span>{product?.name}</span>,
     },
     {
       title: 'Variation Options',

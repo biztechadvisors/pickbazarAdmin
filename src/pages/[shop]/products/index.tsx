@@ -133,7 +133,11 @@ export default function ProductsPage() {
             </h1>
           </div>
 
+
           <div className="flex w-full flex-col items-center md:w-3/4 md:flex-row">
+            {/* < span className="absolute -top-6 start-1 text-sm font-semibold text-orange-500">
+              {'⚠️ If using a barcode scanner, please click the input field first.'}
+            </span> */}
             <div className="flex w-full items-center">
               <Search onSearch={handleSearch} />
 

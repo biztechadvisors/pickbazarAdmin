@@ -21,12 +21,6 @@ import { CreatePermissionInput, permissionType as PermissionType } from '@/types
 import useFormValues from '@/lib/hooks/use-form-values';
 import { randomStaffPermissions } from '@/utils/defaultValues';
 
-interface CreatePermissionInput {
-  permissionType?: string;
-  defaultPermissions?: any[];
-  onPermissionCreated?: (newPermission: any) => void;// Callback for new permission
-  selectedPermission?: any;
-}
 function Loader() {
   return null;
 }
@@ -75,7 +69,6 @@ const CreatePermission = ({
       )
     );
   const { permissions } = getAuthCredentials();
-
 
   const [matched, _] = useAtom(newPermission);
 
@@ -311,8 +304,8 @@ const CreatePermission = ({
           className={`mt-1 block w-full rounded-md border bg-gray-100 p-2 ${typeError && 'border-red-500'
             }`}
           onChange={(e) => handleChange(e)}
-          value={permissionType ? permissionType : PermissionType.STAFF}
-          disabled={isDealer}
+          value={selectedType}
+        // disabled={isDealer}
         >
           {Object.values(typeName).map((type, index) => (
             <option key={index} value={type}>

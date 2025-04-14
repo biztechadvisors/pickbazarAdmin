@@ -17,16 +17,16 @@ import { OWNER } from '@/utils/constants';
 import { Routes } from '@/config/routes';
 
 type IProps = {
-  shops: Shop[] | undefined;
-  paginatorInfo: MappedPaginatorInfo | null;
+  shops?: Shop[]; // optional
+  paginatorInfo?: MappedPaginatorInfo | null;
   onPagination: (current: number) => void;
   onSort: (current: any) => void;
   onOrder: (current: string) => void;
 };
 
 const ShopList = ({
-  shops,
-  paginatorInfo,
+  shops = [],
+  paginatorInfo = null,
   onPagination,
   onSort,
   onOrder,
@@ -152,40 +152,7 @@ const ShopList = ({
         </Link>
       ),
     },
-    // {
-    //   title: (
-    //     <TitleWithSort
-    //       title={t('table:table-item-total-products')}
-    //       ascending={
-    //         sortingObj.sort === SortOrder.Asc &&
-    //         sortingObj.column === 'products_count'
-    //       }
-    //       isActive={sortingObj.column === 'products_count'}
-    //     />
-    //   ),
-    //   className: 'cursor-pointer',
-    //   dataIndex: 'products_count',
-    //   key: 'products_count',
-    //   align: 'center',
-    //   onHeaderCell: () => onHeaderClick('products_count'),
-    // },
-    // {
-    //   title: (
-    //     <TitleWithSort
-    //       title={t('table:table-item-total-orders')}
-    //       ascending={
-    //         sortingObj.sort === SortOrder.Asc &&
-    //         sortingObj.column === 'orders_count'
-    //       }
-    //       isActive={sortingObj.column === 'orders_count'}
-    //     />
-    //   ),
-    //   className: 'cursor-pointer',
-    //   dataIndex: 'orders_count',
-    //   key: 'orders_count',
-    //   align: 'center',
-    //   onHeaderCell: () => onHeaderClick('orders_count'),
-    // },
+
     {
       title: (
         <TitleWithSort

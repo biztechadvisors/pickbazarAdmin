@@ -15,7 +15,8 @@ import { dealerAddress } from '@/utils/atoms';
 import { useRouter } from 'next/router';
 import OwnerLayout from '@/components/layouts/owner';
 import AdminLayout from '@/components/layouts/admin';
-import { DEALER } from '@/utils/constants';
+import { DEALER, OWNER } from '@/utils/constants';
+import { getAuthCredentials } from '@/utils/auth-utils';
 
 export default function ProfilePage() {
   const { t } = useTranslation();
@@ -49,7 +50,7 @@ export default function ProfilePage() {
       </div>
       <EmailUpdateForm me={data} />
       <ProfileUpdateFrom me={data} />
-      <ChangePasswordForm /> 
+      <ChangePasswordForm />
       {data?.permission?.type_name === DEALER && (
         <div ref={userAddressSelectionRef}>
           <UserAddressSelection
@@ -64,7 +65,9 @@ export default function ProfilePage() {
     </>
   );
 }
-ProfilePage.Layout = AdminLayout;
+ProfilePage.Layout = getAuthCredentials().permissions?.[0] === OWNER
+  ? OwnerLayout
+  : AdminLayout;
 
 export const getStaticProps = async ({ locale }: any) => ({
   props: {
