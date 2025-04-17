@@ -279,7 +279,7 @@ const OrderList = ({
               id={id}
               detailsUrl={
                 // dealerId ? `${Routes.singleSaleOrder}/${id}` :
-                `${Routes.singleSaleOrder}/${id}`}
+                `${Routes.singleorder}/${id}`}
               customLocale={order.language}
             />
           </>

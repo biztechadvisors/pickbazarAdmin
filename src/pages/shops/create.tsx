@@ -13,52 +13,29 @@ import { OWNER } from '@/utils/constants';
 
 export default function CreateShopPage() {
   const { t } = useTranslation();
-    return (
-      <>
-        <div className="flex border-b border-dashed border-border-base py-5 sm:py-8">
-          <h1 className="text-lg font-semibold text-heading">
-            {t('form:form-title-create-shop')}
-          </h1>
-        </div>
-        <ShopForm />
-      </>
-    ); 
+  return (
+    <>
+      <div className="flex border-b border-dashed border-border-base py-5 sm:py-8">
+        <h1 className="text-lg font-semibold text-heading">
+          {t('form:form-title-create-shop')}
+        </h1>
+      </div>
+      <ShopForm />
+    </>
+  );
 }
 
 CreateShopPage.authenticate = {
   permissions: ownerAndStaffOnly,
 };
 CreateShopPage.Layout =
-getAuthCredentials().permissions?.[0] === OWNER
-  ? OwnerLayout
-  : AdminLayout;
-  
+  getAuthCredentials().permissions?.[0] === OWNER
+    ? OwnerLayout
+    : AdminLayout;
+
 export const getStaticProps: GetStaticProps = async ({ locale }) => ({
   props: {
     ...(await serverSideTranslations(locale!, ['common', 'form'])),
   },
 });
 
-// export default function CreateShopPage() {
-//   const { t } = useTranslation();
-  // return (
-  //   <>
-  //     <div className="flex border-b border-dashed border-border-base py-5 sm:py-8">
-  //       <h1 className="text-lg font-semibold text-heading">
-  //         {t('form:form-title-create-shop')}
-  //       </h1>
-  //     </div>
-  //     <ShopForm />
-  //   </>
-  // );
-// }
-// CreateShopPage.authenticate = {
-//   permissions: adminAndOwnerOnly,
-// };
-// CreateShopPage.Layout = OwnerLayout;
-
-// export const getStaticProps: GetStaticProps = async ({ locale }) => ({
-//   props: {
-//     ...(await serverSideTranslations(locale!, ['common', 'form'])),
-//   },
-// });

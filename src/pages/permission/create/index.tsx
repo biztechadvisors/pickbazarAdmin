@@ -124,7 +124,6 @@ const CreatePermission = ({
 
   const handleCheckboxChange = (menuItem: any, type: any, isChecked: boolean) => {
 
-    console.log(onData); // Should log the function or undefined
     if (typeof onData === 'function') {
       onData(true);
     } else {
@@ -241,9 +240,15 @@ const CreatePermission = ({
     }
   };
 
+  // const newTypesRole = PermissionJson.type_name.filter((item) => item.value != meData?.permission.type_name)
+  const newTypesRole = Object.fromEntries(
+    Object.entries(PermissionJson.type_name)
+      .filter(([key, value]) => value !== meData?.permission.type_name)
+  );
+
   useEffect(() => {
     if (isOwner || isStaffCreatedByOwner) {
-      setTypeName(PermissionJson.type_name);
+      setTypeName(newTypesRole);
     } else {
       const permList = permissions;
       const newArray = Object.values(PermissionJson.type_name);
@@ -254,16 +259,16 @@ const CreatePermission = ({
       for (let i = 0; i < filteredArray.length; i++) {
         switch (filteredArray[i]) {
           case OWNER:
-            updatedTypeName.push(OWNER, ADMIN, Company, DEALER, STAFF);
-            break;
-          case ADMIN:
             updatedTypeName.push(ADMIN, Company, DEALER, STAFF);
             break;
-          case Company:
+          case ADMIN:
             updatedTypeName.push(Company, DEALER, STAFF);
             break;
-          case DEALER:
+          case Company:
             updatedTypeName.push(DEALER, STAFF);
+            break;
+          case DEALER:
+            updatedTypeName.push(STAFF);
             break;
           case STAFF:
             updatedTypeName.push(Company);
@@ -296,7 +301,7 @@ const CreatePermission = ({
           htmlFor="typename"
           className="block text-sm font-medium text-gray-700"
         >
-          {t('PERMISSION TYPE')}
+          {t('ROLE / PERMISSION TYPE')}
         </label>
         <select
           id="typename"

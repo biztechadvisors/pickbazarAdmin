@@ -90,7 +90,7 @@ const AddStaffForm: React.FC<AddStaffFormProps> = ({
   const [defaultPermission, setDefaultPermission] = useState(defaultPermissions);
   const [permissionOptions, setPermissionOptions] = useState(permissionOption(permissionType.STAFF));
   const [selectedPermission, setSelectedPermission] = useState<any>(null);
-
+  const [dataFromChild, setDataFromChild] = useState('');
 
   // Fetch user data if in edit mode
   const { data: userData, isLoading: loadingUser } = useUserQuery(
@@ -288,8 +288,6 @@ const AddStaffForm: React.FC<AddStaffFormProps> = ({
     }
   }
   if (loadingUser) return <Loader />;
-
-  const [dataFromChild, setDataFromChild] = useState('');
 
   console.log("dataFromChild ", dataFromChild)
   const handleDataFromChild = (data) => {

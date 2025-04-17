@@ -346,7 +346,7 @@ export default function OrderDetailsPage() {
             </div>
             <div className="flex flex-col">
               <span className="text-xs text-body sm:text-sm">Role:</span>
-              <span className="text-sm font-medium text-heading sm:text-base">{order?.customer?.permission?.type_name}</span>
+              <span className="text-sm font-medium text-heading sm:text-base">{order?.customer?.permission?.type_name ? order?.customer?.permission?.type_name : 'Customer'}</span>
             </div>
           </div>
         </div>

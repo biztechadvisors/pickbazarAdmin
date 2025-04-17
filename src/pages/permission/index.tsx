@@ -119,10 +119,10 @@ const PermissionComponent: React.FC & PermissionComponentProps = () => {
             value={filterType}
             className="rounded border border-gray-300 p-2"
           >
-            <option value="">All Types</option>
-            <option value={Company}>Company</option>
-            <option value={STAFF}>Staff</option>
-
+            {<option value="">All Types</option>}
+            {meData?.permission?.type_name == OWNER && <option value={Company}>Company</option>}
+            {<option value={STAFF}>Staff</option>}
+            {meData?.permission?.type_name != OWNER && <option value={DEALER}>Dealer</option>}
           </select>
           {canWrite && (
             <LinkButton href="/permission/create">Create Permission</LinkButton>
@@ -136,7 +136,7 @@ const PermissionComponent: React.FC & PermissionComponentProps = () => {
             <thead>
               <tr>
                 <th className="border p-2">S.No</th>
-                <th className="border p-2">ROLE</th>
+                <th className="border p-2">ROLE (TYPE)</th>
                 <th className="border p-2">NAME</th>
                 {meData?.permission == OWNER && <th className="border p-2">PERMISSION-TYPE</th>}
                 <th className="border p-2">PRIVILEGE</th>

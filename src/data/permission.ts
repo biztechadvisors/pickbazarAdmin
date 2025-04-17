@@ -8,7 +8,7 @@ export const usePermissionData = (
     search = '',
     type = '',
     page = 1,
-    limit = 10,
+    limit = 20,
   } = {}
 ) => {
   const getUserId = () => {

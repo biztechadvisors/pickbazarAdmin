@@ -191,6 +191,7 @@ const ShopForm = ({ initialValues }: { initialValues?: any }) => {
   }
 
   function openViewPermissionModal(permissionData: any) {
+    console.log('permissionData 194 ', permissionData)
     setViewPermissionData(permissionData);
     setViewPermissionModalOpen(true);
   }
@@ -235,8 +236,12 @@ const ShopForm = ({ initialValues }: { initialValues?: any }) => {
     isLoading: permissionLoading,
     error,
     data: permissionData,
-  } = usePermissionData(userId);
-
+  } = usePermissionData({
+    search: Company,
+    type: Company,
+    page: 1,
+    limit: 20,
+  });
 
   const { mutate: createShop, isLoading: creating } = useCreateShopMutation();
   const { mutate: updateShop, isLoading: updating } = useUpdateShopMutation();
@@ -365,15 +370,6 @@ const ShopForm = ({ initialValues }: { initialValues?: any }) => {
       setSelectedUser(currentSelectedUser); // Update local state to reflect form value
     }
   }, [currentSelectedUser, setValue]);
-
-  // Created User SelectInput ------------
-
-  // const { data: meData } = useMeQuery();
-  // // const { permissions } = getAuthCredentials();
-  // const isOwner = permissions?.includes(OWNER);
-
-  // const shouldDisable = !isOwner;
-  // Customer and permission form conditional rendering 
 
   // Determine if the staff member is created by an owner
   const createdByRole = createdByUser?.permission?.type_name;
@@ -654,6 +650,21 @@ const ShopForm = ({ initialValues }: { initialValues?: any }) => {
                     />
                   )}
                 />
+                {/* View Permission Modal */}
+                <Modal open={viewPermissionModalOpen} onClose={closeViewPermissionModal}>
+                  {viewPermissionData && (
+                    <CreatePerm
+                      PermissionDatas={viewPermissionData}
+                      selectedPermissions={selectedPermissions}
+                      setSelectedPermissions={setSelectedPermissions}
+                      permissionId={viewPermissionData.id}
+                      onSaveSuccess={closeViewPermissionModal}
+                      onPermissionCreate={handlePermissionUpdate}
+                      viewMode={true}
+                      flag={true}
+                    />
+                  )}
+                </Modal>
               </div>
 
               <div className="relative mb-5">
@@ -704,20 +715,6 @@ const ShopForm = ({ initialValues }: { initialValues?: any }) => {
                     onSaveSuccess={closeModal}
                     onPermissionCreate={handlePermissionUpdate}
                   />
-                </Modal>
-                {/* View Permission Modal */}
-                <Modal open={viewPermissionModalOpen} onClose={closeViewPermissionModal}>
-                  {viewPermissionData && (
-                    <CreatePerm
-                      PermissionDatas={viewPermissionData}
-                      selectedPermissions={selectedPermissions}
-                      setSelectedPermissions={setSelectedPermissions}
-                      permissionId={viewPermissionData.id}
-                      onSaveSuccess={closeViewPermissionModal}
-                      onPermissionCreate={handlePermissionUpdate}
-                      viewMode={true}
-                    />
-                  )}
                 </Modal>
               </div>
             </Card>
@@ -871,7 +868,7 @@ const ShopForm = ({ initialValues }: { initialValues?: any }) => {
           />
 
           <Card className="w-full sm:w-8/12 md:w-2/3">
-            <div className="mb-5">
+            {/* <div className="mb-5">
               <Label>{t('form:input-label-autocomplete')}</Label>
               <Controller
                 control={control}
@@ -884,7 +881,7 @@ const ShopForm = ({ initialValues }: { initialValues?: any }) => {
                   />
                 )}
               />
-            </div>
+            </div> */}
             <Input
               label={t('form:input-label-contact')}
               {...register('settings.contact')}

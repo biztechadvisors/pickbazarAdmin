@@ -228,7 +228,6 @@ export default function OrderDetailsPage() {
           </div>
         </div>
       </Card>
-
     </>
   );
 }

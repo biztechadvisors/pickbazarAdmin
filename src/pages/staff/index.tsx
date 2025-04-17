@@ -76,7 +76,7 @@ export default function StaffsPage() {
     router.replace(Routes.dashboard);
   }
   const filteredUsers = users?.filter(
-    (user) => user.permission?.type_name === STAFF
+    (user) => user.permission?.type_name === STAFF && data?.id != user.id
   );
 
   function handleSearch({ searchText }: { searchText: string }) {
@@ -106,7 +106,7 @@ export default function StaffsPage() {
       </Card>
 
       <StaffList
-        staffs={users}
+        staffs={filteredUsers}
         onPagination={handlePagination}
         paginatorInfo={paginatorInfo}
         onOrder={setOrder}
