@@ -227,7 +227,7 @@ const CustomerCreateForm = ({ initialValues }: { initialValues?: any }) => {
               />
             )}
           />
-          <Controller
+          {/* <Controller
             name="type"
             control={control}
             render={({ field }) => (
@@ -244,7 +244,7 @@ const CustomerCreateForm = ({ initialValues }: { initialValues?: any }) => {
                 />
               </>
             )}
-          />
+          /> */}
         </Card>
       </div>
 

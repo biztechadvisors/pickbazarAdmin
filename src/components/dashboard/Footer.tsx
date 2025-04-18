@@ -15,17 +15,17 @@ const Footer: React.FC<FooterProps> = ({ canWrite, shopName }) => {
         <div className=" text-center text-sm text-gray-600">
           <p>
             &copy; {new Date().getFullYear()} {shopName || t('common:default-shop-name')}.{' '}
-            {t('common:footer-all-rights-reserved')}
+            {t('All Rights Reserve')}
           </p>
           {canWrite && (
             <p className="mt-2">
-              {t('common:footer-admin-access')} |{' '}
+              {t('Admin Access')} |{' '}
               <a href="/terms" className="text-blue-600 hover:underline">
-                {t('common:footer-terms')}
+                {t('Terms & Condition')}
               </a>{' '}
               |{' '}
               <a href="/privacy" className="text-blue-600 hover:underline">
-                {t('common:footer-privacy')}
+                {t('Privacy & Policy')}
               </a>
             </p>
           )}

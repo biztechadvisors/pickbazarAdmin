@@ -13,7 +13,7 @@ interface PaymentSelectProps {
   control: any;
   rules?: any;
   name: string;
-  defaultItem?: string;
+  defaultItem?: any;
   disable?: boolean;
 }
 
@@ -93,7 +93,7 @@ const PaymentSelect = ({
       render={({ field: { onChange, value } }) => {
         return (
           <div className="grid grid-cols-2 gap-4 md:grid-cols-3 xl:grid-cols-4 3xl:grid-cols-5">
-          <CheckboxGroup
+            <CheckboxGroup
               values={value?.map((val: any) => val?.name) || []}
               onChange={(selectedValues) => {
                 // Merge existing gateways with new selections
@@ -102,7 +102,7 @@ const PaymentSelect = ({
                   .map(option => {
                     // Find existing gateway data if it exists
                     const existingGateway = value?.find((g: any) => g.name === option.name);
-                    
+
                     return {
                       name: option.name,
                       title: capitalize(option.name),

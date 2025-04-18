@@ -10,6 +10,7 @@ interface Item {
   price: number;
   sale_price?: number;
   quantity?: number;
+  margin?: number;
   [key: string]: unknown;
 }
 interface Variation {

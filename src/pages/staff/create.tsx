@@ -70,7 +70,7 @@ export default function AddStaffPage() {
     <>
       <div className="flex border-b border-dashed border-border-base py-5 sm:py-8">
         <h1 className="text-lg font-semibold text-heading">
-          {id ? t('form:form-title-edit-staff') : t('form:form-title-create-staff')}
+          {id ? t('Edit Staff') : t('Create Staff')}
         </h1>
       </div>
       <AddStaffForm
