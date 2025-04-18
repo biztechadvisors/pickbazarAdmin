@@ -21,12 +21,6 @@ import { CreatePermissionInput, permissionType as PermissionType } from '@/types
 import useFormValues from '@/lib/hooks/use-form-values';
 import { randomStaffPermissions } from '@/utils/defaultValues';
 
-interface CreatePermissionInput {
-  permissionType?: string;
-  defaultPermissions?: any[];
-  onPermissionCreated?: (newPermission: any) => void;// Callback for new permission
-  selectedPermission?: any;
-}
 function Loader() {
   return null;
 }
@@ -75,7 +69,6 @@ const CreatePermission = ({
       )
     );
   const { permissions } = getAuthCredentials();
-
 
   const [matched, _] = useAtom(newPermission);
 
@@ -131,7 +124,6 @@ const CreatePermission = ({
 
   const handleCheckboxChange = (menuItem: any, type: any, isChecked: boolean) => {
 
-    console.log(onData); // Should log the function or undefined
     if (typeof onData === 'function') {
       onData(true);
     } else {
@@ -248,9 +240,15 @@ const CreatePermission = ({
     }
   };
 
+  // const newTypesRole = PermissionJson.type_name.filter((item) => item.value != meData?.permission.type_name)
+  const newTypesRole = Object.fromEntries(
+    Object.entries(PermissionJson.type_name)
+      .filter(([key, value]) => value !== meData?.permission.type_name)
+  );
+
   useEffect(() => {
     if (isOwner || isStaffCreatedByOwner) {
-      setTypeName(PermissionJson.type_name);
+      setTypeName(newTypesRole);
     } else {
       const permList = permissions;
       const newArray = Object.values(PermissionJson.type_name);
@@ -261,16 +259,16 @@ const CreatePermission = ({
       for (let i = 0; i < filteredArray.length; i++) {
         switch (filteredArray[i]) {
           case OWNER:
-            updatedTypeName.push(OWNER, ADMIN, Company, DEALER, STAFF);
-            break;
-          case ADMIN:
             updatedTypeName.push(ADMIN, Company, DEALER, STAFF);
             break;
-          case Company:
+          case ADMIN:
             updatedTypeName.push(Company, DEALER, STAFF);
             break;
-          case DEALER:
+          case Company:
             updatedTypeName.push(DEALER, STAFF);
+            break;
+          case DEALER:
+            updatedTypeName.push(STAFF);
             break;
           case STAFF:
             updatedTypeName.push(Company);
@@ -303,7 +301,7 @@ const CreatePermission = ({
           htmlFor="typename"
           className="block text-sm font-medium text-gray-700"
         >
-          {t('PERMISSION TYPE')}
+          {t('ROLE / PERMISSION TYPE')}
         </label>
         <select
           id="typename"
@@ -311,8 +309,8 @@ const CreatePermission = ({
           className={`mt-1 block w-full rounded-md border bg-gray-100 p-2 ${typeError && 'border-red-500'
             }`}
           onChange={(e) => handleChange(e)}
-          value={permissionType ? permissionType : PermissionType.STAFF}
-          disabled={isDealer}
+          value={selectedType}
+        // disabled={isDealer}
         >
           {Object.values(typeName).map((type, index) => (
             <option key={index} value={type}>

@@ -15,7 +15,6 @@ import { useMeQuery, useUserQuery, useUpdateUserMutation } from '@/data/user'; /
 import PhoneInput from 'react-phone-input-2';
 import Label from '../ui/label';
 import Select from '../ui/select/select';
-import { usePermissionData } from '@/data/permission';
 import { getAuthCredentials } from '@/utils/auth-utils';
 import { AddStaffFormProps, PermissionsProps, permissionType } from '@/types';
 import Loader from '@/components/ui/loader/loader';
@@ -91,7 +90,7 @@ const AddStaffForm: React.FC<AddStaffFormProps> = ({
   const [defaultPermission, setDefaultPermission] = useState(defaultPermissions);
   const [permissionOptions, setPermissionOptions] = useState(permissionOption(permissionType.STAFF));
   const [selectedPermission, setSelectedPermission] = useState<any>(null);
-
+  const [dataFromChild, setDataFromChild] = useState('');
 
   // Fetch user data if in edit mode
   const { data: userData, isLoading: loadingUser } = useUserQuery(
@@ -289,8 +288,6 @@ const AddStaffForm: React.FC<AddStaffFormProps> = ({
     }
   }
   if (loadingUser) return <Loader />;
-
-  const [dataFromChild, setDataFromChild] = useState('');
 
   console.log("dataFromChild ", dataFromChild)
   const handleDataFromChild = (data) => {

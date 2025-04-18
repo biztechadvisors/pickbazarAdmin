@@ -390,7 +390,7 @@ export default function SettingsForm({
         ? formatEventAPIData(options?.emailEvent)
         : null,
     },
-  });  
+  });
 
   const { openModal } = useModalAction();
 
@@ -444,7 +444,7 @@ export default function SettingsForm({
   const isNotDefaultSettingsPage = Config.defaultLanguage !== locale;
 
   async function onSubmit(values: FormValues) {
-    
+
     const contactDetails = {
       ...values?.contactDetails,
       location: { ...omit(values?.contactDetails?.location, "__typename") },
@@ -501,7 +501,7 @@ export default function SettingsForm({
       },
     };
 
-   
+
     try {
 
       if (!settings?.options) {
@@ -799,7 +799,7 @@ export default function SettingsForm({
                 </div>
               ) : (
                 <>
-                  <div className="mb-5">
+                  {/* <div className="mb-5">
                     <Label>{t('text-select-default-payment-gateway')}</Label>
                     <SelectInput
                       name="defaultPaymentGateway"
@@ -809,7 +809,7 @@ export default function SettingsForm({
                       options={paymentGateway ?? []}
                       disabled={isNotDefaultSettingsPage}
                     />
-                  </div>
+                  </div> */}
                   {isRazorpayActive && (
                     <div className="mb-5">
                       <div className="flex items-center gap-x-4">
@@ -1127,7 +1127,7 @@ export default function SettingsForm({
         />
 
         <Card className="w-full sm:w-8/12 md:w-2/3">
-          <div className="mb-5">
+          {/* <div className="mb-5">
             <Label>{t('form:input-label-autocomplete')}</Label>
             <Controller
               control={control}
@@ -1140,7 +1140,7 @@ export default function SettingsForm({
                 />
               )}
             />
-          </div>
+          </div> */}
           <Input
             label={t('form:input-label-contact')}
             {...register('contactDetails.contact')}

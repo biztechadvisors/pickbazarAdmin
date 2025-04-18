@@ -39,6 +39,7 @@ const VerifiedItemList: React.FC<Props> = ({ className }) => {
 
   // Calculate tax amount with proper fallbacks
   const totalTax = items.reduce((sum, item) => {
+    console.log("item 42 -- ", item)
     const itemTaxRate = Number(item.tax_rate) || Number(options?.taxClass?.rate) || 0;
     const itemPrice = Number(item.price) || 0;
     const itemQuantity = Number(item.quantity) || 0;

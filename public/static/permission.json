@@ -42,7 +42,6 @@
     "SALES": "sidebar-nav-item-sales",
     "CREATE_SALES": "sidebar-nav-item-create-sales"
   },
-
   "Advance_Permission": {
     "REGIONS": "sidebar-nav-item-regions",
     "FAQS": "sidebar-nav-item-faq",

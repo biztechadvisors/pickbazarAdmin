@@ -16,12 +16,13 @@ import OwnerLayout from '@/components/layouts/owner';
 import { ADMIN, DEALER, OWNER, STAFF, Company } from '@/utils/constants';
 import { addPermission } from '@/utils/atoms';
 
-const CreatePerm = ({ onPermissionCreate,PermissionDatas,selectedPermissions,setSelectedPermissions,onSaveSuccess,viewMode=false}) => {
+const CreatePerm = ({ onPermissionCreate, PermissionDatas, selectedPermissions, setSelectedPermissions, onSaveSuccess, viewMode = false, flag = false }) => {
+
   const router = useRouter();
   const { t } = useTranslation();
   const [typeName, setTypeName] = useState(PermissionDatas?.type_name);
   const [selectedType, setSelectedType] = useState('');
-  const [menusData, setMenusData] = useState(PermissionJson.Advance_Permission);
+  const [menusData, setMenusData] = useState(flag ? PermissionJson.Menus : PermissionJson.Advance_Permission);
   const [permissionName, setPermissionName] = useState('');
   // const [selectedPermissions, setSelectedPermissions] = useState([]);
   const [typeError, setTypeError] = useState('');
@@ -70,24 +71,24 @@ const CreatePerm = ({ onPermissionCreate,PermissionDatas,selectedPermissions,set
     }
   }, [singlePermissionData]);
 
-    // Auto-fill permissions when in view mode and PermissionDatas is provided
-    useEffect(() => {
-      if (viewMode && PermissionDatas?.permissions) {
-        const formattedPermissions = PermissionDatas.permissions.map((perm) => ({
-          id: perm.id,
-          type: perm.type,
-          read: perm.read,
-          write: perm.write,
-        }));
-        setSelectedPermissions(formattedPermissions);
-        setPermissionName(PermissionDatas.permission_name);
-        setTypeName(PermissionDatas.type_name);
-      }
-    }, [viewMode, PermissionDatas]);
+  // Auto-fill permissions when in view mode and PermissionDatas is provided
+  useEffect(() => {
+    if (viewMode && PermissionDatas?.permissions) {
+      const formattedPermissions = PermissionDatas.permissions.map((perm) => ({
+        id: perm.id,
+        type: perm.type,
+        read: perm.read,
+        write: perm.write,
+      }));
+      setSelectedPermissions(formattedPermissions);
+      setPermissionName(PermissionDatas.permission_name);
+      setTypeName(PermissionDatas.type_name);
+    }
+  }, [viewMode, PermissionDatas]);
 
   const handleChange = (e) => {
-    setSelectedType(e.target.value); 
-    setTypeError(''); 
+    setSelectedType(e.target.value);
+    setTypeError('');
   };
 
   const handlePermissionNameChange = (e) => {
@@ -96,6 +97,7 @@ const CreatePerm = ({ onPermissionCreate,PermissionDatas,selectedPermissions,set
   };
 
   const handleCheckboxChange = (menuItem, type, isChecked) => {
+    console.log("menuItem 106", menuItem)
     if (viewMode) return;
 
     const permissionIndex = selectedPermissions.findIndex(
@@ -146,14 +148,14 @@ const CreatePerm = ({ onPermissionCreate,PermissionDatas,selectedPermissions,set
       user: id,
       permission_name: permissionName,
       permissions: selectedPermissions,
-      additionalPermission: true, 
+      additionalPermission: true,
     };
     const dataToSend2 = {
       type_name: typeToSend,
       user: id,
       permission_name: permissionName,
       permissions: selectedPermissions,
-          additionalPermission: true, 
+      additionalPermission: true,
     };
 
     try {
@@ -163,7 +165,7 @@ const CreatePerm = ({ onPermissionCreate,PermissionDatas,selectedPermissions,set
       } else {
         await mutatePost(dataToSend);
         setMatchedAdd((prev) => [...prev, dataToSend.permission_name]);
-  
+
         // Trigger the callback to pass the new permission
         if (onPermissionCreate) {
           onPermissionCreate(dataToSend); // Pass the new permission back to parent
@@ -176,16 +178,17 @@ const CreatePerm = ({ onPermissionCreate,PermissionDatas,selectedPermissions,set
       // toast.error('Error');
     }
   };
-    // Determine if the staff member is created by an owner
-    const createdByRole = createdByUser?.permission?.type_name;
-    const isCreatedByOwner = createdByRole === OWNER;
-      // Check if the user is an owner or a staff member created by an owner
-      const canWrite =
-      permissions?.includes(OWNER) || // Owners can write
-      (permissions?.includes(STAFF) && isCreatedByOwner); 
-  
+  // Determine if the staff member is created by an owner
+  const createdByRole = createdByUser?.permission?.type_name;
+  const isCreatedByOwner = createdByRole === OWNER;
+  // Check if the user is an owner or a staff member created by an owner
+  const canWrite =
+    permissions?.includes(OWNER) || // Owners can write
+    (permissions?.includes(STAFF) && isCreatedByOwner);
+
 
   const filteredData = () => {
+    console.log("menusData 197 ", menusData)
     if (canWrite) {
       return Object.entries(menusData).map(([key, value], index) => ({
         [key]: value,
@@ -210,12 +213,12 @@ const CreatePerm = ({ onPermissionCreate,PermissionDatas,selectedPermissions,set
 
   useEffect(() => {
     // if (permissions.includes(OWNER)) {
-      if (canWrite) {
+    if (canWrite) {
       setTypeName(PermissionDatas?.type_name);
     } else {
       const permList = permissions;
       // const newArray = Object.values(PermissionDatas?.type_name);
-      const newArray =PermissionDatas?.type_name ? Object.values(PermissionDatas.type_name) : [];
+      const newArray = PermissionDatas?.type_name ? Object.values(PermissionDatas.type_name) : [];
       const filteredArray = newArray.filter((e) => permList.includes(e));
 
       let updatedTypeName = [];
@@ -268,7 +271,7 @@ const CreatePerm = ({ onPermissionCreate,PermissionDatas,selectedPermissions,set
               onChange={handleChange}
               value={selectedType}
               disabled={viewMode}
-                    // disabled={isEditMode}
+            // disabled={isEditMode}
             >
               <option>{typeName}</option>
             </select>

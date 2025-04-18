@@ -1846,6 +1846,7 @@ export interface OrderQueryOptions extends QueryOptions {
   shopSlug: string;
   tracking_number: string;
   customer_id: number;
+  dealerId?: number;
   search: any;
 }
 
@@ -1949,6 +1950,7 @@ export interface DealerQueryOptions extends Omit<QueryOptions, 'language'> {
 export type CreatePermissionInput = {
   permissionType?: permissionType;
   defaultPermissions?: PermissionItem[] | [];
+  onPermissionCreated?: void;
   onData?: void | undefined;
 }
 

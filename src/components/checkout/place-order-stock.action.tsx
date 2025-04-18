@@ -121,12 +121,13 @@ export const PlaceOrderActionStock: React.FC<{
       use_wallet_points,
       isFullWalletPayment,
       billing_address: {
-        ...(billing_address?.adds && billing_address.adds),
+        ...(billing_address?.adds && billing_address?.adds),
       },
       shipping_address: {
-        ...(shipping_address?.adds && shipping_address.adds),
+        ...(shipping_address?.adds && shipping_address?.adds),
       },
-      saleBy: selectedAddress.adds,
+      soldBy: meData?.id,
+      soldByUserAddress: selectedAddress?.adds,
     };
     createOrderFromStock(input);
   };

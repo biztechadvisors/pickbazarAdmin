@@ -35,12 +35,12 @@ const OwnerLayout: React.FC<{ children?: React.ReactNode }> = ({
       <div>
         <Loader text={t('common:text-loading')} />
       </div>
-    ); // Replace with your loading indicator
+    );
   }
-  const matchedLinks = permissions?.includes(OWNER)|| permissions?.includes(STAFF)
+  const matchedLinks = permissions?.includes(OWNER) || permissions?.includes(STAFF)
     ? siteSettings.sidebarLinks.owner
-    : siteSettings.sidebarLinks.admin; 
-    
+    : siteSettings.sidebarLinks.admin;
+
   const SidebarItemMap = () => (
     <Fragment>
       {matchedLinks.map(({ href, label, icon }) => (

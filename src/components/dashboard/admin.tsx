@@ -1,83 +1,83 @@
-import { CartIconBig } from '@/components/icons/cart-icon-bag';
-import { CoinIcon } from '@/components/icons/coin-icon';
-import ColumnChart from '@/components/widgets/column-chart';
-import StickerCard from '@/components/widgets/sticker-card';
-import ErrorMessage from '@/components/ui/error-message';
+import { useEffect, useState } from 'react';
+import { useRouter } from 'next/router';
+import { useTranslation } from 'next-i18next';
+
+import { useMeQuery } from '@/data/user';
+import { useShopQuery } from '@/data/shop';
+import { useOrdersQuery } from '@/data/order';
+import { useAnalyticsQuery, usePopularProductsQuery } from '@/data/dashboard';
+import { useGetStockSales } from '@/data/stock';
+
+import { AllPermission } from '@/utils/AllPermission';
+import { Company, DEALER } from '@/utils/constants';
+
 import Loader from '@/components/ui/loader/loader';
+import ErrorMessage from '@/components/ui/error-message';
+import Footer from '@/components/dashboard/Footer';
+
+import StickerCard from '@/components/widgets/sticker-card';
+import ColumnChart from '@/components/widgets/column-chart';
 import RecentOrders from '@/components/order/recent-orders';
 import PopularProductList from '@/components/product/popular-product-list';
-import { useOrdersQuery } from '@/data/order';
-import { useTranslation } from 'next-i18next';
-import { ShopIcon } from '@/components/icons/sidebar';
+
 import { DollarIcon } from '@/components/icons/shops/dollar';
-import { useAnalyticsQuery, usePopularProductsQuery } from '@/data/dashboard';
-import { useRouter } from 'next/router';
-import { useMeQuery } from '@/data/user';
-import { CustomerIcon } from '../icons/sidebar/customer';
-import { AllPermission } from '@/utils/AllPermission';
-import { useGetStockSales } from '@/data/stock';
-import { Company, DEALER } from '@/utils/constants';
-import { useEffect, useState } from 'react';
-import { useShopQuery } from '@/data/shop';
-import Footer from '@/components/dashboard/Footer'; // Import the Footer component
+import { CartIconBig } from '@/components/icons/cart-icon-bag';
+import { CoinIcon } from '@/components/icons/coin-icon';
+import { ShopIcon } from '@/components/icons/sidebar';
+import { CustomerIcon } from '@/components/icons/sidebar/customer';
 
 export default function Dashboard() {
   const { t } = useTranslation();
   const { locale } = useRouter();
   const permissionTypes = AllPermission();
   const canWrite = permissionTypes.includes('sidebar-nav-item-dealerlist');
+
   const { data: meData } = useMeQuery();
-  const customerId = meData?.id;
-  const DealerShow = meData?.permission.type_name === DEALER;
-  const ShopShow = meData?.permission.type_name === Company;
   const [shopSlug, setShopSlug] = useState<string | null>(null);
 
+  const page = 1;
+  const DealerShow = meData?.permission.type_name === DEALER;
+  const ShopShow = meData?.permission.type_name === Company;
+  const customerId = meData?.id ? Number(meData.id) : undefined;
   const shopId = meData?.managed_shop?.id;
 
+  // Load stored shopSlug from localStorage
   useEffect(() => {
     if (typeof window !== 'undefined') {
       const storedSlug = localStorage.getItem('shopSlug');
-      setShopSlug(storedSlug);
+      if (storedSlug) setShopSlug(storedSlug);
     }
   }, []);
 
-  const { data: shopData, isLoading: shopLoading, error: shopError } = useShopQuery({ slug: shopSlug?.toString() });
+  // Shop Info
+  const { data: shopData, isLoading: shopLoading, error: shopError } = useShopQuery({ slug: shopSlug || '' });
 
-  const analyticsQuery = {
-    customerId: parseInt(customerId),
-    state: '',
-    shop_id: shopId,
-  };
-
+  // Analytics Data
   const {
     data: analyticsData,
     isLoading: analyticsLoading,
     error: analyticsError,
-  } = useAnalyticsQuery(analyticsQuery);
+  } = useAnalyticsQuery({
+    customerId,
+    shop_id: shopId,
+    state: '',
+  });
 
-  let queryConfig = {
+  // Orders Data
+  const queryConfig = {
     language: locale,
-    limit: 10,
-    page: 1,
+    limit: 20,
+    page,
+    type: 'Customer',
+    ...(shopData?.slug && {
+      shopSlug: shopData.slug,
+      shop_id: shopData.id,
+    }),
+    ...(DealerShow && {
+      customer_id: customerId,
+    }),
   };
 
-  // Conditional assignment for DealerShow
-  if (DealerShow) {
-    queryConfig = {
-      ...queryConfig, // Spread the previous properties
-      shopSlug,
-      customer_id: meData?.id,
-    };
-  }
-  // Conditional assignment for ShopShow
-  else if (ShopShow) {
-    queryConfig = {
-      ...queryConfig,
-      shopSlug,
-    };
-  }
-
-  // Destructure the response from useOrdersQuery
   const {
     orders: orderData,
     paginatorInfo,
@@ -85,18 +85,13 @@ export default function Dashboard() {
     loading: orderLoading,
   } = useOrdersQuery(queryConfig);
 
-  const customer_id = meData?.id;
-  const shop_id = meData?.managed_shop?.id;
+  console.log("orderData 78 ", orderData)
 
-  const { data: response } = useGetStockSales(customer_id, shop_id);
+  // Dealer Sales (if Dealer)
+  const { data: stockSalesData } = useGetStockSales(customerId, shopId);
+  const DealerSalesList = stockSalesData?.data;
 
-  const DealerSalesList = response?.data;
-
-  if (orderError) {
-    console.error('Error fetching orders:', orderError);
-  }
-
-
+  // Popular Products
   const {
     data: popularProductData,
     isLoading: popularProductLoading,
@@ -104,30 +99,28 @@ export default function Dashboard() {
   } = usePopularProductsQuery({
     limit: 10,
     language: locale,
-    shop_id: meData?.managed_shop?.id,
+    shop_id: shopId,
   });
 
-  if (analyticsLoading || orderLoading || popularProductLoading) {
+  // Handle Loading
+  if (analyticsLoading || orderLoading || popularProductLoading || shopLoading) {
     return <Loader text={t('common:text-loading')} />;
   }
 
-  if (orderLoading) return <Loader text={t('common:text-loading')} />;
-
-  const salesByYear =
-    analyticsData?.totalYearSaleByMonth?.map((item) =>
-      item?.total?.toFixed(2)
-    ) || Array(12).fill(0);
-
+  // Handle Errors
   const errorMessage =
-    analyticsError?.message ||
-    orderError?.message ||
-    popularProductError?.message;
+    analyticsError?.message || orderError?.message || popularProductError?.message || shopError?.message;
+
+  if (errorMessage) {
+    return <ErrorMessage message={errorMessage} />;
+  }
+
+  // Sales Chart Data
+  const salesByYear = analyticsData?.totalYearSaleByMonth?.map(item => Number(item?.total?.toFixed(2))) ?? Array(12).fill(0);
 
   return (
     <>
-      {errorMessage && <ErrorMessage message={errorMessage} />}
-
-      {/* Cover Image and Logo Section */}
+      {/* Shop Branding */}
       {shopData?.logo?.original && (
         <img
           src={shopData.logo.original}
@@ -135,23 +128,24 @@ export default function Dashboard() {
           className="w-14 h-14 object-cover rounded-full"
         />
       )}
-      <span className="mt-2 text-sm font-semibold text-gray-700">
-        {shopData?.name}
-      </span>
+      {shopData?.name && (
+        <span className="mt-2 text-sm font-semibold text-gray-700">
+          {shopData.name}
+        </span>
+      )}
 
-      {/* Cover Image Section */}
-      {shopData && (
+      {/* Cover Image */}
+      {shopData?.cover_image?.[0]?.original && (
         <div className="relative mb-6 w-full rounded-lg overflow-hidden shadow-lg">
-          {shopData.cover_image?.length > 0 && (
-            <img
-              src={shopData.cover_image[0]?.original}
-              alt="Cover"
-              className="w-full h-52 object-cover"
-            />
-          )}
+          <img
+            src={shopData.cover_image[0].original}
+            alt="Cover"
+            className="w-full h-52 object-cover"
+          />
         </div>
       )}
 
+      {/* Analytics Cards */}
       <div className="mb-6 grid w-full grid-cols-1 gap-5 sm:grid-cols-2 xl:grid-cols-4">
         <StickerCard
           titleTransKey="sticker-card-title-rev"
@@ -178,11 +172,9 @@ export default function Dashboard() {
               : 'sticker-card-title-total-cutomer'
           }
           icon={
-            canWrite ? (
-              <ShopIcon className="w-6" color="#1D4ED8" />
-            ) : (
-              <CustomerIcon className="w-6" color="#1D4ED8" />
-            )
+            canWrite
+              ? <ShopIcon className="w-6" color="#1D4ED8" />
+              : <CustomerIcon className="w-6" color="#1D4ED8" />
           }
           iconBgStyle={{ backgroundColor: '#93C5FD' }}
           price={
@@ -193,6 +185,7 @@ export default function Dashboard() {
         />
       </div>
 
+      {/* Sales Chart */}
       <div className="mb-6 flex w-full flex-wrap md:flex-nowrap">
         <ColumnChart
           widgetTitle={t('common:sale-history')}
@@ -215,20 +208,19 @@ export default function Dashboard() {
         />
       </div>
 
+      {/* Orders */}
       <div className="mb-6 w-full flex-wrap space-y-6 xl:flex-nowrap xl:space-y-0 xl:space-x-5">
-        <RecentOrders
-          orders={orderData}
-          title={t('table:recent-order-table-title')}
-        />
+        <RecentOrders orders={orderData} title={t('table:recent-order-table-title')} />
       </div>
 
-      {DealerShow ? (
+      {/* Dealer Sales */}
+      {DealerShow && DealerSalesList?.length > 0 && (
         <div className="mb-6 w-full flex-wrap space-y-6 xl:flex-nowrap xl:space-y-0 xl:space-x-5">
           <RecentOrders orders={DealerSalesList} title={t('Recent Sales')} />
         </div>
-      ) : null}
+      )}
 
-      {/* Footer Section */}
+      {/* Footer */}
       <Footer canWrite={canWrite} shopName={shopData?.name} />
     </>
   );

@@ -36,13 +36,35 @@ export default function Orders() {
         { enabled: !!shopSlug }
     );
 
+    // Safely parse dealerId
+    const parsedDealerId = dealerId
+        ? Array.isArray(dealerId) ? Number(dealerId[0]) : Number(dealerId)
+        : undefined;
+
     const queryConfig = {
         language: locale,
         limit: 20,
         page,
         search: searchTerm,
-        ...(shopData?.slug && { shopSlug: shopData.slug, shop_id: shopData.id }),
-        ...(dealerId ? { dealerId: dealerId, type: dealerId ? DEALER : CUSTOMER } : { customer_id: me?.id, type: CUSTOMER }),
+        ...(shopData?.slug && {
+            shopSlug: shopData.slug,
+            shop_id: shopData.id,
+        }),
+        ...(parsedDealerId
+            ? {
+                dealerId: parsedDealerId,
+                customer_id: Number(me?.id),
+                type: DEALER,
+            }
+            : me?.permission?.type_name === DEALER
+                ? {
+                    dealerId: Number(me?.id),
+                    type: CUSTOMER,
+                }
+                : {
+                    customer_id: Number(me?.id),
+                    type: CUSTOMER,
+                }),
     };
 
 

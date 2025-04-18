@@ -28,8 +28,8 @@ import {
 import GooglePlacesAutocomplete from '@/components/form/google-places-autocomplete';
 import Label from '@/components/ui/label';
 import { getIcon } from '@/utils/get-icon';
-import SelectInput from '@/components/ui/select-input';
 import * as socialIcons from '@/components/icons/social';
+import SelectInput from '@/components/ui/select-input';
 import omit from 'lodash/omit';
 import SwitchInput from '@/components/ui/switch-input';
 import { getAuthCredentials } from '@/utils/auth-utils';
@@ -114,26 +114,16 @@ export const chatbotAutoSuggestion = ({ name }: { name: string }) => {
 };
 
 const socialIcon = [
-  {
-    value: 'FacebookIcon',
-    label: 'Facebook',
-  },
-  {
-    value: 'InstagramIcon',
-    label: 'Instagram',
-  },
-  {
-    value: 'TwitterIcon',
-    label: 'Twitter',
-  },
-  {
-    value: 'YouTubeIcon',
-    label: 'Youtube',
-  },
+  { value: 'FacebookIcon', label: 'Facebook' },
+  { value: 'InstagramIcon', label: 'Instagram' },
+  { value: 'TwitterIcon', label: 'Twitter' },
+  { value: 'YouTubeIcon', label: 'Youtube' },
 ];
 
-export const updatedIcons = socialIcon.map((item: any) => {
-  item.label = (
+export const updatedIcons = socialIcon.map((item) => ({
+  value: item.value,
+  name: item.label, // used for getOptionLabel fallback if needed
+  label: (
     <div className="flex items-center text-body space-s-4">
       <span className="flex h-4 w-4 items-center justify-center">
         {getIcon({
@@ -144,9 +134,8 @@ export const updatedIcons = socialIcon.map((item: any) => {
       </span>
       <span>{item.label}</span>
     </div>
-  );
-  return item;
-});
+  ),
+}));
 
 type FormValues = {
   name: string;
@@ -202,6 +191,7 @@ const ShopForm = ({ initialValues }: { initialValues?: any }) => {
   }
 
   function openViewPermissionModal(permissionData: any) {
+    console.log('permissionData 194 ', permissionData)
     setViewPermissionData(permissionData);
     setViewPermissionModalOpen(true);
   }
@@ -216,14 +206,14 @@ const ShopForm = ({ initialValues }: { initialValues?: any }) => {
   const router = useRouter();
   const { locale } = router;
   const { t } = useTranslation();
-  
+
   const { permissions } = getAuthCredentials();
   const { data: meData, isLoading: meLoading, error: meError } = useMeQuery();
   const { data: users, isLoading } = useVendorQuery(meData?.id, {
-      enabled: !!meData?.id,
-    });
+    enabled: !!meData?.id,
+  });
   // const { openModal } = useModalAction();
- 
+
   const { data, isLoading: loading, isError } = useMeQuery();
 
   const {
@@ -235,58 +225,62 @@ const ShopForm = ({ initialValues }: { initialValues?: any }) => {
 
   const createdById = meData?.createdBy?.id; // Get the createdBy user ID
 
-// Fetch the createdBy user's data
-const { data: createdByUser, isLoading: createdByLoading, error: createdByError } = useUserQuery(
-  { id: createdById },
-  { enabled: !!createdById }  
-);
-const userId = data?.id;
+  // Fetch the createdBy user's data
+  const { data: createdByUser, isLoading: createdByLoading, error: createdByError } = useUserQuery(
+    { id: createdById },
+    { enabled: !!createdById }
+  );
+  const userId = data?.id;
 
-const {
-  isLoading: permissionLoading,
-  error,
-  data: permissionData,
-} = usePermissionData(userId); 
+  const {
+    isLoading: permissionLoading,
+    error,
+    data: permissionData,
+  } = usePermissionData({
+    search: Company,
+    type: Company,
+    page: 1,
+    limit: 20,
+  });
 
-
-const { mutate: createShop, isLoading: creating } = useCreateShopMutation();
-const { mutate: updateShop, isLoading: updating } = useUpdateShopMutation();
-const {
-  register,
-  handleSubmit,
-  formState: { errors },
-  getValues,
-  watch,
-  setValue,
-  control,
-} = useForm<FormValues>({
-  shouldUnregister: true,
-  ...(initialValues
-    ? {
-      defaultValues: {
-        ...initialValues,
-        logo: getFormattedImage(initialValues.logo),
-        cover_image: getFormattedImage(initialValues.cover_image),
-        settings: {
-          ...initialValues?.settings,
-          socials: initialValues?.settings?.socials
-            ? initialValues?.settings?.socials.map((social: any) => ({
-              icon: updatedIcons?.find(
-                (icon) => icon?.value === social?.icon
-              ),
-              url: social?.url,
-            }))
-            : [],
+  const { mutate: createShop, isLoading: creating } = useCreateShopMutation();
+  const { mutate: updateShop, isLoading: updating } = useUpdateShopMutation();
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+    getValues,
+    watch,
+    setValue,
+    control,
+  } = useForm<FormValues>({
+    shouldUnregister: true,
+    ...(initialValues
+      ? {
+        defaultValues: {
+          ...initialValues,
+          logo: getFormattedImage(initialValues.logo),
+          cover_image: getFormattedImage(initialValues.cover_image),
+          settings: {
+            ...initialValues?.settings,
+            socials: initialValues?.settings?.socials
+              ? initialValues?.settings?.socials.map((social: any) => ({
+                icon: updatedIcons?.find(
+                  (icon) => icon?.value === social?.icon
+                ),
+                url: social?.url,
+              }))
+              : [],
+          },
         },
-      },
-    }
-    : {}),
-  resolver: yupResolver(shopValidationSchema),
-});
-const { fields, append, remove } = useFieldArray({
-  control,
-  name: 'settings.socials',
-});
+      }
+      : {}),
+    resolver: yupResolver(shopValidationSchema),
+  });
+  const { fields, append, remove } = useFieldArray({
+    control,
+    name: 'settings.socials',
+  });
 
   const generateName = watch('name');
   const autoSuggestionList = useMemo(() => {
@@ -296,7 +290,7 @@ const { fields, append, remove } = useFieldArray({
   const filterdEcomm = permissionData?.filter((e: any) => {
     return e && e.type_name === Company;
   });
-console.log("filterdEcomm&&&&",filterdEcomm);
+
   // Separate permissions based on additionalPermission
   const additionalPermissionTrue = filterdEcomm?.filter((e: any) => {
     return e?.additionalPermission === true;
@@ -347,7 +341,7 @@ console.log("filterdEcomm&&&&",filterdEcomm);
     });
   }, [generateName]);
 
-  
+
   // Initial value of the watch field
   const currentSelectedUser = watch ? watch('user') : selectedUser;
 
@@ -376,15 +370,6 @@ console.log("filterdEcomm&&&&",filterdEcomm);
       setSelectedUser(currentSelectedUser); // Update local state to reflect form value
     }
   }, [currentSelectedUser, setValue]);
-
-  // Created User SelectInput ------------
-
-  // const { data: meData } = useMeQuery();
-  // // const { permissions } = getAuthCredentials();
-  // const isOwner = permissions?.includes(OWNER);
-
-  // const shouldDisable = !isOwner;
-  // Customer and permission form conditional rendering 
 
   // Determine if the staff member is created by an owner
   const createdByRole = createdByUser?.permission?.type_name;
@@ -519,150 +504,6 @@ console.log("filterdEcomm&&&&",filterdEcomm);
   return (
     <>
       <form onSubmit={handleSubmit(onSubmit)} noValidate>
-        {!shouldDisable &&
-          <div className="my-5 flex flex-wrap border-b border-dashed border-border-base pb-8 sm:my-8">
-            <Description
-              title={t('form:input-label-comapny-type')}
-              details={t('form:shop-company-help-text')}
-              className="w-full px-0 pb-5 sm:w-4/12 sm:py-8 sm:pe-4 md:w-1/3 md:pe-5"
-            />
-            <Card className="w-full sm:w-8/12 md:w-2/3">
-            <div className="relative mb-5">
-  <Label>{t('form:input-label-select-company')}</Label>
-  <Controller
-    name="permission"
-    control={control}
-    render={({ field }) => (
-      <Select
-        {...field}
-        options={permissionOptions}
-        placeholder="Select permissions"
-        isSearchable={true}
-        components={{
-          Option: (props) => (
-            <div 
-              {...props.innerProps} 
-              className={`flex items-center justify-between p-2 ${props.isSelected ? 'bg-gray-100' : 'hover:bg-gray-50'}`}
-            >
-              <span>{`${props.data.type_name} - ${props.data.permission_name}`}</span>
-              <button
-                className="px-2 py-1 text-sm text-white bg-blue-500 rounded hover:bg-blue-600 ml-2"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  openViewPermissionModal(props.data.e);
-                }}
-              >
-                View
-              </button>
-            </div>
-          ),
-        }}
-        getOptionLabel={(option: any) => (
-          <div className="flex justify-between items-center w-full">
-            <span>{`${option.type_name} - ${option.permission_name}`}</span>
-          </div>
-        )}
-        getOptionValue={(option: any) => option.id}
-        onChange={(selectedOption) => {
-          field.onChange(selectedOption);
-          setPermissionSelectedOption(selectedOption);
-        }}
-      />
-    )}
-  />
-</div>
-
-              <div className="relative mb-5">
-                <Label>{t('form:button-label-more-permission')}</Label>
-                <SelectInput
-                  name="additionalPermissions"
-                  placeholder="Select additional permissions"
-                  control={control}
-                  getOptionLabel={(option: any) =>
-                    `${option.type_name} - ${option.permission_name}`
-                  }
-                  getOptionValue={(option: any) => option.id}
-                  options={additionalPermissionOptions}
-                  isSearchable={true}
-                  onChange={handleSelectChange}
-                  defaultValue={
-                    control._defaultValues?.additionalPermissions || watch('additionalPermissions')
-                  }
-                  onAddPermission={handlePermissionUpdate}
-                />
-              </div>
-              <div className="relative">
-                <div className="flex items-center space-x-2">
-                  <input
-                    type="checkbox"
-                    id="extraPermission"
-                    checked={isChecked}
-                    onChange={handleCheckboxChange}
-                    className="form-checkbox mb-5 h-4 w-4 text-blue-600"
-                  />
-                  <Label>{t('form:input-label-extra-permission')}</Label>
-                </div>
-
-                {/* Conditionally Render Button */}
-                {isChecked && (
-                  <Button onClick={openModal}>
-                    {t('form:button-label-more-permission')}
-                  </Button>
-                )}
-
-                {/* Modal */}
-                <Modal open={modalIsOpen} onClose={closeModal}>
-                  <CreatePerm
-                    PermissionDatas={permissionProps}
-                    selectedPermissions={selectedPermissions}
-                    setSelectedPermissions={setSelectedPermissions}
-                    permissionId={permissionId}
-                    onSaveSuccess={closeModal}
-                    onPermissionCreate={handlePermissionUpdate}
-                  />
-                </Modal>
-                  {/* View Permission Modal */}
-                  <Modal open={viewPermissionModalOpen} onClose={closeViewPermissionModal}>
-                  {viewPermissionData && (
-                    <CreatePerm
-                      PermissionDatas={viewPermissionData}
-                      selectedPermissions={selectedPermissions}
-                      setSelectedPermissions={setSelectedPermissions}
-                      permissionId={viewPermissionData.id}
-                      onSaveSuccess={closeViewPermissionModal}
-                      onPermissionCreate={handlePermissionUpdate}
-                      viewMode={true}
-                    />
-                  )}
-                </Modal>
-              </div>
-            </Card>
-          </div>
-        }
-
-        <div className="my-5 flex flex-wrap border-b border-dashed border-border-base pb-8 sm:my-8">
-          <Description
-            title={t('form:input-label-logo')}
-            details={t('form:shop-logo-help-text')}
-            className="w-full px-0 pb-5 sm:w-4/12 sm:py-8 sm:pe-4 md:w-1/3 md:pe-5"
-          />
-
-          <Card className="w-full sm:w-8/12 md:w-2/3">
-            <FileInput name="logo" control={control} multiple={false} />
-          </Card>
-        </div>
-
-        <div className="my-5 flex flex-wrap border-b border-dashed border-border-base pb-8 sm:my-8">
-          <Description
-            title={t('form:shop-cover-image-title')}
-            details={coverImageInformation}
-            className="w-full px-0 pb-5 sm:w-4/12 sm:py-8 sm:pe-4 md:w-1/3 md:pe-5"
-          />
-
-          <Card className="w-full sm:w-8/12 md:w-2/3">
-            <FileInput name="cover_image" control={control} multiple={false} />
-          </Card>
-        </div>
         <div className="my-5 flex flex-wrap border-b border-dashed border-border-base pb-8 sm:my-8">
           <Description
             title={t('form:shop-basic-info')}
@@ -758,6 +599,152 @@ console.log("filterdEcomm&&&&",filterdEcomm);
             }
           </Card>
         </div>
+        {!shouldDisable &&
+          <div className="my-5 flex flex-wrap border-b border-dashed border-border-base pb-8 sm:my-8">
+            <Description
+              title={t('form:input-label-comapny-type')}
+              details={t('form:shop-company-help-text')}
+              className="w-full px-0 pb-5 sm:w-4/12 sm:py-8 sm:pe-4 md:w-1/3 md:pe-5"
+            />
+            <Card className="w-full sm:w-8/12 md:w-2/3">
+              <div className="relative mb-5">
+                <Label>{t('form:input-label-select-company')}</Label>
+                <Controller
+                  name="permission"
+                  control={control}
+                  render={({ field }) => (
+                    <Select
+                      {...field}
+                      options={permissionOptions}
+                      placeholder="Select permissions"
+                      isSearchable={true}
+                      components={{
+                        Option: (props) => (
+                          <div
+                            {...props.innerProps}
+                            className={`flex items-center justify-between p-2 ${props.isSelected ? 'bg-gray-100' : 'hover:bg-gray-50'}`}
+                          >
+                            <span>{`${props.data.type_name} - ${props.data.permission_name}`}</span>
+                            <button
+                              className="px-2 py-1 text-sm text-white bg-blue-500 rounded hover:bg-blue-600 ml-2"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                openViewPermissionModal(props.data.e);
+                              }}
+                            >
+                              View
+                            </button>
+                          </div>
+                        ),
+                      }}
+                      getOptionLabel={(option: any) => (
+                        <div className="flex justify-between items-center w-full">
+                          <span>{`${option.type_name} - ${option.permission_name}`}</span>
+                        </div>
+                      )}
+                      getOptionValue={(option: any) => option.id}
+                      onChange={(selectedOption) => {
+                        field.onChange(selectedOption);
+                        setPermissionSelectedOption(selectedOption);
+                      }}
+                    />
+                  )}
+                />
+                {/* View Permission Modal */}
+                <Modal open={viewPermissionModalOpen} onClose={closeViewPermissionModal}>
+                  {viewPermissionData && (
+                    <CreatePerm
+                      PermissionDatas={viewPermissionData}
+                      selectedPermissions={selectedPermissions}
+                      setSelectedPermissions={setSelectedPermissions}
+                      permissionId={viewPermissionData.id}
+                      onSaveSuccess={closeViewPermissionModal}
+                      onPermissionCreate={handlePermissionUpdate}
+                      viewMode={true}
+                      flag={true}
+                    />
+                  )}
+                </Modal>
+              </div>
+
+              <div className="relative mb-5">
+                <Label>{t('form:button-label-more-permission')}</Label>
+                <SelectInput
+                  name="additionalPermissions"
+                  placeholder="Select additional permissions"
+                  control={control}
+                  getOptionLabel={(option: any) =>
+                    `${option.type_name} - ${option.permission_name}`
+                  }
+                  getOptionValue={(option: any) => option.id}
+                  options={additionalPermissionOptions}
+                  isSearchable={true}
+                  onChange={handleSelectChange}
+                  defaultValue={
+                    control._defaultValues?.additionalPermissions || watch('additionalPermissions')
+                  }
+                  onAddPermission={handlePermissionUpdate}
+                />
+              </div>
+              <div className="relative">
+                <div className="flex items-center space-x-2">
+                  <input
+                    type="checkbox"
+                    id="extraPermission"
+                    checked={isChecked}
+                    onChange={handleCheckboxChange}
+                    className="form-checkbox mb-5 h-4 w-4 text-blue-600"
+                  />
+                  <Label>{t('form:input-label-extra-permission')}</Label>
+                </div>
+
+                {/* Conditionally Render Button */}
+                {isChecked && (
+                  <Button onClick={openModal}>
+                    {t('form:button-label-more-permission')}
+                  </Button>
+                )}
+
+                {/* Modal */}
+                <Modal open={modalIsOpen} onClose={closeModal}>
+                  <CreatePerm
+                    PermissionDatas={permissionProps}
+                    selectedPermissions={selectedPermissions}
+                    setSelectedPermissions={setSelectedPermissions}
+                    permissionId={permissionId}
+                    onSaveSuccess={closeModal}
+                    onPermissionCreate={handlePermissionUpdate}
+                  />
+                </Modal>
+              </div>
+            </Card>
+          </div>
+        }
+
+        <div className="my-5 flex flex-wrap border-b border-dashed border-border-base pb-8 sm:my-8">
+          <Description
+            title={t('form:input-label-logo')}
+            details={t('form:shop-logo-help-text')}
+            className="w-full px-0 pb-5 sm:w-4/12 sm:py-8 sm:pe-4 md:w-1/3 md:pe-5"
+          />
+
+          <Card className="w-full sm:w-8/12 md:w-2/3">
+            <FileInput name="logo" control={control} multiple={false} />
+          </Card>
+        </div>
+
+        <div className="my-5 flex flex-wrap border-b border-dashed border-border-base pb-8 sm:my-8">
+          <Description
+            title={t('form:shop-cover-image-title')}
+            details={coverImageInformation}
+            className="w-full px-0 pb-5 sm:w-4/12 sm:py-8 sm:pe-4 md:w-1/3 md:pe-5"
+          />
+
+          <Card className="w-full sm:w-8/12 md:w-2/3">
+            <FileInput name="cover_image" control={control} multiple={false} />
+          </Card>
+        </div>
+
         <div className="my-5 flex flex-wrap border-b border-dashed border-gray-300 pb-8 sm:my-8">
           <Description
             title={t('form:shop-payment-info')}
@@ -881,7 +868,7 @@ console.log("filterdEcomm&&&&",filterdEcomm);
           />
 
           <Card className="w-full sm:w-8/12 md:w-2/3">
-            <div className="mb-5">
+            {/* <div className="mb-5">
               <Label>{t('form:input-label-autocomplete')}</Label>
               <Controller
                 control={control}
@@ -894,7 +881,7 @@ console.log("filterdEcomm&&&&",filterdEcomm);
                   />
                 )}
               />
-            </div>
+            </div> */}
             <Input
               label={t('form:input-label-contact')}
               {...register('settings.contact')}
@@ -924,8 +911,11 @@ console.log("filterdEcomm&&&&",filterdEcomm);
                           control={control}
                           options={updatedIcons}
                           isClearable={true}
-                          defaultValue={item?.icon!}
+                          defaultValue={updatedIcons.find((icon) => icon.value === item?.icon)}
+                          getOptionLabel={(option: any) => option.label} // render JSX
+                          getOptionValue={(option: any) => option.value}
                         />
+
                       </div>
                       <Input
                         className="sm:col-span-2"

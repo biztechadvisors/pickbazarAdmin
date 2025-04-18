@@ -349,6 +349,7 @@ export function useCreateOrderByStock() {
     {
       onSuccess: (response) => {
         try {
+          console.log("response 352 ", response)
           const { id, payment_gateway, payment_intent } = response;
 
           if (!id) {

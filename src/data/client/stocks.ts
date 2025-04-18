@@ -19,8 +19,8 @@ export const stockClient = {
     return HttpClient.get<any>(`${API_ENDPOINTS.DEALER_SEALS_STOCK}/${customer_id}`);
   },
 
-  get: ({ id, language }: { id: string; language: string }) => {
-    return HttpClient.get<Order>(`${API_ENDPOINTS.STOCKBYID}/${id}`, {
+  get: ({ id, soldBy, language }: { id: string; soldBy: string; language: string }) => {
+    return HttpClient.get<Order>(`${API_ENDPOINTS.DEALER_SEALS_STOCK_BY_ID}/${id}/${soldBy}`, {
       language,
     });
   },
@@ -66,12 +66,12 @@ export const stockClient = {
   },
 
 
- // update stock by dealer
+  // update stock by dealer
 
- updateStockDataByDealer: async (user_id: any, updatedData: any) => {
-  return await HttpClient.put(
-    `${API_ENDPOINTS.STOCK_DEALER_UPDATE}/${user_id}`,
-    updatedData
-  );
-},
+  updateStockDataByDealer: async (user_id: any, updatedData: any) => {
+    return await HttpClient.put(
+      `${API_ENDPOINTS.STOCK_DEALER_UPDATE}/${user_id}`,
+      updatedData
+    );
+  },
 };

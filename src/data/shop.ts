@@ -46,10 +46,10 @@ export const useCreateShopMutation = () => {
       const { permissions } = getAuthCredentials();
       if (hasAccess(adminOnly, permissions)) {
         toast.success(t('common:successfully-created'));
-        return router.push(Routes.shop-list);
+        // router.push('/shops');
       }
       // router.push(Routes.dashboard);
-      router.push(Routes.shop-list);
+      // router.push('/shops');
     },
     // Always refetch after error or success:
     onSettled: () => {

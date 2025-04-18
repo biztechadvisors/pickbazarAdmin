@@ -3,33 +3,46 @@ import { toast } from 'react-toastify';
 import { permissionClient } from './client/permission';
 import { useRouter } from 'next/router';
 
-export const usePermissionData = () => {
+export const usePermissionData = (
+  {
+    search = '',
+    type = '',
+    page = 1,
+    limit = 20,
+  } = {}
+) => {
   const getUserId = () => {
     if (typeof window !== 'undefined') {
       return localStorage.getItem('userId');
     }
     return null;
   };
-  const { isLoading, error, data, refetch } = useQuery(
-    // ['permissions', localStorage.getItem('userId')], // Key includes userId for better caching
-    ['permissions', getUserId()],
+
+  const { isLoading, error, data: response, refetch } = useQuery(
+    ['permissions', getUserId(), search, type, page, limit],
     async () => {
-      // const userId = localStorage.getItem('userId');
       const userId = getUserId();
       if (!userId) {
         throw new Error('User ID is missing');
       }
-      const response = await permissionClient.getAllPermission(userId);
-      return response;
+      const { data, meta } = await permissionClient.getAllPermission(userId, search, type, page, limit);
+      return { data, meta };
     },
     {
-      // enabled: !!localStorage.getItem('userId'),
       enabled: !!getUserId(),
-      retry: false, // Optional: prevent retry on missing userId
+      retry: false,
     }
   );
-  return { data, isLoading, error, refetch };
+
+  return {
+    data: response?.data ?? [],
+    meta: response?.meta ?? {},
+    isLoading,
+    error,
+    refetch,
+  };
 };
+
 
 export const useSavePermissionData = () => {
   const router = useRouter();
@@ -37,6 +50,7 @@ export const useSavePermissionData = () => {
   const mutation = useMutation(permissionClient.updatePermission, {
     onSuccess: (data) => {
       toast.success('Permission updated successfully');
+      // router.push('/permission');
     },
     onError: (error) => {
       console.error('Error updating permission:', error);
@@ -47,6 +61,8 @@ export const useSavePermissionData = () => {
   const mutationPost = useMutation(permissionClient.postPermission, {
     onSuccess: (data) => {
       toast.success('Permission saved successfully');
+      // router.push('/permission');
+
     },
     onError: (error) => {
       console.error('Error saving permission:', error);

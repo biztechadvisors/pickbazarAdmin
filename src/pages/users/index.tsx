@@ -40,17 +40,17 @@ export default function Customers() {
     search: searchTerm,
     orderBy,
     sortedBy,
-    role: 'user',
+    type: 'Customer',
   });
 
   if (loading) return <Loader text={t('common:text-loading')} />;
   if (error) return <ErrorMessage message={error.message} />;
- 
-  const filteredUsers = users?.filter(user => 
-    user.permission?.type_name !== STAFF && 
+
+  const filteredUsers = users?.filter(user =>
+    user.permission?.type_name !== STAFF &&
     user.permission?.type_name !== DEALER
   );
-console.log("filteredUsers",filteredUsers)
+  console.log("filteredUsers", filteredUsers)
 
   function handleSearch({ searchText }: { searchText: string }) {
     setSearchTerm(searchText);
@@ -100,7 +100,7 @@ Customers.authenticate = {
 };
 Customers.Layout =
   getAuthCredentials().permissions?.[0] === OWNER ? OwnerLayout : AdminLayout;
-  // Customers.Layout = OwnerLayout;
+// Customers.Layout = OwnerLayout;
 export const getStaticProps = async ({ locale }: any) => ({
   props: {
     ...(await serverSideTranslations(locale, ['table', 'common', 'form'])),

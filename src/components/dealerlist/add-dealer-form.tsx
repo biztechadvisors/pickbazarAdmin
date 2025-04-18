@@ -26,6 +26,7 @@ import { AddressType } from '@/types';
 import { useAtomValue } from 'jotai';
 import { useShopQuery } from '@/data/shop';
 import { useEffect, useState } from 'react';
+import { update } from 'lodash';
 
 type FormValues = {
   category: any;
@@ -122,8 +123,6 @@ function SelectCategory({
 
       {fields.map((item, index) => (
         <div key={item.id} className="flex items-center">
-          {/* Log each item in the fields array */}
-          {console.log('Field Item:', item)}
 
           <SelectInput
             name={`dealerCategoryMargins[${index}].category`}
@@ -323,16 +322,15 @@ function SelectProduct({
             </div>
           )}
         </div>
-      ) : (
-        // If "Select All" is unchecked, show individual product dropdowns
+      ) :
         fields.length > 0 && (
           <div>
             {fields.map((item, index) => (
-              <div key={item.id} className="flex items-center">
+              <div key={item.id} className="flex items-center mb-3">
                 <SelectInput
                   name={`dealerProductMargins[${index}].product`}
                   control={control}
-                  defaultValue={dbValues[index]?.product || null}
+                  defaultValue={item.product || null}
                   getOptionLabel={(option: any) => `${option.name}`}
                   getOptionValue={(option: any) => option.name}
                   options={options}
@@ -342,22 +340,24 @@ function SelectProduct({
 
                 <Input
                   {...register(`dealerProductMargins.${index}.margin` as const)}
-                  value={fields[index]?.margin || ""}
+                  defaultValue={item.margin || ""}
                   onChange={(e) => {
                     const updatedMargin = e.target.value;
-                    const updatedFields = [...fields];
-                    updatedFields[index].margin = updatedMargin;
-                    replace(updatedFields);
+                    // Only update margin, not replace the entire fields array
+                    update(index, {
+                      ...fields[index],
+                      margin: updatedMargin,
+                    });
                   }}
                   variant="outline"
-                  className="ml-5 mb-3"
+                  className="ml-5"
                   placeholder={t('Margin %')}
                 />
 
                 <button
                   onClick={() => remove(index)}
                   type="button"
-                  className="text-sm text-red-500 transition-colors duration-200 hover:text-red-700 focus:outline-none sm:col-span-1 sm:mt-4 ml-3"
+                  className="text-sm text-red-500 transition-colors duration-200 hover:text-red-700 focus:outline-none sm:ml-3"
                 >
                   {t('form:button-label-remove')}
                 </button>
@@ -365,7 +365,7 @@ function SelectProduct({
             ))}
           </div>
         )
-      )}
+      }
 
       {!selectAll && (
         <Button className="mt-4" type="button" onClick={() => append({ product: null, margin: '' })}>

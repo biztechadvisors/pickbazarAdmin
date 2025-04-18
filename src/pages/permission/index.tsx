@@ -12,7 +12,7 @@ import { usePermissionData } from '@/data/permission';
 import { useMeQuery, useUserQuery } from '@/data/user';
 import { AllPermission } from '@/utils/AllPermission';
 import OwnerLayout from '@/components/layouts/owner';
-import { Company, OWNER, STAFF } from '@/utils/constants';
+import { Company, DEALER, OWNER, STAFF } from '@/utils/constants';
 import AdminLayout from '@/components/layouts/admin';
 import Pagination from '@/components/ui/pagination';
 
@@ -37,6 +37,7 @@ const PermissionComponent: React.FC & PermissionComponentProps = () => {
     isLoading: isPermissionLoading,
     error,
     data: permissionData,
+    meta: paginatorInfo,
   } = usePermissionData({
     page,
     search: searchTerm,
@@ -58,6 +59,7 @@ const PermissionComponent: React.FC & PermissionComponentProps = () => {
   const isOwner = permissions?.[0] === OWNER;
   const isStaffCreatedByOwner = permissions?.[0] === STAFF && isCreatedByOwner;
   const isCompany = permissions?.[0] === Company;
+  const isDealer = permissions?.[0] === DEALER;
 
   const [filteredPermissions, setFilteredPermissions] = useState([]);
   const [isLocalLoading, setIsLocalLoading] = useState(true);
@@ -71,8 +73,8 @@ const PermissionComponent: React.FC & PermissionComponentProps = () => {
           return permission.type_name === Company;
         } else if (isCompany) {
           return permission.type_name !== OWNER;
-        } else {
-          return false;
+        } else if (isDealer) {
+          return permission.type_name !== DEALER;
         }
       }).filter((permission) => {
         if (filterType) {
@@ -117,10 +119,10 @@ const PermissionComponent: React.FC & PermissionComponentProps = () => {
             value={filterType}
             className="rounded border border-gray-300 p-2"
           >
-            <option value="">All Types</option>
-            <option value={Company}>Company</option>
-            <option value={STAFF}>Staff</option>
-
+            {<option value="">All Types</option>}
+            {meData?.permission?.type_name == OWNER && <option value={Company}>Company</option>}
+            {<option value={STAFF}>Staff</option>}
+            {meData?.permission?.type_name != OWNER && <option value={DEALER}>Dealer</option>}
           </select>
           {canWrite && (
             <LinkButton href="/permission/create">Create Permission</LinkButton>
@@ -134,7 +136,7 @@ const PermissionComponent: React.FC & PermissionComponentProps = () => {
             <thead>
               <tr>
                 <th className="border p-2">S.No</th>
-                <th className="border p-2">ROLE</th>
+                <th className="border p-2">ROLE (TYPE)</th>
                 <th className="border p-2">NAME</th>
                 {meData?.permission == OWNER && <th className="border p-2">PERMISSION-TYPE</th>}
                 <th className="border p-2">PRIVILEGE</th>
@@ -204,9 +206,11 @@ const PermissionComponent: React.FC & PermissionComponentProps = () => {
             </tbody>
           </table>
           <Pagination
-            currentPage={page}
-            totalPages={permissionData.last_page}
-            onPageChange={setPage}
+            total={paginatorInfo.total}
+            current={paginatorInfo.currentPage}
+            pageSize={paginatorInfo.perPage}
+            onChange={setPage}
+          // showLessItems
           />
         </div>
       </div>

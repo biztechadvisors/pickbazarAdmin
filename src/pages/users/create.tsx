@@ -14,7 +14,7 @@ export default function CreateCustomerPage() {
   const { t } = useTranslation();
   const router = useRouter();
   const { id } = router.query;
-  
+
   const { data: userData, isLoading: userLoading } = useUserQuery(
     { id: id as string },
     { enabled: !!id }
@@ -25,10 +25,10 @@ export default function CreateCustomerPage() {
     <>
       <div className="flex border-b border-dashed border-border-base py-5 sm:py-8">
         <h1 className="text-lg font-semibold text-heading">
-        {id ? t('form:form-title-edit-customer') : t('form:form-title-create-customer')}
+          {id ? t('form:form-title-edit-customer') : t('form:form-title-create-customer')}
         </h1>
       </div>
-      <CustomerCreateForm initialValues={userData}/>
+      <CustomerCreateForm initialValues={userData} />
     </>
   );
 }

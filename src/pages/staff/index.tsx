@@ -51,15 +51,12 @@ export default function StaffsPage() {
   });
   const { data } = useMeQuery();
   const shopId = shopData?.id!;
+
   const { users, paginatorInfo, loading, error } = useUsersQuery({
-    // limit: 20,
     usrById: data?.id,
     email: searchTerm,
     limit: 10,
     page: page,
-    // name: searchTerm,
-    // orderBy,
-    // sortedBy,
     type: 'Staff',
   });
 
@@ -77,9 +74,9 @@ export default function StaffsPage() {
     me?.managed_shop?.id != shopId
   ) {
     router.replace(Routes.dashboard);
-  } 
+  }
   const filteredUsers = users?.filter(
-    (user) => user.permission?.type_name === STAFF
+    (user) => user.permission?.type_name === STAFF && data?.id != user.id
   );
 
   function handleSearch({ searchText }: { searchText: string }) {
@@ -109,7 +106,7 @@ export default function StaffsPage() {
       </Card>
 
       <StaffList
-        staffs={users}
+        staffs={filteredUsers}
         onPagination={handlePagination}
         paginatorInfo={paginatorInfo}
         onOrder={setOrder}

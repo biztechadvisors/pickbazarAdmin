@@ -3,6 +3,7 @@ export interface Item {
   price: number;
   quantity?: number;
   stock?: number;
+  margin?: number;
   [key: string]: any;
 }
 
@@ -47,6 +48,7 @@ export function removeItemOrQuantity(
     return [...acc, item];
   }, []);
 }
+
 // Simple CRUD for Item
 export function addItem(items: Item[], item: Item) {
   return [...items, item];
@@ -69,11 +71,13 @@ export function updateItem(
 export function removeItem(items: Item[], id: Item['id']) {
   return items.filter((existingItem) => existingItem.id !== id);
 }
+
 export function inStock(items: Item[], id: Item['id']) {
   const item = getItem(items, id);
   if (item) return item['quantity']! < item['stock']!;
   return false;
 }
+
 export const calculateItemTotals = (items: Item[]) =>
   items.map((item) => ({
     ...item,

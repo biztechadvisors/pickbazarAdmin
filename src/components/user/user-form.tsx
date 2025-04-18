@@ -1,95 +1,94 @@
+import { useEffect, useState } from 'react';
+import { Controller, useForm } from 'react-hook-form';
+import { yupResolver } from '@hookform/resolvers/yup';
+import { useTranslation } from 'next-i18next';
+import { useRouter } from 'next/router';
+import PhoneInput from 'react-phone-input-2';
+import 'react-phone-input-2/lib/style.css';
+import { toast } from 'react-toastify';
+
 import Button from '@/components/ui/button';
 import Input from '@/components/ui/input';
 import PasswordInput from '@/components/ui/password-input';
-import { Controller, useForm } from 'react-hook-form';
 import Card from '@/components/common/card';
 import Description from '@/components/ui/description';
-import { useMeQuery, useRegisterMutation, useUpdateUserMutation } from '@/data/user';
-import { useTranslation } from 'next-i18next';
-import { yupResolver } from '@hookform/resolvers/yup';
-import { customerValidationSchema } from './user-validation-schema';
 import Select from '../ui/select/select';
 import Label from '../ui/label';
-import { useRouter } from 'next/router';
-import { usePermissionData } from '@/data/permission';
-import { getAuthCredentials } from '@/utils/auth-utils';
 import Loader from '../ui/loader/loader';
-import { Company, DEALER, OWNER } from '@/utils/constants';
-import { toast } from 'react-toastify';
-// import InputMask from 'react-input-mask';
+
+import { customerValidationSchema } from './user-validation-schema';
+import { useMeQuery, useRegisterMutation, useUpdateUserMutation } from '@/data/user';
 import { useShopQuery } from '@/data/shop';
-import PhoneInput from 'react-phone-input-2';
-import 'react-phone-input-2/lib/style.css';
-import { useEffect, useState } from 'react';
-import { PermissionsProps, permissionType } from '@/types';
+import { getAuthCredentials } from '@/utils/auth-utils';
+import { usePermissionData } from '@/data/permission';
 import useFormValues from '@/lib/hooks/use-form-values';
 import { Routes } from '@/config/routes';
+import { permissionType } from '@/types';
 
 type FormValues = {
   name: string;
   email: string;
-  password: string;
+  password?: string;
   contact: string;
-  type: { value: string; label: string };
-  createdBy: string;
-  numberOfDealers: number; // Added new field type
+  type: { value: string; label: string; id?: string };
 };
 
-const defaultValues = {
+const defaultValues: FormValues = {
   name: '',
   email: '',
   password: '',
   contact: '',
   type: { value: '', label: '' },
-  numberOfDealers: 0, // Added default value for new field
 };
 
 const CustomerCreateForm = ({ initialValues }: { initialValues?: any }) => {
   const { t } = useTranslation();
   const router = useRouter();
   const { data: meData, isLoading: meLoading } = useMeQuery();
-  const { mutate: registerUser, isLoading: loading } = useRegisterMutation();
+  const { mutate: registerUser, isLoading: registering } = useRegisterMutation();
   const { mutate: updateUser, isLoading: updating } = useUpdateUserMutation();
-  const { id } = meData || {};
-  const {permissionData,permissionOptions:permissionOption} = useFormValues()
+  const { data: permissionData } = usePermissionData();
+  const { permissionOptions: getPermissionOptions } = useFormValues();
+
+  const { id: currentUserId } = meData || {};
   const { permissions } = getAuthCredentials();
-  // const phoneRegex = /^\+91[0-9]{10}$/;
-  const [value, setValue] = useState('');
+  const { id } = router.query;
 
-  const shopSlug =
-    typeof window !== 'undefined' ? localStorage.getItem('shopSlug') : null;
-
-  const { data: shopData, isLoading: fetchingShopId } = useShopQuery({
-    slug: shopSlug as string,
-  });
+  const shopSlug = typeof window !== 'undefined' ? localStorage.getItem('shopSlug') : null;
+  const { data: shopData } = useShopQuery({ slug: shopSlug as string });
 
   const {
     register,
     handleSubmit,
     setError,
-    formState: { errors },
     control,
+    setValue,
+    formState: { errors },
   } = useForm<FormValues>({
-    defaultValues: initialValues ? {
-      name: initialValues.name,
-      email: initialValues.email,
-      contact: initialValues.contact,
-      type: { 
-        value: initialValues.permission?.type_name,
-        label: initialValues.permission?.type_name 
-      },
-      // Don't prefill password for security
-    } : defaultValues,
+    defaultValues: initialValues
+      ? {
+        name: initialValues.name,
+        email: initialValues.email,
+        contact: initialValues.contact,
+        type: {
+          value: initialValues.permission?.type_name,
+          label: initialValues.permission?.permission_name,
+          id: initialValues.permission?.id,
+        },
+      }
+      : defaultValues,
     resolver: yupResolver(customerValidationSchema),
   });
+
   useEffect(() => {
     if (initialValues) {
       setValue('name', initialValues.name);
       setValue('email', initialValues.email);
       setValue('contact', initialValues.contact);
-      setValue('type', { 
+      setValue('type', {
         value: initialValues.permission?.type_name,
-        label: initialValues.permission?.type_name 
+        label: initialValues.permission?.permission_name,
+        id: initialValues.permission?.id,
       });
     }
   }, [initialValues, setValue]);
@@ -98,99 +97,83 @@ const CustomerCreateForm = ({ initialValues }: { initialValues?: any }) => {
     return <Loader />;
   }
 
-  const permissionOptions = permissionOption(permissionType.DEALER);
-  if (permissions[0] === DEALER || permissions[0] === OWNER || permissions[0] === Company) {
-    // permissionOptions.push(
-    //   { value: 'Customer', label: 'Customer', id: 'customer_id' },
-    //   { value: 'Staff', label: 'Staff', id: 'staff_id' }
-    // );
-  }
+  const permissionOptions =
+    getPermissionOptions(permissionType.DEALER).length > 0
+      ? getPermissionOptions(permissionType.DEALER)
+      : getPermissionOptions(permissionType.STAFF);
 
-
-  async function onSubmit({
+  const onSubmit = async ({
     name,
     email,
     password,
     contact,
     type,
-    numberOfDealers, // Added new field to destructure
-  }: FormValues) {
-    const { id } = router.query;
-  
-     
+  }: FormValues) => {
+    const permissionPayload = {
+      type_name: type?.value,
+      permission_name: type?.label,
+      ...(type?.id && { id: type.id }),
+    };
+
     if (id) {
-      // Prepare the update payload according to your API expectations
       const updatePayload = {
         name,
         email,
-        // profile: {
-          contact,
-        // },
-        // Only include password if it's provided and not empty
+        contact,
         ...(password && password.trim() !== '' && { password }),
-        // Send permission as an object with type_name
-        permission: {
-          id:  type?.id || initialValues?.permission?.id, 
-          type_name: type?.value || initialValues?.permission?.type_name,
-          permission_name: type?.label || initialValues?.permission?.permission_name,
-        },
+        permission: permissionPayload,
       };
-  
-      console.log('Update payload:', { id, input: updatePayload });
-  
+
       updateUser(
+        { id: id as string, input: updatePayload },
         {
-          id: id as string,
-          input: updatePayload // Match the expected { id, input } structure
-        },
-        {
-          onError: (error) => {
-            console.error('Update error:', error.response?.data);
-            // Handle field-specific errors if they exist
-            if (error?.response?.data?.errors) {
-              Object.entries(error.response.data.errors).forEach(([field, messages]) => {
+          onError: (error: any) => {
+            const apiErrors = error?.response?.data?.errors || error?.response?.data;
+            if (apiErrors) {
+              Object.entries(apiErrors).forEach(([field, messages]) => {
                 setError(field as keyof FormValues, {
                   type: 'manual',
-                  message: (messages as string[]).join(', '),
+                  message: (messages as string[])[0],
                 });
               });
             } else {
-              // Generic error message
               toast.error(t('common:update-failed'));
             }
           },
           onSuccess: () => {
-            // toast.success(t('common:successfully-updated'));
+            toast.success(t('common:successfully-updated'));
             router.push(Routes.user.list);
-          }
+          },
         }
       );
-    }else {
-    registerUser(
-      {
-        name,
-        email,
-        password, 
-          contact, 
-        createdBy: meData?.id,
-        permission: type?.value,
-        // numberOfDealers,
-        // managed_shop: shopData,
-        shopSlug,
-      },
-      {
-        onError: (error: any) => {
-          Object.keys(error?.response?.data).forEach((field: string) => {
-            setError(field as keyof FormValues, {
-              type: 'manual',
-              message: error?.response?.data[field][0],
-            });
-          });
+    } else {
+      registerUser(
+        {
+          name,
+          email,
+          password,
+          contact,
+          createdBy: currentUserId,
+          permission: type?.value,
+          shopSlug,
         },
-      }
-    );
-  }
-  }
+        {
+          onError: (error: any) => {
+            const apiErrors = error?.response?.data;
+            if (apiErrors) {
+              Object.keys(apiErrors).forEach((field: string) => {
+                setError(field as keyof FormValues, {
+                  type: 'manual',
+                  message: apiErrors[field][0],
+                });
+              });
+            }
+          },
+        }
+      );
+    }
+  };
+
   return (
     <form onSubmit={handleSubmit(onSubmit)} noValidate>
       <div className="my-5 flex flex-wrap sm:my-8">
@@ -199,7 +182,6 @@ const CustomerCreateForm = ({ initialValues }: { initialValues?: any }) => {
           details={t('form:customer-form-info-help-text')}
           className="w-full px-0 pb-5 sm:w-4/12 sm:py-8 sm:pe-4 md:w-1/3 md:pe-5"
         />
-
         <Card className="w-full sm:w-8/12 md:w-2/3">
           <Input
             label={t('form:input-label-name')}
@@ -207,7 +189,7 @@ const CustomerCreateForm = ({ initialValues }: { initialValues?: any }) => {
             type="text"
             variant="outline"
             className="mb-4"
-            error={t(errors.name?.message!)}
+            error={t(errors.name?.message || '')}
           />
           <Input
             label={t('form:input-label-email')}
@@ -215,23 +197,15 @@ const CustomerCreateForm = ({ initialValues }: { initialValues?: any }) => {
             type="email"
             variant="outline"
             className="mb-4"
-            error={t(errors.email?.message!)}
+            error={t(errors.email?.message || '')}
           />
           <PasswordInput
             label={t('form:input-label-password')}
             {...register('password')}
-            error={t(errors.password?.message!)}
+            error={t(errors.password?.message || '')}
             variant="outline"
             className="mb-4"
           />
-          {/* <Input
-            label={t('form:input-label-contact')}
-            {...register('contact')}
-            type="text"
-            variant="outline"
-            className="mb-4"
-            error={t(errors.contact?.message!)}
-          /> */}
           <Controller
             name="contact"
             control={control}
@@ -253,7 +227,7 @@ const CustomerCreateForm = ({ initialValues }: { initialValues?: any }) => {
               />
             )}
           />
-          <Controller
+          {/* <Controller
             name="type"
             control={control}
             render={({ field }) => (
@@ -261,44 +235,37 @@ const CustomerCreateForm = ({ initialValues }: { initialValues?: any }) => {
                 <Label className="mt-4">{t('form:input-label-type')}</Label>
                 <Select
                   {...field}
-                  getOptionLabel={(option: { label: string }) => option.label}
-                  getOptionValue={(option: { value: string }) => option.value}
+                  getOptionLabel={(option) => option.label}
+                  getOptionValue={(option) => option.value}
                   options={permissionOptions}
-                  isClearable={true}
-                  isLoading={loading}
+                  isClearable
+                  isLoading={registering}
                   className="mb-4"
                 />
               </>
             )}
-          />
-          {/* {permissions[0] === OWNER ? (
-            <Input
-              label={t('form:input-label-dealers')}
-              {...register('numberOfDealers')}
-              type="number"
-              variant="outline"
-              className="mb-4"
-              error={t(errors.numberOfDealers?.message!)}
-            />
-          ) : null} */}
+          /> */}
         </Card>
       </div>
 
       <div className="mb-4 text-end">
         <Button
           variant="outline"
-          onClick={router.back}
+          onClick={() => router.back()}
           className="me-4"
           type="button"
         >
           {t('form:button-label-back')}
         </Button>
 
-        <Button loading={loading || updating} disabled={loading  || updating}>
-        {initialValues ? t('form:button-label-update-customer') : t('form:button-label-create-customer')}
+        <Button loading={registering || updating} disabled={registering || updating}>
+          {initialValues
+            ? t('form:button-label-update-customer')
+            : t('form:button-label-create-customer')}
         </Button>
       </div>
     </form>
   );
 };
+
 export default CustomerCreateForm;
