@@ -98,7 +98,6 @@ const StockList = ({ data, me, onSort, onOrder }: IProps) => {
     updateQuantity(data);
   };
 
-  // console.log("product 100 ", product)
   const columns = [
     {
       title: 'ID',
@@ -255,8 +254,6 @@ const StockList = ({ data, me, onSort, onOrder }: IProps) => {
       },
     },
   ];
-
-  // console.log("stocks ", stocks)
 
   return (
     <div className="mb-6 overflow-hidden rounded shadow">

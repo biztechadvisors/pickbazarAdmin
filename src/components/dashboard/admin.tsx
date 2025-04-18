@@ -85,8 +85,8 @@ export default function Dashboard() {
     loading: orderLoading,
   } = useOrdersQuery(queryConfig);
 
-  console.log("orderData 78 ", orderData)
 
+  
   // Dealer Sales (if Dealer)
   const { data: stockSalesData } = useGetStockSales(customerId, shopId);
   const DealerSalesList = stockSalesData?.data;

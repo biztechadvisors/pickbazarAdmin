@@ -14,9 +14,6 @@ export { getServerSideProps } from '@/framework/rest/order.ssr';
 export default function OrderPage() {
     const { query } = useRouter();
     const { t } = useTranslation();
-
-    console.log(" query.tracking_number 17 ", query.tracking_number)
-
     const { order, isLoading, isFetching } = useOrder({
         tracking_number: query.tracking_number!.toString(),
     });

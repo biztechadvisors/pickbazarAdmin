@@ -1,5 +1,5 @@
 export default function printBarcode(data: any, variation?: any) {
-    console.log("variation -- ", variation)
+    
     const barcodeValue = variation
         ? `${data.shop_id}-${data.id}-${variation?.id}-shprovar`
         : `${data.shop_id}-${data.id}-shpro`;

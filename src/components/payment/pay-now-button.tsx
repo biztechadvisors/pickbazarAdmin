@@ -25,8 +25,6 @@ const PayNowButton: React.FC<Props> = ({
     recall_gateway: true as boolean,
   });
 
-  console.log("27 pay now ")
-
   async function handlePayNow() {
     await getPaymentIntentQuery();
   }

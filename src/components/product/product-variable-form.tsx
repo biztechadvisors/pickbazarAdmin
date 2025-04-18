@@ -43,8 +43,6 @@ export default function ProductVariableForm({
     language: locale,
   });
 
-  // console.log("attributes 45 --- ", attributes)
-
   const { register, control, watch, setValue, getValues, formState: { errors } } = useFormContext();
 
   const variations = watch('variations');
@@ -111,7 +109,6 @@ export default function ProductVariableForm({
     }, []);
 
     setValue('variations', attributeValues);
-    // console.log("variations ", variations)
 
     const options = attributes.map((attr: any) => ({
       name: attr.attribute.name,
@@ -174,25 +171,15 @@ export default function ProductVariableForm({
                     <div className="mt-5 rounded border border-gray-300 p-5">
                       <div className="grid gap-5">
                         {attributes?.items?.map((attribute, attributeIndex) => {
-                          // console.log("attribute 177 --- ", attribute)
-                          // console.log("attributeIndex 178 --- ", attributeIndex)
-
-                          // console.log("initialValues 181 --- ", initialValues.variation_options)
 
                           const initialOption = initialValues?.variation_options?.[fieldIndex];
                           if (initialOption) {
 
                           }
-                          // console.log("initialOption --- 187 ", initialOption)
 
                           const initialAttribute = initialOption?.options?.[attributeIndex];
-                          console.log("initialAttribute --- 190 ", initialAttribute)
-
-                          const initialAttributeValue = initialAttribute?.value || [];
-                          // console.log("initialAttributeValue --- 193 ", initialAttributeValue)
-
-                          const initialAttributeName = initialAttribute?.attribute || null;
-                          console.log("initialAttributeName ---- 196 ", initialAttributeName)
+                          const initialAttributeValue = initialAttribute?.value || [];                          
+                          const initialAttributeName = initialAttribute?.attribute || null;                         
 
                           return (
                             <div key={attribute.id} className="flex flex-wrap items-center">

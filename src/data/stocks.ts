@@ -90,7 +90,6 @@ export const useOrderSalesQuery = ({
     isLoading = false;
   }
 
-  console.log('STOCKBYID ', data);
 
   return {
     order: data,

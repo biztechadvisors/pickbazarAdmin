@@ -50,7 +50,6 @@ export default function Customers() {
     user.permission?.type_name !== STAFF &&
     user.permission?.type_name !== DEALER
   );
-  console.log("filteredUsers", filteredUsers)
 
   function handleSearch({ searchText }: { searchText: string }) {
     setSearchTerm(searchText);

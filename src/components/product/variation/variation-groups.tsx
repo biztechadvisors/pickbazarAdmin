@@ -8,7 +8,6 @@ interface Props {
 
 
 const VariationGroups: React.FC<Props> = ({ variations }) => {
-  console.log("variations-10", variations);
 
   const { attributes, setAttributes } = useAttributes();
 
@@ -25,8 +24,6 @@ const VariationGroups: React.FC<Props> = ({ variations }) => {
     acc[name].push(rest);
     return acc;
   }, {});
-
-  console.log("groupedVariations", groupedVariations); // Debugging log
 
   return (
     <>

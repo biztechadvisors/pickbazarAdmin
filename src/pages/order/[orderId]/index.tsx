@@ -119,7 +119,6 @@ export default function OrderDetailsPage() {
   async function handleDownloadInvoice() {
     try {
       const response = await refetch();
-      console.log("response ", response)
       if (!response || !response.data) {
         throw new Error('Invalid response received from backend');
       }

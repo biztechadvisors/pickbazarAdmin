@@ -141,7 +141,6 @@ const AddStaffForm: React.FC<AddStaffFormProps> = ({
   useEffect(() => {
     if (isEditMode && (initialValues || userData)) {
       const data = initialValues || userData;
-      console.log('Initial data for form:', data);
       const formValues = {
         name: data.name,
         email: data.email,
@@ -150,8 +149,6 @@ const AddStaffForm: React.FC<AddStaffFormProps> = ({
           ? { value: data.permission.permission_name, label: data.permission.permission_name }
           : null,
       };
-
-      console.log('Setting form values:', formValues);
       reset(formValues);
 
       // Explicitly set contact value to ensure it's captured
@@ -209,7 +206,6 @@ const AddStaffForm: React.FC<AddStaffFormProps> = ({
 
   const handlePermissionCreated = (newPermission: any) => {
     const newPermissionOption = { value: newPermission.id, label: newPermission.permission_name };
-    console.log("HandlePermissionCreates%%%%%", newPermissionOption)
     setSelectedPermission(newPermissionOption);
     setValue("type", newPermissionOption, { shouldValidate: true });
     setPermissionOptions((prevOptions) => [...prevOptions, newPermissionOption]);
@@ -253,9 +249,6 @@ const AddStaffForm: React.FC<AddStaffFormProps> = ({
         },
         shopSlug,
       };
-
-      console.log('Final Update Payload:', JSON.stringify(updatePayload, null, 2));
-
       updateUser(
         {
           id: query.id as string,
@@ -273,9 +266,7 @@ const AddStaffForm: React.FC<AddStaffFormProps> = ({
         }
       );
     } else {
-
-      console.log("add staff 278 ")
-      // Create operation remains the same
+          // Create operation remains the same
       addStaff({
         name,
         email,
@@ -289,7 +280,6 @@ const AddStaffForm: React.FC<AddStaffFormProps> = ({
   }
   if (loadingUser) return <Loader />;
 
-  console.log("dataFromChild ", dataFromChild)
   const handleDataFromChild = (data) => {
     setDataFromChild(data);
   };
@@ -340,7 +330,6 @@ const AddStaffForm: React.FC<AddStaffFormProps> = ({
                 country="in"
                 value={value}
                 onChange={(phone) => {
-                  console.log('Phone input changed:', phone);
                   onChange(phone);
                 }}
                 inputStyle={{

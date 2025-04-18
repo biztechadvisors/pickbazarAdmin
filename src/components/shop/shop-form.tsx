@@ -190,8 +190,7 @@ const ShopForm = ({ initialValues }: { initialValues?: any }) => {
     setIsOpen(false);
   }
 
-  function openViewPermissionModal(permissionData: any) {
-    console.log('permissionData 194 ', permissionData)
+  function openViewPermissionModal(permissionData: any) {    
     setViewPermissionData(permissionData);
     setViewPermissionModalOpen(true);
   }
