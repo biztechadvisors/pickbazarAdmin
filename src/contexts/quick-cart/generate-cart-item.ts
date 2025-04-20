@@ -10,7 +10,7 @@ interface Item {
   price: number;
   sale_price?: number;
   quantity?: number;
-  margin?: number;
+  margin?: string;
   [key: string]: unknown;
 }
 interface Variation {
@@ -21,8 +21,9 @@ interface Variation {
   quantity: number;
   [key: string]: unknown;
 }
-export function generateCartItem(item: Item, variation: Variation) {
+export function generateCartItem(item: Item, variation?: Variation) {
 
+  console.log("item 26 ", item)
   const {
     id,
     name,
@@ -35,7 +36,7 @@ export function generateCartItem(item: Item, variation: Variation) {
     is_digital,
     margin,
   } = item;
-
+  console.log('margin 39 -- ', margin)
   if (!isEmpty(variation)) {
     return {
       id: `${id}.${variation.id}`,

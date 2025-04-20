@@ -186,13 +186,13 @@ export default function ProductVariableForm({
                           // console.log("initialOption --- 187 ", initialOption)
 
                           const initialAttribute = initialOption?.options?.[attributeIndex];
-                          console.log("initialAttribute --- 190 ", initialAttribute)
+                          // console.log("initialAttribute --- 190 ", initialAttribute)
 
                           const initialAttributeValue = initialAttribute?.value || [];
                           // console.log("initialAttributeValue --- 193 ", initialAttributeValue)
 
                           const initialAttributeName = initialAttribute?.attribute || null;
-                          console.log("initialAttributeName ---- 196 ", initialAttributeName)
+                          // console.log("initialAttributeName ---- 196 ", initialAttributeName)
 
                           return (
                             <div key={attribute.id} className="flex flex-wrap items-center">

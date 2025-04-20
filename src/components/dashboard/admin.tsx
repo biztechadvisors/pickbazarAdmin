@@ -85,8 +85,6 @@ export default function Dashboard() {
     loading: orderLoading,
   } = useOrdersQuery(queryConfig);
 
-  console.log("orderData 78 ", orderData)
-
   // Dealer Sales (if Dealer)
   const { data: stockSalesData } = useGetStockSales(customerId, shopId);
   const DealerSalesList = stockSalesData?.data;
@@ -179,7 +177,7 @@ export default function Dashboard() {
           iconBgStyle={{ backgroundColor: '#93C5FD' }}
           price={
             canWrite
-              ? analyticsData?.totalShops ?? 0
+              ? analyticsData?.totalDealers ?? 0
               : analyticsData?.totalCustomers ?? 0
           }
         />

@@ -97,7 +97,6 @@ const CreatePerm = ({ onPermissionCreate, PermissionDatas, selectedPermissions, 
   };
 
   const handleCheckboxChange = (menuItem, type, isChecked) => {
-    console.log("menuItem 106", menuItem)
     if (viewMode) return;
 
     const permissionIndex = selectedPermissions.findIndex(
@@ -188,7 +187,6 @@ const CreatePerm = ({ onPermissionCreate, PermissionDatas, selectedPermissions, 
 
 
   const filteredData = () => {
-    console.log("menusData 197 ", menusData)
     if (canWrite) {
       return Object.entries(menusData).map(([key, value], index) => ({
         [key]: value,

@@ -141,8 +141,6 @@ const DealerAddForm: React.FC<AddDealerFormProps> = ({ defaultVal, defaultPermis
       setValue('type', selectedPermission, { shouldValidate: true });
     }
 
-    console.log('selectedPermission ', selectedPermission)
-
   }, [selectedPermission, setValue]);
 
   function onSubmit({ name, email, password, contact, type }: FormValues) {
@@ -155,8 +153,6 @@ const DealerAddForm: React.FC<AddDealerFormProps> = ({ defaultVal, defaultPermis
       );
       // permissionToSubmit = dealerPermissions?.[0] || type; // Use the first Dealer-specific permission
     }
-
-    console.log("permissionToSubmit", permissionToSubmit);
 
     registerUser(
       {
@@ -193,8 +189,6 @@ const DealerAddForm: React.FC<AddDealerFormProps> = ({ defaultVal, defaultPermis
   const handleDataFromChild = (data) => {
     setDataFromChild(data);
   };
-
-  console.log("control 199 : ", control)
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} noValidate>

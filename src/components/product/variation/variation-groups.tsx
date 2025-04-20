@@ -5,16 +5,31 @@ import { useAttributes } from './attributes.context';
 interface Props {
   variations: any;
 }
+
+
 const VariationGroups: React.FC<Props> = ({ variations }) => {
+
   const { attributes, setAttributes } = useAttributes();
+
   const replaceHyphens = (str: string) => {
     return str.replace(/-/g, ' ');
   };
+
+  // Convert variations array into an object where keys are variation names
+  const groupedVariations = variations?.reduce((acc: any, variation: any) => {
+    const { name, ...rest } = variation;
+    if (!acc[name]) {
+      acc[name] = [];
+    }
+    acc[name].push(rest);
+    return acc;
+  }, {});
+
   return (
     <>
-      {Object.keys(variations).map((variationName, index) => (
+      {Object.keys(groupedVariations).map((variationName, index) => (
         <div
-          className="flex items-center border-b  border-border-200 border-opacity-70 py-4 first:pt-0 last:border-b-0 last:pb-0"
+          className="flex items-center border-b border-border-200 border-opacity-70 py-4 first:pt-0 last:border-b-0 last:pb-0"
           key={index}
         >
           <span className="me-4 inline-block min-w-[60px] whitespace-nowrap text-sm font-semibold capitalize leading-none text-heading">
@@ -30,7 +45,7 @@ const VariationGroups: React.FC<Props> = ({ variations }) => {
               }}
             >
               <div className="space-s-4 flex w-full">
-                {variations[variationName].map((attribute: any) => (
+                {groupedVariations[variationName].map((attribute: any) => (
                   <Attribute
                     className={variationName}
                     color={attribute.meta ? attribute.meta : attribute?.value}

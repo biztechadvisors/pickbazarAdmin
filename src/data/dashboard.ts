@@ -7,6 +7,7 @@ import { productClient } from '@/data/client/product';
 export interface AnalyticsQuery {
   customerId: number;
   state: string;
+  shop_id: number;
 }
 
 export function useAnalyticsQuery(query: AnalyticsQuery) {

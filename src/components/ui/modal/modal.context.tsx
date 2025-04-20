@@ -1,3 +1,4 @@
+import { stat } from 'fs';
 import React from 'react';
 
 export type MODAL_VIEWS =
@@ -103,7 +104,9 @@ ModalActionContext.displayName = 'ModalActionContext';
 export const ModalProvider: React.FC<{ children?: React.ReactNode }> = ({
   children,
 }) => {
+   
   const [state, dispatch] = React.useReducer(modalReducer, initialState);
+  console.log("state",state)
   return (
     <ModalStateContext.Provider value={state}>
       <ModalActionContext.Provider value={dispatch}>
@@ -123,11 +126,12 @@ export function useModalState() {
 
 export function useModalAction() {
   const dispatch = React.useContext(ModalActionContext);
-  if (dispatch === undefined) {
+   if (dispatch === undefined) {
     throw new Error(`useModalAction must be used within a ModalProvider`);
   }
   return {
     openModal(view?: MODAL_VIEWS, payload?: unknown) {
+      console.log("Opening modal:", { view, payload });
       dispatch({ type: 'open', view, payload });
     },
     closeModal() {
@@ -135,3 +139,4 @@ export function useModalAction() {
     },
   };
 }
+

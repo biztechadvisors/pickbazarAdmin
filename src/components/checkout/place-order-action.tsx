@@ -122,8 +122,6 @@ export const PlaceOrderAction: React.FC<PlaceOrderActionProps> = ({ className, c
     return sum + (isNaN(itemTax) ? 0 : itemTax);
   }, 0);
 
-  console.log('taxAmount ', taxAmount)
-
   const netAmount = Math.max(0, grossTotal - taxAmount);
 
   const shopSlug = typeof window !== 'undefined' ? localStorage.getItem('shopSlug') : null;

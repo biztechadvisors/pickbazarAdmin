@@ -30,7 +30,7 @@ export const useOrdersQuery = (
       ...options,
     }
   );
-  console.log('data 33 ', data)
+
   return {
     orders: data?.data ?? [],
     paginatorInfo: mapPaginatorData(data),

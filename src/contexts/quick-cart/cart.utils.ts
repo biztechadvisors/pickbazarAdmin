@@ -3,7 +3,7 @@ export interface Item {
   price: number;
   quantity?: number;
   stock?: number;
-  margin?: number;
+  margin?: string;
   [key: string]: any;
 }
 
