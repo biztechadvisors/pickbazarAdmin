@@ -3,7 +3,7 @@ import Layout from '@/components/layouts/admin';
 import Search from '@/components/common/search';
 import CouponList from '@/components/coupon/coupon-list';
 import LinkButton from '@/components/ui/link-button';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import ErrorMessage from '@/components/ui/error-message';
 import Loader from '@/components/ui/loader/loader';
 import { useTranslation } from 'next-i18next';
@@ -30,6 +30,11 @@ export default function Coupons() {
     orderBy,
     sortedBy,
   });
+
+  const totalPages = Math.ceil((paginatorInfo?.pagination.totalItems || 0) / (paginatorInfo?.pagination.pageSize || 1));
+  useEffect(() => {
+    if (page > totalPages) setPage(1);
+  }, [paginatorInfo?.pagination.totalItems, paginatorInfo?.pagination.pageSize, page]);
 
   const { permissions } = getAuthCredentials();
   

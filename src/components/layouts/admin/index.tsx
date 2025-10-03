@@ -37,6 +37,8 @@ const AdminLayout: React.FC<{ children?: React.ReactNode }> = ({
   const shopStatus = data?.managed_shop?.is_active ? 'active' : 'inactive' || data?.dealer?.id?.is_active ? 'active' : 'inactive';
   const isDisabled = shopStatus !== 'active';
 
+  console.log("matched________________________________", matched)
+
   useEffect(() => {
     if (typeof window !== 'undefined' && data) {
       let newShopSlug = null;
@@ -460,7 +462,7 @@ const AdminLayout: React.FC<{ children?: React.ReactNode }> = ({
         ].includes(link.href)
     );
   }
-
+console.log("matchedLinks",matchedLinks)
   const SidebarItemMap = () => (
     <Fragment>
       {matchedLinks.map(({ href, label, icon }) => (

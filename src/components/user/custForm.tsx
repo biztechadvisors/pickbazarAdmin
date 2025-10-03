@@ -281,6 +281,8 @@ const CustForm = () => {
 
   console.log("selectedPermissionType", selectedPermissionType)
 
+  console.log("id-------------------------------------", id)
+
   const shopSlug =
     typeof window !== 'undefined' ? localStorage.getItem('shopSlug') : null;
 
@@ -332,9 +334,8 @@ const CustForm = () => {
         password,
         contact,
         createdBy: id,
-        permission: selectedPermissionType?.name,
-        numberOfDealers,
-        managed_shop: shopData, // Added new field to payload
+        permission: selectedPermissionType?.e,
+       
       },
       {
         onError: (error: any) => {

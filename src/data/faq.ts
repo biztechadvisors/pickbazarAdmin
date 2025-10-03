@@ -10,8 +10,7 @@ import { API_ENDPOINTS } from './client/api-endpoints';
 import { faqClient } from './client/faq';
 
 export const useCreateFaqClassMutation = (shop_id) => {
-// const shopId = shop_id
-  console.log('faqShopID = ', shop_id)
+// const shopId = shop_id 
   const queryClient = useQueryClient();
   const router = useRouter();
   const { t } = useTranslation();
@@ -41,8 +40,7 @@ export const useFaqQuery = (
       keepPreviousData: true,
       ...options,
     }
-  );
-  console.log('datafaq = ',data)
+  ); 
   return {
     faq: data || [],
     paginatorInfo: mapPaginatorData(data),
@@ -50,21 +48,44 @@ export const useFaqQuery = (
     loading: isLoading,
   };
 };
-
 export const useUpdateFaqClassMutation = (shop_id) => {
-  console.log('shop_id =', shop_id)
+  
   const { t } = useTranslation();
   const queryClient = useQueryClient();
+  const router = useRouter();
 
-  return useMutation((data) => faqClient.update({ ...data , shop_id }), {
-    onSuccess: () => {
-      toast.success(t('common:successfully-updated'));
+  return useMutation(
+    (data) => {
+      // Combine the shop_id and data to ensure it's correctly passed to the update method
+     // Check the data being passed
+      return faqClient.update({ ...data, shop_id }); // Make sure the shop_id is being passed correctly
     },
-    onSettled: () => {
-      queryClient.invalidateQueries(API_ENDPOINTS.FAQ);
-    },
-  });
+    {
+      onSuccess: () => {
+        router.push(Routes.faq.list);
+        toast.success(t('common:successfully-updated'));
+      },
+      onSettled: () => {
+        queryClient.invalidateQueries(API_ENDPOINTS.FAQ);
+      },
+    }
+  );
 };
+// export const useUpdateFaqClassMutation = (shop_id) => {
+//   console.log('shop_id =', shop_id)
+//   const { t } = useTranslation();
+//   const queryClient = useQueryClient();
+//   const router = useRouter();
+//   return useMutation((data) => faqClient.update({ ...data , shop_id }), {
+//     onSuccess: () => {
+//       router.push(Routes.faq.list);
+//       toast.success(t('common:successfully-updated'));
+//     },
+//     onSettled: () => {
+//       queryClient.invalidateQueries(API_ENDPOINTS.FAQ);
+//     },
+//   });
+// };
 
 export const useDeleteFaqClassMutation = () => {
   const queryClient = useQueryClient();
@@ -82,7 +103,7 @@ export const useDeleteFaqClassMutation = () => {
 };
 
 export const useFaqsingleDataQuery = (id: string) => {
-  console.log('id = ',id)
+  
   return useQuery<Faq, Error>([API_ENDPOINTS.FAQ, id], () =>
     faqClient.get({ id })
   );

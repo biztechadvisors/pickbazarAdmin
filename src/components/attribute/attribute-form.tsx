@@ -24,6 +24,8 @@ type IProps = {
   initialValues?: Attribute | null;
 };
 export default function CreateOrUpdateAttributeForm({ initialValues }: IProps) {
+
+  console.log("0000000000000000000000000", initialValues)
   const router = useRouter();
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
@@ -37,8 +39,9 @@ export default function CreateOrUpdateAttributeForm({ initialValues }: IProps) {
     },
     { enabled: !!shop }
   );
+  const shopId = shopData?.id || initialValues?.shop_id;
 
-  const shopId = shopData?.id!;
+  // const shopId = shopData?.id!;
   const {
     register,
     handleSubmit,
@@ -55,11 +58,15 @@ export default function CreateOrUpdateAttributeForm({ initialValues }: IProps) {
     useCreateAttributeMutation();
   const { mutate: updateAttribute, isLoading: updating } =
     useUpdateAttributeMutation();
-  const onSubmit = (values: FormValues) => {
 
+  const onSubmit = (values: FormValues) => {
+    if (!shopId) {
+      setErrorMessage('Shop ID is required');
+      return;
+    }
     if (
-      !initialValues &&
-      !initialValues?.translated_languages?.includes(router.locale!) ||
+      (!initialValues &&
+        !initialValues?.translated_languages?.includes(router.locale!)) ||
       !initialValues?.language?.includes(router.locale!)
     ) {
       createAttribute(
@@ -95,6 +102,9 @@ export default function CreateOrUpdateAttributeForm({ initialValues }: IProps) {
       });
     }
   };
+
+
+  console.log("initialValues________________AttributesValue", initialValues)
   return (
     <>
       {errorMessage ? (
@@ -110,11 +120,12 @@ export default function CreateOrUpdateAttributeForm({ initialValues }: IProps) {
         <div className="my-5 flex flex-wrap border-b border-dashed border-border-base pb-8 sm:my-8">
           <Description
             title={t('common:attribute')}
-            details={`${initialValues
-              ? t('form:item-description-update')
-              : t('form:item-description-add')
-              } ${t('form:form-description-attribute-name')}`}
-            className="sm:pe-4 md:pe-5 w-full px-0 pb-5 sm:w-4/12 sm:py-8 md:w-1/3"
+            details={`${
+              initialValues
+                ? t('form:item-description-update')
+                : t('form:item-description-add')
+            } ${t('form:form-description-attribute-name')}`}
+            className="w-full px-0 pb-5 sm:w-4/12 sm:py-8 sm:pe-4 md:w-1/3 md:pe-5"
           />
 
           <Card className="w-full sm:w-8/12 md:w-2/3">
@@ -131,11 +142,12 @@ export default function CreateOrUpdateAttributeForm({ initialValues }: IProps) {
         <div className="my-5 flex flex-wrap sm:my-8">
           <Description
             title={t('common:attribute-values')}
-            details={`${initialValues
-              ? t('form:item-description-update')
-              : t('form:item-description-add')
-              } ${t('form:form-description-attribute-value')}`}
-            className="sm:pe-4 md:pe-5 w-full px-0 pb-5 sm:w-4/12 sm:py-8 md:w-1/3"
+            details={`${
+              initialValues
+                ? t('form:item-description-update')
+                : t('form:item-description-add')
+            } ${t('form:form-description-attribute-value')}`}
+            className="w-full px-0 pb-5 sm:w-4/12 sm:py-8 sm:pe-4 md:w-1/3 md:pe-5"
           />
 
           <Card className="w-full sm:w-8/12 md:w-2/3">
@@ -182,7 +194,7 @@ export default function CreateOrUpdateAttributeForm({ initialValues }: IProps) {
           </Card>
         </div>
 
-        <div className="text-end mb-4">
+        <div className="mb-4 text-end">
           {/* {initialValues && ( */}
           <Button
             variant="outline"

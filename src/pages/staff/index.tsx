@@ -4,7 +4,7 @@ import Loader from '@/components/ui/loader/loader';
 import { useTranslation } from 'next-i18next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import { useRouter } from 'next/router';
-import StaffList from '@/components/shop/staff-list';
+import StaffList from '@/components/staff/staff-list';
 import {
   adminAndOwnerOnly,
   adminOnly,
@@ -24,6 +24,7 @@ import { AllPermission } from '@/utils/AllPermission';
 import AdminLayout from '@/components/layouts/admin';
 import OwnerLayout from '@/components/layouts/owner';
 import { STAFF } from '@/utils/constants';
+import Search from '@/components/common/search';
 
 export default function StaffsPage() {
   const router = useRouter();
@@ -48,35 +49,44 @@ export default function StaffsPage() {
   const { data: shopData, isLoading: fetchingShopId } = useShopQuery({
     slug: shopSlug as string,
   });
-
-  const { users } = useUsersQuery({
-    limit: 20,
-    usrById: me?.id,
+  const { data } = useMeQuery();
+  const shopId = shopData?.id!;
+  const { users, paginatorInfo, loading, error } = useUsersQuery({
+    // limit: 20,
+    usrById: data?.id,
     email: searchTerm,
-    page,
+    limit: 10,  
+    page: page,
     name: searchTerm,
-    orderBy,
-    sortedBy,
+    // orderBy,
+    // sortedBy,
+    role: 'user',
   });
 
-  const shopId = shopData?.id!;
-  const {
-    staffs,
-    paginatorInfo,
-    loading: loading,
-    error,
-  } = useStaffsQuery(
-    {
-      shop_id: shopId,
-      page,
-      orderBy,
-      sortedBy,
-    },
-    {
-      enabled: Boolean(shopId),
-    }
-  );
+  console.log('data?.id', data?.id);
+  console.log('users', users);
 
+  // const {
+  //   staffs,
+  //   paginatorInfo,
+  //   loading: loading,
+  //   error,
+  // } = useStaffsQuery(
+  //   {
+  //     limit: 20,
+  //     usrById: me?.id,
+  //     email: searchTerm,
+  //     page,
+  //     name: searchTerm,
+  //     shop_id: shopId,
+  //     page,
+  //     orderBy,
+  //     sortedBy,
+  //   },
+  //   {
+  //     enabled: Boolean(shopId),
+  //   }
+  // ); 
   if (fetchingShopId || loading)
     return <Loader text={t('common:text-loading')} />;
   if (error) return <ErrorMessage message={error?.message} />;
@@ -96,7 +106,12 @@ export default function StaffsPage() {
   const filteredUsers = users?.filter(
     (user) => user.permission?.type_name === STAFF
   );
+console.log("filteredUsers",filteredUsers)
 
+  function handleSearch({ searchText }: { searchText: string }) {
+    setSearchTerm(searchText);
+    setPage(1);
+  }
   return (
     <>
       <Card className="mb-8 flex flex-row items-center justify-between">
@@ -106,17 +121,21 @@ export default function StaffsPage() {
           </h1>
         </div>
 
-        <div className="flex w-3/4 items-center ms-auto xl:w-2/4">
-          {canWrite || ownerOnly ? (
-            <LinkButton href={`/users/create`} className="h-12 ms-auto">
+        <div className="flex w-full flex-col items-center ms-auto md:w-1/2 md:flex-row">
+          <div className="flex w-full items-center">
+            <Search onSearch={handleSearch} />
+            <LinkButton
+              href={`${Routes.staff.create}`}
+              className="h-12 ms-4 md:ms-6"
+            >
               <span>+ {t('form:button-label-add-staff')}</span>
             </LinkButton>
-          ) : null}
+          </div>
         </div>
       </Card>
 
       <StaffList
-        staffs={filteredUsers}
+        staffs={users}
         onPagination={handlePagination}
         paginatorInfo={paginatorInfo}
         onOrder={setOrder}
@@ -128,7 +147,7 @@ export default function StaffsPage() {
 StaffsPage.authenticate = {
   permissions: adminOwnerAndStaffOnly,
 };
-StaffsPage.Layout = OwnerLayout;
+StaffsPage.Layout = AdminLayout ;
 
 export const getServerSideProps = async ({ locale }: any) => ({
   props: {

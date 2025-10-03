@@ -8,20 +8,27 @@ import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import { useCategoryQuery } from '@/data/category';
 import { Config } from '@/config';
 import AdminLayout from '@/components/layouts/admin';
+import { useMeQuery } from '@/data/user';
 
 
 export default function UpdateCategoriesPage() {
   const { query, locale } = useRouter();
   const { t } = useTranslation();
+  const { data: meData } = useMeQuery(); // Fetch the current user data
+const shop = meData?.managed_shop; // Extract the managed shop details
+const shopId = shop?.id ? Number(shop.id) : undefined;
+
   const {
     category,
     isLoading: loading,
     error,
-  } = useCategoryQuery({
+  } = useCategoryQuery({ 
     slug: query.categorySlug as string,
     language:
-      query.action!.toString() === 'edit' ? locale! : Config.defaultLanguage,
+      query.action!.toString() === 'edit' ? locale! : Config.defaultLanguage, 
+      shopId,
   });
+console.log("%%%%%%%%%%%%%ID",category);
 
   if (loading) return <Loader text={t('common:text-loading')} />;
   if (error) return <ErrorMessage message={error.message} />;

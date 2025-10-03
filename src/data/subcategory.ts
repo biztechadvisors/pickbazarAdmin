@@ -28,6 +28,7 @@ export const useCreateSubCategoryMutation = () => {
 
   return useMutation(subcategoryClient.create, {
     onSuccess: () => {
+      queryClient.invalidateQueries([API_ENDPOINTS.SUBCATEGORIES, getShopSlug()]);
       Router.push(`/${getShopSlug()}/${Routes.subcategory.list}`, undefined, {
         locale: Config.defaultLanguage,
       });
@@ -60,6 +61,10 @@ export const useUpdateSubCategoryMutation = () => {
   const queryClient = useQueryClient();
   return useMutation(subcategoryClient.update, {
     onSuccess: () => {
+      queryClient.invalidateQueries([API_ENDPOINTS.SUBCATEGORIES, getShopSlug()]);
+      Router.push(`/${getShopSlug()}/${Routes.subcategory.list}`, undefined, {
+        locale: Config.defaultLanguage,
+      });
       toast.success(t('common:successfully-updated'));
     },
     // Always refetch after error or success:
@@ -115,11 +120,14 @@ export const useSubCategoriesQuery = (
     {
       keepPreviousData: true,
       enabled: !!shopSlug, // Ensures the query runs only when shopSlug is set
+      onSuccess: (data) => {
+        console.log("Subcategories fetched: ", data); // Log the response
+      },
     }
   );
 
   return {
-    subcategories: data ?? [],
+    subcategories: data?.data ?? [],
     paginatorInfo: mapPaginatorData(data),
     error,
     loading: isLoading,

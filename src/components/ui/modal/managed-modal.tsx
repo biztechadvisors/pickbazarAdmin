@@ -3,6 +3,11 @@ import Modal from '@/components/ui/modal/modal';
 import dynamic from 'next/dynamic';
 import { MODAL_VIEWS, useModalAction, useModalState } from './modal.context';
 import PaymentModal from '@/components/payment/payment-modal';
+import GetInspiredDeleteView from '@/components/getInspired/getInspired-delete-view';
+import QnaDeleteView from '@/components/qna/qna-delete-view';
+import ContactDeleteView from '@/components/contacts/contacts-delete-view';
+import CareerDeleteView from '@/components/careers/careers-delete-view';
+import VacancyDeleteView from '@/components/vacancy/vacancy-delete-view';
 const TagDeleteView = dynamic(() => import('@/components/tag/tag-delete-view'));
 const TaxDeleteView = dynamic(() => import('@/components/tax/tax-delete-view'));
 const BanCustomerView = dynamic(
@@ -19,6 +24,9 @@ const ShippingDeleteView = dynamic(
 );
 const CategoryDeleteView = dynamic(
   () => import('@/components/category/category-delete-view')
+);
+const EventDeleteView = dynamic(
+  () => import('@/components/event/event-delete-view')
 );
 const SubCategoryDeleteView = dynamic(
   () => import('@/components/subcategory/subcategory-delete-view')
@@ -38,6 +46,10 @@ const DealerDeleteView = dynamic(
 );
 const AttributeDeleteView = dynamic(
   () => import('@/components/attribute/attribute-delete-view')
+);
+
+const BlogDeleteView = dynamic(
+  () => import('@/components/blog/blog-delete-view')
 );
 
 const ApproveShopView = dynamic(
@@ -84,9 +96,7 @@ const ReviewDeleteView = dynamic(
   () => import('@/components/reviews/review-delete-view')
 );
 
-const FaqDeleteView = dynamic(
-  () => import('@/components/faq/faq-delete-view')
-);
+const FaqDeleteView = dynamic(() => import('@/components/faq/faq-delete-view'));
 
 const RegionsDeleteView = dynamic(
   () => import('@/components/regions/regions-delete-view')
@@ -121,9 +131,7 @@ const ProductVariation = dynamic(
   () => import('@/components/product/variation/variation')
 );
 const AbuseReport = dynamic(() => import('@/components/reviews/abuse-report'));
-const OpenAiModal = dynamic(
-  () => import('@/components/openAI/openAI.modal')
-);
+const OpenAiModal = dynamic(() => import('@/components/openAI/openAI.modal'));
 const ComposerMessage = dynamic(
   () => import('@/components/message/compose-message')
 );
@@ -134,14 +142,18 @@ function renderModal(view: MODAL_VIEWS | undefined, data: any) {
       return <ProductDeleteView />;
     case 'DELETE_TYPE':
       return <TypeDeleteView />;
-      case 'DELETE_DEALER':
-        return <DealerDeleteView />;
+    case 'DELETE_DEALER':
+      return <DealerDeleteView />;
     case 'DELETE_ATTRIBUTE':
       return <AttributeDeleteView />;
+    case 'DELETE_BLOG':
+      return <BlogDeleteView />;
     case 'DELETE_CATEGORY':
       return <CategoryDeleteView />;
+    case 'DELETE_EVENT':
+      return <EventDeleteView />;
     case 'DELETE_SUBCATEGORY':
-      return <SubCategoryDeleteView/>;  
+      return <SubCategoryDeleteView />;
     case 'DELETE_COUPON':
       return <CouponDeleteView />;
     case 'DELETE_TAX':
@@ -176,8 +188,8 @@ function renderModal(view: MODAL_VIEWS | undefined, data: any) {
       return <MakeAdminView />;
     case 'EXPORT_IMPORT_PRODUCT':
       return <ExportImportView />;
-      case 'MODEL_IMPORT':
-        return <ModelImportView />;
+    case 'MODEL_IMPORT':
+      return <ModelImportView />;
     case 'EXPORT_IMPORT_ATTRIBUTE':
       return <AttributeExportImport />;
     case 'ADD_WALLET_POINTS':
@@ -194,8 +206,18 @@ function renderModal(view: MODAL_VIEWS | undefined, data: any) {
       return <ReviewDeleteView />;
     case 'DELETE_FAQ':
       return <FaqDeleteView />;
+    case 'DELETE_VACANCY':
+      return <VacancyDeleteView />;
+    case 'DELETE_QNA':
+      return <QnaDeleteView />;
+    case 'DELETE_GET_INSPIRED':
+      return <GetInspiredDeleteView />;
+    case 'DELETE_CONTACTS':
+      return <ContactDeleteView />;
+    case 'DELETE_CAREER':
+      return <CareerDeleteView />;
     case 'DELETE_REGIONS':
-      return <RegionsDeleteView />
+      return <RegionsDeleteView />;
     case 'ACCEPT_ABUSE_REPORT':
       return <AcceptAbuseReportView />;
     case 'DECLINE_ABUSE_REPORT':

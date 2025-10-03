@@ -458,5 +458,6 @@ class Client {
       HttpClient.post<any>(API_ENDPOINTS.SET_DEFAULT_CARD, input),
   };
 }
-
-export default new Client();
+// Create an instance of the Client class
+const clientInstance = new Client();
+export default clientInstance;

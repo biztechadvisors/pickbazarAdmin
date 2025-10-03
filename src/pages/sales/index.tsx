@@ -1,7 +1,7 @@
 import Card from '@/components/common/card';
 import Layout from '@/components/layouts/admin';
 import Search from '@/components/common/search';
-import { Fragment, useState } from 'react';
+import { Fragment, useEffect, useState } from 'react';
 import ErrorMessage from '@/components/ui/error-message';
 import Loader from '@/components/ui/loader/loader';
 import { useTranslation } from 'next-i18next';
@@ -47,6 +47,8 @@ export default function Sales() {
 
   const { data: me } = useMeQuery(); 
 
+
+
   const DealerShow = me?.permission.type_name === DEALER;
   const ShopShow = me?.permission.type_name === Company;
 
@@ -61,30 +63,25 @@ export default function Sales() {
 };
 
 if (DealerShow) {
-    queryConfig.shop_slug = me?.managed_shop?.slug;
+    queryConfig.shopSlug = me?.managed_shop?.slug;
     queryConfig.customer_id = me?.id;
-} else if (ShopShow) {
-    queryConfig.customer_id = me?.shop_id;
-    queryConfig.shop_id = me?.managed_shop?.id;
-    queryConfig.shop_slug = me?.managed_shop?.slug;
+} else if (ShopShow) {  
+    // queryConfig.shop_id = me?.managed_shop?.id;
+    queryConfig.shopSlug = me?.managed_shop?.slug;
 }
 
 
 const { orders, loading, paginatorInfo, error } = useOrdersQuery(queryConfig);
+  // console.log("paginatorInfo",paginatorInfo);
+  //
+  // const totalPages = Math.ceil((paginatorInfo?.total || 0) / (paginatorInfo?.perPage || 1));
+  // useEffect(() => {
+  //   if (page > totalPages) setPage(1);
+  // }, [paginatorInfo?.total, paginatorInfo?.perPage, page]);
+
 console.log("++++++++++sales++orders",orders)
 
 
-  // const { orders, loading, paginatorInfo, error } = useOrdersQuery({
-  //   language: locale,
-  //   limit: 20,
-  //   page,
-  //   tracking_number: searchTerm,
-  //   customer_id: me?.id,
-  //   shop_id: me?.managed_shop?.id,
-  //   shop_slug: me?.managed_shop?.slug,
-  // });
-
- 
 
   const customer_id = me?.id
   const shop_id =  me?.createdBy?.shop_id
@@ -92,7 +89,7 @@ console.log("++++++++++sales++orders",orders)
 
   console.log("shop_id",me?.createdBy?.shop_id)
 
-  const { data: response } = useGetStockSeals(customer_id, shop_id);
+  const { data: response } = useGetStockSeals(customer_id);
   // http://localhost:5000/api/stocks/orders?customer_id=3
 
   const { refetch } = useExportOrderQuery(

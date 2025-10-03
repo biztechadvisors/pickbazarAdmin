@@ -7,6 +7,7 @@ import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import { Config } from '@/config';
 import { useCouponQuery } from '@/data/coupon';
 import { useRouter } from 'next/router';
+import { Coupon } from '@/types';
 
 export default function UpdateCouponPage() {
   const { query, locale } = useRouter();
@@ -26,7 +27,7 @@ export default function UpdateCouponPage() {
           {t('form:form-title-edit-coupon')}
         </h1>
       </div>
-      <CouponCreateOrUpdateForm initialValues={coupon} />
+      <CouponCreateOrUpdateForm initialValues={coupon[0]} />
     </>
   );
 }

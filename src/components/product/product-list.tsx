@@ -52,15 +52,8 @@ const ProductList = ({
   const router = useRouter();
   const { t } = useTranslation();
   const { alignLeft, alignRight } = useIsRTL();
-  // const { permissions } = getAuthCredentials();
-  // const [getPermission, _] = useAtom(newPermission);
-  // const canWrite = permissions?.includes('super_admin')
-  //   ? siteSettings.sidebarLinks.admin
-  //   : getPermission?.find(
-  //       (permission: any) => permission.type === 'sidebar-nav-item-products'
-  //     )?.write;
 
-  const permissionTypes = AllPermission(); 
+  const permissionTypes = AllPermission();
 
   const canWrite = permissionTypes.includes('sidebar-nav-item-products');
 
@@ -312,13 +305,26 @@ const ProductList = ({
         align: 'right',
         width: 120,
         render: (slug: string, record: Product) => {
+          const Shop = record.shop;
           return (
+            // <LanguageSwitcher
+            //   slug={slug}
+            //   record={record}
+            //   deleteModalView="DELETE_PRODUCT"
+            //   routes={Routes?.product}
+            // />
+
             <LanguageSwitcher
               slug={slug}
               record={record}
               deleteModalView="DELETE_PRODUCT"
-              routes={Routes?.product}
-            />
+              // routes={Routes?.product}
+            routes={{
+             edit: `/${Shop}/products/${slug}/edit?productId=${record.id}`,
+             editWithoutLang: (slug: string, shop: string) =>
+             `/${shop}/products/${slug}/edit?productId=${record.id}`,
+            }}
+             />
           );
         },
       }),

@@ -104,6 +104,13 @@ export class HttpClient {
       )
       .join(';');
   }
+  // Add formatFilterParams method here
+  static formatFilterParams(filters: Record<string, any>) {
+    return Object.entries(filters)
+      .filter(([key, value]) => value)
+      .map(([key, value]) => `${key}:${value}`)
+      .join(';');
+  }
 }
 
 export function getFormErrors(error: unknown) {

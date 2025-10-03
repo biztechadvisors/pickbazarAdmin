@@ -132,7 +132,7 @@ const RegionsList = ({
           //@ts-ignore
           columns={columns}
           emptyText={t('table:empty-table-data')}
-          data={regions}
+          data={regions?.items || []}
           rowKey="id"
           scroll={{ x: 900 }}
         />
@@ -143,7 +143,7 @@ const RegionsList = ({
           <Pagination
             total={paginatorInfo.total}
             current={paginatorInfo.currentPage}
-            pageSize={paginatorInfo.perPage}
+            // pageSize={paginatorInfo.perPage}
             onChange={onPagination}
           />
         </div>

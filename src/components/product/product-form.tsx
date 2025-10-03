@@ -22,8 +22,8 @@ import ProductTagInput from './product-tag-input';
 import { Config } from '@/config';
 import Alert from '@/components/ui/alert';
 import { useMemo, useState } from 'react';
-import ProductAuthorInput from './product-author-input';
-import ProductManufacturerInput from './product-manufacturer-input';
+// import ProductAuthorInput from './product-author-input';
+// import ProductManufacturerInput from './product-manufacturer-input';
 import { EditIcon } from '@/components/icons/edit';
 import {
   getProductDefaultValues,
@@ -133,7 +133,7 @@ export default function CreateOrUpdateProductForm({
     // @ts-ignore
     settings: { options },
   } = useSettingsQuery({
-    language: locale!
+    language: locale!,
   });
 
   const shopId = shopData?.id!;
@@ -148,10 +148,10 @@ export default function CreateOrUpdateProductForm({
     defaultValues: getProductDefaultValues(initialValues!, isNewTranslation),
   });
 
-  const { data: meData } = useMeQuery()
-  const shop_id = meData?.shop_id
+  const { data: meData } = useMeQuery();
+  const shop_id = meData?.shop_id;
   const { taxes, loading, error } = useTaxesQuery({
-    shop_id
+    shop_id,
   });
 
   const {
@@ -170,13 +170,16 @@ export default function CreateOrUpdateProductForm({
     useCreateProductMutation();
   const { mutate: updateProduct, isLoading: updating } =
     useUpdateProductMutation();
-
+  // console.log("product form data+++++++++++...............",createProduct, updateProduct, creating, updating);
   const onSubmit = async (values: ProductFormValues) => {
+    console.log('product create values json', values);
+    console.log("Original form values", values.variations);
+
     const inputValues = {
       language: router.locale,
       ...getProductInputValues(values, initialValues),
     };
-
+    console.log('form values', inputValues);
     try {
       if (
         !initialValues ||
@@ -435,10 +438,11 @@ export default function CreateOrUpdateProductForm({
           <div className="my-5 flex flex-wrap sm:my-8">
             <Description
               title={t('form:item-description')}
-              details={`${initialValues
-                ? t('form:item-description-edit')
-                : t('form:item-description-add')
-                } ${t('form:product-description-help-text')}`}
+              details={`${
+                initialValues
+                  ? t('form:item-description-edit')
+                  : t('form:item-description-add')
+              } ${t('form:product-description-help-text')}`}
               className="w-full px-0 pb-5 sm:w-4/12 sm:py-8 sm:pe-4 md:w-1/3 md:pe-5"
             />
 
@@ -504,34 +508,37 @@ export default function CreateOrUpdateProductForm({
               <div>
                 <Label>{t('form:input-label-hsn_no')}</Label>
                 <SelectInput
-                  options={taxes}
+                  options={taxes?.items || []}
                   placeholder={t('Select')}
-                  getOptionLabel={(option: any) => `${option?.name}-${option?.hsn_no}`}
+                  getOptionLabel={(option: any) =>
+                    `${option?.name}-${option?.hsn_no}`
+                  }
                   getOptionValue={(option: any) => option}
                   control={control}
                   name={'taxes'}
-                  defaultValue={[]} />
+                  defaultValue={[]}
+                />
                 <ValidationError message={errors.address?.state?.message} />
               </div>
               <div>
                 <Label>{t('form:input-label-status')}</Label>
                 {!isEmpty(statusList)
                   ? statusList?.map((status: any, index: number) => (
-                    <Radio
-                      key={index}
-                      {...register('status')}
-                      label={t(status?.label)}
-                      id={status?.id}
-                      value={status?.value}
-                      className="mb-2"
-                      disabled={
-                        permission &&
+                      <Radio
+                        key={index}
+                        {...register('status')}
+                        label={t(status?.label)}
+                        id={status?.id}
+                        value={status?.value}
+                        className="mb-2"
+                        disabled={
+                          permission &&
                           initialValues?.status === ProductStatus?.Draft
-                          ? true
-                          : false
-                      }
-                    />
-                  ))
+                            ? true
+                            : false
+                        }
+                      />
+                    ))
                   : ''}
                 {errors.status?.message && (
                   <p className="my-2 text-xs text-red-500">

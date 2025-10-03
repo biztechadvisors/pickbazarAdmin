@@ -30,6 +30,8 @@ import OpenAIButton from '../openAI/openAI.button';
 import { useMeQuery } from '@/data/user';
 import { Config } from '@/config';
 import { EditIcon } from '../icons/edit';
+import ValidationError from '@/components/ui/form-validation-error';
+import { useRegionsQuery } from '@/data/regions';
 
 export const chatbotAutoSuggestion = ({ name }: { name: string }) => {
   return [
@@ -75,6 +77,43 @@ export const chatbotAutoSuggestion = ({ name }: { name: string }) => {
     },
   ];
 };
+function SelectRegion({
+  control,
+  errors,
+}: {
+  control: Control<FormValues>;
+  errors: FieldErrors;
+}) {
+  const { locale } = useRouter();
+  const { t } = useTranslation(); 
+
+  const { data: meData } = useMeQuery();
+
+  const ShopSlugName = 'hilltop-marble';
+  // const { data: me } = useMeQuery()
+
+  const { regions, loading, paginatorInfo, error } = useRegionsQuery({
+    code: meData?.managed_shop?.slug,
+  });
+console.log("REgions===",regions);
+  if (error) {
+    console.error("Error fetching regions:", error);
+  }
+  return (
+    <div className="mb-5">
+      <Label>Select Region</Label>
+      <SelectInput
+        name="region"
+        control={control}
+        getOptionLabel={(option: any) => option.name}
+        getOptionValue={(option: any) => option.id}
+        options={regions?.items || []}
+        isLoading={!regions}  
+      />
+    <ValidationError message={t(errors.type?.message)} />
+    </div>
+  );
+}
 
 function SelectCategories({
   control,
@@ -127,6 +166,7 @@ type FormValues = {
   image: any;
   type: any;
   slug: string;
+  region_name:string;
 };
 
 const defaultValues = {
@@ -136,6 +176,7 @@ const defaultValues = {
   category_id: '',
   type: '',
   slug: '',
+  region_name:'',
 };
 
 type IProps = {
@@ -203,6 +244,8 @@ export default function CreateOrUpdateSubCategoriesForm({
     useUpdateSubCategoryMutation();
 
   const onSubmit = async (values: FormValues) => {
+    console.log("values####",values)
+    const transformedRegions = values.region?.name ? [values.region.name] : [];
     const input = {
       language: router.locale,
       name: values.name,
@@ -212,8 +255,10 @@ export default function CreateOrUpdateSubCategoriesForm({
         original: values?.image?.original,
         id: values?.image?.id,
       },
-      category_id: values.category_id?.id ?? null,
+      category_id: values.category?.id ?? null,
+
       shop_id: shop,
+      regionName: transformedRegions,
     };
     if (
       !initialValues ||
@@ -232,7 +277,10 @@ export default function CreateOrUpdateSubCategoriesForm({
         shop_id: meData?.managed_shop?.id,
       });
     }
+    console.log("Category ID:", values.category_id);
+
   };
+  
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
@@ -312,6 +360,7 @@ export default function CreateOrUpdateSubCategoriesForm({
           </div>
 
           <SelectCategories control={control} setValue={setValue} />
+          <SelectRegion control={control} errors={errors} />
         </Card>
       </div>
       <div className="mb-4 text-end">

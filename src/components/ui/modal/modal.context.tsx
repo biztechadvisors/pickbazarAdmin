@@ -6,6 +6,8 @@ export type MODAL_VIEWS =
   | 'DELETE_TYPE'
   | 'DELETE_DEALER'
   | 'DELETE_ATTRIBUTE'
+  | 'DELETE_BLOG'
+  | 'DELETE_EVENT'
   | 'DELETE_CATEGORY'
   | 'DELETE_SUBCATEGORY'
   | 'DELETE_ORDER'
@@ -116,6 +118,8 @@ export function useModalAction() {
   }
   return {
     openModal(view?: MODAL_VIEWS, payload?: unknown) {
+      console.log("payload",payload)
+      console.log("view",view)
       dispatch({ type: 'open', view, payload });
     },
     closeModal() {

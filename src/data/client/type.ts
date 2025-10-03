@@ -7,9 +7,9 @@ export const typeClient = {
   ...crudFactory<Type, QueryOptions, CreateTypeInput>(API_ENDPOINTS.TYPES),
   all: ({ name, ...params }: Partial<TypeQueryOptions>) => {
     return HttpClient.get<Type[]>(API_ENDPOINTS.TYPES, {
-      searchJoin: 'and',
+      // searchJoin: 'and',
       ...params,
-      search: HttpClient.formatSearchParams({ name }),
+      // search: HttpClient.formatSearchParams({ name }),
     });
   },
 };

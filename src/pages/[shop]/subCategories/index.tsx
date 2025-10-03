@@ -3,7 +3,7 @@ import Card from '@/components/common/card';
 import Layout from '@/components/layouts/admin';
 import Search from '@/components/common/search';
 import LinkButton from '@/components/ui/link-button';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import ErrorMessage from '@/components/ui/error-message';
 import Loader from '@/components/ui/loader/loader';
 import { SortOrder } from '@/types';
@@ -46,7 +46,7 @@ export default function SubCategories() {
   const canWrite = permissionTypes.includes('sidebar-nav-item-subcategories');
 
   const { subcategories, paginatorInfo, loading, error } = useSubCategoriesQuery({
-    limit: 20,
+    limit: 10,
     page,
     type,
     name: searchTerm,
@@ -54,8 +54,13 @@ export default function SubCategories() {
     sortedBy,
     categoryId: null,
     language: locale,
+    search:searchTerm,
   });
-
+  const totalPages = Math.ceil((paginatorInfo?.total || 0) / (paginatorInfo?.perPage || 1));
+  useEffect(() => {
+    if (page > totalPages) setPage(1);
+  }, [paginatorInfo?.total, paginatorInfo?.perPage, page]);
+ 
   if (loading) return <Loader text={t('common:text-loading')} />;
   if (error) return <ErrorMessage message={error.message} />;
 

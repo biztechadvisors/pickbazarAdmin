@@ -44,30 +44,26 @@ export default function AttributePage() {
   const { data: shopData, isLoading: fetchingShop } = useShopQuery({
     slug: shop as string,
   });
-  
+
   const shopId = shopData?.id!;
-  const shopSlug = shopData?.slug
+  const shopSlug = shopData?.slug;
 
-  
-
-  const { attributes, loading, error } = useAttributesQuery(
+  const { attributes,paginatorInfo, loading, error } = useAttributesQuery(
     {
+      limit:10,
+      page,
       shop_id: shopId,
       slug: shopSlug,
       orderBy,
       sortedBy,
       language: locale,
-      search:searchTerm,
+      search: searchTerm,
     },
     {
       enabled: Boolean(shopId),
     }
   );
-
-
-
-  
-
+console.log("Attribute",attributes)
   const permissionTypes = AllPermission();
 
   const canWrite = permissionTypes.includes('sidebar-nav-item-attributes');
@@ -94,16 +90,15 @@ export default function AttributePage() {
     setPage(1);
   }
 
-  const filteredAttributes = attributes.filter(attribute =>
-    attribute.name.toLowerCase().includes(searchTerm.toLowerCase())
-  );
-
-
+  // const filteredAttributes = attributes.filter((attribute) =>
+  //   attribute.name.toLowerCase().includes(searchTerm.toLowerCase())
+  // );
 
   function handlePagination(current: any) {
     setPage(current);
   }
 
+  
   return (
     <>
       <Card className="mb-8 flex flex-col items-center justify-between md:flex-row">
@@ -144,6 +139,7 @@ export default function AttributePage() {
       </Card>
       <AttributeList
         attributes={attributes}
+        paginatorInfo={paginatorInfo}
         onPagination={handlePagination}
         onOrder={setOrder}
         onSort={setColumn}

@@ -18,7 +18,7 @@ export default function CreateCustomerPage() {
     </>
   );
 }
-CreateCustomerPage.Layout = AdminLayout;
+CreateCustomerPage.Layout = OwnerLayout;
 
 export const getStaticProps = async ({ locale }: any) => ({
   props: {

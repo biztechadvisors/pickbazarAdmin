@@ -11,15 +11,24 @@ import LanguageSwitcher from '@/components/ui/lang-action/action';
 import Button from '../ui/button';
 import { getAuthCredentials } from '@/utils/auth-utils';
 import { AllPermission } from '@/utils/AllPermission';
+import Pagination from '@/components/ui/pagination';
+
 
 export type IProps = {
   users: any[] | undefined;
+  paginatorInfo: MappedPaginatorInfo | null;
+  onPagination: (key: number) => void;
   // allDealer : any[] | undefined;
   onSort: (current: any) => void;
   onOrder: (current: string) => void;
 };
 
-const DealerList = ({ users, onSort, onOrder }: IProps) => {
+const DealerList = ({ 
+  users, 
+  paginatorInfo,
+  onPagination,
+  onSort, 
+  onOrder }: IProps) => {
 
   const { t } = useTranslation();
   const { alignLeft, alignRight } = useIsRTL();
@@ -179,6 +188,7 @@ const permissionTypes = AllPermission();
   ];
 
   return (
+    <>
     <div className="mb-8 overflow-hidden rounded shadow">
       <Table
         //@ts-ignore
@@ -189,6 +199,17 @@ const permissionTypes = AllPermission();
         scroll={{ x: 380 }}
       />
     </div>
+     {!!paginatorInfo?.total && (
+      <div className="flex items-center justify-end">
+        <Pagination
+          total={paginatorInfo.total}
+          current={paginatorInfo.currentPage}
+          // pageSize={paginatorInfo.perPage}
+          onChange={onPagination}
+        />
+      </div>
+    )}
+    </>
   );
 };
 

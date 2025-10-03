@@ -102,8 +102,13 @@ export const siteSettings = {
       {
         href: Routes.blog.list,
         label: 'sidebar-nav-item-blog',
-        icon: 'CalendarScheduleIcon',
+        icon: 'DashboardIcon',
       },
+      // {
+      //   href: Routes.event.list,
+      //   label: 'sidebar-nav-item-event',
+      //   icon: 'DashboardIcon', 
+      // },
       {
         href: Routes.user.list,
         label: 'sidebar-nav-item-customer',
@@ -148,9 +153,32 @@ export const siteSettings = {
             }),
       },
       {
-        href: Routes.regions,
+        href: Routes.regions.list,
         label: 'sidebar-nav-item-regions',
         icon: 'DashboardIcon',
+      },
+      {
+        href: Routes.faq.list,
+        label: 'sidebar-nav-item-faq',
+        icon: 'DashboardIcon',
+      },
+      {
+        href: Routes.blog.list,
+        label: 'sidebar-nav-item-blogs',
+        icon: 'DashboardIcon',
+        // permissions: adminOwnerAndStaffOnly,
+      },
+      {
+        href: Routes.event.list,
+        label: 'sidebar-nav-item-event',
+        icon: 'DashboardIcon',
+        // permissions: adminOwnerAndStaffOnly,
+      },
+      {
+        href: Routes.getInspired.list,
+        label: 'sidebar-nav-item-getInspired',
+        icon: 'DashboardIcon',
+        // permissions: adminOwnerAndStaffOnly,
       },
       {
         ...(permission && identify == matching
@@ -250,12 +278,6 @@ export const siteSettings = {
       {
         href: (shop: string) => `/${shop}${Routes.tag.list}`,
         label: 'sidebar-nav-item-tags',
-        icon: 'TagIcon',
-        permissions: adminOwnerAndStaffOnly,
-      },
-      {
-        href: (shop: string) => `/${shop}${Routes.blog.list}`,
-        label: 'sidebar-nav-item-blogs',
         icon: 'TagIcon',
         permissions: adminOwnerAndStaffOnly,
       },

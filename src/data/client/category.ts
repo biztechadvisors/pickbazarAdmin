@@ -13,11 +13,14 @@ export const categoryClient = {
   ...crudFactory<Category, QueryOptions, CreateCategoryInput>(
     API_ENDPOINTS.CATEGORIES
   ),
-  paginated: ({ shop, type, name, ...params }: Partial<CategoryQueryOptions>) => {
+  paginated: ({ shop, shopId, type, region_name, name, ...params }: Partial<CategoryQueryOptions>) => {
     return HttpClient.get<CategoryPaginator>(API_ENDPOINTS.CATEGORIES, {
       shop,
-      searchJoin: 'and',
+      shopId,
+      searchJoin: 'and', 
+      language:'en', 
       ...params,
+      type,   
       // search: HttpClient.formatSearchParams({ type, name }),
     });
   },

@@ -40,6 +40,8 @@ export default function UpdateAttributePage() {
       query.action!.toString() === 'edit' ? locale! : Config.defaultLanguage,
   });
 
+  console.log("data_____________for Attri---------------------", data)
+
   if (loading) return <Loader text={t('common:text-loading')} />;
   if (error) return <ErrorMessage message={error.message} />;
 

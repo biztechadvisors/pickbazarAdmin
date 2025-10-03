@@ -6,6 +6,7 @@
   "table-item-image": "Image",
   "table-item-logo": "Logo",
   "table-item-title": "Name",
+  "table-item-titles": "Title",
   "table-item-walletpoint": "Wallet Points",
   "table-item-walletbalance": "Wallet Balance",
   "table-item-usersbase": "Users Base",
@@ -19,12 +20,15 @@
   "table-item-status": "Status",
   "table-item-action": "Action",
   "table-item-actions": "Actions",
+  "table-item-event-name": "Event-Name",
   "table-item-tracking-number": "Tracking Number",
   "table-item-total": "Total",
   "table-item-order-date": "Order Date",
   "table-item-icon": "Icon",
   "table-item-slug": "Slug",
   "table-item-details": "Details",
+  "table-item-desc": "Description",
+  "table-item-location": "Location",
   "table-item-delivery-fee": "Delivery Fee",
   "table-item-shipping-address": "Shipping Address",
   "table-item-serial": "Serial",
@@ -83,5 +87,10 @@
   "table-item-effective-from": "Effective From",
   "table-item-expired-at": "Expired At",
   "table-item-issued-by": "Issued By",
-  "table-item-category": "Category"
+  "table-item-category": "Category",
+  "table-item-tags": "Tag",
+  "table-item-images": "Image",
+  "table-item-question": "Question",
+  "table-item-answer": "Answer"
+
 }

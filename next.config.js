@@ -9,23 +9,22 @@ const withPWA = require('next-pwa')({
 
 module.exports = withPWA({
   reactStrictMode: true,
-  i18n,
+  i18n,  // Keep i18n configuration here
   images: {
+    unoptimized: true,
     domains: [
       'via.placeholder.com',
       'res.cloudinary.com',
       's3.amazonaws.com',
       'codenoxtestbucket.s3.ap-south-1.amazonaws.com',
       '18.141.64.26',
-      '127.0.0.1',
-      // '192.168.1.16',
-      'localhost',
       'picsum.photos',
       'pickbazar-sail.test',
       'codenoxtestbucket.s3.ap-south-1.amazonaws.com',
       'lh3.googleusercontent.com',
       'images.pexels.com',
       'codenoxtestbucket.s3.ap-south-1.amazonaws.com',
+      'hilltopmarble.s3.ap-south-1.amazonaws.com',
       'server.codenoxx.com',
       's3.ap-south-1.amazonaws.com',
     ],

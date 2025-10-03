@@ -1,25 +1,37 @@
 import { useState } from 'react';
 import { Table } from '@/components/ui/table';
-import { Attribute, Shop, SortOrder } from '@/types';
+import { Attribute, MappedPaginatorInfo, Shop, SortOrder } from '@/types';
 import { useRouter } from 'next/router';
 import { useTranslation } from 'next-i18next';
 import TitleWithSort from '@/components/ui/title-with-sort';
 import { Routes } from '@/config/routes';
 import LanguageSwitcher from '@/components/ui/lang-action/action';
 import { AllPermission } from '@/utils/AllPermission';
+import Pagination from '@/components/ui/pagination';
 
 export type IProps = {
   attributes: Attribute[] | undefined;
+   paginatorInfo: MappedPaginatorInfo | null;
+   onPagination: (key: number) => void;
   onSort: (current: any) => void;
   onOrder: (current: string) => void;
 };
 
-const AttributeList = ({ attributes, onSort, onOrder }: IProps) => {
+const AttributeList = ({ 
+  attributes,
+  paginatorInfo,
+  onPagination,
+  onSort,
+  onOrder }: IProps) => {
   const { t } = useTranslation();
   const router = useRouter();
+  const rowExpandable = (record: any) => record.children?.length;
+  // const { alignLeft, alignRight } = useIsRTL();
 
-  const alignLeft = router.locale === 'ar' || router.locale === 'he' ? 'right' : 'left';
-  const alignRight = router.locale === 'ar' || router.locale === 'he' ? 'left' : 'right';
+  const alignLeft =
+    router.locale === 'ar' || router.locale === 'he' ? 'right' : 'left';
+  const alignRight =
+    router.locale === 'ar' || router.locale === 'he' ? 'left' : 'right';
 
   const [sortingObj, setSortingObj] = useState<{
     sort: SortOrder;
@@ -30,6 +42,7 @@ const AttributeList = ({ attributes, onSort, onOrder }: IProps) => {
   });
 
   const permissionTypes = AllPermission();
+
   const canWrite = permissionTypes.includes('sidebar-nav-item-attributes');
 
   const onHeaderClick = (column: string | null) => ({
@@ -40,7 +53,8 @@ const AttributeList = ({ attributes, onSort, onOrder }: IProps) => {
       onOrder(column!);
 
       setSortingObj({
-        sort: sortingObj.sort === SortOrder.Desc ? SortOrder.Asc : SortOrder.Desc,
+        sort:
+          sortingObj.sort === SortOrder.Desc ? SortOrder.Asc : SortOrder.Desc,
         column: column,
       });
     },
@@ -58,7 +72,9 @@ const AttributeList = ({ attributes, onSort, onOrder }: IProps) => {
       title: (
         <TitleWithSort
           title={t('table:table-item-title')}
-          ascending={sortingObj.sort === SortOrder.Asc && sortingObj.column === 'name'}
+          ascending={
+            sortingObj.sort === SortOrder.Asc && sortingObj.column === 'name'
+          }
           isActive={sortingObj.column === 'name'}
         />
       ),
@@ -89,7 +105,9 @@ const AttributeList = ({ attributes, onSort, onOrder }: IProps) => {
         return (
           <span className="whitespace-nowrap">
             {values?.map((singleValue: any, index: number) => {
-              return index > 0 ? `, ${singleValue.value}` : `${singleValue.value}`;
+              return index > 0
+                ? `, ${singleValue.value}`
+                : `${singleValue.value}`;
             })}
           </span>
         );
@@ -98,19 +116,19 @@ const AttributeList = ({ attributes, onSort, onOrder }: IProps) => {
     {
       ...(canWrite
         ? {
-          title: t('table:table-item-actions'),
-          dataIndex: 'slug',
-          key: 'actions',
-          align: alignRight,
-          render: (slug: string, record: Attribute) => (
-            <LanguageSwitcher
-              slug={slug}
-              record={record}
-              deleteModalView="DELETE_ATTRIBUTE"
-              routes={Routes?.attribute}
-            />
-          ),
-        }
+            title: t('table:table-item-actions'),
+            dataIndex: 'slug',
+            key: 'actions',
+            align: alignRight,
+            render: (slug: string, record: Attribute) => (
+              <LanguageSwitcher
+                slug={slug}
+                record={record}
+                deleteModalView="DELETE_ATTRIBUTE"
+                routes={Routes?.attribute}
+              />
+            ),
+          }
         : {}),
     },
   ];
@@ -120,16 +138,32 @@ const AttributeList = ({ attributes, onSort, onOrder }: IProps) => {
   }
 
   return (
+    <>
     <div className="mb-8 overflow-hidden rounded shadow">
       <Table
         // @ts-ignore
         columns={columns}
         emptyText={t('table:empty-table-data')}
-        data={attributes}
+        data={attributes?.items || []}
         rowKey="id"
         scroll={{ x: 380 }}
-      />
+          expandable={{
+            expandedRowRender: () => ' ',
+            rowExpandable: rowExpandable,
+          }}
+      />  
     </div>
+       {!!paginatorInfo?.total && (
+        <div className="flex items-center justify-end">
+          <Pagination
+            total={paginatorInfo.total}
+            current={paginatorInfo.currentPage}
+            // pageSize={paginatorInfo.perPage}
+            onChange={onPagination}
+          />
+        </div>
+      )}
+      </>
   );
 };
 

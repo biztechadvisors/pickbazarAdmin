@@ -15,6 +15,7 @@ import { newPermission } from '@/contexts/permission/storepermission';
 import { useAtom } from 'jotai';
 import OwnerLayout from '@/components/layouts/owner';
 import { ADMIN, DEALER, OWNER, STAFF, Company } from '@/utils/constants';
+import AdminLayout from '@/components/layouts/admin';
 
 const CreatePermission = () => {
   const router = useRouter();
@@ -161,7 +162,8 @@ const CreatePermission = () => {
         return Object.fromEntries(
           Object.entries(menusData).filter(([key, value]) => value === item)
         );
-      });
+      }); 
+      console.log("LAST***",last)
       return last;
     }
   };
@@ -340,8 +342,8 @@ const CreatePermission = () => {
   );
 };
 
-CreatePermission.Layout = OwnerLayout;
-
+// CreatePermission.Layout = OwnerLayout;
+CreatePermission.Layout = AdminLayout;
 export const getStaticProps = async ({ locale }) => ({
   props: {
     ...(await serverSideTranslations(locale, ['table', 'common', 'form'])),

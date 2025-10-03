@@ -142,7 +142,8 @@ export default function ShopPage() {
 
           <div className="mt-7 grid w-full grid-cols-1">
             <a
-              href={`${process.env.NEXT_PUBLIC_SHOP_URL}/${locale}/shops/${slug}`}
+              // href={`${process.env.NEXT_PUBLIC_SHOP_URL}/${locale}/shops/${slug}`}
+              href={`${process.env.NEXT_PUBLIC_SHOP_URL} `}
               target="_blank"
               className="inline-flex h-12 flex-shrink-0 items-center justify-center rounded !bg-gray-100 px-5 py-0 !font-normal leading-none !text-heading outline-none transition duration-300 ease-in-out hover:!bg-accent hover:!text-light focus:shadow focus:outline-none focus:ring-1 focus:ring-accent-700"
               rel="noreferrer"

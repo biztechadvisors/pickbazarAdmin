@@ -26,17 +26,20 @@ export default function DealerPage() {
   const [sortedBy, setColumn] = useState<SortOrder>(SortOrder.Desc);
   const [searchTerm, setSearchTerm] = useState('');
   const { data } = useMeQuery();
-  const { users, loading, error } = useUsersQuery({
+  const [page, setPage] = useState(1);
+  const { users,paginatorInfo, loading, error } = useUsersQuery({
     type: DEALER,
     usrById: data?.id,
     name: searchTerm,
     // language: locale,
     orderBy,
     sortedBy,
+    limit:10,
+    page,
   });
 
   const userdealer = users.filter((user) => user?.permission?.type_name === DEALER)
-
+console.log("userDealer",userdealer);
   const permissionTypes = AllPermission();
 
   const canWrite = permissionTypes.includes('sidebar-nav-item-dealerlist');
@@ -52,7 +55,9 @@ export default function DealerPage() {
   function handleSearch({ searchText }: { searchText: string }) {
     setSearchTerm(searchText);
   }
-
+  function handlePagination(current: any) {
+    setPage(current);
+  }
   return (
     <>
       <Card className="mb-8 flex flex-col items-center xl:flex-row">
@@ -80,7 +85,12 @@ export default function DealerPage() {
           )}
         </div>
       </Card>
-      <DealerTypeList users={userdealer} onOrder={setOrder} onSort={setColumn} />
+      <DealerTypeList
+            paginatorInfo={paginatorInfo}
+            onPagination={handlePagination}
+      users={userdealer} 
+      onOrder={setOrder} 
+      onSort={setColumn} />
     </>
   );
 }

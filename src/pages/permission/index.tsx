@@ -13,6 +13,7 @@ import { useMeQuery } from '@/data/user';
 import { AllPermission } from '@/utils/AllPermission';
 import OwnerLayout from '@/components/layouts/owner';
 import { OWNER } from '@/utils/constants';
+import AdminLayout from '@/components/layouts/admin';
 
 interface PermissionComponentProps {
   Layout: React.FC;
@@ -22,19 +23,22 @@ const PermissionComponent: React.FC & PermissionComponentProps = () => {
   const { t } = useTranslation();
   const { permissions } = getAuthCredentials();
 
-  const { data: meData } = useMeQuery();
-  const id = meData?.id ?? '';
+  // const { data: meData } = useMeQuery();
+  // const id = meData?.id ?? '';
   const permissionTypes = AllPermission();
 
   const canWrite =
     permissionTypes.includes('sidebar-nav-item-permissions') ||
     permissions?.[0] === OWNER;
 
-  const {
-    isLoading,
-    error,
-    data: permissionData,
-  } = usePermissionData(id);
+  // const {
+  //   isLoading,
+  //   error,
+  //   data: permissionData,
+  // } = usePermissionData(id);
+  const { isLoading, error, data: permissionData } = usePermissionData();
+
+  console.log("permissionData",permissionData)
 
   function handleSearch({ searchText }: { searchText: string }) {
     // Implement search functionality here
@@ -54,7 +58,7 @@ const PermissionComponent: React.FC & PermissionComponentProps = () => {
         </div>
 
         <div className="flex w-full flex-col items-center gap-x-5 ms-auto md:w-1/2 md:flex-row">
-          <Search onSearch={handleSearch} />
+          {/* <Search onSearch={handleSearch} /> */}
           {canWrite ? (
             <LinkButton href="/permission/create">Create Permission</LinkButton>
           ) : (
@@ -139,7 +143,8 @@ const PermissionComponent: React.FC & PermissionComponentProps = () => {
 };
 
 // Assign Layout to the PermissionComponent
-PermissionComponent.Layout = OwnerLayout;
+// PermissionComponent.Layout = OwnerLayout;
+PermissionComponent.Layout = AdminLayout;
 
 export const getStaticProps = async ({ locale }: any) => ({
   props: {

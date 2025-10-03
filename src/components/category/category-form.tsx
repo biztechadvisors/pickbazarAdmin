@@ -33,6 +33,8 @@ import { useSettingsQuery } from '@/data/settings';
 import { useModalAction } from '../ui/modal/modal.context';
 import OpenAIButton from '../openAI/openAI.button';
 import { useMeQuery } from '@/data/user';
+// import { useRegionsQuery } from '@/data/tag';
+import { useRegionsQuery } from '@/data/regions';
 
 export const chatbotAutoSuggestion = ({ name }: { name: string }) => {
   return [
@@ -95,6 +97,43 @@ export const updatedIcons = categoryIcons.map((item: any) => {
   return item;
 });
 
+function SelectRegion({
+  control,
+  errors,
+}: {
+  control: Control<FormValues>;
+  errors: FieldErrors;
+}) {
+  const { locale } = useRouter();
+  const { t } = useTranslation();
+
+  const { data: meData } = useMeQuery();
+  const ShopSlugName = 'hilltop-marble';
+  // const { data: me } = useMeQuery()
+  
+
+  const { regions, loading, paginatorInfo, error } = useRegionsQuery({
+    code: meData?.managed_shop?.slug,
+  });
+  console.log('REgions===', regions);
+  if (error) {
+    console.error('Error fetching regions:', error);
+  }
+  return (
+    <div className="mb-5">
+      <Label>Select Region</Label>
+      <SelectInput
+        name="regions"
+        control={control}
+        getOptionLabel={(option: any) => option.name}
+        getOptionValue={(option: any) => option.id}
+        options={regions?.items || []}
+        isLoading={!regions} // Show loading state if regions data is not yet loaded
+      />
+      {/* <ValidationError message={t(errors.type?.message)} /> */}
+    </div>
+  );
+}
 function SelectTypes({
   control,
   errors,
@@ -113,9 +152,11 @@ function SelectTypes({
         control={control}
         getOptionLabel={(option: any) => option.name}
         getOptionValue={(option: any) => option.slug}
-        options={types!}
-        isLoading={loading} defaultValue={[]} />
-      <ValidationError message={t(errors.type?.message)} />
+        options={types?.items || []}
+        isLoading={loading}
+        defaultValue={[]}
+      />
+      {/* <ValidationError message={t(errors.type?.message)} /> */}
     </div>
   );
 }
@@ -142,9 +183,10 @@ function SelectCategories({
     }
   }, [type?.slug]);
   const { categories, loading } = useCategoriesQuery({
-    limit: 999,
+    limit: 10,
     type: type?.slug,
     language: locale,
+    // shopId,
   });
   return (
     <div>
@@ -156,19 +198,22 @@ function SelectCategories({
         getOptionValue={(option: any) => option.id}
         options={categories}
         isClearable={true}
-        isLoading={loading} defaultValue={[]} />
+        isLoading={loading}
+        defaultValue={[]}
+      />
     </div>
   );
 }
 
 type FormValues = {
+  regions: any; 
   name: string;
   details: string;
   parent: any;
   image: any;
   icon: any;
   type: any;
-  region:string;
+  region_name: string;
 };
 
 const defaultValues = {
@@ -178,6 +223,7 @@ const defaultValues = {
   parent: '',
   icon: '',
   type: '',
+  region_name: '',
 };
 
 type IProps = {
@@ -202,22 +248,21 @@ export default function CreateOrUpdateCategoriesForm({
     //@ts-ignore
     defaultValues: initialValues
       ? {
-        ...initialValues,
-        icon: initialValues?.icon
-          ? categoryIcons.find(
-            (singleIcon) => singleIcon.value === initialValues?.icon!
-          )
-          : '',
-        ...(isNewTranslation && {
-          type: null,
-        }),
-      }
+          ...initialValues,
+          icon: initialValues?.icon
+            ? categoryIcons.find(
+                (singleIcon) => singleIcon.value === initialValues?.icon!
+              )
+            : '',
+            // region: initialValues.regions?.length > 0 ? initialValues.regions[0]?.name : '', 
+          ...(isNewTranslation && {
+            type: null,
+          }),
+        }
       : defaultValues,
     resolver: yupResolver(categoryValidationSchema),
   });
-
-  const { data: meData } = useMeQuery();
-
+ 
   const { openModal } = useModalAction();
   const { locale } = router;
   const {
@@ -248,7 +293,14 @@ export default function CreateOrUpdateCategoriesForm({
     useUpdateCategoryMutation();
 
   const onSubmit = async (values: FormValues) => {
-    console.log('Form Data:', values);
+    const shopIdFromLocalStorage = localStorage.getItem("shopId");
+console.log("shopIdFromLocalStorage",shopIdFromLocalStorage)
+    if (!shopIdFromLocalStorage) {
+      console.error("Shop ID not found in localStorage");
+      return;
+    }
+    const transformedRegions = values.regions?.name ? [values.regions.name] : [];
+
     const input = {
       language: router.locale,
       name: values.name,
@@ -261,7 +313,7 @@ export default function CreateOrUpdateCategoriesForm({
       icon: values.icon?.value || '',
       parent: values.parent?.id ?? null,
       type_id: values.type?.id,
-      regions: values.region,
+      region_name: transformedRegions,
     };
 
     if (
@@ -272,20 +324,20 @@ export default function CreateOrUpdateCategoriesForm({
       createCategory({
         ...input,
         ...(initialValues?.slug && { slug: initialValues.slug }),
-        shop_id: meData?.managed_shop?.id || initialValues?.shop_id,
+        // shop_id: meData?.managed_shop?.id || initialValues?.shop_id,
+        shop_id: shopIdFromLocalStorage || initialValues?.shop_id,
       });
     } else {
       updateCategory({
         ...input,
         id: initialValues.id!,
-        shop_id: meData?.managed_shop?.id,
+        // shop_id: meData?.managed_shop?.id,
+        shop_id: shopIdFromLocalStorage,
       });
     }
   };
-  const countryOptions = [
-    { value: 'India', label: 'India' },
-    { value: 'usa', label: 'usa' },
-  ];
+
+  console.log('categoery-----------------initialvalue', initialValues);
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
       <div className="my-5 flex flex-wrap border-b border-dashed border-border-base pb-8 sm:my-8">
@@ -303,10 +355,11 @@ export default function CreateOrUpdateCategoriesForm({
       <div className="my-5 flex flex-wrap sm:my-8">
         <Description
           title={t('form:input-label-description')}
-          details={`${initialValues
+          details={`${
+            initialValues
               ? t('form:item-description-edit')
               : t('form:item-description-add')
-            } ${t('form:category-description-helper-text')}`}
+          } ${t('form:category-description-helper-text')}`}
           className="w-full px-0 pb-5 sm:w-4/12 sm:py-8 sm:pe-4 md:w-1/3 md:pe-5 "
         />
 
@@ -340,9 +393,11 @@ export default function CreateOrUpdateCategoriesForm({
               name="icon"
               control={control}
               options={updatedIcons}
-              isClearable={true} defaultValue={[]} />
+              isClearable={true}
+              defaultValue={[]}
+            />
           </div>
-          <div className="mb-5">
+          {/* <div className="mb-5">
           <SelectInput
     name="region"
     control={control}
@@ -350,7 +405,8 @@ export default function CreateOrUpdateCategoriesForm({
     isClearable={true}
     defaultValue={[]}
   />
-  </div>  
+  </div>   */}
+          <SelectRegion control={control} errors={errors} />
           <SelectTypes control={control} errors={errors} />
           <SelectCategories control={control} setValue={setValue} />
         </Card>

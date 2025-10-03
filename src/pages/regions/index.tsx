@@ -2,7 +2,7 @@ import Card from '@/components/common/card';
 import Layout from '@/components/layouts/admin';
 import Search from '@/components/common/search';
 import LinkButton from '@/components/ui/link-button';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import ErrorMessage from '@/components/ui/error-message';
 import Loader from '@/components/ui/loader/loader';
 import { useTranslation } from 'next-i18next';
@@ -24,16 +24,13 @@ export default function Regions() {
   const [searchTerm, setSearchTerm] = useState('');
   const [page, setPage] = useState(1);
   const { data: me } = useMeQuery()
-  console.log('region-me = ', me)
-  console.log('region-me = ', me?.managed_shop?.slug)
-
   const { regions, loading, paginatorInfo, error } = useRegionsQuery({
     code: me?.managed_shop?.slug,
+    page,
+    limit:10,
+    search: searchTerm,
   });
-
-  console.log("regions",regions)
-
-  const { permissions } = getAuthCredentials();
+   const { permissions } = getAuthCredentials();
   
   const permissionTypes = AllPermission(); 
 
@@ -50,7 +47,8 @@ export default function Regions() {
   function handlePagination(current: number) {
     setPage(current);
   }
-
+   
+  
   return (
     <>
       <Card className="mb-8 flex flex-col items-center xl:flex-row">

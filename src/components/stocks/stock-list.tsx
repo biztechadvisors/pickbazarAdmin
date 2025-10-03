@@ -1,21 +1,14 @@
 import { Table } from '@/components/ui/table';
-import { siteSettings } from '@/settings/site.settings';
 import Badge from '@/components/ui/badge/badge';
 import { useRouter } from 'next/router';
 import { useTranslation } from 'next-i18next';
-import { Product, SortOrder } from '@/types';
 import { useIsRTL } from '@/utils/locals';
 import { useState } from 'react';
 import TitleWithSort from '@/components/ui/title-with-sort';
-import { newPermission } from '@/contexts/permission/storepermission';
-import { useAtom } from 'jotai';
-import { getAuthCredentials } from '@/utils/auth-utils';
-import { AlignType } from 'rc-table/lib/interface';
+import { useUpdateStockQuantity, useGetStock } from '@/data/stock';
+import Select from '../ui/select/select';
 import Input from '../ui/input';
 import Button from '../ui/button';
-import { useGetStock, useUpdateStockQuantity } from '@/data/stock';
-import Select from '../ui/select/select';
-import { AllPermission } from '@/utils/AllPermission';
 
 export type IProps = {
   me: any;
@@ -25,8 +18,98 @@ export type IProps = {
 };
 
 type SortingObjType = {
-  sort: SortOrder;
+  sort: string;
   column: string | null;
+};
+
+const EditableQuantity = ({ record, me }: any) => {
+  const [editMode, setEditMode] = useState(false);
+  const [editedQuantity, setEditedQuantity] = useState(record.quantity);
+  const [updatedQuantity, setUpdatedQuantity] = useState(record.quantity);
+  const { mutate: updateQuantity } = useUpdateStockQuantity();
+
+  const handleEditQuantity = async () => {
+    const data = {
+      user_id: me?.id,
+      quantity: editedQuantity,
+      status: record.status,
+      inStock: record.inStock,
+      ordPendQuant: record.ordPendQuant,
+      product: record.product.id,
+    };
+    updateQuantity(data);
+    setUpdatedQuantity(editedQuantity);
+    setEditMode(false);
+  };
+
+  return (
+    <div>
+      {editMode ? (
+        <>
+          <Input
+            type="number"
+            defaultValue={editedQuantity}
+            onChange={(e) => setEditedQuantity(Number(e.target.value))}
+          />
+          <Button onClick={handleEditQuantity} size="small" className="mt-2">
+            Update
+          </Button>
+        </>
+      ) : (
+        <span
+          onClick={() => setEditMode(true)}
+          className="font-semibold text-accent underline transition-colors duration-200 ms-1 hover:text-accent-hover hover:no-underline focus:text-accent-700 focus:no-underline focus:outline-none"
+        >
+          {updatedQuantity}
+        </span>
+      )}
+    </div>
+  );
+};
+
+const EditablePendingQuantity = ({ record, me }: any) => {
+  const [editMode, setEditMode] = useState(false);
+  const [editedQuantity, setEditedQuantity] = useState(record.ordPendQuant);
+  const [updatedQuantity, setUpdatedQuantity] = useState(record.ordPendQuant);
+  const { mutate: updateQuantity } = useUpdateStockQuantity();
+
+  const handleEditQuantity = async () => {
+    const data = {
+      user_id: me?.id,
+      quantity: record.quantity,
+      status: record.status,
+      inStock: record.inStock,
+      ordPendQuant: editedQuantity,
+      product: record.product.id,
+    };
+    updateQuantity(data);
+    setUpdatedQuantity(editedQuantity);
+    setEditMode(false);
+  };
+
+  return (
+    <div>
+      {editMode ? (
+        <>
+          <Input
+            type="number"
+            defaultValue={editedQuantity}
+            onChange={(e) => setEditedQuantity(Number(e.target.value))}
+          />
+          <Button onClick={handleEditQuantity} size="small" className="mt-2">
+            Update
+          </Button>
+        </>
+      ) : (
+        <span
+          onClick={() => setEditMode(true)}
+          className="font-semibold text-accent underline transition-colors duration-200 ms-1 hover:text-accent-hover hover:no-underline focus:text-accent-700 focus:no-underline focus:outline-none"
+        >
+          {updatedQuantity}
+        </span>
+      )}
+    </div>
+  );
 };
 
 const StockList = ({ me, onSort, onOrder }: IProps) => {
@@ -44,7 +127,7 @@ const StockList = ({ me, onSort, onOrder }: IProps) => {
   const canWrite = permissionTypes.includes('sidebar-nav-item-products');
 
   const [sortingObj, setSortingObj] = useState<SortingObjType>({
-    sort: SortOrder.Desc,
+    sort: 'desc',
     column: null,
   });
 
@@ -53,9 +136,7 @@ const StockList = ({ me, onSort, onOrder }: IProps) => {
 
   const onHeaderClick = (column: string | null) => ({
     onClick: () => {
-      onSort((currentSortDirection: SortOrder) =>
-        currentSortDirection === SortOrder.Desc ? SortOrder.Asc : SortOrder.Desc
-      );
+      onSort(sortingObj.sort === 'desc' ? 'asc' : 'desc');
       onOrder(column!);
       setSortingObj({
         sort:
@@ -65,12 +146,29 @@ const StockList = ({ me, onSort, onOrder }: IProps) => {
     },
   });
 
+  const handleEditQuantity = (record: any, editedQuantity: number) => {
+    const data = {
+      user_id: me?.id,
+      quantity: editedQuantity,
+      status: record.status,
+      inStock: record.quantity === 0 ? false : true,
+      ordPendQuant: record.ordPendQuant,
+      product: record.product.id,
+    };
+    updateQuantity(data);
+    setEditModeIndex(null);  // Close edit mode after updating
+    setEditedQuantities((prev) => ({
+      ...prev,
+      [record.id]: editedQuantity,
+    }));
+  };
+
   let columns = [
     {
       title: 'S.No',
       dataIndex: 'id',
       key: 'id',
-      align: 'center' as AlignType,
+      align: 'center' as const,
       width: 64,
       render: (text: string, record: any, index: number) => (
         <span>{index + 1}</span>
@@ -134,27 +232,21 @@ const StockList = ({ me, onSort, onOrder }: IProps) => {
       title: t('Stock Available'),
       dataIndex: 'inStock',
       key: 'inStock',
-      align: 'center',
+      align: 'center' as const,
       render: (inStock: boolean) => (
-        <Badge
-          text={t(inStock ? 'In Stock' : 'Out Of Stock')}
-          color={inStock ? 'bg-accent' : 'bg-red-500'}
-        />
+        <Badge text={t(inStock ? 'In Stock' : 'Out Of Stock')} color={inStock ? 'bg-accent' : 'bg-red-500'} />
       ),
     },
-
-
     {
       title: t('Status'),
       dataIndex: 'status',
       key: 'status',
-      align: 'center',
+      align: 'center' as const,
       render: (status: boolean, record: any) => {
         const options = [
           { value: true, label: 'True' },
           { value: false, label: 'False' },
         ];
-        // const [getstatus, setStatus] = useState(status);
 
         const onOrderChange = (selectedOption: any) => {
 
@@ -258,7 +350,6 @@ const StockList = ({ me, onSort, onOrder }: IProps) => {
         );
       },
     },
-
     {
       title: (
         <TitleWithSort
@@ -335,22 +426,20 @@ const StockList = ({ me, onSort, onOrder }: IProps) => {
   ];
 
   if (router?.query?.shop) {
-    columns = columns?.filter((column) => column?.key !== 'shop');
+    columns = columns.filter((column) => column?.key !== 'shop');
   }
 
   return (
-    <>
-      <div className="mb-6 overflow-hidden rounded shadow">
-        <Table
-          /* @ts-ignore */
-          columns={columns}
-          emptyText={t('table:empty-table-data')}
-          data={stocks}
-          rowKey="id"
-          scroll={{ x: 900 }}
-        />
-      </div>
-    </>
+    <div className="mb-6 overflow-hidden rounded shadow">
+      <Table
+        /* @ts-ignore */
+        columns={columns}
+        emptyText={t('table:empty-table-data')}
+        data={stocks}
+        rowKey="id"
+        scroll={{ x: 900 }}
+      />
+    </div>
   );
 };
 

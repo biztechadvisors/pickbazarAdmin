@@ -72,34 +72,24 @@ export default function Orders() {
         language: locale,
         limit: 20,
         page,
-        tracking_number: searchTerm,
+        // tracking_number:searchTerm,
+        search:searchTerm,
         // customer_id: me?.id,
         
     };
 
     if (DealerShow) {
-        queryConfig.shop_slug = me?.managed_shop?.slug;
-        queryConfig.customer_id = me?.id;
-    } else if (ShopShow) {
-        queryConfig.customer_id = me?.shop_id;
-        queryConfig.shop_id = me?.managed_shop?.id;
-        queryConfig.shop_slug = me?.managed_shop?.slug;
+        queryConfig.shopSlug = me?.managed_shop?.slug;
+        queryConfig.customer_id = me?.id;``
+    } else if (ShopShow) {        
+        // queryConfig.shop_id = me?.managed_shop?.id;
+        queryConfig.shopSlug = me?.managed_shop?.slug;
     }    
 
     const { orders, loading, paginatorInfo, error } = useOrdersQuery(queryConfig);
     console.log("++++++++++orders",orders)
 
-    // const { orders, loading, paginatorInfo, error } = useOrdersQuery({
-    //     language: locale,
-    //     limit: 20,
-    //     page,
-    //     tracking_number: searchTerm,
-    //     customer_id: me?.id,
-    //     // shop_id: me?.createdBy?.managed_shop?.id,
-    //     shop_slug: me?.createdBy?.managed_shop?.slug,
-    // });
-
-  
+   
 
     const { refetch } = useExportOrderQuery(
         {
@@ -238,10 +228,12 @@ export default function Orders() {
     const customerOrderList = orders.filter(
         (order) => order?.customer_id !== order?.dealer?.id
     );
+
+    console.log("customerOrderList",customerOrderList)
  
-    var ordersData = orders.filter(
-        (order) => order?.customer_id == order?.dealer?.id
-    );
+    // var ordersData = orders.filter(
+    //     (order) => order?.customer_id == order?.dealer?.id
+    // );
 
 
     
@@ -304,7 +296,7 @@ export default function Orders() {
  
             {DealerShow ? (
                 <StockList
-                    orders={ordersData}
+                    orders={customerOrderList}
                     paginatorInfo={paginatorInfo}
                     onPagination={handlePagination}
                     onOrder={setOrder}
@@ -312,7 +304,7 @@ export default function Orders() {
                 />
             ) : (
                 <OrderList
-                    orders={customerOrderList}
+                    orders={orders}
                     paginatorInfo={paginatorInfo}
                     onPagination={handlePagination}
                     onOrder={setOrder}

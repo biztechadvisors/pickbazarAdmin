@@ -33,7 +33,7 @@ import * as socialIcons from '@/components/icons/social';
 import omit from 'lodash/omit';
 import SwitchInput from '@/components/ui/switch-input';
 import { getAuthCredentials } from '@/utils/auth-utils';
-import { SUPER_ADMIN, Company, OWNER } from '@/utils/constants';
+import { SUPER_ADMIN, Company, OWNER, E_COMMERCE, NON_E_COMMERCE } from '@/utils/constants';
 import { useModalAction } from '../ui/modal/modal.context';
 import OpenAIButton from '../openAI/openAI.button';
 import { useCallback, useMemo, useState } from 'react';
@@ -57,7 +57,7 @@ import CreateCustomerPage from '@/pages/users/create';
 import CreatePermission from '@/pages/permission/create';
 import CreatePerm from '../createPerm';
 import { useAtom } from 'jotai';
-import { selectedOption } from '@/utils/atoms';
+import { addPermission, selectedOption } from '@/utils/atoms';
 
 export const chatbotAutoSuggestion = ({ name }: { name: string }) => {
   return [
@@ -158,10 +158,10 @@ type SelectUserProps = {
 function SelectUser({ control, errors }: SelectUserProps) {
   const { t } = useTranslation();
   const { data } = useMeQuery();
-  const usrById = data?.id;
+  const usrById = data?.shop_id;  
   const { permissions } = getAuthCredentials();
   const isOwner = permissions?.[0].includes(OWNER);
-  const { data: users, isLoading } = useVendorQuery(usrById);
+  const { data: users, isLoading } = useVendorQuery(data?.id);
   const options: any = users || [];
   const shouldDisable = control._defaultValues.owner != null || !isOwner;
 
@@ -214,6 +214,9 @@ const ShopForm = ({ initialValues }: { initialValues?: any }) => {
   const [modalIsOpen, setIsOpen] = useState(false);
   const [permissionSelectedOption, setPermissionSelectedOption] =
     useAtom(selectedOption);
+  const [additionalPerm] = useAtom(addPermission);
+  const { permissions } = getAuthCredentials();
+
 
   function openModal() {
     setIsOpen(true);
@@ -225,7 +228,6 @@ const ShopForm = ({ initialValues }: { initialValues?: any }) => {
 
   const permissionId = permissionSelectedOption?.e?.id;
 
-  const { permissions } = getAuthCredentials();
   const {
     register,
     handleSubmit,
@@ -259,6 +261,7 @@ const ShopForm = ({ initialValues }: { initialValues?: any }) => {
     resolver: yupResolver(shopValidationSchema),
   });
   const router = useRouter();
+  console.log("control",control)
   // const { openModal } = useModalAction();
   const { locale } = router;
   const { data, isLoading: loading, isError } = useMeQuery();
@@ -274,25 +277,35 @@ const ShopForm = ({ initialValues }: { initialValues?: any }) => {
     return chatbotAutoSuggestion({ name: generateName ?? '' });
   }, [generateName]);
 
+  const userId = data?.id;
+
   const {
-    isLoading,
+    isLoading: permissionLoading,
     error,
     data: permissionData,
-  } = usePermissionData(data?.id);
+  } = usePermissionData(userId);
 
-  const filterdEcomm = permissionData?.filter(
-    (e: any) =>
-      (e.type_name == 'Company' && e.permission_name === 'E-commerce') ||
-      e.permission_name === 'Non-ecommerce'
-  );
+  console.log("permissionData",permissionData)
+
+  const filterdEcomm = permissionData?.filter((e: any) => {
+    return (
+      (e && // Ensure the object exists
+        e.type_name === Company &&
+        e.permission_name === E_COMMERCE) ||
+      (e.type_name === Company && e.permission_name === NON_E_COMMERCE )
+    );
+  });
 
   const option = filterdEcomm?.map((e: any) => ({
-    name: e.permission_name,
-    email: e.type_name,
+    name: e?.permission_name,
+    email: e?.type_name,
     e,
   }));
-
+  console.log('Fetched Permission Data:', permissionData);
+  console.log('Permission Filtered Ecomm:', filterdEcomm);
+  console.log('Permission Options:', option);
   const permissionProps = permissionSelectedOption?.e;
+
 
   const handleGenerateDescription = useCallback(() => {
     openModal('GENERATE_DESCRIPTION', {
@@ -309,6 +322,9 @@ const ShopForm = ({ initialValues }: { initialValues?: any }) => {
     control,
     name: 'settings.socials',
   });
+
+  console.log("fields",fields)
+ 
 
   const handleSelectChange = (selectedOption: any) => {
     setPermissionSelectedOption(selectedOption);
@@ -359,6 +375,52 @@ const ShopForm = ({ initialValues }: { initialValues?: any }) => {
   //   }
   // }
 
+  // async function onSubmit(values: FormValues) {
+  //   const settings = {
+  //     ...values?.settings,
+  //     location: { ...omit(values?.settings?.location, '__typename') },
+  //     socials: values?.settings?.socials
+  //       ? values?.settings?.socials?.map((social: any) => ({
+  //           icon: social?.icon?.value,
+  //           url: social?.url,
+  //         }))
+  //       : [],
+  //   };
+
+  //   // Remove companyType from values
+  //   const { companyType, ...filteredValues } = values;
+
+  //   console.log('settings**********', settings);
+  //   try {
+  //     if (initialValues) {
+  //       const { ...restAddress } = filteredValues.address;
+  //       await updateShop({
+  //         id: initialValues.id,
+  //         ...filteredValues,
+  //         address: restAddress,
+  //         settings,
+  //         balance: {
+  //           id: initialValues.balance?.id,
+  //           ...filteredValues.balance,
+  //         },
+  //       });
+  //     } else {
+  //       await createShop({
+  //         ...filteredValues,
+  //         settings,
+  //         balance: {
+  //           ...filteredValues.balance,
+  //         },
+  //         additionalPermissions: additionalPerm, // Ensure this is set as needed
+  //         permission: permissionProps?.permission_name,
+  //       });
+  //     }
+  //     router.push('/shops'); // Navigate to the shops list or appropriate page
+  //   } catch (error) {
+  //     console.error('Error while saving the shop:', error);
+  //   }
+  // }
+
   async function onSubmit(values: FormValues) {
     const settings = {
       ...values?.settings,
@@ -370,14 +432,16 @@ const ShopForm = ({ initialValues }: { initialValues?: any }) => {
           }))
         : [],
     };
-  
+
     // Remove companyType from values
     const { companyType, ...filteredValues } = values;
-  
+
     console.log('settings**********', settings);
     try {
       if (initialValues) {
         const { ...restAddress } = filteredValues.address;
+
+        console.log("restAddress", restAddress)
         await updateShop({
           id: initialValues.id,
           ...filteredValues,
@@ -386,25 +450,37 @@ const ShopForm = ({ initialValues }: { initialValues?: any }) => {
           balance: {
             id: initialValues.balance?.id,
             ...filteredValues.balance,
+            // Ensure admin_commission_rate, current_balance, total_earnings, withdrawn_amount are updated when updating a shop
+            admin_commission_rate: 0, // Example value
+            current_balance: 0, // Example value
+            total_earnings: 0, // Example value
+            withdrawn_amount: 0, // Example value
           },
         });
       } else {
+        const { ...restAddress } = filteredValues.address;
+        console.log("restAddress-create", restAddress)
         await createShop({
           ...filteredValues,
+          address: restAddress,
           settings,
           balance: {
             ...filteredValues.balance,
+            // Pass these fields inside the balance object when creating a shop
+            admin_commission_rate: 0, // Example value
+            current_balance: 0, // Example value
+            total_earnings: 0, // Example value
+            withdrawn_amount: 0, // Example value
           },
-          additionalPermissions: {}, // Ensure this is set as needed
-          permission: permissionProps,
+          additionalPermissions: additionalPerm, // Ensure this is set as needed
+          permission: permissionProps?.permission_name,
         });
       }
-      router.push('/shops'); // Navigate to the shops list or appropriate page
+      // router.push('/shops'); // Navigate to the shops list or appropriate page
     } catch (error) {
       console.error('Error while saving the shop:', error);
     }
   }
-  
 
   const coverImageInformation = (
     <span>
@@ -414,12 +490,13 @@ const ShopForm = ({ initialValues }: { initialValues?: any }) => {
     </span>
   );
 
-  if (isLoading) {
-    return (
-      <div>
-        <Loader text="...loading" />
-      </div>
-    );
+  // Fixed the loading and error handling.
+  if (permissionLoading || creating || updating) {
+    return <Loader text="Loading..." />;
+  }
+
+  if (error) {
+    return <div>Error: {error.message}</div>;
   }
 
   console.log(' initialValues_____________________', initialValues);

@@ -38,7 +38,7 @@ export default function CategoryTypeFilter({
       <div className="w-full">
         <Label>{t('common:filter-by-group')}</Label>
         <Select
-          options={types}
+          options={types?.items || []}
           isLoading={loading}
           getOptionLabel={(option: any) => option.name}
           getOptionValue={(option: any) => option.slug}

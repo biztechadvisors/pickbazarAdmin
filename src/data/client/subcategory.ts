@@ -17,7 +17,7 @@ export const subcategoryClient = {
     return HttpClient.get<SubCategoryPaginator>(API_ENDPOINTS.SUBCATEGORIES, {
       searchJoin: 'and',
       ...params,
-      search: HttpClient.formatSearchParams({ type, name }),
+      // search: HttpClient.formatSearchParams({ type, name }),
     });
   },
   getSubCategory: ({ slug, language, shopSlug }: { slug: string; language: string; shopSlug: string | null }) => {
