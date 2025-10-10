@@ -26,7 +26,7 @@ const CheckoutForm = () => {
 
     try {
       // Make a POST request to the API endpoint
-      const response = await axios.post('http://localhost:5000/api/dealers/customer', formData);
+      const response = await axios.post(`${process.env.NEXT_PUBLIC_REST_API_ENDPOINT}dealers/customer`, formData);
 
       // Close the cart sidebar after form submission
       closeCartSidebar();

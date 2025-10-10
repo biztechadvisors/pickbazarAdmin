@@ -30,7 +30,7 @@ const NotificationMenu: React.FC<MenuType> = ({ data }) => {
       userId = localStorage.getItem('userId');
     }
 
-    const socket = io('http://localhost:5000/notifications', {
+    const socket = io('https://codenox-server.vercel.app/notifications', {
       query: { userId },
       transports: ['websocket'], // Ensure using websocket transport
     });
