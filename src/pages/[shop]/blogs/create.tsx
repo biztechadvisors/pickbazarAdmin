@@ -12,7 +12,7 @@ import Description from '@/components/ui/description';
 import FileInput from '@/components/ui/file-input';
 import { useForm } from 'react-hook-form';
 import { useShopQuery } from '@/data/shop';
-import { usecreateBlogMutation } from '@/data/blog';
+import { useCreateBlogMutation } from '@/data/blog';
 
 const BlogCreate = () => {
   const { t } = useTranslation();
@@ -44,7 +44,7 @@ const BlogCreate = () => {
 
   const { handleSubmit, control } = useForm();
 
-  const { mutate } = usecreateBlogMutation();
+  const { mutate } = useCreateBlogMutation();
 
   const onSubmit = () => {
     console.log('Form data:', formData);
