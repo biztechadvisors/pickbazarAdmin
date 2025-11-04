@@ -48,6 +48,7 @@ import { useTaxesQuery } from '@/data/tax';
 import SelectInput from '../ui/select-input';
 import ValidationError from '../ui/form-validation-error';
 import { useMeQuery } from '@/data/user';
+import { m } from 'framer-motion';
 
 export const chatbotAutoSuggestion = ({ name }: { name: string }) => {
   return [
@@ -124,9 +125,7 @@ export default function CreateOrUpdateProductForm({
 
   const { data: shopData } = useShopQuery(
     { slug: router.query.shop as string },
-    {
-      enabled: !!router.query.shop,
-    }
+    {enabled: !!router.query.shop,}
   );
 
   const {
@@ -163,6 +162,8 @@ export default function CreateOrUpdateProductForm({
     watch,
     formState: { errors },
   } = methods;
+
+  console.log('product form methods', methods.control);
 
   const upload_max_filesize = options?.server_info?.upload_max_filesize / 1024;
 
