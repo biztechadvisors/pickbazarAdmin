@@ -42,7 +42,7 @@ export default function Dashboard() {
     error: analyticsError,
   } = useAnalyticsQuery(analyticsQuery);
 
-  console.log('analyticsData', analyticsData);
+  // console.log('analyticsData', analyticsData,analyticsQuery);
 
   // console.log("meData",meData)
 
@@ -88,7 +88,7 @@ export default function Dashboard() {
     loading: orderLoading,
   } = useOrdersQuery(queryConfig);
 
-  console.log('orderData', orderData);
+  // console.log('orderData', orderData);
   const customer_id = meData?.id;
   const shop_id = meData?.managed_shop?.id;
 

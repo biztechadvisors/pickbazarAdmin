@@ -89,7 +89,7 @@ console.log("++++++++++sales++orders",orders)
 
   console.log("shop_id",me?.createdBy?.shop_id)
 
-  const { data: response } = useGetStockSeals(customer_id);
+  const { data: response } = useGetStockSeals(customer_id, shop_id as string);
   // http://localhost:5000/api/stocks/orders?customer_id=3
 
   const { refetch } = useExportOrderQuery(
