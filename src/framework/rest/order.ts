@@ -237,7 +237,7 @@ export function useCreateOrder() {
             idStr = id.toString();
           }
 
-          console.log("idStr", idStr)
+          // console.log("idStr", idStr)
           if (
             [
               PaymentGateway.COD,

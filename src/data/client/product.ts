@@ -81,7 +81,7 @@ export const productClient = {
 
   get({ slug, id, language, shop_id }: GetParams) {
 
-    console.log("slug___id", slug, id)
+    // console.log("slug___id", slug, id)
     return HttpClient.get<Product>(
       `${API_ENDPOINTS.PRODUCTS}/${slug}/${id}/${shop_id}`,
       {

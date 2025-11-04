@@ -30,7 +30,7 @@ const TagList = ({
 }: IProps) => {
   const { t } = useTranslation();
   const rowExpandable = (record: any) => record.children?.length; 
-console.log("tag data+++++%%%%%%",tags);
+// console.log("tag data+++++%%%%%%",tags);
   const permissionTypes = AllPermission(); 
 
   const canWrite = permissionTypes.includes('sidebar-nav-item-tags');
@@ -46,7 +46,7 @@ console.log("tag data+++++%%%%%%",tags);
   }); 
 
   useEffect(() => {
-    console.log('Updated tags data:', tags);
+    // console.log('Updated tags data:', tags);
   }, [tags]);
   
   const onHeaderClick = (column: string | null) => ({

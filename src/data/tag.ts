@@ -73,12 +73,12 @@ export const useUpdateTagMutation = () => {
 };
 
 export const useTagQuery = ({ slug, language }: GetParams) => {
-  console.log('tag slug', slug);
+  // console.log('tag slug', slug);
   const { data, error, isLoading } = useQuery<Tag, Error>(
     [API_ENDPOINTS.TAGS, { slug, language }],
     () => tagClient.get({ slug, language })
   );
-  console.log('Tag data', data);
+  // console.log('Tag data', data);
   return {
     tag: data,
     error,
@@ -113,7 +113,7 @@ export const useTagsQuery = (
     }
   );
 
-  console.log('dfata= ===', data);
+  // console.log('dfata= ===', data);
 
   return {
     tags: data?.data ?? [],

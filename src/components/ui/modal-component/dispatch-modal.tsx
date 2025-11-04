@@ -29,7 +29,7 @@ const DispatchModal: React.FC<DispatchModalProps> = ({
 }) => {
   const { t } = useTranslation();
   const { handleSubmit, control } = useForm();
-  console.log("DispatchModal-order",order)
+  // console.log("DispatchModal-order",order)
 
   const user_id = dealerId;
   const { mutate: updateStockDataById } = useUpdateStockDataById(user_id);
@@ -62,9 +62,9 @@ const DispatchModal: React.FC<DispatchModalProps> = ({
       variation_option_id,
     };
 
-    console.log("finalUpdatedData",finalUpdatedData)
-    console.log("receivedQuantity",receivedQuantity)
-    console.log("updateDispatchQuant",updateDispatchQuant)
+    // console.log("finalUpdatedData",finalUpdatedData)
+    // console.log("receivedQuantity",receivedQuantity)
+    // console.log("updateDispatchQuant",updateDispatchQuant)
 
     if (ReceivedButton) {      
       updateStockDataByDealer(finalUpdatedData);

@@ -86,7 +86,7 @@ export const useCategoryQuery = ({ slug, language, shopId }: GetParams) => {
 };
 
 export const useCategoriesQuery = (options: Partial<CategoryQueryOptions>) => {
-  console.log("Request options:", options); 
+  // console.log("Request options:", options); 
   const { data, error, isLoading } = useQuery<CategoryPaginator, Error>(
     [API_ENDPOINTS.CATEGORIES, options],
     ({ queryKey, pageParam }) =>

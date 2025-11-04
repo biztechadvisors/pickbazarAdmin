@@ -11,10 +11,10 @@ const ContactDeleteView = () => {
 
   const { data } = useModalState();
   const { closeModal } = useModalAction();
-  console.log('useModalState = ', data);
+  // console.log('useModalState = ', data);
 
   function handleDelete() {
-    console.log('handle Delete = ', data);
+    // console.log('handle Delete = ', data);
     deleteContact({ id: data }); // Ensure the ID is passed correctly
     closeModal();
   }

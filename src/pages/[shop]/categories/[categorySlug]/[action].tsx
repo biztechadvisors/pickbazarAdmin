@@ -28,7 +28,7 @@ const shopId = shop?.id ? Number(shop.id) : undefined;
       query.action!.toString() === 'edit' ? locale! : Config.defaultLanguage, 
       shopId,
   });
-console.log("%%%%%%%%%%%%%ID",category);
+// console.log("%%%%%%%%%%%%%ID",category);
 
   if (loading) return <Loader text={t('common:text-loading')} />;
   if (error) return <ErrorMessage message={error.message} />;

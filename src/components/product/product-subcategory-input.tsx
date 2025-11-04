@@ -36,7 +36,7 @@ const ProductSubCategoryInput = ({ control, setValue }: Props) => {
     categoryId: null,
   });
 
-  console.log("@SUBCATEGORY+++", subcategoryData);
+  // console.log("@SUBCATEGORY+++", subcategoryData);
 
   return (
     <div className="mb-5">

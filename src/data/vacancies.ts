@@ -37,7 +37,7 @@ export const useVacancyQuery = (
       ...options,
     }
   );
-  console.log('Vacancy data here', data);
+  // console.log('Vacancy data here', data);
   return {
     vacancies: data || [], // Adjust to match the vacancy structure
     paginatorInfo: mapPaginatorData(data),

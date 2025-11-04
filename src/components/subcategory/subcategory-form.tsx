@@ -95,7 +95,7 @@ function SelectRegion({
   const { regions, loading, paginatorInfo, error } = useRegionsQuery({
     code: meData?.managed_shop?.slug,
   });
-console.log("REgions===",regions);
+// console.log("REgions===",regions);
   if (error) {
     console.error("Error fetching regions:", error);
   }
@@ -244,7 +244,7 @@ export default function CreateOrUpdateSubCategoriesForm({
     useUpdateSubCategoryMutation();
 
   const onSubmit = async (values: FormValues) => {
-    console.log("values####",values)
+    // console.log("values####",values)
     const transformedRegions = values.region?.name ? [values.region.name] : [];
     const input = {
       language: router.locale,
@@ -277,7 +277,7 @@ export default function CreateOrUpdateSubCategoriesForm({
         shop_id: meData?.managed_shop?.id,
       });
     }
-    console.log("Category ID:", values.category_id);
+    // console.log("Category ID:", values.category_id);
 
   };
   

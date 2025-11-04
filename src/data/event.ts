@@ -71,7 +71,7 @@ export const useEventQuery = (params: any, options: any = {}) => {
       ...options,
     }
   );
-console.log("@@@@@@",data) 
+// console.log("@@@@@@",data) 
   return {
     events: data?.data || [], // Fallback to an empty array if no data is available
     paginatorInfo: data ? mapPaginatorData(data) : {}, // Assuming mapPaginatorData handles pagination info

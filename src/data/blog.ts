@@ -84,7 +84,7 @@ export const useBlogsQuery = (
     ({ queryKey, pageParam }) => {
       const { shopSlug, search, language, orderBy, sortedBy, page } = queryKey[1];
  
-      console.log('shopSlug being sent:', shopSlug);
+      // console.log('shopSlug being sent:', shopSlug);
 
       return blogClient.get({
         slug: shopSlug,   

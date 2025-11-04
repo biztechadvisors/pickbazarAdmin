@@ -1853,8 +1853,8 @@ export default function ProductVariableForm({
   }
 
   // Use `settings` from the query instead of the `initialSettings` prop here
-  console.log('settings from query:', settings);
-  console.log('initialSettings from props:', initialSettings);
+  // console.log('settings from query:', settings);
+  // console.log('initialSettings from props:', initialSettings);
 
   const { attributes, loading } = useAttributesQuery({
     shop_id: initialValues ? initialValues.shop_id : shopId,
@@ -1868,7 +1868,7 @@ export default function ProductVariableForm({
     getValues,
     formState: { errors },
   } = useFormContext();
-  console.log('CONTROLLER', control);
+  // console.log('CONTROLLER', control);
   const { fields, append, remove } = useFieldArray({
     control,
     name: 'variations',
@@ -1876,9 +1876,9 @@ export default function ProductVariableForm({
 
   const variations = watch('variations');
 
-  console.log('variantions', variations);
+  // console.log('variantions', variations);
   const cartesianProduct = getCartesianProduct(getValues('variations')) || {};
-  console.log('cartesianProduct', cartesianProduct);
+  // console.log('cartesianProduct', cartesianProduct);
 
   return (
     <>
@@ -2144,10 +2144,10 @@ export const TitleAndOptionsInput = ({
   register,
   cartesianProduct,
 }: any) => {
-  console.log(
-    'cartesianProductcartesianProductcartesianProduct',
-    cartesianProduct
-  );
+  // console.log(
+  //   'cartesianProductcartesianProductcartesianProduct',
+  //   cartesianProduct
+  // );
   const title = Array.isArray(cartesianProduct)
     ? cartesianProduct
         .flatMap((a) => a.value) // Flatten the values
@@ -2155,7 +2155,7 @@ export const TitleAndOptionsInput = ({
         .replace(/,\s*/g, '/') // Replace any commas with slashes
     : cartesianProduct.value;
 
-  console.log('title', title);
+  // console.log('title', title);
   const options = Array.isArray(cartesianProduct)
     ? cartesianProduct.map((item) => ({
         attribute: item.name,
@@ -2168,7 +2168,7 @@ export const TitleAndOptionsInput = ({
         },
       ];
 
-  console.log('options_________________________', options);
+  // console.log('options_________________________', options);
   useEffect(() => {
     setValue(`variation_options.${index}.title`, title);
     setValue(`variation_options.${index}.options`, options);

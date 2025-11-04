@@ -79,7 +79,7 @@ const { orders, loading, paginatorInfo, error } = useOrdersQuery(queryConfig);
   //   if (page > totalPages) setPage(1);
   // }, [paginatorInfo?.total, paginatorInfo?.perPage, page]);
 
-console.log("++++++++++sales++orders",orders)
+// console.log("++++++++++sales++orders",orders)
 
 
 
@@ -87,7 +87,7 @@ console.log("++++++++++sales++orders",orders)
   const shop_id =  me?.createdBy?.shop_id
  
 
-  console.log("shop_id",me?.createdBy?.shop_id)
+  // console.log("shop_id",me?.createdBy?.shop_id)
 
   const { data: response } = useGetStockSeals(customer_id, shop_id as string);
   // http://localhost:5000/api/stocks/orders?customer_id=3
@@ -230,7 +230,7 @@ console.log("++++++++++sales++orders",orders)
 
   const DealerSalesList = response?.data
 
-  console.log("DealerSalesList",DealerSalesList)
+  // console.log("DealerSalesList",DealerSalesList)
 
  
 
@@ -238,7 +238,7 @@ console.log("++++++++++sales++orders",orders)
     (order) => order?.customer_id == order?.dealer?.id
   );
 
-  console.log("ordersData",ordersData)
+  // console.log("ordersData",ordersData)
 
   // const ShopShow = me?.permission.type_name === Company;
 

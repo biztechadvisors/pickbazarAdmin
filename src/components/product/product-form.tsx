@@ -48,7 +48,7 @@ import { useTaxesQuery } from '@/data/tax';
 import SelectInput from '../ui/select-input';
 import ValidationError from '../ui/form-validation-error';
 import { useMeQuery } from '@/data/user';
-import { m } from 'framer-motion';
+
 
 export const chatbotAutoSuggestion = ({ name }: { name: string }) => {
   return [
@@ -124,7 +124,7 @@ export default function CreateOrUpdateProductForm({
   ];
 
   const { data: shopData } = useShopQuery(
-    { slug: router.query.shop as string },
+    {slug: router.query.shop as string },
     {enabled: !!router.query.shop,}
   );
 
@@ -140,7 +140,7 @@ export default function CreateOrUpdateProductForm({
   const isSlugEditable =
     router?.query?.action === 'edit' &&
     router?.locale === Config.defaultLanguage;
-  const methods = useForm<ProductFormValues>({
+  const methods = useForm<ProductFormValues>({ 
     resolver: yupResolver(productValidationSchema),
     shouldUnregister: true,
     // @ts-ignore
@@ -163,7 +163,7 @@ export default function CreateOrUpdateProductForm({
     formState: { errors },
   } = methods;
 
-  console.log('product form methods', methods.control);
+  // console.log('product form methods', methods.control);
 
   const upload_max_filesize = options?.server_info?.upload_max_filesize / 1024;
 
@@ -173,14 +173,14 @@ export default function CreateOrUpdateProductForm({
     useUpdateProductMutation();
   // console.log("product form data+++++++++++...............",createProduct, updateProduct, creating, updating);
   const onSubmit = async (values: ProductFormValues) => {
-    console.log('product create values json', values);
-    console.log("Original form values", values.variations);
+    // console.log('product create values json', values);
+    // console.log("Original form values", values.variations);
 
     const inputValues = {
       language: router.locale,
       ...getProductInputValues(values, initialValues),
     };
-    console.log('form values', inputValues);
+    // console.log('form values', inputValues);
     try {
       if (
         !initialValues ||

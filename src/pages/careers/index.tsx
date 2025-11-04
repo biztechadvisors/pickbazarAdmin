@@ -31,7 +31,7 @@ export default function Careers() {
     shopSlug, // Use shopSlug instead of code
   });
 
-  console.log('Career in index', careers);
+  // console.log('Career in index', careers);
   const { permissions } = getAuthCredentials();
   const permissionTypes = AllPermission();
   const canWrite = permissionTypes.includes('sidebar-nav-item-careers'); // Adjust permissions accordingly

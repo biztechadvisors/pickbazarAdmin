@@ -55,7 +55,7 @@ const AddStaffForm = () => {
   const { mutate: addStaff, isLoading: loading } = useAddStaffMutation();
   const { t } = useTranslation();
   const { permissions } = getAuthCredentials();
-  console.log("permissionData-staff", permissionData)
+  // console.log("permissionData-staff", permissionData)
 
   const {
     query: { shop },
@@ -66,12 +66,12 @@ const AddStaffForm = () => {
 const { data: shopData, isLoading: fetchingShopId } = useShopQuery({
   slug: shopSlug as string,
 });
-console.log("DA^^^^",meData);
+// console.log("DA^^^^",meData);
   // const shopId = shopData?.id!;
   const userId = shopData?.owner_id;
     
-  console.log("shopSlug&&",shopSlug)
-  console.log("shopId^^^^",userId)
+  // console.log("shopSlug&&",shopSlug)
+  // console.log("shopId^^^^",userId)
   const {
     register,
     handleSubmit,
@@ -92,7 +92,7 @@ console.log("DA^^^^",meData);
     })) ?? [];
 
 
-    console.log("permissionOptions- staff",permissionOptions)
+    // console.log("permissionOptions- staff",permissionOptions)
 
   function onSubmit({ name, email, password ,contact,type,numberOfDealers}: FormValues) {
     addStaff(

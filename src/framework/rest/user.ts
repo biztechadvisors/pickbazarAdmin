@@ -193,7 +193,7 @@ export const useContact = () => {
       }
     },
     onError: (err) => {
-      console.log(err);
+      console.error(err);
     },
   });
 };
@@ -216,7 +216,7 @@ export function useLogin() {
       closeModal();
     },
     onError: (error: Error) => {
-      console.log(error.message);
+      console.error(error.message);
     },
   });
 
@@ -241,7 +241,7 @@ export function useSocialLogin() {
       }
     },
     onError: (error: Error) => {
-      console.log(error.message);
+      console.error(error.message);
     },
     onSettled: () => {
       queryClient.clear();
@@ -271,7 +271,7 @@ export function useSendOtpCode({
       });
     },
     onError: (error: Error) => {
-      console.log(error.message);
+      console.error(error.message);
     },
   });
 
@@ -331,7 +331,7 @@ export function useOtpLogin() {
       closeModal();
     },
     onError: (error: Error) => {
-      console.log(error.message);
+      console.error(error.message);
     },
     onSettled: () => {
       queryClient.clear();

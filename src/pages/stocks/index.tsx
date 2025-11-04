@@ -31,8 +31,8 @@ export default function DealerStockList() {
 
   const { data, isLoading, isError } = useDealerStocks(id);
 
-  console.log("DealerStockList", DealerStockList)
-  console.log("DealerStock -id", id)
+  // console.log("DealerStockList", DealerStockList)
+  // console.log("DealerStock -id", id)
 
   function handleSearch({ searchText }: { searchText: string }) {
     setSearchTerm(searchText);

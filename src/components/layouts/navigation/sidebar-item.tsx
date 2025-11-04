@@ -48,7 +48,7 @@ const SidebarItem = ({ href, icon, label }: any) => {
       })}
       <span onClick={() => closeSidebar()}>
         {label}
-        {console.log(label)}
+        {/* {console.log(label)} */}
       </span>
     </Link>
   );

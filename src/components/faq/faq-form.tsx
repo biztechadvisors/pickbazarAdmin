@@ -18,7 +18,7 @@ const defaultValues = {
   description: '',
  
 };
-console.log(defaultValues)
+// console.log(defaultValues)
 type IProps = {
   initialValues?: Faq | null;
 };
@@ -47,7 +47,7 @@ export default function CreateOrUpdateFaqForm({ initialValues }: IProps) {
     useUpdateFaqClassMutation(shop_id);
 
   const onSubmit = async (values: Faq) => {
-    console.log('values = ',values)
+    // console.log('values = ',values)
     if (initialValues) {
       updateFaqClass({
         id: initialValues.id!,

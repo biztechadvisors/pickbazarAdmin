@@ -72,7 +72,7 @@ export default function Orders() {
   }
 
   if (loading) {
-    console.log('Loading orders...');
+    // console.log('Loading orders...');
   }
 
   const { refetch } = useExportOrderQuery(
@@ -113,7 +113,7 @@ export default function Orders() {
     router.replace(Routes.dashboard);
   }
 
-  console.log("orders-shop",orders)
+  // console.log("orders-shop",orders)
 
   return (
     <>

@@ -75,7 +75,7 @@ export default function CreateOrUpdateVacancyForm({
       locationId: Number(values.locationId),
     };
 
-    console.log('Form values (with shopId):', formData);
+    // console.log('Form values (with shopId):', formData);
 
     if (initialValues) {
       updateVacancy({

@@ -163,7 +163,7 @@ const CreatePermission = () => {
           Object.entries(menusData).filter(([key, value]) => value === item)
         );
       }); 
-      console.log("LAST***",last)
+      // console.log("LAST***",last)
       return last;
     }
   };
@@ -202,9 +202,9 @@ const CreatePermission = () => {
   }, []);
 
 
-  console.log("typename", typeName)
-  console.log("singlePermissionData", singlePermissionData)
-  console.log("singlePermissionData.type_name", singlePermissionData?.type_name)
+  // console.log("typename", typeName)
+  // console.log("singlePermissionData", singlePermissionData)
+  // console.log("singlePermissionData.type_name", singlePermissionData?.type_name)
 
   return (
     <>

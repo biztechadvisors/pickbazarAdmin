@@ -49,7 +49,7 @@ const Events = () => {
     if (page > totalPages) setPage(1);
   }, [paginatorInfo?.total, paginatorInfo?.perPage, page]);
 
-  console.log("events fetched:", events);
+  // console.log("events fetched:", events);
 
   function handleRegionFilter(regionName: string) {
     setRegion(regionName);

@@ -17,7 +17,7 @@ export const careersClient = {
   },
 
   paginated: ({ ...params }: { params: Partial<CareerQueryOptions> }) => {
-    console.log('params', params);
+    // console.log('params', params);
     if (params.shopSlug) {
       // Update to use query params for the shop slug
       return HttpClient.get<CareerPaginator>(

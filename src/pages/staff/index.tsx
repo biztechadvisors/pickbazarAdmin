@@ -63,8 +63,8 @@ export default function StaffsPage() {
     role: 'user',
   });
 
-  console.log('data?.id', data?.id);
-  console.log('users', users);
+  // console.log('data?.id', data?.id);
+  // console.log('users', users);
 
   // const {
   //   staffs,
@@ -106,7 +106,7 @@ export default function StaffsPage() {
   const filteredUsers = users?.filter(
     (user) => user.permission?.type_name === STAFF
   );
-console.log("filteredUsers",filteredUsers)
+// console.log("filteredUsers",filteredUsers)
 
   function handleSearch({ searchText }: { searchText: string }) {
     setSearchTerm(searchText);

@@ -444,13 +444,13 @@ const OrderList = ({
   onOrder,
   
 }: IProps) => {
-  console.log('orders@@@', orders);
+  // console.log('orders@@@', orders);
 
   // const { data, paginatorInfo } = orders! ?? {};
   const { data: me } = useMeQuery(); 
 
   const Shop = me?.permission.type_name === Company;
-  console.log('ShopShow', Shop);
+  // console.log('ShopShow', Shop);
 
   const router = useRouter();
   const { t } = useTranslation();

@@ -27,11 +27,11 @@ const NotificationMenu = () => {
       });
 
       socket.on('connect', () => {
-        console.log('Connected to the notification server');
+        // console.log('Connected to the notification server');
       });
 
       socket.on('notification', (data) => {
-        console.log('New notification:', data);
+        // console.log('New notification:', data);
         setNotifications((prev) => [data, ...prev]);
         toast.info(`${data.title}: ${data.message}`, {
           position: "top-right",
@@ -65,7 +65,7 @@ const NotificationMenu = () => {
 };
 
 
-console.log('notifications',notifications)
+// console.log('notifications',notifications)
   return (
     <Menu as="div" className="relative inline-block text-left">
       <Menu.Button className="relative flex items-center justify-center rounded text-heading outline-none transition duration-300 ease-in-out focus:outline-none focus:ring-1" aria-label="show notifications">

@@ -18,7 +18,7 @@ export default function CreateQnaPage() {
 
   const faqId = faq?.data?.[0]?.id;
   const faqIdNumber = Number(faqId);
-  console.log('faqId in CreateQnaPage:', faqId);
+  // console.log('faqId in CreateQnaPage:', faqId);
 
   return (
     <>

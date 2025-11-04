@@ -99,7 +99,7 @@ const EventCreateOrUpdate = ({ initialValues }: IProps) => {
   const shopId = initialValues?.shopId || meData?.shop_id || shopData?.id || 0;
   // const shopId = me?.shop_id ;
   // const shopId = shopData?.id || initialValues?.shopId;
-console.log("shopId====",shopId)
+// console.log("shopId====",shopId)
 
   // const {
   //   register,

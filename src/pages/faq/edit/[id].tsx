@@ -15,11 +15,11 @@ import CreateOrUpdateFaqForm from '@/components/faq/faq-form';
 export default function UpdateFaqPage() {
   const { t } = useTranslation();
   const { query } = useRouter();
-  console.log('query =',query)
+  // console.log('query =',query)
   const { data, isLoading: loading, error } = useFaqsingleDataQuery(query.id as string);
   if (loading) return <Loader text={t('common:text-loading')} />;
   if (error) return <ErrorMessage message={error.message} />;
-  console.log('data =',data)
+  // console.log('data =',data)
 
   return (
     <>

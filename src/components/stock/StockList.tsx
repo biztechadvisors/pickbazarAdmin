@@ -44,7 +44,7 @@ const StockList = ({
 }: IProps) => {
   // const { data } = orders! ?? {};
 
-  console.log("orders=orders",orders)
+  // console.log("orders=orders",orders)
 
 
   const router = useRouter();

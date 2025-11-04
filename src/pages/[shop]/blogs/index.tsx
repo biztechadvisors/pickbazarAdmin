@@ -30,7 +30,7 @@ const Blogs = () => {
     setPage(1);
   }
 
-  console.log("shopSlug", shopSlug)
+  // console.log("shopSlug", shopSlug)
   return (
     <>
       <Card className="mb-8 flex flex-col">

@@ -130,14 +130,14 @@ export const useFetchStockOrderData = ({ dealerId, orderId }: StockIdS) => {
       const data = await stockClient.getStockByOrderId({ dealerId, orderId });
       return data;
     } catch (error) {
-      console.log(error);
+      console.error(error);
     }
   });
 };
 
 export const useUpdateStockDataById = (user_id: any) => {
   const queryClient = useQueryClient();
-  console.log("queryClient",queryClient)
+  // console.log("queryClient",queryClient)
 
   return useMutation(
     (updatedData: any) => stockClient.updateStockDataById(user_id, updatedData),

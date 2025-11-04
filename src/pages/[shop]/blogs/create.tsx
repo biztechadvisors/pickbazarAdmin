@@ -47,10 +47,10 @@ const BlogCreate = () => {
   const { mutate } = useCreateBlogMutation();
 
   const onSubmit = () => {
-    console.log('Form data:', formData);
+    // console.log('Form data:', formData);
     mutate(formData, {
       onSuccess: (data) => {
-        console.log('Blog created successfully:', data);
+        // console.log('Blog created successfully:', data);
         // Handle success (e.g., show a success message, navigate to another page, etc.)
       },
       onError: (error) => {

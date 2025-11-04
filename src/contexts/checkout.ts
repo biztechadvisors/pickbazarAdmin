@@ -49,8 +49,8 @@ export const clearCheckoutAtom = atom(null, (_get, set, _data) => {
 });
 export const billingAddressAtom = atom((get) => get(checkoutAtom).billing_address,(get, set, data: Address) => {
     const prev = get(checkoutAtom);
-    console.log("prev_____________________________________", prev)
-    console.log("billing_addess________________________________", data)
+    // console.log("prev_____________________________________", prev)
+    // console.log("billing_addess________________________________", data)
     return set(checkoutAtom, { ...prev, billing_address: data, customer:data });
   }
 );

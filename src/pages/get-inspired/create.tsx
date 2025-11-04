@@ -28,7 +28,7 @@ export default function CreateGetInspiredPage() {
     // search:searchTerm,
   });
 
-  console.log('Get Inspired Tag', tags, 'slug', shopSlug);
+  // console.log('Get Inspired Tag', tags, 'slug', shopSlug);
 
   return (
     <>

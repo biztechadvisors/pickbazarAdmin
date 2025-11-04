@@ -202,9 +202,9 @@ const CreatePerm = ({ PermissionDatas }) => {
     }
   }, []);
 
-  console.log('typeName', typeName);
-  console.log('selectedType', selectedType);
-  console.log('PermissionDatas', PermissionDatas);
+  // console.log('typeName', typeName);
+  // console.log('selectedType', selectedType);
+  // console.log('PermissionDatas', PermissionDatas);
 
   return (
     <div style={{ backgroundColor: 'white' }} className="modal">

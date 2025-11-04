@@ -63,7 +63,7 @@ export default function AttributePage() {
       enabled: Boolean(shopId),
     }
   );
-console.log("Attribute",attributes)
+// console.log("Attribute",attributes)
   const permissionTypes = AllPermission();
 
   const canWrite = permissionTypes.includes('sidebar-nav-item-attributes');

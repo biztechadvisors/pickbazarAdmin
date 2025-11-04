@@ -54,8 +54,8 @@ export default function CreateOrUpdateGetInspiredForm({ initialValues }) {
       image.url ? image.url : image // Handle newly uploaded images
     );
     const tagIds = values.tagIds.map((tag) => tag.id); // Send tag IDs in the payload
-    console.log("Valuesss",values);
-    console.log("Image+++",imageFiles);
+    // console.log("Valuesss",values);
+    // console.log("Image+++",imageFiles);
     // Include attachment IDs in the payload
     const payload = {
       ...values,
@@ -64,7 +64,7 @@ export default function CreateOrUpdateGetInspiredForm({ initialValues }) {
       // attachmentIds,  
       shopId: shop_id, // Ensure shopId is set correctly
     };
-    console.log("payload",payload.images);
+    // console.log("payload",payload.images);
     if (initialValues) {
       updateGetInspired({
         id: initialValues.id,

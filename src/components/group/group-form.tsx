@@ -136,7 +136,7 @@ function SelectRegion({
   const { regions, loading, paginatorInfo, error } = useRegionsQuery({
     code: meData?.managed_shop?.slug,
   }); 
-  console.log("REGION###",regions)
+  // console.log("REGION###",regions)
   if (error) {
     console.error("Error fetching regions:", error);
   }
@@ -199,7 +199,7 @@ export default function CreateOrUpdateTypeForm({ initialValues }: IProps) {
   const { mutate: createType, isLoading: creating } = useCreateTypeMutation();
   const { mutate: updateType, isLoading: updating } = useUpdateTypeMutation();
   const onSubmit = (values: FormValues) => {
-    console.log("Submitted Form Values:", values);
+    // console.log("Submitted Form Values:", values);
 
     const transformedRegions = values.regions?.name ? [values.regions.name] : [];
     const input = {

@@ -54,7 +54,7 @@ export default function SalesPage() {
 
   const { data: stockData, isLoading, error } = useGetStock(meData?.id);
 
-  console.log("stockData",stockData)
+  // console.log("stockData",stockData)
  
 
   const permissionTypes = AllPermission(); 

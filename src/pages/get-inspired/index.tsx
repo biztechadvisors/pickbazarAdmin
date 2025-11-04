@@ -59,7 +59,7 @@ export default function GetInspired() {
     setPage(newPage);
   };
 
-  console.log(canWrite);
+  // console.log(canWrite);
 
   return (
     <>

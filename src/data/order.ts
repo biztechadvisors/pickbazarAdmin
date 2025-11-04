@@ -161,7 +161,7 @@ export const useUpdateOrderMutation = () => {
       // Data object to send in the PUT request
       const data = { name, color, serial, language };
 
-      console.log('Sending data to server:', data); // Log the data object
+      // console.log('Sending data to server:', data); // Log the data object
       return await HttpClient.put(url, data); // PUT request with the data
     },
     {
@@ -184,8 +184,8 @@ export const useDealerStatusChange = () => {
 
   return useMutation(
     async ({ id, order_status }: { id: string; order_status: string }) => {
-      console.log('ID:', id);
-      console.log('Status:', order_status);
+      // console.log('ID:', id);
+      // console.log('Status:', order_status);
 
       if (!order_status) {
         throw new Error('Status is undefined');
@@ -194,7 +194,7 @@ export const useDealerStatusChange = () => {
       const url = `${API_ENDPOINTS.DEALER_STATUS_CHANGE}/${id}/status`;
       const data = { name: order_status };
 
-      console.log('Sending data to server:', data); // Log the data object
+      // console.log('Sending data to server:', data); // Log the data object
       return await HttpClient.patch(url, data);
     },
     {

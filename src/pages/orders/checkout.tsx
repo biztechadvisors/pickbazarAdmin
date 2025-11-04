@@ -43,8 +43,8 @@ export default function CheckoutPage() {
   const [customer] = useAtom(customerAtom);
 
   const { data: meData } = useMeQuery();
-  console.log('Ashish', meData);
-  console.log('customerData', customer);
+  // console.log('Ashish', meData);
+  // console.log('customerData', customer);
 
   const { t } = useTranslation();
 
@@ -74,9 +74,9 @@ export default function CheckoutPage() {
   //   }
   // }, [meData?.id]);
 
-  console.log('billingAddressAtom', billingAddressAtom);
+  // console.log('billingAddressAtom', billingAddressAtom);
 
-  console.log('userAshish', user);
+  // console.log('userAshish', user);
 
   if (loading) {
     <div>

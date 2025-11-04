@@ -121,7 +121,7 @@ export const useSubCategoriesQuery = (
       keepPreviousData: true,
       enabled: !!shopSlug, // Ensures the query runs only when shopSlug is set
       onSuccess: (data) => {
-        console.log("Subcategories fetched: ", data); // Log the response
+        // console.log("Subcategories fetched: ", data); // Log the response
       },
     }
   );

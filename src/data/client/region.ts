@@ -21,7 +21,7 @@ export const regionClient = {
   paginated: ({
       ...params
     }: { params: Partial<RegionsQueryOptions> }) => {
-      console.log("params", params.code);
+      // console.log("params", params.code);
       if(params.code){
         return HttpClient.get<Region>(`${API_ENDPOINTS.REGIONS}/shop/${params.code}`)
       }

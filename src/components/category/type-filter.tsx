@@ -27,7 +27,7 @@ export default function TypeFilter({ onTypeFilter, className }: Props) {
 
   const shopId = shopData?.id!;
   const shop_Slug = shopData?.slug
-console.log("shop_Slug",shop_Slug)
+// console.log("shop_Slug",shop_Slug)
 const shop: string | undefined = meData?.managed_shop?.id;
 const shopSlug: string | undefined = meData?.managed_shop?.slug;
  
@@ -36,7 +36,7 @@ const shopSlug: string | undefined = meData?.managed_shop?.slug;
     shop_id:shop,
     shopSlug: shopSlug,
    });
-console.log("types%%%",types)
+// console.log("types%%%",types)
   return (
     <div className={cn('flex w-full', className)}>
       <div className="w-full">

@@ -12,8 +12,8 @@ export default function CreateVacancyPage() {
   // Ensure locations is an array even if me or adds is undefined
   const locations = Array.isArray(me?.adds) ? me.adds : []; // Default to an empty array
 
-  console.log('Me data:', me); // Log user data
-  console.log('Locations:', locations); // Log locations data
+  // console.log('Me data:', me); // Log user data
+  // console.log('Locations:', locations); // Log locations data
 
   return (
     <>

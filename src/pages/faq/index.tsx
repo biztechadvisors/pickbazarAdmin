@@ -62,7 +62,7 @@ export default function Faq() {
     if (page > totalPages) setPage(1);
   }, [paginatorInfo?.total, paginatorInfo?.perPage, page]);
 
-  console.log("qnaPage", qna,qnaPaginatorInfo);
+  // console.log("qnaPage", qna,qnaPaginatorInfo);
 
   const { permissions } = getAuthCredentials();
   const permissionTypes = AllPermission();

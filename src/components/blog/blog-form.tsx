@@ -249,10 +249,10 @@ const BlogCreateOrUpdateForm = ({ initialValues }: any) => {
   );
   const shopId = shopData?.id || initialValues?.shop?.id;
 
-  console.log(
-    'shopId___________________________________________________',
-    shopId
-  );
+  // console.log(
+  //   'shopId___________________________________________________',
+  //   shopId
+  // );
 
   const {
     register,
@@ -269,7 +269,7 @@ const BlogCreateOrUpdateForm = ({ initialValues }: any) => {
   const { mutate: updateBlog, isLoading: updating } = useUpdateBlogMutation();
 
   const onSubmit = (values: FormValues) => {
-    console.log("BLOGG++++",values)
+    // console.log("BLOGG++++",values)
     const attachmentIds = values.attachmentIds 
     if (!shopId) {
       setErrorMessage('Shop ID is required');
@@ -307,7 +307,7 @@ const BlogCreateOrUpdateForm = ({ initialValues }: any) => {
     }
   };
 
-  console.log('inityial;Valued-------------------------', initialValues);
+  // console.log('inityial;Valued-------------------------', initialValues);
 
   return (
     <>

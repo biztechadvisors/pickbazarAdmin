@@ -11,10 +11,10 @@ const FaqDeleteView = () => {
 
   const { data } = useModalState();
   const { closeModal } = useModalAction();
-  console.log('useModalState = ', data)
+  // console.log('useModalState = ', data)
 
   function handleDelete() {
-    console.log('handle Delete = ', data)
+    // console.log('handle Delete = ', data)
     deleteRegionsClass({ id: data });
     closeModal();
   }

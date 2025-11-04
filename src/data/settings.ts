@@ -15,7 +15,7 @@ export const useCreateSettingsMutation = () => {
 
   return useMutation(settingsClient.create, {
     onError: (error) => {
-      console.log(error);
+      console.error(error);
     },
     onSuccess: (data) => {
       updateSettings(data?.options);
@@ -35,7 +35,7 @@ export const useUpdateSettingsMutation = () => {
 
   return useMutation(settingsClient.update, {
     onError: (error) => {
-      console.log(error);
+      console.error(error);
     },
     onSuccess: (data) => {
       updateSettings(data?.options);

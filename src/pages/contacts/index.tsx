@@ -29,16 +29,16 @@ export default function Contacts() {
   const { contacts, loading, paginatorInfo, error } = useContactsQuery({
     shopSlug: me?.managed_shop?.slug, // Use shopSlug instead
   });
-  console.log('contacts data', contacts);
-  console.log('contacts me', me);
+  // console.log('contacts data', contacts);
+  // console.log('contacts me', me);
 
   // Handle permission check
   const { permissions } = getAuthCredentials();
   const permissionTypes = AllPermission();
   const canWrite = permissionTypes.includes('sidebar-nav-item-contacts');
 
-  console.log('User Permissions:', permissions);
-  console.log('Can Write:', canWrite); // Check if canWrite is true
+  // console.log('User Permissions:', permissions);
+  // console.log('Can Write:', canWrite); // Check if canWrite is true
 
   // Loader and error handling
   if (loading) return <Loader text={t('common:text-loading')} />;

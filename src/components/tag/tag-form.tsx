@@ -187,7 +187,7 @@ export default function CreateOrUpdateTagForm({ initialValues }: IProps) {
   const [page, setPage] = useState(1);
   const [orderBy, setOrder] = useState('created_at');
   const [sortedBy, setColumn] = useState<SortOrder>(SortOrder.Desc);
- console.log("first+++++",initialValues)
+//  console.log("first+++++",initialValues)
   const { data: meData } = useMeQuery();
 
   const shopSlug = meData?.managed_shop.slug;

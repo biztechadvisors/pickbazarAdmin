@@ -170,7 +170,7 @@ function SelectUser({ control, errors }: SelectUserProps) {
   const openModal = () => setModalOpen(true);
   const closeModal = () => setModalOpen(false);
 
-  console.log('users&&&&', users);
+  // console.log('users&&&&', users);
 
   return (
     <div className="mb-5 flex w-full justify-between gap-2">
@@ -261,7 +261,7 @@ const ShopForm = ({ initialValues }: { initialValues?: any }) => {
     resolver: yupResolver(shopValidationSchema),
   });
   const router = useRouter();
-  console.log("control",control)
+  // console.log("control",control)
   // const { openModal } = useModalAction();
   const { locale } = router;
   const { data, isLoading: loading, isError } = useMeQuery();
@@ -285,7 +285,7 @@ const ShopForm = ({ initialValues }: { initialValues?: any }) => {
     data: permissionData,
   } = usePermissionData(userId);
 
-  console.log("permissionData",permissionData)
+  // console.log("permissionData",permissionData)
 
   const filterdEcomm = permissionData?.filter((e: any) => {
     return (
@@ -301,13 +301,14 @@ const ShopForm = ({ initialValues }: { initialValues?: any }) => {
     email: e?.type_name,
     e,
   }));
-  console.log('Fetched Permission Data:', permissionData);
-  console.log('Permission Filtered Ecomm:', filterdEcomm);
-  console.log('Permission Options:', option);
+  // console.log('Fetched Permission Data:', permissionData);
+  // console.log('Permission Filtered Ecomm:', filterdEcomm);
+  // console.log('Permission Options:', option);
   const permissionProps = permissionSelectedOption?.e;
 
 
   const handleGenerateDescription = useCallback(() => {
+
     openModal('GENERATE_DESCRIPTION', {
       control,
       name: generateName,
@@ -323,7 +324,7 @@ const ShopForm = ({ initialValues }: { initialValues?: any }) => {
     name: 'settings.socials',
   });
 
-  console.log("fields",fields)
+  // console.log("fields",fields)
  
 
   const handleSelectChange = (selectedOption: any) => {
@@ -436,12 +437,12 @@ const ShopForm = ({ initialValues }: { initialValues?: any }) => {
     // Remove companyType from values
     const { companyType, ...filteredValues } = values;
 
-    console.log('settings**********', settings);
+    // console.log('settings**********', settings);
     try {
       if (initialValues) {
         const { ...restAddress } = filteredValues.address;
 
-        console.log("restAddress", restAddress)
+        // console.log("restAddress", restAddress)
         await updateShop({
           id: initialValues.id,
           ...filteredValues,
@@ -459,7 +460,7 @@ const ShopForm = ({ initialValues }: { initialValues?: any }) => {
         });
       } else {
         const { ...restAddress } = filteredValues.address;
-        console.log("restAddress-create", restAddress)
+        // console.log("restAddress-create", restAddress)
         await createShop({
           ...filteredValues,
           address: restAddress,
@@ -499,7 +500,7 @@ const ShopForm = ({ initialValues }: { initialValues?: any }) => {
     return <div>Error: {error.message}</div>;
   }
 
-  console.log(' initialValues_____________________', initialValues);
+  // console.log(' initialValues_____________________', initialValues);
 
   return (
     <>

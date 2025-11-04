@@ -51,7 +51,7 @@ const CustomerCreateForm = () => {
   // const phoneRegex = /^\+91[0-9]{10}$/;
   const [value, setValue] = useState('');
 
-  console.log("permissionData",permissionData)
+  // console.log("permissionData",permissionData)
 
   const shopSlug =
     typeof window !== 'undefined' ? localStorage.getItem('shopSlug') : null;
@@ -82,7 +82,7 @@ const CustomerCreateForm = () => {
       id: permission.id,
     })) ?? [];
 
-    console.log("permissionOptions",permissionOptions)
+    // console.log("permissionOptions",permissionOptions)
 
 
 

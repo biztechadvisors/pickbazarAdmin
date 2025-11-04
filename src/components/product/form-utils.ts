@@ -537,7 +537,7 @@ export function filterAttributes(
   variations: any,
   fieldIndex: number
 ) {
-  console.log(attributes, variations, '======================123');
+  // console.log(attributes, variations, '======================123');
 
   // Get selected attributes from the **current card only**
   const selectedAttributes =
@@ -550,7 +550,7 @@ export function filterAttributes(
     return !selectedAttributes.includes(el?.slug);
   });
 
-  console.log(res, 'res==============');
+  // console.log(res, 'res==============');
   return res;
 }
 
@@ -644,7 +644,7 @@ export function filterAttributes(
 // }
 
 export function getCartesianProduct(values: any) {
-  console.log('values', values);
+  // console.log('values', values);
 
   const formattedValues = values
     ?.map((v: any) => {
@@ -663,7 +663,7 @@ export function getCartesianProduct(values: any) {
     .flat()
     .filter((i: any) => i?.name); // Filter out any invalid entries
 
-  console.log('formattedValues', formattedValues);
+  // console.log('formattedValues', formattedValues);
 
   if (isEmpty(formattedValues)) return [];
   return formattedValues;
@@ -951,7 +951,7 @@ export function getProductInputValues(
     variations,
     ...simpleValues
   } = values;
-  console.log('data&&&&&', values);
+  // console.log('data&&&&&', values);
   const processedFile = processFileWithName(digital_file_input);
 
   return {

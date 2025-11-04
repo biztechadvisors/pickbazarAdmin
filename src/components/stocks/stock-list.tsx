@@ -131,8 +131,8 @@ const StockList = ({ me, onSort, onOrder }: IProps) => {
     column: null,
   });
 
-  console.log('sortingObj',sortingObj)
-  console.log("Product",Product)
+  // console.log('sortingObj',sortingObj)
+  // console.log("Product",Product)
 
   const onHeaderClick = (column: string | null) => ({
     onClick: () => {

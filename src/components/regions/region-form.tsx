@@ -20,7 +20,7 @@ const defaultValues = {
   name: '',
   shop_id:[],
 };
-console.log(defaultValues)
+// console.log(defaultValues)
 type IProps = {
   initialValues?: Region | null;
 };
@@ -300,14 +300,17 @@ export default function CreateOrUpdateRegionsForm({ initialValues }: IProps) {
     useUpdateRegionClassMutation(shop_id);
 
   const onSubmit = async (values: Region) => {
-    console.log('values = ',values)
+
+    // console.log('values = ',values)
+
     if (initialValues) {
+
       updateRegionClass({
         id: initialValues.id!,
         ...values,
       });
     } else {
-    console.log('values = ',values)
+    // console.log('values = ',values)
       createTaxClass({
         ...values,
       });

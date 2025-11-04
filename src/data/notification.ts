@@ -21,8 +21,10 @@ export const useNotificationQuery = (
   const { data, error, isLoading } = useQuery<NotificationPaginator, Error>(
     [API_ENDPOINTS.NOTIFICATION, params],
     ({ queryKey, pageParam }) =>
+      
 
-        console.log('queryKey',queryKey, pageParam ),
+        console.log('queryKey',queryKey, pageParam )
+        ,
     //   Notification.patch(queryKey[1] as { notificationId: number; language: string }),  // Ensure the correct object is passed
     {
       keepPreviousData: true,

@@ -46,8 +46,8 @@ export default function Orders() {
     const DealerShow = me?.permission.type_name === DEALER;
     const ShopShow = me?.permission.type_name === Company;
 
-    console.log("me",me)
-    console.log("ShopShow",ShopShow)
+    // console.log("me",me)
+    // console.log("ShopShow",ShopShow)
 
 
     const { data: shopData, isLoading: fetchingShop } = useShopQuery(
@@ -59,14 +59,14 @@ export default function Orders() {
         }
     );
 
-    console.log("shopData",shopData)
+    // console.log("shopData",shopData)
 
  
  
  
     const shopId = shopData?.id!;
 
-    console.log("shopId", me?.shop_id)
+    // console.log("shopId", me?.shop_id)
     
     const queryConfig = {
         language: locale,
@@ -87,7 +87,7 @@ export default function Orders() {
     }    
 
     const { orders, loading, paginatorInfo, error } = useOrdersQuery(queryConfig);
-    console.log("++++++++++orders",orders)
+    // console.log("++++++++++orders",orders)
 
    
 
@@ -229,7 +229,7 @@ export default function Orders() {
         (order) => order?.customer_id !== order?.dealer?.id
     );
 
-    console.log("customerOrderList",customerOrderList)
+    // console.log("customerOrderList",customerOrderList)
  
     // var ordersData = orders.filter(
     //     (order) => order?.customer_id == order?.dealer?.id

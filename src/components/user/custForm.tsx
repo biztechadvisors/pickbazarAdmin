@@ -279,9 +279,9 @@ const CustForm = () => {
   const [value, setValue] = useState('');
   const [selectedPermissionType] = useAtom(selectedOption);
 
-  console.log("selectedPermissionType", selectedPermissionType)
+  // console.log("selectedPermissionType", selectedPermissionType)
 
-  console.log("id-------------------------------------", id)
+  // console.log("id-------------------------------------", id)
 
   const shopSlug =
     typeof window !== 'undefined' ? localStorage.getItem('shopSlug') : null;

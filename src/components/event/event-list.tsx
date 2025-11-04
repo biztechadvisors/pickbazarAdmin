@@ -29,7 +29,7 @@ const EventLists = ({
   onOrder,
 }: IProps) => {
 
-  console.log("eventseventsevents", events)
+  // console.log("eventseventsevents", events)
   const { t } = useTranslation();
   const rowExpandable = (record: any) => record.children?.length;
   const { alignLeft, alignRight } = useIsRTL();
