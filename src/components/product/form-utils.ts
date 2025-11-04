@@ -930,7 +930,6 @@ export function processFileWithName(file_input: any) {
 //   };
 // }
 //first//
-//////////////////////////////////////////////////////////////////////////////////////////
 
 export function getProductInputValues(
   values: ProductFormValues,

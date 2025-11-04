@@ -14,7 +14,7 @@ const QnaDeleteView = () => {
 
   function handleDelete() {
     // console.log('handle Delete = ', data);
-    deleteQna(data); // Assuming data contains the ID of the QnA to delete
+    deleteQna(data);
     closeModal();
   }
 

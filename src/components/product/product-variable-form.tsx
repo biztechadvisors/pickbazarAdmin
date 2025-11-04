@@ -83,7 +83,6 @@
 // console.log("feildssssssss", fields);
 //   const variations = watch('variations');
 
-// console.log("variant//////", variations)
 
 //   const cartesianProduct = getCartesianProduct(getValues('variations')) || [];
 // console.log("cartesian Product", cartesianProduct);
@@ -298,7 +297,6 @@
 //   );
 // };
 
-///////////////////////////////////////////////////////////////
 
 // import Input from '@/components/ui/input';
 // import { useFieldArray, useFormContext } from 'react-hook-form';
@@ -642,7 +640,6 @@
 //   );
 // };
 
-//////////////////////////////////////////////////////////////
 
 // import Input from '@/components/ui/input';
 // import { useFieldArray, useFormContext } from 'react-hook-form';
@@ -863,8 +860,6 @@
 //     </>
 //   );
 // };
-
-////////////////////////////////////////////////////////////////////
 
 // import Input from '@/components/ui/input';
 // import { useFieldArray, useFormContext } from 'react-hook-form';
@@ -1149,7 +1144,6 @@
 // };
 
 //correct working code
-/////////////////////////////////////////////////////
 
 // import Input from '@/components/ui/input';
 // import { useFieldArray, useFormContext } from 'react-hook-form';

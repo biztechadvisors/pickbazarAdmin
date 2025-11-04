@@ -163,19 +163,13 @@ export default function CreateOrUpdateProductForm({
     formState: { errors },
   } = methods;
 
-  // console.log('product form methods', methods.control);
-
   const upload_max_filesize = options?.server_info?.upload_max_filesize / 1024;
 
   const { mutate: createProduct, isLoading: creating } =
     useCreateProductMutation();
   const { mutate: updateProduct, isLoading: updating } =
     useUpdateProductMutation();
-  // console.log("product form data+++++++++++...............",createProduct, updateProduct, creating, updating);
-  const onSubmit = async (values: ProductFormValues) => {
-    // console.log('product create values json', values);
-    // console.log("Original form values", values.variations);
-
+ const onSubmit = async (values: ProductFormValues) => {
     const inputValues = {
       language: router.locale,
       ...getProductInputValues(values, initialValues),
@@ -341,7 +335,7 @@ export default function CreateOrUpdateProductForm({
 
             <Card className="w-full sm:w-8/12 md:w-2/3">
               <FileInput name="image" control={control} multiple={false} />
-              {errors.image?.message && (
+              {errors?.image?.message && (
                 <p className="my-2 text-xs text-red-500">
                   {t(errors?.image?.message!)}
                 </p>
@@ -430,8 +424,6 @@ export default function CreateOrUpdateProductForm({
               />
               <ProductCategoryInput control={control} setValue={setValue} />
               <ProductSubCategoryInput control={control} setValue={setValue} />
-              {/* <ProductAuthorInput control={control} setValue={setValue} /> */}
-              {/* <ProductManufacturerInput control={control} setValue={setValue} /> */}
               <ProductTagInput control={control} setValue={setValue} />
             </Card>
           </div>
